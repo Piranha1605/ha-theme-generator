@@ -1,0 +1,13 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Set up Theme Generator",
+        "description": "Creates a sidebar panel to generate and save Home Assistant themes."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Theme Generator is already configured."
+    }
+  }
+}

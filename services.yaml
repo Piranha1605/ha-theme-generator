@@ -1,0 +1,45 @@
+save_theme:
+  name: Theme speichern
+  description: Speichert ein generiertes Home Assistant Theme unter /config/themes/theme_generator.yaml und lädt die Themes neu.
+  fields:
+    name:
+      name: Name
+      description: Name des Themes.
+      required: true
+      selector:
+        text:
+    primary_color:
+      name: Primärfarbe
+      required: true
+      selector:
+        color_rgb:
+    accent_color:
+      name: Akzentfarbe
+      required: true
+      selector:
+        color_rgb:
+    background_color:
+      name: Hintergrundfarbe
+      required: true
+      selector:
+        color_rgb:
+    card_color:
+      name: Kartenfarbe
+      required: true
+      selector:
+        color_rgb:
+    text_color:
+      name: Textfarbe
+      required: true
+      selector:
+        color_rgb:
+    rounded:
+      name: Rundung
+      required: false
+      default: 24
+      selector:
+        number:
+          min: 0
+          max: 40
+          mode: slider
+          unit_of_measurement: px

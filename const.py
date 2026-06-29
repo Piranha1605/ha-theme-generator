@@ -1,0 +1,7 @@
+DOMAIN = "theme_generator"
+PANEL_URL_PATH = "theme-generator"
+PANEL_TAG = "theme-generator-panel"
+PANEL_TITLE = "Theme Generator"
+PANEL_ICON = "mdi:palette"
+PANEL_FILENAME = "theme-generator-panel.js"
+THEME_FILE = "theme_generator.yaml"
