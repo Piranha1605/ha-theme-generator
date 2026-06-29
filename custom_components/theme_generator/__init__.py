@@ -44,16 +44,24 @@ def _read_theme_files(config_path: str) -> list[dict[str, Any]]:
     themes_dir = _themes_dir(config_path)
     result: list[dict[str, Any]] = []
 
-    for path in sorted(list(themes_dir.glob("*.yaml")) + list(themes_dir.glob("*.yml"))):
+    files = sorted(list(themes_dir.glob("*.yaml")) + list(themes_dir.glob("*.yml")))
+
+    for path in files:
         try:
             loaded = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+
             if not isinstance(loaded, dict):
                 continue
+
+            themes = []
+            for name, value in loaded.items():
+                if isinstance(value, dict):
+                    themes.append(str(name))
 
             result.append(
                 {
                     "file": path.name,
-                    "themes": list(loaded.keys()),
+                    "themes": themes,
                 }
             )
         except Exception as err:
@@ -73,10 +81,12 @@ def _read_theme(config_path: str, file_name: str, theme_name: str) -> dict[str, 
         raise FileNotFoundError(f"Theme-Datei nicht gefunden: {file_name}")
 
     loaded = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+
     if not isinstance(loaded, dict):
         raise ValueError("Theme-Datei ist ungültig.")
 
     theme = loaded.get(theme_name)
+
     if not isinstance(theme, dict):
         raise ValueError(f"Theme nicht gefunden: {theme_name}")
 
@@ -92,10 +102,12 @@ def _write_theme_file(config_path: str, data: dict[str, Any]) -> Path:
     theme_path = themes_dir / THEME_FILE
 
     incoming = yaml.safe_load(data["yaml"])
+
     if not isinstance(incoming, dict):
         raise ValueError("Theme YAML ist ungültig.")
 
     existing: dict[str, Any] = {}
+
     if theme_path.exists():
         loaded = yaml.safe_load(theme_path.read_text(encoding="utf-8"))
         if isinstance(loaded, dict):
@@ -107,6 +119,7 @@ def _write_theme_file(config_path: str, data: dict[str, Any]) -> Path:
         yaml.safe_dump(existing, allow_unicode=True, sort_keys=False),
         encoding="utf-8",
     )
+
     return theme_path
 
 
@@ -117,7 +130,7 @@ async def async_setup(hass: HomeAssistant, config: dict[str, Any]) -> bool:
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     await _async_register_panel(hass)
     _async_register_services(hass)
-    await _async_register_websocket(hass)
+    _register_websocket(hass)
     return True
 
 
@@ -147,7 +160,7 @@ async def _async_register_panel(hass: HomeAssistant) -> None:
         hass=hass,
         webcomponent_name=PANEL_TAG,
         frontend_url_path=PANEL_URL_PATH,
-        module_url=f"/{DOMAIN}/{PANEL_FILENAME}?v=0.3.4",
+        module_url=f"/{DOMAIN}/{PANEL_FILENAME}?v=0.4.0",
         sidebar_title=PANEL_TITLE,
         sidebar_icon=PANEL_ICON,
         require_admin=True,
@@ -165,6 +178,7 @@ def _async_register_services(hass: HomeAssistant) -> None:
             hass.config.config_dir,
             dict(call.data),
         )
+
         _LOGGER.info("Theme saved to %s", theme_path)
 
         if hass.services.has_service("frontend", "reload_themes"):
@@ -178,7 +192,7 @@ def _async_register_services(hass: HomeAssistant) -> None:
     )
 
 
-async def _async_register_websocket(hass: HomeAssistant) -> None:
+def _register_websocket(hass: HomeAssistant) -> None:
     websocket_api.async_register_command(hass, websocket_list_themes)
     websocket_api.async_register_command(hass, websocket_load_theme)
 
@@ -198,6 +212,7 @@ async def websocket_list_themes(
         _read_theme_files,
         hass.config.config_dir,
     )
+
     connection.send_result(msg["id"], {"files": files})
 
 
@@ -220,4 +235,5 @@ async def websocket_load_theme(
         msg["file"],
         msg["theme"],
     )
+
     connection.send_result(msg["id"], theme)

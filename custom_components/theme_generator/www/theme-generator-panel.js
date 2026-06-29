@@ -3,8 +3,12 @@ class ThemeGeneratorPanel extends HTMLElement {
     super();
     this.attachShadow({ mode: "open" });
 
-    this.storageKey = "theme_generator_state_v1";
+    this.storageKey = "theme_generator_state_v2";
     this.themeName = "Silvia HA Theme";
+    this.themeFiles = [];
+    this.selectedFile = "";
+    this.selectedTheme = "";
+    this.loadingThemes = false;
 
     this.sections = [
       {
@@ -111,6 +115,7 @@ class ThemeGeneratorPanel extends HTMLElement {
           ["input-label-ink-color", "Input Label", "#9b9b9b"],
           ["input-disabled-fill-color", "Input deaktiviert Hintergrund", "#111111"],
           ["input-disabled-ink-color", "Input deaktiviert Text", "#777777"],
+          ["input-disabled-label-ink-color", "Input deaktiviert Label", "#777777"],
           ["input-idle-line-color", "Input Linie", "#777777"],
           ["input-hover-line-color", "Input Hover Linie", "#03a9f4"],
           ["input-outlined-idle-border-color", "Input Outline", "#777777"],
@@ -230,6 +235,7 @@ class ThemeGeneratorPanel extends HTMLElement {
     ];
 
     this.values = {};
+
     this.sections.forEach(section => {
       section.fields.forEach(([key, label, value]) => {
         this.values[key] = value;
@@ -249,10 +255,22 @@ class ThemeGeneratorPanel extends HTMLElement {
 
   set hass(hass) {
     this._hass = hass;
+    if (!this.themeFiles.length && !this.loadingThemes) {
+      this.loadThemeList();
+    }
   }
 
   connectedCallback() {
     this.render();
+    this.loadThemeList();
+  }
+
+  escapeAttr(value) {
+    return String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;");
   }
 
   isColor(value) {
@@ -262,6 +280,7 @@ class ThemeGeneratorPanel extends HTMLElement {
   hexToRgb(hex) {
     const clean = hex.replace("#", "").trim();
     if (clean.length !== 6) return { r: 0, g: 0, b: 0 };
+
     return {
       r: parseInt(clean.substring(0, 2), 16),
       g: parseInt(clean.substring(2, 4), 16),
@@ -279,27 +298,33 @@ class ThemeGeneratorPanel extends HTMLElement {
   colorToHex(value) {
     if (!value) return "#000000";
     if (value.startsWith("#")) return value;
+
     const match = value.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
     if (!match) return "#000000";
+
     return this.rgbToHex(match[1], match[2], match[3]);
   }
 
   colorToAlpha(value) {
     if (!value || value.startsWith("#") || value.startsWith("rgb(")) return 100;
+
     const match = value.match(/rgba\(\d+,\s*\d+,\s*\d+,\s*([0-9.]+)\)/);
     if (!match) return 100;
+
     return Math.round(parseFloat(match[1]) * 100);
   }
 
   makeColorValue(hex, alpha) {
     const cleanAlpha = Number(alpha);
+
     if (cleanAlpha >= 100) return hex;
+
     const rgb = this.hexToRgb(hex);
     return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${(cleanAlpha / 100).toFixed(2)})`;
   }
 
   yamlValue(value) {
-    return `"${String(value).replaceAll('"', '\\"')}"`;
+    return `"${String(value ?? "").replaceAll('"', '\\"')}"`;
   }
 
   getYaml() {
@@ -307,9 +332,15 @@ class ThemeGeneratorPanel extends HTMLElement {
 
     this.sections.forEach(section => {
       lines.push(`  # ${section.title}`);
+
       section.fields.forEach(([key]) => {
-        lines.push(`  ${key}: ${this.yamlValue(this.values[key])}`);
+        const value = this.values[key];
+
+        if (value !== undefined && value !== null && String(value).trim() !== "") {
+          lines.push(`  ${key}: ${this.yamlValue(value)}`);
+        }
       });
+
       lines.push("");
     });
 
@@ -339,6 +370,56 @@ class ThemeGeneratorPanel extends HTMLElement {
     }
   }
 
+  async loadThemeList() {
+    if (!this._hass || this.loadingThemes) return;
+
+    this.loadingThemes = true;
+
+    try {
+      const result = await this._hass.connection.sendMessagePromise({
+        type: "theme_generator/list_themes",
+      });
+
+      this.themeFiles = result.files || [];
+
+      if (!this.selectedFile && this.themeFiles.length) {
+        this.selectedFile = this.themeFiles[0].file;
+        this.selectedTheme = this.themeFiles[0].themes?.[0] || "";
+      }
+
+      this.render();
+    } catch (err) {
+      console.error("Theme Generator: Theme-Liste konnte nicht geladen werden", err);
+    } finally {
+      this.loadingThemes = false;
+    }
+  }
+
+  async loadSelectedTheme() {
+    if (!this._hass || !this.selectedFile || !this.selectedTheme) {
+      alert("Bitte Theme-Datei und Theme auswählen.");
+      return;
+    }
+
+    try {
+      const result = await this._hass.connection.sendMessagePromise({
+        type: "theme_generator/load_theme",
+        file: this.selectedFile,
+        theme: this.selectedTheme,
+      });
+
+      this.themeName = result.name || this.selectedTheme;
+      this.values = { ...this.values, ...(result.values || {}) };
+      this.persistState();
+      this.render();
+
+      alert(`Theme "${this.themeName}" wurde geladen.`);
+    } catch (err) {
+      console.error("Theme Generator: Theme konnte nicht geladen werden", err);
+      alert("Theme konnte nicht geladen werden. Bitte Logs prüfen.");
+    }
+  }
+
   async copyYaml() {
     await navigator.clipboard.writeText(this.getYaml());
     alert("YAML wurde kopiert.");
@@ -358,6 +439,46 @@ class ThemeGeneratorPanel extends HTMLElement {
     });
 
     alert("Theme wurde gespeichert. Danach in Home Assistant unter Profil → Theme auswählen.");
+  }
+
+  getCurrentFileThemes() {
+    const current = this.themeFiles.find(item => item.file === this.selectedFile);
+    return current?.themes || [];
+  }
+
+  renderThemeLoader() {
+    const fileOptions = this.themeFiles.map(item => `
+      <option value="${this.escapeAttr(item.file)}" ${item.file === this.selectedFile ? "selected" : ""}>
+        ${this.escapeAttr(item.file)}
+      </option>
+    `).join("");
+
+    const themeOptions = this.getCurrentFileThemes().map(name => `
+      <option value="${this.escapeAttr(name)}" ${name === this.selectedTheme ? "selected" : ""}>
+        ${this.escapeAttr(name)}
+      </option>
+    `).join("");
+
+    return `
+      <div class="theme-loader">
+        <div>
+          <span>Theme-Datei</span>
+          <select id="themeFileSelect">
+            ${fileOptions || '<option value="">Keine Theme-Dateien gefunden</option>'}
+          </select>
+        </div>
+
+        <div>
+          <span>Theme</span>
+          <select id="themeSelect">
+            ${themeOptions || '<option value="">Kein Theme gefunden</option>'}
+          </select>
+        </div>
+
+        <button class="secondary" id="reloadThemeListBtn">Aktualisieren</button>
+        <button id="loadThemeBtn">Theme laden</button>
+      </div>
+    `;
   }
 
   renderField(field) {
@@ -381,7 +502,7 @@ class ThemeGeneratorPanel extends HTMLElement {
       return `
         <label>
           <span>${label}</span>
-          <input class="text-input" value="${value}" data-key="${key}" />
+          <input class="text-input" value="${this.escapeAttr(value)}" data-key="${key}" />
           <small>${key}</small>
         </label>
       `;
@@ -394,8 +515,8 @@ class ThemeGeneratorPanel extends HTMLElement {
       <label>
         <span>${label}</span>
         <div class="color-row">
-          <input type="color" value="${hexValue}" data-color-key="${key}" />
-          <input class="hex-input" value="${value}" data-key="${key}" />
+          <input type="color" value="${this.escapeAttr(hexValue)}" data-color-key="${key}" />
+          <input class="hex-input" value="${this.escapeAttr(value)}" data-key="${key}" />
         </div>
         <div class="alpha-row">
           <span>Transparenz</span>
@@ -430,17 +551,17 @@ class ThemeGeneratorPanel extends HTMLElement {
 
   render() {
     const bg = this.values["primary-background-color"];
+    const accent = this.values["accent-color"];
     const lovelaceBg = this.values["lovelace-background"];
     const pageBackground = lovelaceBg || `
             radial-gradient(circle at top left, ${this.values["primary-color"]}33, transparent 35%),
-            radial-gradient(circle at bottom right, ${this.values["accent-color"]}26, transparent 35%),
+            radial-gradient(circle at bottom right, ${accent}26, transparent 35%),
             ${bg}
           `;
     const panel = this.values["secondary-background-color"];
     const card = this.values["ha-card-background"];
     const text = this.values["primary-text-color"];
     const secondary = this.values["secondary-text-color"];
-    const accent = this.values["accent-color"];
     const radius = this.values["ha-card-border-radius"];
     const border = this.values["ha-card-border-color"];
 
@@ -466,6 +587,10 @@ class ThemeGeneratorPanel extends HTMLElement {
           font-weight: 800;
         }
 
+        h2 {
+          margin-top: 0;
+        }
+
         .subtitle {
           margin-top: 6px;
           color: ${secondary};
@@ -473,7 +598,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
         .layout {
           display: grid;
-          grid-template-columns: 520px 1fr;
+          grid-template-columns: 560px 1fr;
           gap: 20px;
           margin-top: 24px;
         }
@@ -499,10 +624,17 @@ class ThemeGeneratorPanel extends HTMLElement {
           margin-bottom: 16px;
         }
 
-        .theme-name label {
-          display: block;
+        .theme-loader {
+          display: grid;
+          grid-template-columns: 1fr 1fr auto auto;
+          gap: 10px;
+          align-items: end;
+          margin-bottom: 16px;
+          padding-bottom: 16px;
+          border-bottom: 1px solid ${border};
         }
 
+        .theme-loader span,
         label span {
           display: block;
           font-size: 14px;
@@ -518,7 +650,8 @@ class ThemeGeneratorPanel extends HTMLElement {
           font-size: 11px;
         }
 
-        input {
+        input,
+        select {
           width: 100%;
           box-sizing: border-box;
           background: ${card};
@@ -592,11 +725,6 @@ class ThemeGeneratorPanel extends HTMLElement {
           margin-top: 8px;
         }
 
-        .small-btn {
-          padding: 8px 12px;
-          font-size: 12px;
-        }
-
         button {
           border: 0;
           border-radius: 999px;
@@ -605,12 +733,18 @@ class ThemeGeneratorPanel extends HTMLElement {
           cursor: pointer;
           color: #111;
           background: ${accent};
+          white-space: nowrap;
         }
 
         button.secondary {
           color: ${text};
           background: ${card};
           border: 1px solid ${border};
+        }
+
+        .small-btn {
+          padding: 8px 12px;
+          font-size: 12px;
         }
 
         .preview-grid {
@@ -667,7 +801,7 @@ class ThemeGeneratorPanel extends HTMLElement {
           font-weight: 900;
         }
 
-        @media (max-width: 1100px) {
+        @media (max-width: 1200px) {
           .layout {
             grid-template-columns: 1fr;
           }
@@ -677,12 +811,13 @@ class ThemeGeneratorPanel extends HTMLElement {
           }
         }
 
-        @media (max-width: 700px) {
+        @media (max-width: 800px) {
           .page {
             padding: 18px;
           }
 
           .top-row,
+          .theme-loader,
           .section-grid,
           .preview-grid {
             grid-template-columns: 1fr;
@@ -692,15 +827,17 @@ class ThemeGeneratorPanel extends HTMLElement {
 
       <div class="page">
         <h1>Theme Generator</h1>
-        <div class="subtitle">Vollständiger Home-Assistant-Theme-Baukasten mit Bereichen, Vorschau und YAML-Export.</div>
+        <div class="subtitle">Vorhandene Themes laden, bearbeiten, speichern oder als YAML kopieren.</div>
 
         <div class="layout">
           <div class="panel controls">
+            ${this.renderThemeLoader()}
+
             <div class="top-row">
               <div class="theme-name">
                 <label>
                   <span>Theme Name</span>
-                  <input id="themeName" value="${this.themeName}" />
+                  <input id="themeName" value="${this.escapeAttr(this.themeName)}" />
                 </label>
               </div>
               <button id="saveBtn">Speichern</button>
@@ -734,6 +871,25 @@ class ThemeGeneratorPanel extends HTMLElement {
 
     this.shadowRoot.querySelector("#saveBtn").addEventListener("click", () => this.saveTheme());
     this.shadowRoot.querySelector("#copyBtn").addEventListener("click", () => this.copyYaml());
+
+    this.shadowRoot.querySelector("#reloadThemeListBtn")?.addEventListener("click", () => {
+      this.themeFiles = [];
+      this.selectedFile = "";
+      this.selectedTheme = "";
+      this.loadThemeList();
+    });
+
+    this.shadowRoot.querySelector("#loadThemeBtn")?.addEventListener("click", () => this.loadSelectedTheme());
+
+    this.shadowRoot.querySelector("#themeFileSelect")?.addEventListener("change", (ev) => {
+      this.selectedFile = ev.target.value;
+      this.selectedTheme = this.getCurrentFileThemes()[0] || "";
+      this.render();
+    });
+
+    this.shadowRoot.querySelector("#themeSelect")?.addEventListener("change", (ev) => {
+      this.selectedTheme = ev.target.value;
+    });
 
     this.shadowRoot.querySelectorAll("input[data-key]").forEach(input => {
       input.addEventListener("input", (ev) => {
@@ -772,6 +928,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         reader.onload = () => {
           const dataUrl = reader.result;
           this.values[ev.target.dataset.imageKey] = `center / cover no-repeat fixed url("${dataUrl}")`;
+          this.persistState();
           this.render();
         };
         reader.readAsDataURL(file);
@@ -781,6 +938,7 @@ class ThemeGeneratorPanel extends HTMLElement {
     this.shadowRoot.querySelectorAll("button[data-clear-image]").forEach(button => {
       button.addEventListener("click", (ev) => {
         this.values[ev.target.dataset.clearImage] = "";
+        this.persistState();
         this.render();
       });
     });
@@ -788,9 +946,5 @@ class ThemeGeneratorPanel extends HTMLElement {
 }
 
 if (!customElements.get("theme-generator-panel")) {
-  if (!customElements.get("theme-generator-panel")) {
-  if (!customElements.get("theme-generator-panel")) {
   customElements.define("theme-generator-panel", ThemeGeneratorPanel);
-}
-}
 }
