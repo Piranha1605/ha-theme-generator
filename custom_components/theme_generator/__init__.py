@@ -117,7 +117,7 @@ async def async_setup(hass: HomeAssistant, config: dict[str, Any]) -> bool:
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     await _async_register_panel(hass)
     _async_register_services(hass)
-    _async_register_websocket(hass)
+    await _async_register_websocket(hass)
     return True
 
 
@@ -147,7 +147,7 @@ async def _async_register_panel(hass: HomeAssistant) -> None:
         hass=hass,
         webcomponent_name=PANEL_TAG,
         frontend_url_path=PANEL_URL_PATH,
-        module_url=f"/{DOMAIN}/{PANEL_FILENAME}?v=0.3.3",
+        module_url=f"/{DOMAIN}/{PANEL_FILENAME}?v=0.3.4",
         sidebar_title=PANEL_TITLE,
         sidebar_icon=PANEL_ICON,
         require_admin=True,
