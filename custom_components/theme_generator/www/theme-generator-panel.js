@@ -348,6 +348,9 @@ class ThemeGeneratorPanel extends HTMLElement {
       if (stored.rawThemeValues && typeof stored.rawThemeValues === "object") {
         this.rawThemeValues = stored.rawThemeValues;
       }
+      if (stored.rawThemeValues && typeof stored.rawThemeValues === "object") {
+        this.rawThemeValues = stored.rawThemeValues;
+      }
     } catch (err) {
       console.warn("Theme Generator: gespeicherter Zustand konnte nicht geladen werden", err);
     }
@@ -536,6 +539,87 @@ class ThemeGeneratorPanel extends HTMLElement {
       lines.push(`${space}${key}: ${scalar}`);
     }
 
+    return lines;
+  }
+
+  fieldKeys() {
+    const keys = new Set();
+
+    this.sections.forEach(section => {
+      section.fields.forEach(([key]) => keys.add(key));
+    });
+
+    return keys;
+  }
+
+  yamlScalar(value) {
+    if (value === null || value === undefined) return '""';
+
+    if (typeof value === "number" || typeof value === "boolean") {
+      return String(value);
+    }
+
+    const stringValue = String(value);
+
+    if (stringValue.includes("
+")) {
+      const lines = stringValue.split("
+");
+      return "|
+" + lines.map(line => `    ${line}`).join("
+");
+    }
+
+    return `"${stringValue.replaceAll('"', '\"')}"`;
+  }
+
+  yamlObject(key, value, indent = 2) {
+    const space = " ".repeat(indent);
+    const lines = [];
+
+    if (value === null || value === undefined) {
+      lines.push(`${space}${key}: ""`);
+      return lines;
+    }
+
+    if (Array.isArray(value)) {
+      if (!value.length) {
+        lines.push(`${space}${key}: []`);
+        return lines;
+      }
+
+      lines.push(`${space}${key}:`);
+      value.forEach(item => {
+        if (typeof item === "object" && item !== null) {
+          lines.push(`${space}  -`);
+          Object.entries(item).forEach(([childKey, childValue]) => {
+            lines.push(...this.yamlObject(childKey, childValue, indent + 4));
+          });
+        } else {
+          lines.push(`${space}  - ${this.yamlScalar(item)}`);
+        }
+      });
+
+      return lines;
+    }
+
+    if (typeof value === "object") {
+      const entries = Object.entries(value);
+
+      if (!entries.length) {
+        lines.push(`${space}${key}: {}`);
+        return lines;
+      }
+
+      lines.push(`${space}${key}:`);
+      entries.forEach(([childKey, childValue]) => {
+        lines.push(...this.yamlObject(childKey, childValue, indent + 2));
+      });
+
+      return lines;
+    }
+
+    lines.push(`${space}${key}: ${this.yamlScalar(value)}`);
     return lines;
   }
 
