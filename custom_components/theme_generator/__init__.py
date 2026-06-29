@@ -7,7 +7,7 @@ from typing import Any
 import voluptuous as vol
 import yaml
 
-from homeassistant.components import panel_custom
+from homeassistant.components import panel_custom, websocket_api
 from homeassistant.components.http import StaticPathConfig
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_NAME
@@ -34,9 +34,61 @@ SAVE_THEME_SCHEMA = vol.Schema(
 )
 
 
-def _write_theme_file(config_path: str, data: dict[str, Any]) -> Path:
+def _themes_dir(config_path: str) -> Path:
     themes_dir = Path(config_path) / "themes"
     themes_dir.mkdir(parents=True, exist_ok=True)
+    return themes_dir
+
+
+def _read_theme_files(config_path: str) -> list[dict[str, Any]]:
+    themes_dir = _themes_dir(config_path)
+    result: list[dict[str, Any]] = []
+
+    for path in sorted(list(themes_dir.glob("*.yaml")) + list(themes_dir.glob("*.yml"))):
+        try:
+            loaded = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+            if not isinstance(loaded, dict):
+                continue
+
+            result.append(
+                {
+                    "file": path.name,
+                    "themes": list(loaded.keys()),
+                }
+            )
+        except Exception as err:
+            _LOGGER.warning("Could not read theme file %s: %s", path, err)
+
+    return result
+
+
+def _read_theme(config_path: str, file_name: str, theme_name: str) -> dict[str, Any]:
+    themes_dir = _themes_dir(config_path)
+    path = (themes_dir / file_name).resolve()
+
+    if not str(path).startswith(str(themes_dir.resolve())):
+        raise ValueError("Ungültiger Dateipfad.")
+
+    if not path.exists():
+        raise FileNotFoundError(f"Theme-Datei nicht gefunden: {file_name}")
+
+    loaded = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    if not isinstance(loaded, dict):
+        raise ValueError("Theme-Datei ist ungültig.")
+
+    theme = loaded.get(theme_name)
+    if not isinstance(theme, dict):
+        raise ValueError(f"Theme nicht gefunden: {theme_name}")
+
+    return {
+        "name": theme_name,
+        "file": file_name,
+        "values": theme,
+    }
+
+
+def _write_theme_file(config_path: str, data: dict[str, Any]) -> Path:
+    themes_dir = _themes_dir(config_path)
     theme_path = themes_dir / THEME_FILE
 
     incoming = yaml.safe_load(data["yaml"])
@@ -65,13 +117,16 @@ async def async_setup(hass: HomeAssistant, config: dict[str, Any]) -> bool:
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     await _async_register_panel(hass)
     _async_register_services(hass)
+    _async_register_websocket(hass)
     return True
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     panel_custom.async_unregister_panel(hass, PANEL_URL_PATH)
+
     if hass.services.has_service(DOMAIN, "save_theme"):
         hass.services.async_remove(DOMAIN, "save_theme")
+
     return True
 
 
@@ -92,7 +147,7 @@ async def _async_register_panel(hass: HomeAssistant) -> None:
         hass=hass,
         webcomponent_name=PANEL_TAG,
         frontend_url_path=PANEL_URL_PATH,
-        module_url=f"/{DOMAIN}/{PANEL_FILENAME}?v=0.2.4",
+        module_url=f"/{DOMAIN}/{PANEL_FILENAME}?v=0.3.0",
         sidebar_title=PANEL_TITLE,
         sidebar_icon=PANEL_ICON,
         require_admin=True,
@@ -121,3 +176,48 @@ def _async_register_services(hass: HomeAssistant) -> None:
         async_save_theme,
         schema=SAVE_THEME_SCHEMA,
     )
+
+
+async def _async_register_websocket(hass: HomeAssistant) -> None:
+    websocket_api.async_register_command(hass, websocket_list_themes)
+    websocket_api.async_register_command(hass, websocket_load_theme)
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "theme_generator/list_themes",
+    }
+)
+@websocket_api.async_response
+async def websocket_list_themes(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    files = await hass.async_add_executor_job(
+        _read_theme_files,
+        hass.config.config_dir,
+    )
+    connection.send_result(msg["id"], {"files": files})
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "theme_generator/load_theme",
+        vol.Required("file"): str,
+        vol.Required("theme"): str,
+    }
+)
+@websocket_api.async_response
+async def websocket_load_theme(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    theme = await hass.async_add_executor_job(
+        _read_theme,
+        hass.config.config_dir,
+        msg["file"],
+        msg["theme"],
+    )
+    connection.send_result(msg["id"], theme)
