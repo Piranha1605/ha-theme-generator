@@ -789,6 +789,8 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 if (!customElements.get("theme-generator-panel")) {
   if (!customElements.get("theme-generator-panel")) {
+  if (!customElements.get("theme-generator-panel")) {
   customElements.define("theme-generator-panel", ThemeGeneratorPanel);
+}
 }
 }
