@@ -2,11 +2,11 @@
   "domain": "theme_generator",
   "name": "HA Theme Generator",
   "codeowners": [
-    "@Piranha160573"
+    "@Piranha1605"
   ],
   "config_flow": true,
-  "documentation": "https://github.com/Piranha160573/ha-theme-generator",
+  "documentation": "https://github.com/Piranha1605/ha-theme-generator",
   "iot_class": "local_push",
-  "issue_tracker": "https://github.com/Piranha160573/ha-theme-generator/issues",
-  "version": "0.4.4"
-}\n
+  "issue_tracker": "https://github.com/Piranha1605/ha-theme-generator/issues",
+  "version": "0.4.5"
+}
