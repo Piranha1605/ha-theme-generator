@@ -361,6 +361,17 @@ class ThemeGeneratorPanel extends HTMLElement {
     return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${(cleanAlpha / 100).toFixed(2)})`;
   }
 
+  safeCssValue(value, fallback) {
+    if (!value) return fallback;
+    const v = String(value).trim();
+
+    if (v.startsWith("#")) return v;
+    if (v.startsWith("rgb(")) return v;
+    if (v.startsWith("rgba(")) return v;
+
+    return fallback;
+  }
+
   yamlValue(value) {
     return `"${String(value ?? "").replaceAll('"', '\\"')}"`;
   }
@@ -579,7 +590,7 @@ class ThemeGeneratorPanel extends HTMLElement {
   renderPreviewCard(title, value, icon, colorVar) {
     return `
       <div class="preview-card">
-        <div class="preview-icon" style="background:${this.values[colorVar] || this.values["primary-color"]};">${icon}</div>
+        <div class="preview-icon" style="background:${this.safeCssValue(this.values[colorVar] || this.values["primary-color"], "#4f8cff")};">${icon}</div>
         <div class="preview-title">${title}</div>
         <div class="preview-value" style="color:${this.values["accent-color"]};">${value}</div>
       </div>
@@ -587,20 +598,21 @@ class ThemeGeneratorPanel extends HTMLElement {
   }
 
   render() {
-    const bg = this.values["primary-background-color"];
-    const accent = this.values["accent-color"];
+    const bg = this.safeCssValue(this.values["primary-background-color"], "#111111");
+    const accent = this.safeCssValue(this.values["accent-color"], "#4f8cff");
+    const primary = this.safeCssValue(this.values["primary-color"], "#4f8cff");
     const lovelaceBg = this.values["lovelace-background"];
     const pageBackground = lovelaceBg || `
-            radial-gradient(circle at top left, ${this.values["primary-color"]}33, transparent 35%),
+            radial-gradient(circle at top left, ${primary}33, transparent 35%),
             radial-gradient(circle at bottom right, ${accent}26, transparent 35%),
             ${bg}
           `;
-    const panel = this.values["secondary-background-color"];
-    const card = this.values["ha-card-background"];
-    const text = this.values["primary-text-color"];
-    const secondary = this.values["secondary-text-color"];
-    const radius = this.values["ha-card-border-radius"];
-    const border = this.values["ha-card-border-color"];
+    const panel = this.safeCssValue(this.values["secondary-background-color"], "#202a38");
+    const card = this.safeCssValue(this.values["ha-card-background"], "#263244");
+    const text = this.safeCssValue(this.values["primary-text-color"], "#f5f7fb");
+    const secondary = this.safeCssValue(this.values["secondary-text-color"], "rgba(255, 255, 255, 0.72)");
+    const radius = this.values["ha-card-border-radius"] || "18px";
+    const border = this.safeCssValue(this.values["ha-card-border-color"], "rgba(255, 255, 255, 0.12)");
 
     this.shadowRoot.innerHTML = `
       <style>
@@ -768,7 +780,7 @@ class ThemeGeneratorPanel extends HTMLElement {
           padding: 12px 16px;
           font-weight: 800;
           cursor: pointer;
-          color: #111;
+          color: #ffffff;
           background: ${accent};
           white-space: nowrap;
         }
@@ -777,6 +789,13 @@ class ThemeGeneratorPanel extends HTMLElement {
           color: ${text};
           background: ${card};
           border: 1px solid ${border};
+        }
+
+        #loadThemeBtn,
+        #saveBtn {
+          color: #ffffff;
+          background: ${accent};
+          box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
         }
 
         .small-btn {
