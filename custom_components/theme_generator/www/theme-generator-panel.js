@@ -29,7 +29,6 @@ class ThemeGeneratorPanel extends HTMLElement {
           ["primary-background-color", "Haupthintergrund", "#111111"],
           ["secondary-background-color", "Sekundärer Hintergrund", "#202020"],
           ["clear-background-color", "Transparenter Hintergrund", "#111111"],
-          ["lovelace-background", "Lovelace Hintergrundbild", "", "image"],
           ["mdc-theme-background", "MDC Hintergrund", "#111111"],
           ["mdc-theme-surface", "MDC Oberfläche", "#1c1c1c"],
         ],
@@ -164,7 +163,31 @@ class ThemeGeneratorPanel extends HTMLElement {
           ["md-menu-container-color", "Menü Hintergrund", "var(--nm-bg-2)", "text"],
           ["md-menu-item-label-text-color", "Menü Text", "rgba(255,255,255,0.94)", "text"],
           ["md-menu-item-selected-container-color", "Menü Auswahl Hintergrund", "rgba(var(--nm-accent-rgb),0.16)", "text"],
-          ["md-menu-item-selected-label-text-color", "Menü Auswahl Text", "rgba(255,255,255,0.94)", "text"]
+          ["md-menu-item-selected-label-text-color", "Menü Auswahl Text", "rgba(255,255,255,0.94)", "text"],
+          ["md-list-item-trailing-icon-color", "MD Listen Icon rechts", "rgba(255,255,255,0.72)", "text"],
+          ["md-list-item-leading-icon-color", "MD Listen Icon", "rgba(255,255,255,0.72)", "text"],
+          ["md-list-item-supporting-text-color", "MD Listen Hilfstext", "rgba(255,255,255,0.72)", "text"],
+          ["md-list-item-label-text-color", "MD Listen Text", "rgba(255,255,255,0.94)", "text"],
+          ["md-list-container-color", "MD Listen Hintergrund", "#263244"],
+          ["md-outlined-field-disabled-input-text-color", "MD Outlined Field deaktiviert Text", "rgba(255,255,255,0.62)", "text"],
+          ["md-outlined-field-disabled-label-text-color", "MD Outlined Field deaktiviert Label", "rgba(255,255,255,0.38)", "text"],
+          ["md-outlined-field-disabled-outline-color", "MD Outlined Field deaktiviert Rand", "rgba(255,255,255,0.16)", "text"],
+          ["md-outlined-field-focus-outline-color", "MD Outlined Field Rand Fokus", "#3c8ae9"],
+          ["md-outlined-field-hover-outline-color", "MD Outlined Field Rand Hover", "rgba(255,255,255,0.38)", "text"],
+          ["md-outlined-field-outline-color", "MD Outlined Field Rand", "rgba(255,255,255,0.28)", "text"],
+          ["md-outlined-field-input-text-color", "MD Outlined Field Text", "rgba(255,255,255,0.94)", "text"],
+          ["md-outlined-field-label-text-color", "MD Outlined Field Label", "rgba(255,255,255,0.72)", "text"],
+          ["md-outlined-field-container-color", "MD Outlined Field Hintergrund", "#263244"],
+          ["md-filled-field-disabled-input-text-color", "MD Filled Field deaktiviert Text", "rgba(255,255,255,0.62)", "text"],
+          ["md-filled-field-disabled-label-text-color", "MD Filled Field deaktiviert Label", "rgba(255,255,255,0.38)", "text"],
+          ["md-filled-field-disabled-container-color", "MD Filled Field deaktiviert Hintergrund", "#263244"],
+          ["md-filled-field-hover-active-indicator-color", "MD Filled Field Linie Hover", "rgba(255,255,255,0.28)", "text"],
+          ["md-filled-field-focus-active-indicator-color", "MD Filled Field Linie Fokus", "#3c8ae9"],
+          ["md-filled-field-active-indicator-color", "MD Filled Field Linie aktiv", "#3c8ae9"],
+          ["md-filled-field-supporting-text-color", "MD Filled Field Hilfstext", "rgba(255,255,255,0.62)", "text"],
+          ["md-filled-field-input-text-color", "MD Filled Field Text", "rgba(255,255,255,0.94)", "text"],
+          ["md-filled-field-label-text-color", "MD Filled Field Label", "rgba(255,255,255,0.72)", "text"],
+          ["md-filled-field-container-color", "MD Filled Field Hintergrund", "#263244"]
         ],
       },
       {
@@ -764,8 +787,7 @@ class ThemeGeneratorPanel extends HTMLElement {
     const bg = this.safeCssValue(this.values["primary-background-color"], "#111111");
     const accent = this.safeCssValue(this.values["accent-color"], "#4f8cff");
     const primary = this.safeCssValue(this.values["primary-color"], "#4f8cff");
-    const lovelaceBg = this.values["lovelace-background"];
-    const pageBackground = lovelaceBg || `
+    const pageBackground = `
             radial-gradient(circle at top left, ${primary}33, transparent 35%),
             radial-gradient(circle at bottom right, ${accent}26, transparent 35%),
             ${bg}
