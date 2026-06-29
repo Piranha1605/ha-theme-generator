@@ -3,6 +3,7 @@ class ThemeGeneratorPanel extends HTMLElement {
     super();
     this.attachShadow({ mode: "open" });
 
+    this.storageKey = "theme_generator_state_v1";
     this.themeName = "Silvia HA Theme";
 
     this.sections = [
@@ -234,6 +235,16 @@ class ThemeGeneratorPanel extends HTMLElement {
         this.values[key] = value;
       });
     });
+
+    try {
+      const stored = JSON.parse(localStorage.getItem(this.storageKey) || "{}");
+      if (stored.themeName) this.themeName = stored.themeName;
+      if (stored.values && typeof stored.values === "object") {
+        this.values = { ...this.values, ...stored.values };
+      }
+    } catch (err) {
+      console.warn("Theme Generator: gespeicherter Zustand konnte nicht geladen werden", err);
+    }
   }
 
   set hass(hass) {
@@ -305,9 +316,27 @@ class ThemeGeneratorPanel extends HTMLElement {
     return lines.join("\n").trim();
   }
 
-  updateValue(key, value) {
+  persistState() {
+    localStorage.setItem(this.storageKey, JSON.stringify({
+      themeName: this.themeName,
+      values: this.values,
+    }));
+  }
+
+  refreshYaml() {
+    const pre = this.shadowRoot.querySelector("pre");
+    if (pre) pre.textContent = this.getYaml();
+  }
+
+  updateValue(key, value, rerender = true) {
     this.values[key] = value;
-    this.render();
+    this.persistState();
+
+    if (rerender) {
+      this.render();
+    } else {
+      this.refreshYaml();
+    }
   }
 
   async copyYaml() {
@@ -316,6 +345,8 @@ class ThemeGeneratorPanel extends HTMLElement {
   }
 
   async saveTheme() {
+    this.persistState();
+
     if (!this._hass) {
       alert("Home Assistant Verbindung fehlt.");
       return;
@@ -697,8 +728,8 @@ class ThemeGeneratorPanel extends HTMLElement {
 
     this.shadowRoot.querySelector("#themeName").addEventListener("input", (ev) => {
       this.themeName = ev.target.value || "Silvia HA Theme";
-      const pre = this.shadowRoot.querySelector("pre");
-      if (pre) pre.textContent = this.getYaml();
+      this.persistState();
+      this.refreshYaml();
     });
 
     this.shadowRoot.querySelector("#saveBtn").addEventListener("click", () => this.saveTheme());
@@ -706,7 +737,11 @@ class ThemeGeneratorPanel extends HTMLElement {
 
     this.shadowRoot.querySelectorAll("input[data-key]").forEach(input => {
       input.addEventListener("input", (ev) => {
-        this.updateValue(ev.target.dataset.key, ev.target.value);
+        this.updateValue(ev.target.dataset.key, ev.target.value, false);
+      });
+
+      input.addEventListener("change", (ev) => {
+        this.updateValue(ev.target.dataset.key, ev.target.value, true);
       });
     });
 

@@ -92,7 +92,7 @@ async def _async_register_panel(hass: HomeAssistant) -> None:
         hass=hass,
         webcomponent_name=PANEL_TAG,
         frontend_url_path=PANEL_URL_PATH,
-        module_url=f"/{DOMAIN}/{PANEL_FILENAME}?v=0.2.3",
+        module_url=f"/{DOMAIN}/{PANEL_FILENAME}?v=0.2.4",
         sidebar_title=PANEL_TITLE,
         sidebar_icon=PANEL_ICON,
         require_admin=True,
