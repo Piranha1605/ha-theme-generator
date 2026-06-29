@@ -6,6 +6,7 @@ class ThemeGeneratorPanel extends HTMLElement {
     this.storageKey = "theme_generator_state_v2";
     this.themeName = "Theme Generator";
     this.themeFiles = [];
+    this.rawThemeValues = {};
     this.selectedFile = "";
     this.selectedTheme = "";
     this.loadingThemes = false;
@@ -318,6 +319,9 @@ class ThemeGeneratorPanel extends HTMLElement {
       if (stored.values && typeof stored.values === "object") {
         this.values = { ...this.values, ...stored.values };
       }
+      if (stored.rawThemeValues && typeof stored.rawThemeValues === "object") {
+        this.rawThemeValues = stored.rawThemeValues;
+      }
     } catch (err) {
       console.warn("Theme Generator: gespeicherter Zustand konnte nicht geladen werden", err);
     }
@@ -420,30 +424,144 @@ class ThemeGeneratorPanel extends HTMLElement {
     return `"${String(value ?? "").replaceAll('"', '\\"')}"`;
   }
 
+  fieldKeys() {
+    const keys = new Set();
+
+    this.sections.forEach(section => {
+      section.fields.forEach(([key]) => keys.add(key));
+    });
+
+    return keys;
+  }
+
+  yamlScalar(value) {
+    if (value === null || value === undefined) return '""';
+
+    if (typeof value === "number" || typeof value === "boolean") {
+      return String(value);
+    }
+
+    const stringValue = String(value);
+
+    if (stringValue.includes("
+")) {
+      const lines = stringValue.split("
+");
+      return "|
+" + lines.map(line => `    ${line}`).join("
+");
+    }
+
+    return `"${stringValue.replaceAll('"', '\"')}"`;
+  }
+
+  yamlObject(key, value, indent = 2) {
+    const space = " ".repeat(indent);
+    const lines = [];
+
+    if (value === null || value === undefined) {
+      lines.push(`${space}${key}: ""`);
+      return lines;
+    }
+
+    if (Array.isArray(value)) {
+      if (!value.length) {
+        lines.push(`${space}${key}: []`);
+        return lines;
+      }
+
+      lines.push(`${space}${key}:`);
+      value.forEach(item => {
+        if (typeof item === "object" && item !== null) {
+          lines.push(`${space}  -`);
+          Object.entries(item).forEach(([childKey, childValue]) => {
+            lines.push(...this.yamlObject(childKey, childValue, indent + 4));
+          });
+        } else {
+          lines.push(`${space}  - ${this.yamlScalar(item)}`);
+        }
+      });
+
+      return lines;
+    }
+
+    if (typeof value === "object") {
+      const entries = Object.entries(value);
+
+      if (!entries.length) {
+        lines.push(`${space}${key}: {}`);
+        return lines;
+      }
+
+      lines.push(`${space}${key}:`);
+      entries.forEach(([childKey, childValue]) => {
+        lines.push(...this.yamlObject(childKey, childValue, indent + 2));
+      });
+
+      return lines;
+    }
+
+    const scalar = this.yamlScalar(value);
+
+    if (String(scalar).startsWith("|
+")) {
+      lines.push(`${space}${key}: ${scalar}`);
+    } else {
+      lines.push(`${space}${key}: ${scalar}`);
+    }
+
+    return lines;
+  }
+
   getYaml() {
+    const knownKeys = this.fieldKeys();
+    const mergedValues = { ...(this.rawThemeValues || {}) };
+
+    knownKeys.forEach(key => {
+      const value = this.values[key];
+
+      if (value !== undefined && value !== null && String(value).trim() !== "") {
+        mergedValues[key] = value;
+      }
+    });
+
     const lines = [`${this.themeName}:`];
+    const written = new Set();
 
     this.sections.forEach(section => {
       lines.push(`  # ${section.title}`);
 
       section.fields.forEach(([key]) => {
-        const value = this.values[key];
+        const value = mergedValues[key];
 
         if (value !== undefined && value !== null && String(value).trim() !== "") {
-          lines.push(`  ${key}: ${this.yamlValue(value)}`);
+          lines.push(...this.yamlObject(key, value, 2));
+          written.add(key);
         }
       });
 
       lines.push("");
     });
 
-    return lines.join("\n").trim();
+    const unknownEntries = Object.entries(mergedValues).filter(([key]) => !written.has(key));
+
+    if (unknownEntries.length) {
+      lines.push("  # Weitere geladene Theme-Werte");
+      unknownEntries.forEach(([key, value]) => {
+        lines.push(...this.yamlObject(key, value, 2));
+      });
+      lines.push("");
+    }
+
+    return lines.join("
+").trim();
   }
 
   persistState() {
     localStorage.setItem(this.storageKey, JSON.stringify({
       themeName: this.themeName,
       values: this.values,
+      rawThemeValues: this.rawThemeValues,
     }));
   }
 
@@ -502,6 +620,7 @@ class ThemeGeneratorPanel extends HTMLElement {
       });
 
       this.themeName = result.name || this.selectedTheme;
+      this.rawThemeValues = result.values || {};
       this.values = { ...this.values, ...(result.values || {}) };
       this.persistState();
       this.render();
