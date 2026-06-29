@@ -23,6 +23,7 @@ class ThemeGeneratorPanel extends HTMLElement {
           ["primary-background-color", "Haupthintergrund", "#111111"],
           ["secondary-background-color", "Sekundärer Hintergrund", "#202020"],
           ["clear-background-color", "Transparenter Hintergrund", "#111111"],
+          ["lovelace-background", "Lovelace Hintergrundbild", "", "image"],
           ["mdc-theme-background", "MDC Hintergrund", "#111111"],
           ["mdc-theme-surface", "MDC Oberfläche", "#1c1c1c"],
         ],
@@ -293,6 +294,19 @@ class ThemeGeneratorPanel extends HTMLElement {
     const [key, label, defaultValue, type = "color"] = field;
     const value = this.values[key] ?? defaultValue;
 
+    if (type === "image") {
+      return `
+        <label class="full-width">
+          <span>${label}</span>
+          <input type="file" accept="image/*" data-image-key="${key}" />
+          <div class="image-actions">
+            <button class="secondary small-btn" data-clear-image="${key}" type="button">Bild entfernen</button>
+          </div>
+          <small>${key}</small>
+        </label>
+      `;
+    }
+
     if (type === "text" || !this.isColor(value)) {
       return `
         <label>
@@ -338,6 +352,12 @@ class ThemeGeneratorPanel extends HTMLElement {
 
   render() {
     const bg = this.values["primary-background-color"];
+    const lovelaceBg = this.values["lovelace-background"];
+    const pageBackground = lovelaceBg || `
+            radial-gradient(circle at top left, ${this.values["primary-color"]}33, transparent 35%),
+            radial-gradient(circle at bottom right, ${this.values["accent-color"]}26, transparent 35%),
+            ${bg}
+          `;
     const panel = this.values["secondary-background-color"];
     const card = this.values["ha-card-background"];
     const text = this.values["primary-text-color"];
@@ -351,10 +371,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         :host {
           display: block;
           min-height: 100vh;
-          background:
-            radial-gradient(circle at top left, ${this.values["primary-color"]}33, transparent 35%),
-            radial-gradient(circle at bottom right, ${accent}26, transparent 35%),
-            ${bg};
+          background: ${pageBackground};
           color: ${text};
           font-family: var(--primary-font-family, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
         }
@@ -467,6 +484,19 @@ class ThemeGeneratorPanel extends HTMLElement {
           grid-template-columns: 1fr 1fr;
           gap: 14px;
           padding: 0 16px 16px;
+        }
+
+        .full-width {
+          grid-column: 1 / -1;
+        }
+
+        .image-actions {
+          margin-top: 8px;
+        }
+
+        .small-btn {
+          padding: 8px 12px;
+          font-size: 12px;
         }
 
         button {
@@ -610,6 +640,28 @@ class ThemeGeneratorPanel extends HTMLElement {
     this.shadowRoot.querySelectorAll("input[data-key]").forEach(input => {
       input.addEventListener("input", (ev) => {
         this.updateValue(ev.target.dataset.key, ev.target.value);
+      });
+    });
+
+    this.shadowRoot.querySelectorAll("input[data-image-key]").forEach(input => {
+      input.addEventListener("change", (ev) => {
+        const file = ev.target.files && ev.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = () => {
+          const dataUrl = reader.result;
+          this.values[ev.target.dataset.imageKey] = `center / cover no-repeat fixed url("${dataUrl}")`;
+          this.render();
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+    this.shadowRoot.querySelectorAll("button[data-clear-image]").forEach(button => {
+      button.addEventListener("click", (ev) => {
+        this.values[ev.target.dataset.clearImage] = "";
+        this.render();
       });
     });
   }
