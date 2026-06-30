@@ -2428,7 +2428,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.9.9</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.10.0</span></h1>
             </div>
 
             <div class="controls">
@@ -2522,6 +2522,64 @@ class ThemeGeneratorPanel extends HTMLElement {
       this.pendingScrollKey = "";
       setTimeout(() => this.scrollEditorToKey(key), 0);
     }
+  }
+
+  renderFatalError(err) {
+    const message = err?.stack || err?.message || String(err);
+
+    const safeMessage = String(message)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;");
+
+    this.shadowRoot.innerHTML = `
+      <style>
+        :host {
+          display: block;
+          min-height: 100vh;
+          padding: 28px;
+          box-sizing: border-box;
+          background: #111827;
+          color: #ffffff;
+          font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        .error-card {
+          max-width: 1100px;
+          margin: 0 auto;
+          padding: 24px;
+          border-radius: 22px;
+          background: #1f2937;
+          border: 1px solid rgba(239,68,68,0.55);
+        }
+
+        h1 {
+          margin: 0 0 12px 0;
+          color: #f87171;
+        }
+
+        p {
+          color: #d1d5db;
+        }
+
+        pre {
+          white-space: pre-wrap;
+          overflow: auto;
+          padding: 16px;
+          border-radius: 14px;
+          background: #020617;
+          color: #fca5a5;
+          font-size: 13px;
+        }
+      </style>
+
+      <div class="error-card">
+        <h1>Theme Generator Frontend-Fehler</h1>
+        <p>Die Oberfläche ist geladen, aber beim Rendern ist ein JavaScript-Fehler aufgetreten.</p>
+        <pre>${safeMessage}</pre>
+      </div>
+    `;
   }
 
   escapeRegex(value) {
