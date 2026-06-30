@@ -991,6 +991,15 @@ class ThemeGeneratorPanel extends HTMLElement {
     }).join("");
   }
 
+  getUserName() {
+    return this._hass?.user?.name || this._hass?.user?.email || "Benutzer";
+  }
+
+  getUserInitial() {
+    const name = this.getUserName().trim();
+    return name ? name.charAt(0).toUpperCase() : "B";
+  }
+
   renderPreview() {
     const v = this.getPreviewVars();
 
@@ -1030,7 +1039,10 @@ class ThemeGeneratorPanel extends HTMLElement {
           <div class="ha-side-bottom">
             <div class="ha-nav-item"><span>⚙️</span> Einstellungen</div>
             <div class="ha-nav-item"><span>🔔</span> Benachrichtigungen</div>
-            <div class="ha-user">E</div>
+            <div class="ha-user-row">
+              <div class="ha-user">${this.escape(this.getUserInitial())}</div>
+              <strong>${this.escape(this.getUserName())}</strong>
+            </div>
           </div>
         </aside>
 
@@ -1751,16 +1763,32 @@ class ThemeGeneratorPanel extends HTMLElement {
           padding: 10px 6px 14px 6px;
         }
 
+        .ha-user-row {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          margin: 10px 0 0 8px;
+          color: var(--p-text);
+        }
+
         .ha-user {
           width: 36px;
           height: 36px;
-          margin: 10px 0 0 8px;
           border-radius: 999px;
           display: grid;
           place-items: center;
           background: color-mix(in srgb, var(--p-primary) 28%, white);
           color: var(--p-text);
           font-weight: 800;
+          flex: 0 0 auto;
+        }
+
+        .ha-user-row strong {
+          font-size: 13px;
+          font-weight: 800;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
 
         .ha-main {
@@ -2180,7 +2208,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.8.0</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.8.1</span></h1>
             </div>
 
             <div class="controls">
