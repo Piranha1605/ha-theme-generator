@@ -1021,24 +1021,24 @@ class ThemeGeneratorPanel extends HTMLElement {
       ">
         <aside class="ha-side">
           <div class="ha-side-title">
-            <span class="ha-menu-icon">☰</span>
+            <ha-icon class="ha-menu-icon" icon="mdi:menu"></ha-icon>
             <span>Home Assistant</span>
           </div>
 
           <nav class="ha-nav">
-            <div class="ha-nav-item active"><span>🎨</span> Grundfarben</div>
-            <div class="ha-nav-item"><span>🖼️</span> Hintergründe</div>
-            <div class="ha-nav-item"><span>▣</span> Karten</div>
-            <div class="ha-nav-item"><span>⏻</span> Schalter</div>
-            <div class="ha-nav-item"><span>▰</span> Slider</div>
-            <div class="ha-nav-item"><span>🍄</span> Mushroom</div>
-            <div class="ha-nav-item"><span>🫧</span> Bubble Card</div>
-            <div class="ha-nav-item"><span>⚙️</span> card-mod</div>
+            <div class="ha-nav-item active"><ha-icon icon="mdi:palette" class="ha-nav-icon"></ha-icon> Grundfarben</div>
+            <div class="ha-nav-item"><ha-icon icon="mdi:image-outline" class="ha-nav-icon"></ha-icon> Hintergründe</div>
+            <div class="ha-nav-item"><ha-icon icon="mdi:cards-outline" class="ha-nav-icon"></ha-icon> Karten</div>
+            <div class="ha-nav-item"><ha-icon icon="mdi:toggle-switch-outline" class="ha-nav-icon"></ha-icon> Schalter</div>
+            <div class="ha-nav-item"><ha-icon icon="mdi:tune-variant" class="ha-nav-icon"></ha-icon> Slider</div>
+            <div class="ha-nav-item"><ha-icon icon="mdi:mushroom-outline" class="ha-nav-icon"></ha-icon> Mushroom</div>
+            <div class="ha-nav-item"><ha-icon icon="mdi:circle-multiple-outline" class="ha-nav-icon"></ha-icon> Bubble Card</div>
+            <div class="ha-nav-item"><ha-icon icon="mdi:code-braces" class="ha-nav-icon"></ha-icon> card-mod</div>
           </nav>
 
           <div class="ha-side-bottom">
-            <div class="ha-nav-item"><span>⚙️</span> Einstellungen</div>
-            <div class="ha-nav-item"><span>🔔</span> Benachrichtigungen</div>
+            <div class="ha-nav-item"><ha-icon icon="mdi:cog" class="ha-nav-icon"></ha-icon> Einstellungen</div>
+            <div class="ha-nav-item"><ha-icon icon="mdi:bell" class="ha-nav-icon"></ha-icon> Benachrichtigungen</div>
             <div class="ha-user-row">
               <div class="ha-user">${this.escape(this.getUserInitial())}</div>
               <strong>${this.escape(this.getUserName())}</strong>
@@ -1049,15 +1049,15 @@ class ThemeGeneratorPanel extends HTMLElement {
         <section class="ha-main">
           <header class="ha-topbar">
             <div class="ha-top-left">
-              <span class="ha-top-icon active">⌂</span>
-              <span class="ha-top-icon">⚙</span>
-              <span class="ha-top-icon">✎</span>
+              <ha-icon class="ha-top-icon active" icon="mdi:home"></ha-icon>
+              <ha-icon class="ha-top-icon" icon="mdi:cog"></ha-icon>
+              <ha-icon class="ha-top-icon" icon="mdi:pencil"></ha-icon>
             </div>
 
             <div class="ha-top-right">
-              <span>＋</span>
-              <span>⌕</span>
-              <span class="ha-chat">▣</span>
+              <ha-icon icon="mdi:plus"></ha-icon>
+              <ha-icon icon="mdi:magnify"></ha-icon>
+              <ha-icon class="ha-chat" icon="mdi:message-outline"></ha-icon>
               <span>✎</span>
             </div>
           </header>
@@ -1076,7 +1076,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
             <div class="ha-dashboard-grid">
               <section class="ha-weather-card">
-                <div class="ha-weather-icon">☁</div>
+                <ha-icon class="ha-weather-icon" icon="mdi:weather-partly-cloudy"></ha-icon>
                 <div class="ha-weather-info">
                   <div class="ha-weather-sub">Bewölkt, 20°C</div>
                   <div class="ha-clock">20:29</div>
@@ -1146,7 +1146,7 @@ class ThemeGeneratorPanel extends HTMLElement {
               <div class="ha-sample-card mushroom-like">
                 <h3>Mushroom</h3>
                 <div class="ha-mush-line">
-                  <span>💡</span>
+                  <span><ha-icon icon="mdi:lightbulb-on-outline"></ha-icon></span>
                   <div><strong>Mushroom Light</strong><small>Helligkeit 72 %</small></div>
                 </div>
                 <div class="ha-mush-chips">
@@ -1157,7 +1157,7 @@ class ThemeGeneratorPanel extends HTMLElement {
               <div class="ha-sample-card bubble-like">
                 <h3>Bubble Card</h3>
                 <div class="ha-mush-line">
-                  <span>⚡</span>
+                  <span><ha-icon icon="mdi:flash"></ha-icon></span>
                   <div><strong>Bubble Button</strong><small>Aktiv · 23 W</small></div>
                 </div>
                 <div class="ha-mush-chips">
@@ -1747,10 +1747,25 @@ class ThemeGeneratorPanel extends HTMLElement {
           font-size: 13px;
         }
 
-        .ha-nav-item span {
+        .ha-nav-item span,
+        .ha-nav-item .ha-nav-icon {
           width: 22px;
           text-align: center;
           opacity: 0.75;
+          color: currentColor;
+          --mdc-icon-size: 20px;
+          flex: 0 0 22px;
+        }
+
+        .ha-menu-icon {
+          color: currentColor;
+          opacity: 0.75;
+          --mdc-icon-size: 22px;
+        }
+
+        .ha-topbar ha-icon {
+          color: white;
+          --mdc-icon-size: 20px;
         }
 
         .ha-nav-item.active {
@@ -1875,10 +1890,10 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
         .ha-weather-icon {
-          font-size: 78px;
-          color: color-mix(in srgb, var(--p-primary) 18%, transparent);
+          color: color-mix(in srgb, var(--p-primary) 55%, transparent);
           align-self: center;
           justify-self: center;
+          --mdc-icon-size: 86px;
         }
 
         .ha-weather-info {
@@ -2208,7 +2223,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.8.1</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.8.3</span></h1>
             </div>
 
             <div class="controls">
