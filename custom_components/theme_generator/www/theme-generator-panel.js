@@ -674,6 +674,7 @@ class ThemeGeneratorPanel extends HTMLElement {
     this._editorSelectionStart = 0;
     this._editorSelectionEnd = 0;
     this._activeElementId = "";
+    this._editorIsFocused = false;
     this.pendingScrollKey = "";
 
     this.openGroups = {
@@ -738,16 +739,15 @@ class ThemeGeneratorPanel extends HTMLElement {
   set hass(hass) {
     this._hass = hass;
 
-    try {
-      if (!this.initialized) {
-        this.initialized = true;
-        this.loadThemeFiles();
-      }
-
-      this.render();
-    } catch (err) {
-      this.renderFatalError(err);
+    if (!this.initialized) {
+      this.initialized = true;
+      this.loadThemeFiles();
     }
+
+    // Wichtig:
+    // Home Assistant aktualisiert hass sehr oft.
+    // Wir rendern hier absichtlich NICHT jedes Mal neu,
+    // sonst springt der YAML-Editor nach oben.
   }
 
   connectedCallback() {
@@ -775,7 +775,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
     this.loading = true;
     this.status = "Theme-Dateien werden geladen …";
-    this.render();
+    this.safeRender();
 
     try {
       const result = await this.apiCall({
@@ -800,13 +800,13 @@ class ThemeGeneratorPanel extends HTMLElement {
   async loadSelectedTheme() {
     if (!this.selectedFile) {
       this.status = "Bitte zuerst eine Theme-Datei auswählen.";
-      this.render();
+      this.safeRender();
       return;
     }
 
     this.loading = true;
     this.status = `${this.selectedFile} wird geladen …`;
-    this.render();
+    this.safeRender();
 
     try {
       const result = await this.apiCall({
@@ -833,7 +833,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
     this.loading = true;
     this.status = `Neue Version von ${baseFile} wird gespeichert …`;
-    this.render();
+    this.safeRender();
 
     try {
       const result = await this.apiCall({
@@ -861,7 +861,7 @@ class ThemeGeneratorPanel extends HTMLElement {
   async overwriteSelectedTheme() {
     if (!this.selectedFile) {
       this.status = "Bitte zuerst eine Theme-Datei auswählen.";
-      this.render();
+      this.safeRender();
       return;
     }
 
@@ -871,13 +871,13 @@ class ThemeGeneratorPanel extends HTMLElement {
 
     if (!ok) {
       this.status = "Überschreiben abgebrochen.";
-      this.render();
+      this.safeRender();
       return;
     }
 
     this.loading = true;
     this.status = `${this.selectedFile} wird überschrieben …`;
-    this.render();
+    this.safeRender();
 
     try {
       const result = await this.apiCall({
@@ -975,27 +975,10 @@ class ThemeGeneratorPanel extends HTMLElement {
   }
 
   scrollEditorToKey(key) {
-    const editor = this.shadowRoot.getElementById("editor");
-
-    if (!editor || !key) {
-      return;
-    }
-
-    const lines = this.editorContent.split("\\n");
-    const index = lines.findIndex((line) => line.trim().startsWith(`${key}:`));
-
-    if (index < 0) {
-      return;
-    }
-
-    const lineHeight = 20;
-    editor.scrollTop = Math.max(0, (index * lineHeight) - 120);
-
-    const start = lines.slice(0, index).join("\\n").length + (index > 0 ? 1 : 0);
-    const end = start + lines[index].length;
-
-    editor.focus();
-    editor.setSelectionRange(start, end);
+    // Deaktiviert:
+    // Das automatische Springen im YAML-Editor hat beim Bearbeiten gestört.
+    // Später bauen wir dafür eine manuelle "Im Editor anzeigen"-Schaltfläche.
+    return;
   }
 
   isCssColorValue(value) {
@@ -1145,6 +1128,85 @@ class ThemeGeneratorPanel extends HTMLElement {
   setPreviewPage(page) {
     this.previewPage = page;
     this.render();
+  }
+
+  extractCardModBlocks() {
+    const lines = String(this.editorContent || "").split("\n");
+    const blocks = [];
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+
+      if (!/card[-_ ]?mod/i.test(line)) {
+        continue;
+      }
+
+      const indent = (line.match(/^\s*/) || [""])[0].length;
+      const block = [line];
+
+      for (let j = i + 1; j < lines.length && block.length < 26; j++) {
+        const next = lines[j];
+        const trimmed = next.trim();
+
+        if (!trimmed) {
+          block.push(next);
+          continue;
+        }
+
+        const nextIndent = (next.match(/^\s*/) || [""])[0].length;
+
+        if (nextIndent <= indent && !next.startsWith(" ")) {
+          break;
+        }
+
+        block.push(next);
+      }
+
+      blocks.push({
+        title: line.trim().replace(/:$/, ""),
+        code: block.join("\n")
+      });
+
+      if (blocks.length >= 6) {
+        break;
+      }
+    }
+
+    return blocks;
+  }
+
+  renderCardModPreview() {
+    const blocks = this.extractCardModBlocks();
+
+    if (!blocks.length) {
+      return `
+        <section class="ha-big-preview-cards">
+          <article class="ha-big-card cardmod-like">
+            <div class="big-card-head">
+              <ha-icon icon="mdi:code-braces"></ha-icon>
+              <h3>card-mod</h3>
+            </div>
+            <p>In der geladenen Theme-Datei wurden noch keine card-mod Blöcke gefunden.</p>
+            <div class="cardmod-inner">card-mod-theme, card-mod-card oder card-mod-row</div>
+          </article>
+        </section>
+      `;
+    }
+
+    return `
+      <section class="ha-big-preview-cards">
+        ${blocks.map((block, index) => `
+          <article class="ha-big-card cardmod-like">
+            <div class="big-card-head">
+              <ha-icon icon="mdi:code-braces"></ha-icon>
+              <h3>${this.escape(block.title || `card-mod ${index + 1}`)}</h3>
+            </div>
+            <p>Gefunden in der geladenen Theme-Datei.</p>
+            <pre class="cardmod-inner">${this.escape(block.code)}</pre>
+          </article>
+        `).join("")}
+      </section>
+    `;
   }
 
   renderPreview() {
@@ -1331,18 +1393,7 @@ class ThemeGeneratorPanel extends HTMLElement {
     }
 
     if (page === "cardmod") {
-      cardsHtml += `
-        <section class="ha-big-preview-cards">
-          <article class="ha-big-card cardmod-like">
-            <div class="big-card-head">
-              <ha-icon icon="mdi:code-braces"></ha-icon>
-              <h3>card-mod</h3>
-            </div>
-            <p>Vorschau für Rahmen, Rundung, Schatten und Row-Styling.</p>
-            <div class="cardmod-inner">ha-card { border-radius: var(--ha-card-border-radius); }</div>
-          </article>
-        </section>
-      `;
+      cardsHtml += this.renderCardModPreview();
     }
 
     if (page === "custom_cards") {
@@ -1499,6 +1550,17 @@ class ThemeGeneratorPanel extends HTMLElement {
     if (overwriteButton) {
       overwriteButton.disabled = this.loading || !this.selectedFile;
     }
+  }
+
+  safeRender() {
+    const active = this.shadowRoot?.activeElement;
+
+    if (this._editorIsFocused && active?.id === "editor") {
+      this.updateStatusOnly?.();
+      return;
+    }
+
+    this.render();
   }
 
   render() {
@@ -2028,6 +2090,10 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
         .cardmod-inner {
+          white-space: pre-wrap;
+          word-break: break-word;
+          max-height: 260px;
+          overflow: auto;
           margin-top: 18px;
           padding: 12px;
           border-radius: 14px;
@@ -2779,7 +2845,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.10.8</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.10.9</span></h1>
             </div>
 
             <div class="controls">
