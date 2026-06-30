@@ -25,7 +25,7 @@ Diese Version ist die neue saubere Basis nach dem Neustart des Projekts.
 
 ## Noch nicht enthalten
 
-- ausgewählte Theme-Datei in den Editor laden ✅
+- ausgewählte Theme-Datei in den Editor laden ✅ ✅
 - Theme-Datei speichern
 - Theme-Datei überschreiben
 - neue Theme-Datei erstellen
