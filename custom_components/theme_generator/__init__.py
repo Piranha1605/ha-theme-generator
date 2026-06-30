@@ -19,7 +19,6 @@ from .const import (
     PANEL_URL_PATH,
 )
 
-
 THEMES_DIR = "themes"
 
 
@@ -49,7 +48,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         require_admin=True,
         config={
             "tag": PANEL_TAG,
-            "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.9.7",
+            "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.9.8",
         },
     )
 
@@ -102,16 +101,10 @@ def _safe_theme_file(hass: HomeAssistant, filename: str) -> Path:
 def _list_theme_files_sync(hass: HomeAssistant) -> list[str]:
     base = _themes_path(hass).resolve()
 
-    files: list[str] = []
-
+    files = []
     for path in base.rglob("*"):
-        if not path.is_file():
-            continue
-
-        if path.suffix.lower() not in (".yaml", ".yml"):
-            continue
-
-        files.append(path.resolve().relative_to(base).as_posix())
+        if path.is_file() and path.suffix.lower() in (".yaml", ".yml"):
+            files.append(path.resolve().relative_to(base).as_posix())
 
     return sorted(files, key=str.lower)
 
@@ -180,21 +173,11 @@ async def _reload_themes(hass: HomeAssistant) -> None:
     }
 )
 @callback
-def websocket_list_theme_files(
-    hass: HomeAssistant,
-    connection: websocket_api.ActiveConnection,
-    msg: dict,
-) -> None:
+def websocket_list_theme_files(hass: HomeAssistant, connection, msg) -> None:
     async def _async_handle() -> None:
         try:
             files = await hass.async_add_executor_job(_list_theme_files_sync, hass)
-
-            connection.send_result(
-                msg["id"],
-                {
-                    "files": files,
-                },
-            )
+            connection.send_result(msg["id"], {"files": files})
         except Exception as err:
             connection.send_error(msg["id"], "theme_generator_error", str(err))
 
@@ -208,11 +191,7 @@ def websocket_list_theme_files(
     }
 )
 @callback
-def websocket_read_theme_file(
-    hass: HomeAssistant,
-    connection: websocket_api.ActiveConnection,
-    msg: dict,
-) -> None:
+def websocket_read_theme_file(hass: HomeAssistant, connection, msg) -> None:
     async def _async_handle() -> None:
         try:
             result = await hass.async_add_executor_job(
@@ -220,7 +199,6 @@ def websocket_read_theme_file(
                 hass,
                 msg["filename"],
             )
-
             connection.send_result(msg["id"], result)
         except Exception as err:
             connection.send_error(msg["id"], "theme_generator_error", str(err))
@@ -236,11 +214,7 @@ def websocket_read_theme_file(
     }
 )
 @callback
-def websocket_save_theme_file_version(
-    hass: HomeAssistant,
-    connection: websocket_api.ActiveConnection,
-    msg: dict,
-) -> None:
+def websocket_save_theme_file_version(hass: HomeAssistant, connection, msg) -> None:
     async def _async_handle() -> None:
         try:
             result = await hass.async_add_executor_job(
@@ -249,7 +223,6 @@ def websocket_save_theme_file_version(
                 msg["filename"],
                 msg["content"],
             )
-
             await _reload_themes(hass)
             connection.send_result(msg["id"], result)
         except Exception as err:
@@ -266,11 +239,7 @@ def websocket_save_theme_file_version(
     }
 )
 @callback
-def websocket_overwrite_theme_file(
-    hass: HomeAssistant,
-    connection: websocket_api.ActiveConnection,
-    msg: dict,
-) -> None:
+def websocket_overwrite_theme_file(hass: HomeAssistant, connection, msg) -> None:
     async def _async_handle() -> None:
         try:
             result = await hass.async_add_executor_job(
@@ -279,7 +248,6 @@ def websocket_overwrite_theme_file(
                 msg["filename"],
                 msg["content"],
             )
-
             await _reload_themes(hass)
             connection.send_result(msg["id"], result)
         except Exception as err:
