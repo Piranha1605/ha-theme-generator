@@ -265,7 +265,7 @@ class ThemeGeneratorPanel extends HTMLElement {
           </ul>
         </div>
 
-        <code>Version: 1.2.0
+        <code>Version: 1.2.1
 Modus: Theme-Dateien anzeigen
 Status: Panel erfolgreich geladen</code>
       </div>
