@@ -1,8 +1,14 @@
-# HA Theme Generator
+<p align="center">
+  <img src="icon.png" alt="HA Theme Generator Icon" width="120">
+</p>
 
-Ein Home-Assistant-Theme-Werkzeug für die Seitenleiste.
+<h1 align="center">HA Theme Generator</h1>
 
-## Aktuelle Version: 1.2.1
+<p align="center">
+  Ein Home-Assistant-Theme-Werkzeug für die Seitenleiste.
+</p>
+
+## Aktuelle Version: 1.3.1
 
 Diese Version ist die neue saubere Basis nach dem Neustart des Projekts.
 
@@ -15,10 +21,11 @@ Diese Version ist die neue saubere Basis nach dem Neustart des Projekts.
 - eigenes Icon im Panel
 - Theme-Dateien aus `/config/themes` werden gelesen
 - Theme-Dateien werden im Dropdown und als Liste angezeigt
+- Standard-Theme wird im Editor angezeigt
 
 ## Noch nicht enthalten
 
-- Theme-Datei im Editor laden
+- ausgewählte Theme-Datei in den Editor laden
 - Theme-Datei speichern
 - Theme-Datei überschreiben
 - neue Theme-Datei erstellen
@@ -28,13 +35,13 @@ Diese Funktionen werden Schritt für Schritt wieder eingebaut.
 
 ## Geplanter Aufbau
 
-### v1.3.0
+### v1.4.0
 Ausgewählte Theme-Datei laden und im Editor anzeigen.
 
-### v1.4.0
+### v1.5.0
 Als neue Theme-Datei speichern.
 
-### v1.5.0
+### v1.6.0
 Vorhandene Theme-Datei überschreiben.
 
 ### Später
