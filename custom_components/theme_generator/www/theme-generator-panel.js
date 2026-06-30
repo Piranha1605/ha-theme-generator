@@ -708,6 +708,23 @@ class ThemeGeneratorPanel extends HTMLElement {
           { key: "md-sys-color-surface", label: "MD Oberfläche" },
           { key: "md-sys-color-surface-container", label: "MD Container" }
         ]
+      },
+      {
+        id: "textcolors",
+        title: "Textfarben",
+        description: "Primärer Text, sekundärer Text, deaktivierter Text und Material-Textfarben.",
+        fields: [
+          { key: "primary-text-color", label: "Primärtext" },
+          { key: "secondary-text-color", label: "Sekundärtext" },
+          { key: "disabled-text-color", label: "Deaktivierter Text" },
+          { key: "text-primary-color", label: "Text auf Primärfarbe" },
+          { key: "text-light-primary-color", label: "Heller Primärtext" },
+          { key: "mdc-theme-on-primary", label: "MDC auf Primär" },
+          { key: "mdc-theme-on-secondary", label: "MDC auf Sekundär" },
+          { key: "mdc-theme-on-surface", label: "MDC auf Oberfläche" },
+          { key: "md-sys-color-on-surface", label: "MD auf Oberfläche" },
+          { key: "md-sys-color-on-surface-variant", label: "MD Text Variante" }
+        ]
       }
     ];
   }
@@ -2330,7 +2347,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.9.2</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.9.3</span></h1>
             </div>
 
             <div class="controls">
