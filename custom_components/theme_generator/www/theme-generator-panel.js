@@ -669,6 +669,7 @@ class ThemeGeneratorPanel extends HTMLElement {
     this.editorContent = DEFAULT_THEME;
     this.activeView = "preview";
     this.status = "Panel geladen. Theme-Dateien werden gesucht …";
+    this.pendingScrollKey = "";
 
     this.openGroups = {
       basic: true
@@ -899,6 +900,12 @@ class ThemeGeneratorPanel extends HTMLElement {
   setView(view) {
     this.activeView = view;
     this.render();
+
+    if (view === "editor" && this.pendingScrollKey) {
+      const key = this.pendingScrollKey;
+      this.pendingScrollKey = "";
+      setTimeout(() => this.scrollEditorToKey(key), 0);
+    }
   }
 
   toggleGroup(id) {
@@ -918,15 +925,70 @@ class ThemeGeneratorPanel extends HTMLElement {
     this.render();
   }
 
-  extractColor(key, fallback = "#03a9f4") {
+  extractValue(key, fallback = "") {
     const regex = new RegExp(`${this.escapeRegex(key)}:\\s*["']?([^"'\\n]+)["']?`);
     const match = this.editorContent.match(regex);
 
-    if (!match) return fallback;
+    if (!match) {
+      return fallback;
+    }
 
-    const value = match[1].trim();
+    return match[1].trim();
+  }
 
-    if (/^#[0-9a-fA-F]{6}$/.test(value)) {
+  isHexColor(value) {
+    return /^#[0-9a-fA-F]{6}$/.test(String(value || "").trim());
+  }
+
+  setYamlValue(key, value) {
+    const cleanValue = String(value ?? "").trim();
+    const escapedKey = this.escapeRegex(key);
+
+    const quotedRegex = new RegExp(`(${escapedKey}:\\s*)["'][^"'\\n]*["']`, "g");
+    const plainRegex = new RegExp(`(${escapedKey}:\\s*)[^\\n]+`, "g");
+
+    if (quotedRegex.test(this.editorContent)) {
+      this.editorContent = this.editorContent.replace(quotedRegex, `$1"${cleanValue}"`);
+    } else if (plainRegex.test(this.editorContent)) {
+      this.editorContent = this.editorContent.replace(plainRegex, `$1"${cleanValue}"`);
+    } else {
+      this.editorContent = this.editorContent.trimEnd() + `\n  ${key}: "${cleanValue}"\n`;
+    }
+
+    this.openGroupForField(key);
+    this.pendingScrollKey = key;
+    this.status = `Wert geändert: ${key} → ${cleanValue}`;
+    this.render();
+  }
+
+  scrollEditorToKey(key) {
+    const editor = this.shadowRoot.getElementById("editor");
+
+    if (!editor || !key) {
+      return;
+    }
+
+    const lines = this.editorContent.split("\\n");
+    const index = lines.findIndex((line) => line.trim().startsWith(`${key}:`));
+
+    if (index < 0) {
+      return;
+    }
+
+    const lineHeight = 20;
+    editor.scrollTop = Math.max(0, (index * lineHeight) - 120);
+
+    const start = lines.slice(0, index).join("\\n").length + (index > 0 ? 1 : 0);
+    const end = start + lines[index].length;
+
+    editor.focus();
+    editor.setSelectionRange(start, end);
+  }
+
+  extractColor(key, fallback = "#03a9f4") {
+    const value = this.extractValue(key, fallback);
+
+    if (this.isHexColor(value)) {
       return value;
     }
 
@@ -934,18 +996,7 @@ class ThemeGeneratorPanel extends HTMLElement {
   }
 
   setYamlColor(key, value) {
-    const escapedKey = this.escapeRegex(key);
-    const regex = new RegExp(`(${escapedKey}:\\s*)["'][^"'\\n]+["']`, "g");
-
-    if (regex.test(this.editorContent)) {
-      this.editorContent = this.editorContent.replace(regex, `$1"${value}"`);
-    } else {
-      this.editorContent = this.editorContent.trimEnd() + `\n  ${key}: "${value}"\n`;
-    }
-
-    this.openGroupForField(key);
-    this.status = `Farbe geändert: ${key} → ${value}`;
-    this.render();
+    this.setYamlValue(key, value);
   }
 
   getPreviewVars() {
@@ -993,12 +1044,14 @@ class ThemeGeneratorPanel extends HTMLElement {
       }).join("");
 
       const fields = group.fields.map((field) => {
-        const value = this.extractColor(field.key);
+        const rawValue = this.extractValue(field.key, "#03a9f4");
+        const colorValue = this.isHexColor(rawValue) ? rawValue : "#03a9f4";
 
         return `
           <label class="color-field">
             <span>${this.escape(field.label)}</span>
-            <input type="color" data-color-key="${this.escape(field.key)}" value="${this.escape(value)}">
+            <input type="color" data-color-key="${this.escape(field.key)}" value="${this.escape(colorValue)}">
+            <input class="value-input" data-value-key="${this.escape(field.key)}" value="${this.escape(rawValue)}" spellcheck="false">
             <code>${this.escape(field.key)}</code>
           </label>
         `;
@@ -1462,6 +1515,26 @@ class ThemeGeneratorPanel extends HTMLElement {
           border-radius: 10px;
           background: transparent;
           cursor: pointer;
+        }
+
+        .value-input {
+          grid-column: 1 / -1;
+          width: 100%;
+          height: 32px;
+          box-sizing: border-box;
+          border-radius: 10px;
+          border: 1px solid rgba(255,255,255,0.12);
+          background: rgba(0,0,0,0.18);
+          color: var(--primary-text-color, #ffffff);
+          padding: 0 10px;
+          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+          font-size: 12px;
+          outline: none;
+        }
+
+        .value-input:focus {
+          border-color: #3c8ae9;
+          box-shadow: 0 0 0 2px rgba(60,138,233,0.22);
         }
 
         .view-switch {
@@ -2347,7 +2420,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.9.3</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.9.4</span></h1>
             </div>
 
             <div class="controls">
@@ -2422,6 +2495,25 @@ class ThemeGeneratorPanel extends HTMLElement {
         this.setYamlColor(event.target.dataset.colorKey, event.target.value);
       });
     });
+
+    this.shadowRoot.querySelectorAll(".value-input[data-value-key]").forEach((input) => {
+      input.addEventListener("change", (event) => {
+        this.setYamlValue(event.target.dataset.valueKey, event.target.value);
+      });
+
+      input.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          this.setYamlValue(event.target.dataset.valueKey, event.target.value);
+        }
+      });
+    });
+
+    if (this.pendingScrollKey && this.activeView === "editor") {
+      const key = this.pendingScrollKey;
+      this.pendingScrollKey = "";
+      setTimeout(() => this.scrollEditorToKey(key), 0);
+    }
   }
 
   escapeRegex(value) {
