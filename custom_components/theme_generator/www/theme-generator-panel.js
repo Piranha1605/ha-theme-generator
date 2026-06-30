@@ -259,6 +259,35 @@ class ThemeGeneratorPanel extends HTMLElement {
     }
   }
 
+  async saveAsVersion() {
+    const baseFile = this.selectedFile || "ha_standard_basis.yaml";
+
+    this.loading = true;
+    this.status = `Neue Version von ${baseFile} wird gespeichert …`;
+    this.render();
+
+    try {
+      const result = await this.apiCall({
+        type: "theme_generator/save_theme_file_version",
+        filename: baseFile,
+        content: this.editorContent,
+      });
+
+      this.selectedFile = result.filename;
+      this.status = `Gespeichert als neue Datei: ${result.filename}`;
+
+      await this.loadThemeFiles();
+
+      this.loading = false;
+      this.render();
+    } catch (err) {
+      this.loading = false;
+      this.status = `Speichern fehlgeschlagen: ${err?.message || err}`;
+      console.error(err);
+      this.render();
+    }
+  }
+
   async loadSelectedTheme() {
     if (!this.selectedFile) {
       this.status = "Bitte zuerst eine Theme-Datei auswählen.";
@@ -373,7 +402,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
         .controls {
           display: grid;
-          grid-template-columns: minmax(260px, 1fr) auto auto auto;
+          grid-template-columns: minmax(260px, 1fr) auto auto auto auto;
           gap: 12px;
           margin-top: 24px;
           align-items: center;
@@ -516,6 +545,10 @@ class ThemeGeneratorPanel extends HTMLElement {
           <button class="secondary" id="default-theme" ${this.loading ? "disabled" : ""}>
             Standard laden
           </button>
+
+          <button id="save-version" ${this.loading ? "disabled" : ""}>
+            Als neue Version speichern
+          </button>
         </div>
 
         <div class="status">${this.escape(this.status)}</div>
@@ -532,8 +565,8 @@ class ThemeGeneratorPanel extends HTMLElement {
           <textarea id="editor" spellcheck="false">${this.escape(this.editorContent)}</textarea>
         </div>
 
-        <code>Version: 1.4.0
-Modus: Theme-Datei laden und im Editor anzeigen
+        <code>Version: 1.5.0
+Modus: Theme-Datei laden und als neue Version speichern
 Status: Panel erfolgreich geladen</code>
       </div>
     `;
@@ -548,6 +581,10 @@ Status: Panel erfolgreich geladen</code>
 
     this.shadowRoot.getElementById("default-theme").addEventListener("click", () => {
       this.resetDefaultTheme();
+    });
+
+    this.shadowRoot.getElementById("save-version").addEventListener("click", () => {
+      this.saveAsVersion();
     });
 
     this.shadowRoot.getElementById("theme-select").addEventListener("change", (event) => {

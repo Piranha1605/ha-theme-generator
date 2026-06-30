@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 
 import voluptuous as vol
 
@@ -44,7 +45,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         config={
             "_panel_custom": {
                 "name": PANEL_TAG,
-                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.4.0",
+                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.5.0",
                 "embed_iframe": False,
                 "trust_external": False,
             }
@@ -53,6 +54,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     websocket_api.async_register_command(hass, websocket_list_theme_files)
     websocket_api.async_register_command(hass, websocket_read_theme_file)
+    websocket_api.async_register_command(hass, websocket_save_theme_file_version)
 
     return True
 
@@ -143,6 +145,74 @@ async def websocket_read_theme_file(hass: HomeAssistant, connection, msg) -> Non
             _read_theme_file_sync,
             hass,
             msg["filename"],
+        )
+
+        connection.send_result(msg["id"], result)
+    except Exception as err:
+        connection.send_error(msg["id"], "theme_generator_error", str(err))
+
+
+def _version_base_name(filename: str) -> tuple[str, str]:
+    clean_name = Path(filename or "ha_standard_basis.yaml").name
+
+    if not clean_name.endswith((".yaml", ".yml")):
+        clean_name = f"{clean_name}.yaml"
+
+    path = Path(clean_name)
+    suffix = path.suffix
+    stem = path.stem
+
+    stem = re.sub(r"_v\d+$", "", stem)
+
+    return stem, suffix
+
+
+def _save_theme_file_version_sync(hass: HomeAssistant, filename: str, content: str) -> dict:
+    base = _themes_dir(hass)
+    stem, suffix = _version_base_name(filename)
+
+    version = 1
+
+    while True:
+        new_name = f"{stem}_v{version}{suffix}"
+        target = (base / new_name).resolve()
+
+        if base.resolve() not in target.parents:
+            raise ValueError("Ungültiger Dateipfad.")
+
+        if not target.exists():
+            target.write_text(content, encoding="utf-8")
+            return {
+                "filename": target.name,
+                "saved": True,
+            }
+
+        version += 1
+
+
+@callback
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "theme_generator/save_theme_file_version",
+        vol.Optional("filename", default="ha_standard_basis.yaml"): str,
+        vol.Required("content"): str,
+    }
+)
+@websocket_api.async_response
+async def websocket_save_theme_file_version(hass: HomeAssistant, connection, msg) -> None:
+    try:
+        result = await hass.async_add_executor_job(
+            _save_theme_file_version_sync,
+            hass,
+            msg.get("filename") or "ha_standard_basis.yaml",
+            msg["content"],
+        )
+
+        await hass.services.async_call(
+            "frontend",
+            "reload_themes",
+            {},
+            blocking=False,
         )
 
         connection.send_result(msg["id"], result)

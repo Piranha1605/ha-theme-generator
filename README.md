@@ -8,7 +8,7 @@
   Ein Home-Assistant-Theme-Werkzeug für die Seitenleiste.
 </p>
 
-## Aktuelle Version: 1.4.0
+## Aktuelle Version: 1.5.0
 
 Diese Version ist die neue saubere Basis nach dem Neustart des Projekts.
 
@@ -39,7 +39,7 @@ Diese Funktionen werden Schritt für Schritt wieder eingebaut.
 Ausgewählte Theme-Datei laden und im Editor anzeigen.
 
 ### v1.5.0
-Als neue Theme-Datei speichern.
+Als neue Version speichern, z. B. theme_v1.yaml, theme_v2.yaml.
 
 ### v1.6.0
 Vorhandene Theme-Datei überschreiben.
