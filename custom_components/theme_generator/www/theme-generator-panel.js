@@ -1134,6 +1134,20 @@ class ThemeGeneratorPanel extends HTMLElement {
           margin: 0;
           font-size: 34px;
           line-height: 1.15;
+          display: flex;
+          align-items: baseline;
+          gap: 10px;
+          flex-wrap: wrap;
+        }
+
+        .version-pill {
+          font-size: 13px;
+          font-weight: 800;
+          color: #ffffff;
+          background: #3c8ae9;
+          border-radius: 999px;
+          padding: 4px 9px;
+          line-height: 1;
         }
 
         .controls {
@@ -1224,40 +1238,53 @@ class ThemeGeneratorPanel extends HTMLElement {
         .group-head {
           width: 100%;
           height: auto;
-          min-height: 52px;
+          min-height: 72px;
           border-radius: 0;
           border: 0;
           background: transparent;
           display: grid;
-          grid-template-columns: 1fr auto auto;
-          gap: 10px;
+          grid-template-columns: 1fr auto;
+          grid-template-areas:
+            "title arrow"
+            "swatches swatches";
+          gap: 8px;
           align-items: center;
-          padding: 12px 14px;
+          padding: 14px 16px;
           color: var(--primary-text-color, #ffffff);
           text-align: left;
         }
 
         .group-title {
+          grid-area: title;
           font-size: 17px;
           font-weight: 800;
+          line-height: 1.2;
         }
 
         .group-swatches {
+          grid-area: swatches;
           display: flex;
-          gap: 4px;
+          gap: 7px;
           align-items: center;
+          flex-wrap: wrap;
+          padding-top: 2px;
+          max-width: 100%;
+          overflow: visible;
         }
 
         .mini-swatch {
-          width: 14px;
-          height: 14px;
+          width: 16px;
+          height: 16px;
           border-radius: 999px;
           border: 1px solid rgba(255,255,255,0.38);
+          flex: 0 0 auto;
         }
 
         .group-arrow {
+          grid-area: arrow;
           font-size: 18px;
           opacity: 0.75;
+          justify-self: end;
         }
 
         .hint {
@@ -1618,7 +1645,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator</h1>
+              <h1>Theme Generator <span class="version-pill">v1.7.7</span></h1>
             </div>
 
             <div class="controls">
@@ -1655,10 +1682,6 @@ class ThemeGeneratorPanel extends HTMLElement {
             </div>
           </section>
         </div>
-
-        <code class="footer-code">Version: 1.7.6
-Modus: Vorschau-Start mit Schalter im rechten Rahmen
-Status: Panel erfolgreich geladen</code>
       </div>
     `;
 
