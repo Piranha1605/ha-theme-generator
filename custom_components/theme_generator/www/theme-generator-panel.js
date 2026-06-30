@@ -1,3 +1,196 @@
+const DEFAULT_THEME = `ha_standard_basis:
+  # Home Assistant Standard-Basis
+  # Diese Datei ist bewusst schlicht gehalten.
+  # Wir bauen danach Schritt für Schritt weiter.
+
+  modes:
+    light:
+      # Grundfarben
+      primary-color: "#03a9f4"
+      accent-color: "#03a9f4"
+      dark-primary-color: "#0288d1"
+      light-primary-color: "#b3e5fc"
+
+      # Hintergrund
+      primary-background-color: "#fafafa"
+      secondary-background-color: "#ffffff"
+      card-background-color: "#ffffff"
+      clear-background-color: "#ffffff"
+
+      # Text
+      primary-text-color: "#212121"
+      secondary-text-color: "#727272"
+      disabled-text-color: "#bdbdbd"
+      text-primary-color: "#ffffff"
+
+      # Trennlinien / Rahmen
+      divider-color: "rgba(0,0,0,0.12)"
+      outline-color: "rgba(0,0,0,0.12)"
+
+      # Header
+      app-header-background-color: "#03a9f4"
+      app-header-text-color: "#ffffff"
+      app-header-selection-bar-color: "#ffffff"
+
+      # Sidebar
+      sidebar-background-color: "#ffffff"
+      sidebar-text-color: "#212121"
+      sidebar-icon-color: "#727272"
+      sidebar-selected-background-color: "rgba(3,169,244,0.12)"
+      sidebar-selected-icon-color: "#03a9f4"
+      sidebar-selected-text-color: "#03a9f4"
+
+      # Karten
+      ha-card-background: "#ffffff"
+      ha-card-border-radius: "12px"
+      ha-card-border-width: "1px"
+      ha-card-border-color: "rgba(0,0,0,0.12)"
+      ha-card-box-shadow: "none"
+
+      # Icons
+      paper-item-icon-color: "#44739e"
+      paper-item-icon-active-color: "#fdd835"
+      state-icon-color: "#44739e"
+      state-icon-active-color: "#fdd835"
+      state-icon-unavailable-color: "#bdbdbd"
+
+      # Statusfarben
+      state-active-color: "#03a9f4"
+      state-inactive-color: "#727272"
+      state-unavailable-color: "#bdbdbd"
+      state-warning-color: "#ff9800"
+      state-error-color: "#f44336"
+
+      # Schalter
+      switch-checked-button-color: "#03a9f4"
+      switch-checked-track-color: "#03a9f4"
+      switch-unchecked-button-color: "#f1f1f1"
+      switch-unchecked-track-color: "#9e9e9e"
+
+      # Slider
+      paper-slider-knob-color: "#03a9f4"
+      paper-slider-active-color: "#03a9f4"
+      paper-slider-container-color: "#bdbdbd"
+
+      # Eingabefelder / Auswahlfelder
+      input-fill-color: "#ffffff"
+      input-ink-color: "#212121"
+      input-label-ink-color: "#727272"
+      input-disabled-fill-color: "#f5f5f5"
+      input-disabled-ink-color: "#bdbdbd"
+      input-disabled-label-ink-color: "#bdbdbd"
+
+      mdc-theme-primary: "#03a9f4"
+      mdc-theme-secondary: "#03a9f4"
+      mdc-theme-background: "#fafafa"
+      mdc-theme-surface: "#ffffff"
+      mdc-theme-on-primary: "#ffffff"
+      mdc-theme-on-secondary: "#ffffff"
+      mdc-theme-on-surface: "#212121"
+
+      mdc-select-fill-color: "#ffffff"
+      mdc-select-ink-color: "#212121"
+      mdc-select-label-ink-color: "#727272"
+      mdc-select-dropdown-icon-color: "#727272"
+
+      mdc-text-field-fill-color: "#ffffff"
+      mdc-text-field-ink-color: "#212121"
+      mdc-text-field-label-ink-color: "#727272"
+
+    dark:
+      # Grundfarben
+      primary-color: "#03a9f4"
+      accent-color: "#03a9f4"
+      dark-primary-color: "#0288d1"
+      light-primary-color: "#b3e5fc"
+
+      # Hintergrund
+      primary-background-color: "#111111"
+      secondary-background-color: "#1c1c1c"
+      card-background-color: "#1c1c1c"
+      clear-background-color: "#111111"
+
+      # Text
+      primary-text-color: "#e1e1e1"
+      secondary-text-color: "#9b9b9b"
+      disabled-text-color: "#777777"
+      text-primary-color: "#ffffff"
+
+      # Trennlinien / Rahmen
+      divider-color: "rgba(255,255,255,0.12)"
+      outline-color: "rgba(255,255,255,0.12)"
+
+      # Header
+      app-header-background-color: "#101e24"
+      app-header-text-color: "#e1e1e1"
+      app-header-selection-bar-color: "#03a9f4"
+
+      # Sidebar
+      sidebar-background-color: "#111111"
+      sidebar-text-color: "#e1e1e1"
+      sidebar-icon-color: "#9b9b9b"
+      sidebar-selected-background-color: "rgba(3,169,244,0.16)"
+      sidebar-selected-icon-color: "#03a9f4"
+      sidebar-selected-text-color: "#03a9f4"
+
+      # Karten
+      ha-card-background: "#1c1c1c"
+      ha-card-border-radius: "12px"
+      ha-card-border-width: "1px"
+      ha-card-border-color: "rgba(255,255,255,0.12)"
+      ha-card-box-shadow: "none"
+
+      # Icons
+      paper-item-icon-color: "#9b9b9b"
+      paper-item-icon-active-color: "#fdd835"
+      state-icon-color: "#9b9b9b"
+      state-icon-active-color: "#fdd835"
+      state-icon-unavailable-color: "#777777"
+
+      # Statusfarben
+      state-active-color: "#03a9f4"
+      state-inactive-color: "#9b9b9b"
+      state-unavailable-color: "#777777"
+      state-warning-color: "#ff9800"
+      state-error-color: "#f44336"
+
+      # Schalter
+      switch-checked-button-color: "#03a9f4"
+      switch-checked-track-color: "#03a9f4"
+      switch-unchecked-button-color: "#9b9b9b"
+      switch-unchecked-track-color: "#777777"
+
+      # Slider
+      paper-slider-knob-color: "#03a9f4"
+      paper-slider-active-color: "#03a9f4"
+      paper-slider-container-color: "#777777"
+
+      # Eingabefelder / Auswahlfelder
+      input-fill-color: "#1c1c1c"
+      input-ink-color: "#e1e1e1"
+      input-label-ink-color: "#9b9b9b"
+      input-disabled-fill-color: "#111111"
+      input-disabled-ink-color: "#777777"
+      input-disabled-label-ink-color: "#777777"
+
+      mdc-theme-primary: "#03a9f4"
+      mdc-theme-secondary: "#03a9f4"
+      mdc-theme-background: "#111111"
+      mdc-theme-surface: "#1c1c1c"
+      mdc-theme-on-primary: "#ffffff"
+      mdc-theme-on-secondary: "#ffffff"
+      mdc-theme-on-surface: "#e1e1e1"
+
+      mdc-select-fill-color: "#1c1c1c"
+      mdc-select-ink-color: "#e1e1e1"
+      mdc-select-label-ink-color: "#9b9b9b"
+      mdc-select-dropdown-icon-color: "#9b9b9b"
+
+      mdc-text-field-fill-color: "#1c1c1c"
+      mdc-text-field-ink-color: "#e1e1e1"
+      mdc-text-field-label-ink-color: "#9b9b9b"
+`;
+
 class ThemeGeneratorPanel extends HTMLElement {
   constructor() {
     super();
@@ -8,6 +201,7 @@ class ThemeGeneratorPanel extends HTMLElement {
     this.loading = false;
     this.files = [];
     this.selectedFile = "";
+    this.editorContent = DEFAULT_THEME;
     this.status = "Panel geladen. Theme-Dateien werden gesucht …";
   }
 
@@ -65,6 +259,13 @@ class ThemeGeneratorPanel extends HTMLElement {
     }
   }
 
+  resetDefaultTheme() {
+    this.selectedFile = "";
+    this.editorContent = DEFAULT_THEME;
+    this.status = "Standard-Basis wurde in den Editor geladen.";
+    this.render();
+  }
+
   render() {
     const options = [
       `<option value="">Theme-Datei auswählen</option>`,
@@ -91,7 +292,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
         .card {
-          max-width: 1100px;
+          max-width: 1200px;
           margin: 0 auto;
           padding: 28px;
           border-radius: 24px;
@@ -141,7 +342,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
         .controls {
           display: grid;
-          grid-template-columns: minmax(260px, 1fr) auto;
+          grid-template-columns: minmax(260px, 1fr) auto auto;
           gap: 12px;
           margin-top: 24px;
           align-items: center;
@@ -167,6 +368,11 @@ class ThemeGeneratorPanel extends HTMLElement {
           padding: 0 20px;
           font-weight: 700;
           cursor: pointer;
+        }
+
+        button.secondary {
+          background: #374151;
+          border-color: #4b5563;
         }
 
         button:disabled {
@@ -207,6 +413,23 @@ class ThemeGeneratorPanel extends HTMLElement {
           color: var(--secondary-text-color, #9ca3af);
         }
 
+        textarea {
+          width: 100%;
+          min-height: 520px;
+          box-sizing: border-box;
+          resize: vertical;
+          border: 1px solid rgba(255,255,255,0.12);
+          outline: none;
+          border-radius: 18px;
+          padding: 18px;
+          background: #0b1220;
+          color: #e5e7eb;
+          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+          font-size: 14px;
+          line-height: 1.45;
+          tab-size: 2;
+        }
+
         code {
           display: block;
           margin-top: 18px;
@@ -242,7 +465,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div>
             <h1>Theme Generator</h1>
-            <p>Theme-Dateien aus <strong>/config/themes</strong> anzeigen.</p>
+            <p>Standard-Basis im Editor und Theme-Dateien aus <strong>/config/themes</strong>.</p>
           </div>
         </div>
 
@@ -253,6 +476,10 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <button id="refresh" ${this.loading ? "disabled" : ""}>
             Aktualisieren
+          </button>
+
+          <button class="secondary" id="default-theme" ${this.loading ? "disabled" : ""}>
+            Standard laden
           </button>
         </div>
 
@@ -265,8 +492,13 @@ class ThemeGeneratorPanel extends HTMLElement {
           </ul>
         </div>
 
-        <code>Version: 1.2.1
-Modus: Theme-Dateien anzeigen
+        <div class="box">
+          <h2>Editor</h2>
+          <textarea id="editor" spellcheck="false">${this.escape(this.editorContent)}</textarea>
+        </div>
+
+        <code>Version: 1.3.0
+Modus: Standard-Theme im Editor
 Status: Panel erfolgreich geladen</code>
       </div>
     `;
@@ -275,12 +507,20 @@ Status: Panel erfolgreich geladen</code>
       this.loadThemeFiles();
     });
 
+    this.shadowRoot.getElementById("default-theme").addEventListener("click", () => {
+      this.resetDefaultTheme();
+    });
+
     this.shadowRoot.getElementById("theme-select").addEventListener("change", (event) => {
       this.selectedFile = event.target.value;
       this.status = this.selectedFile
         ? `Ausgewählt: ${this.selectedFile}`
         : "Keine Theme-Datei ausgewählt.";
       this.render();
+    });
+
+    this.shadowRoot.getElementById("editor").addEventListener("input", (event) => {
+      this.editorContent = event.target.value;
     });
   }
 
