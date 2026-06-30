@@ -6,6 +6,7 @@ import voluptuous as vol
 
 from homeassistant.components import frontend, websocket_api
 from homeassistant.components.http import StaticPathConfig
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 
 from .const import (
@@ -20,6 +21,10 @@ from .const import (
 
 
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
+    return True
+
+
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     static_path = hass.config.path(f"custom_components/{DOMAIN}/www")
 
     await hass.http.async_register_static_paths(
@@ -41,7 +46,7 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
         require_admin=True,
         config={
             "tag": PANEL_TAG,
-            "module_url": f"/{DOMAIN}/{PANEL_FILENAME}?v=0.5.2",
+            "module_url": f"/{DOMAIN}/{PANEL_FILENAME}?v=0.5.3",
         },
     )
 
@@ -52,7 +57,7 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     return True
 
 
-async def async_unload_entry(hass: HomeAssistant, entry) -> bool:
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     frontend.async_remove_panel(hass, PANEL_URL_PATH)
     return True
 
