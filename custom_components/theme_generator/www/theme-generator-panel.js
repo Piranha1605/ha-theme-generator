@@ -670,17 +670,28 @@ class ThemeGeneratorPanel extends HTMLElement {
     this.activeView = "editor";
     this.status = "Panel geladen. Theme-Dateien werden gesucht …";
 
-    this.colorFields = [
-      { key: "primary-color", label: "Primärfarbe" },
-      { key: "mdc-theme-secondary", label: "Sekundärfarbe" },
-      { key: "accent-color", label: "Akzentfarbe" },
-      { key: "success-color", label: "Erfolg" },
-      { key: "warning-color", label: "Warnung" },
-      { key: "error-color", label: "Fehler" },
-      { key: "info-color", label: "Info" },
-      { key: "state-active-color", label: "Status aktiv" },
-      { key: "state-inactive-color", label: "Status inaktiv" },
-      { key: "state-unavailable-color", label: "Nicht verfügbar" }
+    this.openGroups = {
+      basic: true
+    };
+
+    this.colorGroups = [
+      {
+        id: "basic",
+        title: "Grundfarben",
+        description: "Primär, Sekundär, Akzent und Statusfarben.",
+        fields: [
+          { key: "primary-color", label: "Primärfarbe" },
+          { key: "mdc-theme-secondary", label: "Sekundärfarbe" },
+          { key: "accent-color", label: "Akzentfarbe" },
+          { key: "success-color", label: "Erfolg" },
+          { key: "warning-color", label: "Warnung" },
+          { key: "error-color", label: "Fehler" },
+          { key: "info-color", label: "Info" },
+          { key: "state-active-color", label: "Status aktiv" },
+          { key: "state-inactive-color", label: "Status inaktiv" },
+          { key: "state-unavailable-color", label: "Nicht verfügbar" }
+        ]
+      }
     ];
   }
 
@@ -847,6 +858,7 @@ class ThemeGeneratorPanel extends HTMLElement {
     this.selectedFile = "";
     this.editorContent = DEFAULT_THEME;
     this.status = "Standard-Basis wurde in den Editor geladen.";
+    this.openGroups.basic = true;
     this.render();
   }
 
@@ -855,9 +867,15 @@ class ThemeGeneratorPanel extends HTMLElement {
     this.render();
   }
 
+  toggleGroup(id) {
+    this.openGroups[id] = !this.openGroups[id];
+    this.render();
+  }
+
   extractColor(key, fallback = "#03a9f4") {
     const regex = new RegExp(`${this.escapeRegex(key)}:\\s*["']?([^"'\\n]+)["']?`);
     const match = this.editorContent.match(regex);
+
     if (!match) return fallback;
 
     const value = match[1].trim();
@@ -879,6 +897,7 @@ class ThemeGeneratorPanel extends HTMLElement {
       this.editorContent = this.editorContent.trimEnd() + `\n  ${key}: "${value}"\n`;
     }
 
+    this.openGroups.basic = true;
     this.status = `Farbe geändert: ${key} → ${value}`;
     this.render();
   }
@@ -887,26 +906,56 @@ class ThemeGeneratorPanel extends HTMLElement {
     return {
       primary: this.extractColor("primary-color", "#03a9f4"),
       accent: this.extractColor("accent-color", "#03a9f4"),
+      success: this.extractColor("success-color", "#4caf50"),
+      warning: this.extractColor("warning-color", "#ff9800"),
+      error: this.extractColor("error-color", "#f44336"),
+      info: this.extractColor("info-color", "#2196f3"),
       bg: this.extractColor("primary-background-color", "#111111"),
       card: this.extractColor("card-background-color", "#1c1c1c"),
       text: this.extractColor("primary-text-color", "#e1e1e1"),
       secondary: this.extractColor("secondary-text-color", "#9b9b9b"),
       sidebar: this.extractColor("sidebar-background-color", "#111111"),
       border: this.extractColor("ha-card-border-color", "#333333"),
-      mushroom: this.extractColor("mushroom-card-background", "#1c1c1c"),
       bubble: this.extractColor("bubble-accent-color", "#03a9f4")
     };
   }
 
-  renderColorControls() {
-    return this.colorFields.map((field) => {
-      const value = this.extractColor(field.key);
+  renderColorGroups() {
+    return this.colorGroups.map((group) => {
+      const open = !!this.openGroups[group.id];
+
+      const swatches = group.fields.slice(0, 8).map((field) => {
+        const value = this.extractColor(field.key);
+        return `<span class="mini-swatch" style="background:${this.escape(value)}"></span>`;
+      }).join("");
+
+      const fields = group.fields.map((field) => {
+        const value = this.extractColor(field.key);
+
+        return `
+          <label class="color-field">
+            <span>${this.escape(field.label)}</span>
+            <input type="color" data-color-key="${this.escape(field.key)}" value="${this.escape(value)}">
+            <code>${this.escape(field.key)}</code>
+          </label>
+        `;
+      }).join("");
+
       return `
-        <label class="color-field">
-          <span>${this.escape(field.label)}</span>
-          <input type="color" data-color-key="${this.escape(field.key)}" value="${this.escape(value)}">
-          <code>${this.escape(field.key)}</code>
-        </label>
+        <section class="field-group ${open ? "open" : "closed"}">
+          <button class="group-head" data-toggle-group="${this.escape(group.id)}">
+            <span class="group-title">${this.escape(group.title)}</span>
+            <span class="group-swatches">${swatches}</span>
+            <span class="group-arrow">${open ? "▾" : "▸"}</span>
+          </button>
+
+          ${open ? `
+            <p class="hint">${this.escape(group.description)}</p>
+            <div class="color-grid">
+              ${fields}
+            </div>
+          ` : ""}
+        </section>
       `;
     }).join("");
   }
@@ -918,13 +967,16 @@ class ThemeGeneratorPanel extends HTMLElement {
       <div class="preview" style="
         --p-primary:${v.primary};
         --p-accent:${v.accent};
+        --p-success:${v.success};
+        --p-warning:${v.warning};
+        --p-error:${v.error};
+        --p-info:${v.info};
         --p-bg:${v.bg};
         --p-card:${v.card};
         --p-text:${v.text};
         --p-secondary:${v.secondary};
         --p-sidebar:${v.sidebar};
         --p-border:${v.border};
-        --p-mushroom:${v.mushroom};
         --p-bubble:${v.bubble};
       ">
         <div class="preview-shell">
@@ -990,6 +1042,14 @@ class ThemeGeneratorPanel extends HTMLElement {
                   card-mod-card-yaml
                 </div>
               </article>
+
+              <article class="preview-card status-card">
+                <h3>Statusfarben</h3>
+                <div class="status-row"><span style="background:var(--p-success)"></span> Erfolg</div>
+                <div class="status-row"><span style="background:var(--p-warning)"></span> Warnung</div>
+                <div class="status-row"><span style="background:var(--p-error)"></span> Fehler</div>
+                <div class="status-row"><span style="background:var(--p-info)"></span> Info</div>
+              </article>
             </section>
           </main>
         </div>
@@ -1016,16 +1076,16 @@ class ThemeGeneratorPanel extends HTMLElement {
           display: block;
           box-sizing: border-box;
           min-height: 100vh;
-          padding: 32px;
+          padding: 28px;
           background: var(--primary-background-color, #111827);
           color: var(--primary-text-color, #ffffff);
           font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         }
 
         .card {
-          max-width: 1380px;
+          max-width: 1420px;
           margin: 0 auto;
-          padding: 28px;
+          padding: 24px;
           border-radius: 24px;
           background: var(--card-background-color, #1f2937);
           border: 1px solid var(--ha-card-border-color, rgba(255,255,255,0.14));
@@ -1071,16 +1131,9 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
         h1 {
-          margin: 0 0 6px 0;
+          margin: 0;
           font-size: 34px;
           line-height: 1.15;
-        }
-
-        p {
-          margin: 0;
-          color: var(--secondary-text-color, #9ca3af);
-          font-size: 15px;
-          line-height: 1.5;
         }
 
         .controls {
@@ -1126,58 +1179,16 @@ class ThemeGeneratorPanel extends HTMLElement {
           border-color: #ef4444;
         }
 
-        button.ghost {
-          background: transparent;
-          border-color: rgba(255,255,255,0.18);
-        }
-
         button:disabled {
           opacity: 0.55;
           cursor: not-allowed;
-        }
-
-        .status {
-          margin-top: 16px;
-          color: var(--secondary-text-color, #9ca3af);
-          font-size: 14px;
-        }
-
-        .view-switch {
-          display: inline-grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 4px;
-          margin-top: 0;
-          margin-bottom: 14px;
-          padding: 4px;
-          border-radius: 999px;
-          background: rgba(255,255,255,0.08);
-          border: 1px solid rgba(255,255,255,0.12);
-          width: fit-content;
-        }
-
-        .view-switch button {
-          height: 38px;
-          min-width: 110px;
-          border-radius: 999px;
-          border: 0;
-          background: transparent;
-          color: var(--secondary-text-color, #9ca3af);
-          padding: 0 18px;
-          font-weight: 800;
-          cursor: pointer;
-        }
-
-        .view-switch button.active {
-          background: #3c8ae9;
-          color: white;
-          box-shadow: 0 8px 18px rgba(60,138,233,0.28);
         }
 
         .workspace {
           display: grid;
           grid-template-columns: 340px minmax(0, 1fr);
           gap: 18px;
-          margin-top: 22px;
+          margin-top: 18px;
           align-items: start;
         }
 
@@ -1191,14 +1202,7 @@ class ThemeGeneratorPanel extends HTMLElement {
           top: 18px;
         }
 
-        .hint {
-          margin: 0 0 14px 0;
-          font-size: 13px;
-          color: var(--secondary-text-color, #9ca3af);
-        }
-
         .box {
-          margin-top: 18px;
           padding: 18px;
           border-radius: 18px;
           background: rgba(0,0,0,0.24);
@@ -1206,31 +1210,68 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
         h2 {
-          margin: 0 0 12px 0;
+          margin: 0;
           font-size: 18px;
         }
 
-        textarea {
-          width: 100%;
-          min-height: 720px;
-          box-sizing: border-box;
-          resize: vertical;
-          border: 1px solid rgba(255,255,255,0.12);
-          outline: none;
+        .field-group {
           border-radius: 18px;
-          padding: 18px;
-          background: #0b1220;
-          color: #e5e7eb;
-          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-          font-size: 14px;
+          background: rgba(255,255,255,0.04);
+          border: 1px solid rgba(255,255,255,0.08);
+          overflow: hidden;
+        }
+
+        .group-head {
+          width: 100%;
+          height: auto;
+          min-height: 52px;
+          border-radius: 0;
+          border: 0;
+          background: transparent;
+          display: grid;
+          grid-template-columns: 1fr auto auto;
+          gap: 10px;
+          align-items: center;
+          padding: 12px 14px;
+          color: var(--primary-text-color, #ffffff);
+          text-align: left;
+        }
+
+        .group-title {
+          font-size: 17px;
+          font-weight: 800;
+        }
+
+        .group-swatches {
+          display: flex;
+          gap: 4px;
+          align-items: center;
+        }
+
+        .mini-swatch {
+          width: 14px;
+          height: 14px;
+          border-radius: 999px;
+          border: 1px solid rgba(255,255,255,0.38);
+        }
+
+        .group-arrow {
+          font-size: 18px;
+          opacity: 0.75;
+        }
+
+        .hint {
+          margin: 0 14px 14px 14px;
+          font-size: 13px;
+          color: var(--secondary-text-color, #9ca3af);
           line-height: 1.45;
-          tab-size: 2;
         }
 
         .color-grid {
           display: grid;
           grid-template-columns: 1fr;
-          gap: 12px;
+          gap: 10px;
+          padding: 0 12px 12px 12px;
         }
 
         .color-field {
@@ -1238,7 +1279,7 @@ class ThemeGeneratorPanel extends HTMLElement {
           grid-template-columns: 1fr auto;
           gap: 8px;
           align-items: center;
-          padding: 12px;
+          padding: 11px;
           border-radius: 14px;
           background: rgba(255,255,255,0.05);
           border: 1px solid rgba(255,255,255,0.08);
@@ -1267,6 +1308,71 @@ class ThemeGeneratorPanel extends HTMLElement {
           cursor: pointer;
         }
 
+        .view-switch {
+          display: inline-grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 4px;
+          margin-bottom: 14px;
+          padding: 4px;
+          border-radius: 999px;
+          background: rgba(255,255,255,0.08);
+          border: 1px solid rgba(255,255,255,0.12);
+          width: fit-content;
+        }
+
+        .view-switch button {
+          height: 38px;
+          min-width: 110px;
+          border-radius: 999px;
+          border: 0;
+          background: transparent;
+          color: var(--secondary-text-color, #9ca3af);
+          padding: 0 18px;
+          font-weight: 800;
+          cursor: pointer;
+        }
+
+        .view-switch button.active {
+          background: #3c8ae9;
+          color: white;
+          box-shadow: 0 8px 18px rgba(60,138,233,0.28);
+        }
+
+        .box-head {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 14px;
+          margin-bottom: 12px;
+        }
+
+        .inline-status {
+          color: var(--secondary-text-color, #9ca3af);
+          font-size: 13px;
+          font-weight: 600;
+          text-align: right;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        textarea {
+          width: 100%;
+          min-height: 720px;
+          box-sizing: border-box;
+          resize: vertical;
+          border: 1px solid rgba(255,255,255,0.12);
+          outline: none;
+          border-radius: 18px;
+          padding: 18px;
+          background: #0b1220;
+          color: #e5e7eb;
+          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+          font-size: 14px;
+          line-height: 1.45;
+          tab-size: 2;
+        }
+
         .preview {
           background: var(--p-bg);
           color: var(--p-text);
@@ -1279,7 +1385,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         .preview-shell {
           display: grid;
           grid-template-columns: 220px 1fr;
-          min-height: 680px;
+          min-height: 720px;
         }
 
         .preview-sidebar {
@@ -1359,15 +1465,17 @@ class ThemeGeneratorPanel extends HTMLElement {
           color: var(--p-secondary);
         }
 
-        .preview-state {
-          margin-top: 18px;
+        .preview-state,
+        .status-row {
+          margin-top: 12px;
           display: flex;
           align-items: center;
           gap: 10px;
           color: var(--p-text);
         }
 
-        .dot {
+        .dot,
+        .status-row span {
           width: 12px;
           height: 12px;
           border-radius: 999px;
@@ -1492,7 +1600,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         <div class="header">
           <div class="logo" aria-hidden="true">
             <svg viewBox="0 0 24 24">
-              <path d="M19.54 5.23L18.12 3.81L13.4 8.53L11.99 7.12L10.58 8.53L15.17 13.12L16.58 11.71L14.82 9.95L19.54 5.23M4 4H9.5C10.33 4 11 4.67 11 5.5V7.09L9 9.09V6H5V19H18V14.91L20 12.91V19.5C20 20.33 19.33 21 18.5 21H4.5C3.67 21 3 20.33 3 19.5V4.5C3 4.22 3.22 4 3.5 4H4M7 11H12.09L10.09 13H7V11M7 15H14V17H7V15Z"/>
+              <path d="M19.54 5.23L18.12 3.81L13.4 8.53L11.99 7.12L10.58 8.53L15.17 13.12L16.58 11.71L14.82 9.95L19.54 5.23M4 4H9.5C10.33 4 11 4.67 11 5.5V7.09L9 9.09V6H5V19H18V14.91L20 12.91V19.5C20 20.33 19.33 21 18.5 21H4.5C3.67 21 3 19.33 3 19.5V4.5C3 4.22 3.22 4 3.5 4H4M7 11H12.09L10.09 13H7V11M7 15H14V17H7V15Z"/>
             </svg>
           </div>
 
@@ -1515,16 +1623,10 @@ class ThemeGeneratorPanel extends HTMLElement {
           </div>
         </div>
 
-        <div class="status">${this.escape(this.status)}</div>
-
         <div class="workspace">
           <aside class="left-panel">
             <div class="box sticky-box">
-              <h2>Grundfarben</h2>
-              <p class="hint">Nur die wichtigsten Grund- und Statusfarben. Hintergründe, Karten und Sidebar kommen im nächsten Schritt.</p>
-              <div class="color-grid">
-                ${this.renderColorControls()}
-              </div>
+              ${this.renderColorGroups()}
             </div>
           </aside>
 
@@ -1535,14 +1637,17 @@ class ThemeGeneratorPanel extends HTMLElement {
             </div>
 
             <div class="box">
-              <h2>${this.activeView === "preview" ? "Vorschau" : "Editor"}</h2>
+              <div class="box-head">
+                <h2>${this.activeView === "preview" ? "Vorschau" : "Editor"}</h2>
+                <div class="inline-status">${this.escape(this.status)}</div>
+              </div>
               ${contentPanel}
             </div>
           </section>
         </div>
 
-        <code class="footer-code">Version: 1.7.3
-Modus: Grundfarben links, Editor/Vorschau rechts
+        <code class="footer-code">Version: 1.7.4
+Modus: einklappbare Grundfarben mit Status im Editor-Kopf
 Status: Panel erfolgreich geladen</code>
       </div>
     `;
@@ -1554,6 +1659,12 @@ Status: Panel erfolgreich geladen</code>
     this.shadowRoot.getElementById("overwrite").addEventListener("click", () => this.overwriteSelectedTheme());
     this.shadowRoot.getElementById("view-editor").addEventListener("click", () => this.setView("editor"));
     this.shadowRoot.getElementById("view-preview").addEventListener("click", () => this.setView("preview"));
+
+    this.shadowRoot.querySelectorAll("[data-toggle-group]").forEach((button) => {
+      button.addEventListener("click", (event) => {
+        this.toggleGroup(event.currentTarget.dataset.toggleGroup);
+      });
+    });
 
     this.shadowRoot.getElementById("theme-select").addEventListener("change", (event) => {
       this.selectedFile = event.target.value;
