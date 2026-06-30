@@ -1,9 +1,7 @@
 from __future__ import annotations
 
-from pathlib import Path
-import logging
-
 from homeassistant.components import frontend
+from homeassistant.components.http import StaticPathConfig
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 
@@ -16,31 +14,21 @@ from .const import (
     PANEL_URL_PATH,
 )
 
-_LOGGER = logging.getLogger(__name__)
-
 
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     return True
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    source_file = Path(
-        hass.config.path(f"custom_components/{DOMAIN}/www/{PANEL_FILENAME}")
+    await hass.http.async_register_static_paths(
+        [
+            StaticPathConfig(
+                f"/{DOMAIN}_static",
+                hass.config.path(f"custom_components/{DOMAIN}/www"),
+                True,
+            )
+        ]
     )
-
-    target_dir = Path(hass.config.path(f"www/{DOMAIN}"))
-    target_dir.mkdir(parents=True, exist_ok=True)
-
-    target_file = target_dir / PANEL_FILENAME
-
-    if source_file.exists():
-        target_file.write_text(
-            source_file.read_text(encoding="utf-8"),
-            encoding="utf-8",
-        )
-        _LOGGER.info("Theme Generator panel copied to %s", target_file)
-    else:
-        _LOGGER.error("Theme Generator panel source file missing: %s", source_file)
 
     frontend.async_register_built_in_panel(
         hass,
@@ -50,8 +38,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         frontend_url_path=PANEL_URL_PATH,
         require_admin=True,
         config={
-            "tag": PANEL_TAG,
-            "module_url": f"/local/{DOMAIN}/{PANEL_FILENAME}?v=1.0.1",
+            "_panel_custom": {
+                "name": PANEL_TAG,
+                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.0.2",
+                "embed_iframe": False,
+                "trust_external": False,
+            }
         },
     )
 

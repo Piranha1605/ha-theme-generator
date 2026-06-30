@@ -75,7 +75,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         <p>Saubere neue Grundversion.</p>
         <p>Diese Version prüft nur, ob HACS, Integration, Seitenleiste und Panel-Anzeige sauber funktionieren.</p>
         <div class="ok">Panel läuft</div>
-        <code>Version: 1.0.0
+        <code>Version: 1.0.2
 Modus: Neustart-Basis
 Status: Anzeige erfolgreich geladen</code>
       </div>
