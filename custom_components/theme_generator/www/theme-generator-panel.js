@@ -674,6 +674,8 @@ class ThemeGeneratorPanel extends HTMLElement {
       basic: true
     };
 
+    this.activeGroup = "basic";
+
     this.colorGroups = [
       {
         id: "basic",
@@ -868,7 +870,12 @@ class ThemeGeneratorPanel extends HTMLElement {
   }
 
   toggleGroup(id) {
-    this.openGroups[id] = !this.openGroups[id];
+    Object.keys(this.openGroups).forEach((key) => {
+      this.openGroups[key] = false;
+    });
+
+    this.openGroups[id] = true;
+    this.activeGroup = id;
     this.render();
   }
 
@@ -897,7 +904,7 @@ class ThemeGeneratorPanel extends HTMLElement {
       this.editorContent = this.editorContent.trimEnd() + `\n  ${key}: "${value}"\n`;
     }
 
-    this.openGroups.basic = true;
+    this.openGroupForField(key);
     this.status = `Farbe geändert: ${key} → ${value}`;
     this.render();
   }
@@ -918,6 +925,23 @@ class ThemeGeneratorPanel extends HTMLElement {
       border: this.extractColor("ha-card-border-color", "#333333"),
       bubble: this.extractColor("bubble-accent-color", "#03a9f4")
     };
+  }
+
+  openGroupForField(fieldKey) {
+    const group = this.colorGroups.find((item) =>
+      item.fields.some((field) => field.key === fieldKey)
+    );
+
+    if (!group) {
+      return;
+    }
+
+    Object.keys(this.openGroups).forEach((key) => {
+      this.openGroups[key] = false;
+    });
+
+    this.openGroups[group.id] = true;
+    this.activeGroup = group.id;
   }
 
   renderColorGroups() {
@@ -1645,7 +1669,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.7.7</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.7.8</span></h1>
             </div>
 
             <div class="controls">
