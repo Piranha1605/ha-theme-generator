@@ -259,6 +259,37 @@ class ThemeGeneratorPanel extends HTMLElement {
     }
   }
 
+  async loadSelectedTheme() {
+    if (!this.selectedFile) {
+      this.status = "Bitte zuerst eine Theme-Datei auswählen.";
+      this.render();
+      return;
+    }
+
+    this.loading = true;
+    this.status = `${this.selectedFile} wird geladen …`;
+    this.render();
+
+    try {
+      const result = await this.apiCall({
+        type: "theme_generator/read_theme_file",
+        filename: this.selectedFile,
+      });
+
+      this.selectedFile = result.filename;
+      this.editorContent = result.content || "";
+      this.status = `Geladen: ${this.selectedFile}`;
+
+      this.loading = false;
+      this.render();
+    } catch (err) {
+      this.loading = false;
+      this.status = `Fehler beim Laden der Theme-Datei: ${err?.message || err}`;
+      console.error(err);
+      this.render();
+    }
+  }
+
   resetDefaultTheme() {
     this.selectedFile = "";
     this.editorContent = DEFAULT_THEME;
@@ -342,7 +373,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
         .controls {
           display: grid;
-          grid-template-columns: minmax(260px, 1fr) auto auto;
+          grid-template-columns: minmax(260px, 1fr) auto auto auto;
           gap: 12px;
           margin-top: 24px;
           align-items: center;
@@ -478,6 +509,10 @@ class ThemeGeneratorPanel extends HTMLElement {
             Aktualisieren
           </button>
 
+          <button class="secondary" id="load-file" ${this.loading || !this.selectedFile ? "disabled" : ""}>
+            Datei laden
+          </button>
+
           <button class="secondary" id="default-theme" ${this.loading ? "disabled" : ""}>
             Standard laden
           </button>
@@ -497,14 +532,18 @@ class ThemeGeneratorPanel extends HTMLElement {
           <textarea id="editor" spellcheck="false">${this.escape(this.editorContent)}</textarea>
         </div>
 
-        <code>Version: 1.3.2
-Modus: Standard-Theme im Editor
+        <code>Version: 1.4.0
+Modus: Theme-Datei laden und im Editor anzeigen
 Status: Panel erfolgreich geladen</code>
       </div>
     `;
 
     this.shadowRoot.getElementById("refresh").addEventListener("click", () => {
       this.loadThemeFiles();
+    });
+
+    this.shadowRoot.getElementById("load-file").addEventListener("click", () => {
+      this.loadSelectedTheme();
     });
 
     this.shadowRoot.getElementById("default-theme").addEventListener("click", () => {

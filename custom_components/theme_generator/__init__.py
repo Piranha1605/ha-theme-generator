@@ -44,7 +44,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         config={
             "_panel_custom": {
                 "name": PANEL_TAG,
-                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.3.2",
+                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.4.0",
                 "embed_iframe": False,
                 "trust_external": False,
             }
@@ -52,6 +52,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     )
 
     websocket_api.async_register_command(hass, websocket_list_theme_files)
+    websocket_api.async_register_command(hass, websocket_read_theme_file)
 
     return True
 
@@ -61,15 +62,50 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return True
 
 
+def _themes_dir(hass: HomeAssistant) -> Path:
+    path = Path(hass.config.path("themes"))
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def _safe_theme_file(hass: HomeAssistant, filename: str) -> Path:
+    if not filename:
+        raise ValueError("Dateiname fehlt.")
+
+    clean_name = Path(filename).name
+
+    if not clean_name.endswith((".yaml", ".yml")):
+        clean_name = f"{clean_name}.yaml"
+
+    base = _themes_dir(hass).resolve()
+    target = (base / clean_name).resolve()
+
+    if base not in target.parents:
+        raise ValueError("Ungültiger Dateipfad.")
+
+    return target
+
+
 def _list_theme_files_sync(hass: HomeAssistant) -> list[str]:
-    themes_dir = Path(hass.config.path("themes"))
-    themes_dir.mkdir(parents=True, exist_ok=True)
+    themes_dir = _themes_dir(hass)
 
     return sorted(
         item.name
         for item in themes_dir.iterdir()
         if item.is_file() and item.suffix.lower() in (".yaml", ".yml")
     )
+
+
+def _read_theme_file_sync(hass: HomeAssistant, filename: str) -> dict:
+    target = _safe_theme_file(hass, filename)
+
+    if not target.exists():
+        raise FileNotFoundError(f"Theme-Datei nicht gefunden: {target.name}")
+
+    return {
+        "filename": target.name,
+        "content": target.read_text(encoding="utf-8"),
+    }
 
 
 @callback
@@ -89,5 +125,26 @@ async def websocket_list_theme_files(hass: HomeAssistant, connection, msg) -> No
                 "files": files,
             },
         )
+    except Exception as err:
+        connection.send_error(msg["id"], "theme_generator_error", str(err))
+
+
+@callback
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "theme_generator/read_theme_file",
+        vol.Required("filename"): str,
+    }
+)
+@websocket_api.async_response
+async def websocket_read_theme_file(hass: HomeAssistant, connection, msg) -> None:
+    try:
+        result = await hass.async_add_executor_job(
+            _read_theme_file_sync,
+            hass,
+            msg["filename"],
+        )
+
+        connection.send_result(msg["id"], result)
     except Exception as err:
         connection.send_error(msg["id"], "theme_generator_error", str(err))
