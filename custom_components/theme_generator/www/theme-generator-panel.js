@@ -1663,7 +1663,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
         .box {
-          padding: 18px;
+          padding: 14px;
           border-radius: 18px;
           background: rgba(0,0,0,0.24);
           border: 1px solid rgba(255,255,255,0.10);
@@ -1865,7 +1865,7 @@ class ThemeGeneratorPanel extends HTMLElement {
           border: 1px solid rgba(255,255,255,0.12);
           outline: none;
           border-radius: 18px;
-          padding: 18px;
+          padding: 14px;
           background: #0b1220;
           color: #e5e7eb;
           font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
@@ -1892,7 +1892,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         .preview-sidebar {
           background: var(--p-sidebar);
           border-right: 1px solid var(--p-border);
-          padding: 20px;
+          padding: 15px;
         }
 
         .preview-logo {
@@ -1952,7 +1952,7 @@ class ThemeGeneratorPanel extends HTMLElement {
           color: var(--p-text);
           border: 1px solid var(--p-border);
           border-radius: 20px;
-          padding: 18px;
+          padding: 14px;
           min-height: 150px;
           box-shadow: 0 14px 32px rgba(0,0,0,0.20);
         }
@@ -2660,6 +2660,41 @@ class ThemeGeneratorPanel extends HTMLElement {
           border-style: dashed;
         }
 
+
+        .group-card,
+        .color-group,
+        .editor-group,
+        .section-card {
+          margin-bottom: 8px;
+        }
+
+        .group-header,
+        .color-group-header,
+        .section-header {
+          min-height: 58px;
+          padding-top: 12px;
+          padding-bottom: 12px;
+        }
+
+        .group-header h2,
+        .color-group-header h2,
+        .section-header h2 {
+          font-size: 18px;
+          margin: 0;
+        }
+
+        .group-body,
+        .color-group-body,
+        .section-body {
+          padding-top: 10px;
+        }
+
+        .mini-swatch {
+          width: 17px;
+          height: 17px;
+          margin-right: 5px;
+        }
+
         @media (max-width: 1050px) {
           .controls {
             grid-template-columns: 1fr 1fr;
@@ -2744,7 +2779,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.10.7</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.10.8</span></h1>
             </div>
 
             <div class="controls">
