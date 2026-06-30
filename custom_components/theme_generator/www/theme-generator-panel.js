@@ -672,15 +672,15 @@ class ThemeGeneratorPanel extends HTMLElement {
 
     this.colorFields = [
       { key: "primary-color", label: "Primärfarbe" },
+      { key: "mdc-theme-secondary", label: "Sekundärfarbe" },
       { key: "accent-color", label: "Akzentfarbe" },
-      { key: "primary-background-color", label: "Hintergrund" },
-      { key: "card-background-color", label: "Karten" },
-      { key: "primary-text-color", label: "Text" },
-      { key: "secondary-text-color", label: "Sekundärtext" },
-      { key: "sidebar-background-color", label: "Sidebar" },
-      { key: "ha-card-border-color", label: "Karten-Rahmen" },
-      { key: "mushroom-card-background", label: "Mushroom" },
-      { key: "bubble-accent-color", label: "Bubble Akzent" }
+      { key: "success-color", label: "Erfolg" },
+      { key: "warning-color", label: "Warnung" },
+      { key: "error-color", label: "Fehler" },
+      { key: "info-color", label: "Info" },
+      { key: "state-active-color", label: "Status aktiv" },
+      { key: "state-inactive-color", label: "Status inaktiv" },
+      { key: "state-unavailable-color", label: "Nicht verfügbar" }
     ];
   }
 
@@ -1139,6 +1139,30 @@ class ThemeGeneratorPanel extends HTMLElement {
           flex-wrap: wrap;
         }
 
+        .workspace {
+          display: grid;
+          grid-template-columns: 340px minmax(0, 1fr);
+          gap: 18px;
+          margin-top: 22px;
+          align-items: start;
+        }
+
+        .left-panel,
+        .right-panel {
+          min-width: 0;
+        }
+
+        .sticky-box {
+          position: sticky;
+          top: 18px;
+        }
+
+        .hint {
+          margin: 0 0 14px 0;
+          font-size: 13px;
+          color: var(--secondary-text-color, #9ca3af);
+        }
+
         .box {
           margin-top: 18px;
           padding: 18px;
@@ -1154,7 +1178,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
         textarea {
           width: 100%;
-          min-height: 680px;
+          min-height: 720px;
           box-sizing: border-box;
           resize: vertical;
           border: 1px solid rgba(255,255,255,0.12);
@@ -1171,7 +1195,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
         .color-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+          grid-template-columns: 1fr;
           gap: 12px;
         }
 
@@ -1215,7 +1239,7 @@ class ThemeGeneratorPanel extends HTMLElement {
           border-radius: 22px;
           overflow: hidden;
           border: 1px solid var(--p-border);
-          min-height: 680px;
+          min-height: 720px;
         }
 
         .preview-shell {
@@ -1384,6 +1408,14 @@ class ThemeGeneratorPanel extends HTMLElement {
             grid-template-columns: 1fr 1fr;
           }
 
+          .workspace {
+            grid-template-columns: 1fr;
+          }
+
+          .sticky-box {
+            position: static;
+          }
+
           .preview-shell {
             grid-template-columns: 1fr;
           }
@@ -1419,7 +1451,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div>
             <h1>Theme Generator</h1>
-            <p>Farben ändern, Vorschau prüfen und bei Bedarf in den YAML-Editor wechseln.</p>
+            <p>Grundfarben ändern. Links die Felder, rechts Editor oder Vorschau.</p>
           </div>
         </div>
 
@@ -1437,25 +1469,32 @@ class ThemeGeneratorPanel extends HTMLElement {
 
         <div class="status">${this.escape(this.status)}</div>
 
-        <div class="box">
-          <h2>Farben</h2>
-          <div class="color-grid">
-            ${this.renderColorControls()}
-          </div>
+        <div class="workspace">
+          <aside class="left-panel">
+            <div class="box sticky-box">
+              <h2>Grundfarben</h2>
+              <p class="hint">Nur die wichtigsten Grund- und Statusfarben. Hintergründe, Karten und Sidebar kommen im nächsten Schritt.</p>
+              <div class="color-grid">
+                ${this.renderColorControls()}
+              </div>
+            </div>
+          </aside>
+
+          <section class="right-panel">
+            <div class="tabs">
+              <button class="ghost ${this.activeView === "editor" ? "active" : ""}" id="view-editor">Editor</button>
+              <button class="ghost ${this.activeView === "preview" ? "active" : ""}" id="view-preview">Vorschau</button>
+            </div>
+
+            <div class="box">
+              <h2>${this.activeView === "preview" ? "Vorschau" : "Editor"}</h2>
+              ${contentPanel}
+            </div>
+          </section>
         </div>
 
-        <div class="tabs">
-          <button class="ghost ${this.activeView === "editor" ? "active" : ""}" id="view-editor">Editor</button>
-          <button class="ghost ${this.activeView === "preview" ? "active" : ""}" id="view-preview">Vorschau</button>
-        </div>
-
-        <div class="box">
-          <h2>${this.activeView === "preview" ? "Vorschau" : "Editor"}</h2>
-          ${contentPanel}
-        </div>
-
-        <code class="footer-code">Version: 1.7.0
-Modus: Farbfelder mit Editor/Vorschau-Umschalter
+        <code class="footer-code">Version: 1.7.1
+Modus: Grundfarben links, Editor/Vorschau rechts
 Status: Panel erfolgreich geladen</code>
       </div>
     `;
