@@ -670,6 +670,10 @@ class ThemeGeneratorPanel extends HTMLElement {
     this.activeView = "preview";
     this.status = "Panel geladen. Theme-Dateien werden gesucht …";
     this.previewPage = "overview";
+    this._editorScrollTop = 0;
+    this._editorSelectionStart = 0;
+    this._editorSelectionEnd = 0;
+    this._activeElementId = "";
     this.pendingScrollKey = "";
 
     this.openGroups = {
@@ -1440,7 +1444,66 @@ class ThemeGeneratorPanel extends HTMLElement {
   }
 
 
+  captureEditorState() {
+    const active = this.shadowRoot?.activeElement;
+    const editor = this.shadowRoot?.getElementById("editor");
+
+    this._activeElementId = active?.id || "";
+
+    if (editor) {
+      this._editorScrollTop = editor.scrollTop || 0;
+      this._editorSelectionStart = editor.selectionStart || 0;
+      this._editorSelectionEnd = editor.selectionEnd || 0;
+    }
+  }
+
+  restoreEditorState() {
+    const editor = this.shadowRoot?.getElementById("editor");
+
+    if (!editor) {
+      return;
+    }
+
+    const scrollTop = this._editorScrollTop || 0;
+    const start = this._editorSelectionStart || 0;
+    const end = this._editorSelectionEnd || start;
+    const wasEditorActive = this._activeElementId === "editor";
+
+    requestAnimationFrame(() => {
+      editor.scrollTop = scrollTop;
+
+      if (wasEditorActive) {
+        editor.focus();
+        try {
+          editor.setSelectionRange(start, end);
+        } catch (err) {
+          // ignore invalid selection range
+        }
+      }
+    });
+  }
+
+  updateStatusOnly() {
+    const status = this.shadowRoot?.querySelector(".status");
+    const loadButton = this.shadowRoot?.getElementById("load-file");
+    const overwriteButton = this.shadowRoot?.getElementById("overwrite");
+
+    if (status) {
+      status.textContent = this.status;
+    }
+
+    if (loadButton) {
+      loadButton.disabled = this.loading || !this.selectedFile;
+    }
+
+    if (overwriteButton) {
+      overwriteButton.disabled = this.loading || !this.selectedFile;
+    }
+  }
+
   render() {
+    this.captureEditorState();
+
     const options = [
       `<option value="">Theme-Datei auswählen</option>`,
       ...this.files.map((file) => {
@@ -2681,7 +2744,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.10.6</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.10.7</span></h1>
             </div>
 
             <div class="controls">
@@ -2746,7 +2809,7 @@ class ThemeGeneratorPanel extends HTMLElement {
       this.status = this.selectedFile
         ? `Ausgewählt: ${this.selectedFile}`
         : "Keine Theme-Datei ausgewählt.";
-      this.render();
+      this.updateStatusOnly();
     });
 
     const editor = this.shadowRoot.getElementById("editor");
