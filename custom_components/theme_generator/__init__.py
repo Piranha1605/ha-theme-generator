@@ -35,14 +35,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     frontend.async_register_built_in_panel(
         hass,
-        component_name="custom",
+        component_name=DOMAIN,
         sidebar_title=PANEL_TITLE,
         sidebar_icon=PANEL_ICON,
         frontend_url_path=PANEL_URL_PATH,
         require_admin=True,
+        js_url=f"/local/{DOMAIN}/{PANEL_FILENAME}?v=0.5.5",
         config={
             "tag": PANEL_TAG,
-            "module_url": f"/local/{DOMAIN}/{PANEL_FILENAME}?v=0.5.4",
         },
     )
 
