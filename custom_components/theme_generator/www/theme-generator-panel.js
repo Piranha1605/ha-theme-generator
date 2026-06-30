@@ -669,6 +669,7 @@ class ThemeGeneratorPanel extends HTMLElement {
     this.editorContent = DEFAULT_THEME;
     this.activeView = "preview";
     this.status = "Panel geladen. Theme-Dateien werden gesucht …";
+    this.previewPage = "overview";
     this.pendingScrollKey = "";
 
     this.openGroups = {
@@ -1137,8 +1138,246 @@ class ThemeGeneratorPanel extends HTMLElement {
     return name ? name.charAt(0).toUpperCase() : "B";
   }
 
+  setPreviewPage(page) {
+    this.previewPage = page;
+    this.render();
+  }
+
   renderPreview() {
-    const v = this.getPreviewVars();
+    const v = this.getPreviewVars ? this.getPreviewVars() : {
+      primary: "#03a9f4",
+      accent: "#03a9f4",
+      success: "#4caf50",
+      warning: "#ff9800",
+      error: "#f44336",
+      info: "#2196f3",
+      bg: "#111111",
+      card: "#1c1c1c",
+      text: "#e1e1e1",
+      secondary: "#9b9b9b",
+      sidebar: "#111111",
+      border: "rgba(255,255,255,0.12)",
+      bubble: "#03a9f4"
+    };
+
+    const page = this.previewPage || "overview";
+
+    const menu = [
+      ["overview", "mdi:view-dashboard-outline", "Übersicht"],
+      ["clock_weather", "mdi:weather-partly-cloudy", "Uhr & Wetter"],
+      ["standard_cards", "mdi:cards-outline", "Standardkarten"],
+      ["switches", "mdi:toggle-switch-outline", "Schalter"],
+      ["sliders", "mdi:tune-variant", "Slider"],
+      ["mushroom", "mdi:mushroom-outline", "Mushroom"],
+      ["bubble", "mdi:circle-multiple-outline", "Bubble Card"],
+      ["cardmod", "mdi:code-braces", "card-mod"],
+      ["custom_cards", "mdi:card-plus-outline", "Eigene Karten"]
+    ];
+
+    const menuHtml = menu.map(([id, icon, label]) => `
+      <div class="ha-nav-item ${page === id ? "active" : ""}" data-preview-page="${id}">
+        <ha-icon icon="${icon}" class="ha-nav-icon"></ha-icon>
+        ${label}
+      </div>
+    `).join("");
+
+    let cardsHtml = "";
+
+    if (page === "clock_weather" || page === "overview") {
+      cardsHtml += `
+        <section class="ha-top-preview-cards">
+          <article class="ha-clock-card">
+            <div class="ha-card-icon">
+              <ha-icon icon="mdi:clock-outline"></ha-icon>
+            </div>
+            <div>
+              <div class="ha-clock-label">Uhrzeit</div>
+              <div class="ha-clock-big">20:29</div>
+              <div class="ha-clock-sub">Home Assistant</div>
+            </div>
+          </article>
+
+          <article class="ha-weather-simple-card">
+            <div class="ha-card-icon weather">
+              <ha-icon icon="mdi:weather-partly-cloudy"></ha-icon>
+            </div>
+            <div>
+              <div class="ha-clock-label">Wetter</div>
+              <div class="ha-weather-temp">20 °C</div>
+              <div class="ha-clock-sub">Teilweise bewölkt</div>
+            </div>
+          </article>
+        </section>
+      `;
+    }
+
+    if (page === "overview" || page === "standard_cards") {
+      cardsHtml += `
+        <section class="ha-big-preview-cards">
+          <article class="ha-big-card">
+            <div class="big-card-head">
+              <ha-icon icon="mdi:palette"></ha-icon>
+              <h3>Grundfarben</h3>
+            </div>
+            <div class="ha-status-list big">
+              <div><span style="background:var(--p-primary)"></span> Primärfarbe</div>
+              <div><span style="background:var(--p-accent)"></span> Akzentfarbe</div>
+              <div><span style="background:var(--p-success)"></span> Erfolg</div>
+              <div><span style="background:var(--p-warning)"></span> Warnung</div>
+              <div><span style="background:var(--p-error)"></span> Fehler</div>
+              <div><span style="background:var(--p-info)"></span> Info</div>
+            </div>
+          </article>
+
+          <article class="ha-big-card">
+            <div class="big-card-head">
+              <ha-icon icon="mdi:home-assistant"></ha-icon>
+              <h3>Standardkarte</h3>
+            </div>
+            <div class="entity-row">
+              <span class="entity-icon"><ha-icon icon="mdi:lightbulb-outline"></ha-icon></span>
+              <div><strong>Licht Wohnzimmer</strong><small>Eingeschaltet</small></div>
+              <span class="state-text active">An</span>
+            </div>
+            <div class="entity-row">
+              <span class="entity-icon"><ha-icon icon="mdi:thermometer"></ha-icon></span>
+              <div><strong>Temperatur</strong><small>Sensor</small></div>
+              <span class="state-text">21,4 °C</span>
+            </div>
+          </article>
+        </section>
+      `;
+    }
+
+    if (page === "overview" || page === "switches") {
+      cardsHtml += `
+        <section class="ha-big-preview-cards">
+          <article class="ha-big-card">
+            <div class="big-card-head">
+              <ha-icon icon="mdi:toggle-switch-outline"></ha-icon>
+              <h3>Schalter</h3>
+            </div>
+            <div class="ha-switch-row"><span>Standard aus</span><i></i></div>
+            <div class="ha-switch-row on"><span>Standard an</span><i></i></div>
+            <div class="ha-switch-row disabled"><span>Deaktiviert</span><i></i></div>
+          </article>
+        </section>
+      `;
+    }
+
+    if (page === "overview" || page === "sliders") {
+      cardsHtml += `
+        <section class="ha-big-preview-cards">
+          <article class="ha-big-card">
+            <div class="big-card-head">
+              <ha-icon icon="mdi:tune-variant"></ha-icon>
+              <h3>Slider</h3>
+            </div>
+            <div class="ha-slider-row">
+              <span>Helligkeit</span>
+              <div class="ha-slider"><b style="width:72%"></b></div>
+            </div>
+            <div class="ha-slider-row">
+              <span>Lautstärke</span>
+              <div class="ha-slider"><b style="width:45%"></b></div>
+            </div>
+          </article>
+        </section>
+      `;
+    }
+
+    if (page === "overview" || page === "mushroom") {
+      cardsHtml += `
+        <section class="ha-big-preview-cards">
+          <article class="ha-big-card mushroom-like">
+            <div class="big-card-head">
+              <ha-icon icon="mdi:mushroom-outline"></ha-icon>
+              <h3>Mushroom</h3>
+            </div>
+            <div class="ha-mush-line">
+              <span><ha-icon icon="mdi:lightbulb-on-outline"></ha-icon></span>
+              <div><strong>Mushroom Light</strong><small>Helligkeit 72 %</small></div>
+            </div>
+            <div class="ha-mush-chips">
+              <b>Wohnzimmer</b><b>Auto</b><b>Szene</b>
+            </div>
+          </article>
+        </section>
+      `;
+    }
+
+    if (page === "overview" || page === "bubble") {
+      cardsHtml += `
+        <section class="ha-big-preview-cards">
+          <article class="ha-big-card bubble-like">
+            <div class="big-card-head">
+              <ha-icon icon="mdi:circle-multiple-outline"></ha-icon>
+              <h3>Bubble Card</h3>
+            </div>
+            <div class="ha-mush-line">
+              <span><ha-icon icon="mdi:flash"></ha-icon></span>
+              <div><strong>Bubble Button</strong><small>Aktiv · 23 W</small></div>
+            </div>
+            <div class="ha-mush-chips">
+              <b>Ein</b><b>50 %</b><b>Timer</b>
+            </div>
+          </article>
+        </section>
+      `;
+    }
+
+    if (page === "cardmod") {
+      cardsHtml += `
+        <section class="ha-big-preview-cards">
+          <article class="ha-big-card cardmod-like">
+            <div class="big-card-head">
+              <ha-icon icon="mdi:code-braces"></ha-icon>
+              <h3>card-mod</h3>
+            </div>
+            <p>Vorschau für Rahmen, Rundung, Schatten und Row-Styling.</p>
+            <div class="cardmod-inner">ha-card { border-radius: var(--ha-card-border-radius); }</div>
+          </article>
+        </section>
+      `;
+    }
+
+    if (page === "custom_cards") {
+      cardsHtml += `
+        <section class="ha-big-preview-cards">
+          <article class="ha-big-card">
+            <div class="big-card-head">
+              <ha-icon icon="mdi:card-plus-outline"></ha-icon>
+              <h3>Eigene Karte 1</h3>
+            </div>
+            <p>Platzhalter für frei definierbare Vorschau-Karten.</p>
+          </article>
+
+          <article class="ha-big-card">
+            <div class="big-card-head">
+              <ha-icon icon="mdi:lightbulb-group-outline"></ha-icon>
+              <h3>Eigene Karte 2</h3>
+            </div>
+            <p>Hier können später eigene Titel, Icons und Zustände rein.</p>
+          </article>
+
+          <article class="ha-big-card">
+            <div class="big-card-head">
+              <ha-icon icon="mdi:home-thermometer-outline"></ha-icon>
+              <h3>Eigene Karte 3</h3>
+            </div>
+            <p>Diese Karten sind nur für die Generator-Vorschau.</p>
+          </article>
+
+          <article class="ha-big-card">
+            <div class="big-card-head">
+              <ha-icon icon="mdi:widgets-outline"></ha-icon>
+              <h3>Eigene Karte 4</h3>
+            </div>
+            <p>Sie verändern kein echtes Lovelace-Dashboard.</p>
+          </article>
+        </section>
+      `;
+    }
 
     return `
       <div class="ha-preview" style="
@@ -1163,22 +1402,15 @@ class ThemeGeneratorPanel extends HTMLElement {
           </div>
 
           <nav class="ha-nav">
-            <div class="ha-nav-item active"><ha-icon icon="mdi:palette" class="ha-nav-icon"></ha-icon> Grundfarben</div>
-            <div class="ha-nav-item"><ha-icon icon="mdi:image-outline" class="ha-nav-icon"></ha-icon> Hintergründe</div>
-            <div class="ha-nav-item"><ha-icon icon="mdi:cards-outline" class="ha-nav-icon"></ha-icon> Karten</div>
-            <div class="ha-nav-item"><ha-icon icon="mdi:toggle-switch-outline" class="ha-nav-icon"></ha-icon> Schalter</div>
-            <div class="ha-nav-item"><ha-icon icon="mdi:tune-variant" class="ha-nav-icon"></ha-icon> Slider</div>
-            <div class="ha-nav-item"><ha-icon icon="mdi:mushroom-outline" class="ha-nav-icon"></ha-icon> Mushroom</div>
-            <div class="ha-nav-item"><ha-icon icon="mdi:circle-multiple-outline" class="ha-nav-icon"></ha-icon> Bubble Card</div>
-            <div class="ha-nav-item"><ha-icon icon="mdi:code-braces" class="ha-nav-icon"></ha-icon> card-mod</div>
+            ${menuHtml}
           </nav>
 
           <div class="ha-side-bottom">
             <div class="ha-nav-item"><ha-icon icon="mdi:cog" class="ha-nav-icon"></ha-icon> Einstellungen</div>
             <div class="ha-nav-item"><ha-icon icon="mdi:bell" class="ha-nav-icon"></ha-icon> Benachrichtigungen</div>
             <div class="ha-user-row">
-              <div class="ha-user">${this.escape(this.getUserInitial())}</div>
-              <strong>${this.escape(this.getUserName())}</strong>
+              <div class="ha-user">${this.escape(this.getUserInitial ? this.getUserInitial() : "B")}</div>
+              <strong>${this.escape(this.getUserName ? this.getUserName() : "Benutzer")}</strong>
             </div>
           </div>
         </aside>
@@ -1200,84 +1432,7 @@ class ThemeGeneratorPanel extends HTMLElement {
           </header>
 
           <div class="ha-content clean-preview">
-            <section class="ha-top-preview-cards">
-              <article class="ha-clock-card">
-                <div class="ha-card-icon">
-                  <ha-icon icon="mdi:clock-outline"></ha-icon>
-                </div>
-                <div>
-                  <div class="ha-clock-label">Uhrzeit</div>
-                  <div class="ha-clock-big">20:29</div>
-                  <div class="ha-clock-sub">Home Assistant</div>
-                </div>
-              </article>
-
-              <article class="ha-weather-simple-card">
-                <div class="ha-card-icon weather">
-                  <ha-icon icon="mdi:weather-partly-cloudy"></ha-icon>
-                </div>
-                <div>
-                  <div class="ha-clock-label">Wetter</div>
-                  <div class="ha-weather-temp">20 °C</div>
-                  <div class="ha-clock-sub">Teilweise bewölkt</div>
-                </div>
-              </article>
-            </section>
-
-            <section class="ha-big-preview-cards">
-              <article class="ha-big-card">
-                <div class="big-card-head">
-                  <ha-icon icon="mdi:palette"></ha-icon>
-                  <h3>Grundfarben</h3>
-                </div>
-                <div class="ha-status-list big">
-                  <div><span style="background:var(--p-primary)"></span> Primärfarbe</div>
-                  <div><span style="background:var(--p-accent)"></span> Akzentfarbe</div>
-                  <div><span style="background:var(--p-success)"></span> Erfolg</div>
-                  <div><span style="background:var(--p-warning)"></span> Warnung</div>
-                  <div><span style="background:var(--p-error)"></span> Fehler</div>
-                  <div><span style="background:var(--p-info)"></span> Info</div>
-                </div>
-              </article>
-
-              <article class="ha-big-card">
-                <div class="big-card-head">
-                  <ha-icon icon="mdi:toggle-switch-outline"></ha-icon>
-                  <h3>Schalter</h3>
-                </div>
-                <div class="ha-switch-row"><span>Standard aus</span><i></i></div>
-                <div class="ha-switch-row on"><span>Standard an</span><i></i></div>
-                <div class="ha-switch-row disabled"><span>Deaktiviert</span><i></i></div>
-              </article>
-
-              <article class="ha-big-card mushroom-like">
-                <div class="big-card-head">
-                  <ha-icon icon="mdi:mushroom-outline"></ha-icon>
-                  <h3>Mushroom</h3>
-                </div>
-                <div class="ha-mush-line">
-                  <span><ha-icon icon="mdi:lightbulb-on-outline"></ha-icon></span>
-                  <div><strong>Mushroom Light</strong><small>Helligkeit 72 %</small></div>
-                </div>
-                <div class="ha-mush-chips">
-                  <b>Wohnzimmer</b><b>Auto</b><b>Szene</b>
-                </div>
-              </article>
-
-              <article class="ha-big-card bubble-like">
-                <div class="big-card-head">
-                  <ha-icon icon="mdi:circle-multiple-outline"></ha-icon>
-                  <h3>Bubble Card</h3>
-                </div>
-                <div class="ha-mush-line">
-                  <span><ha-icon icon="mdi:flash"></ha-icon></span>
-                  <div><strong>Bubble Button</strong><small>Aktiv · 23 W</small></div>
-                </div>
-                <div class="ha-mush-chips">
-                  <b>Ein</b><b>50 %</b><b>Timer</b>
-                </div>
-              </article>
-            </section>
+            ${cardsHtml}
           </div>
         </section>
       </div>
@@ -2388,6 +2543,60 @@ class ThemeGeneratorPanel extends HTMLElement {
           height: 16px;
         }
 
+        .entity-row {
+          display: grid;
+          grid-template-columns: 38px minmax(0, 1fr) auto;
+          gap: 10px;
+          align-items: center;
+          padding: 10px 0;
+          border-top: 1px solid color-mix(in srgb, var(--p-border) 55%, transparent);
+        }
+
+        .entity-icon {
+          width: 34px;
+          height: 34px;
+          display: grid;
+          place-items: center;
+          border-radius: 999px;
+          background: color-mix(in srgb, var(--p-primary) 12%, transparent);
+        }
+
+        .state-text {
+          color: var(--p-secondary);
+          font-size: 12px;
+          font-weight: 800;
+        }
+
+        .state-text.active {
+          color: var(--p-primary);
+        }
+
+        .ha-slider-row {
+          display: grid;
+          gap: 8px;
+          margin: 12px 0;
+          font-size: 12px;
+          font-weight: 700;
+        }
+
+        .ha-slider {
+          height: 18px;
+          border-radius: 999px;
+          background: color-mix(in srgb, var(--p-secondary) 18%, transparent);
+          overflow: hidden;
+        }
+
+        .ha-slider b {
+          display: block;
+          height: 100%;
+          border-radius: inherit;
+          background: linear-gradient(90deg, var(--p-primary), var(--p-accent));
+        }
+
+        .cardmod-like {
+          border-style: dashed;
+        }
+
         @media (max-width: 1050px) {
           .controls {
             grid-template-columns: 1fr 1fr;
@@ -2472,7 +2681,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.10.5</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.10.6</span></h1>
             </div>
 
             <div class="controls">
@@ -2511,6 +2720,12 @@ class ThemeGeneratorPanel extends HTMLElement {
         </div>
       </div>
     `;
+
+    this.shadowRoot.querySelectorAll("[data-preview-page]").forEach((item) => {
+      item.addEventListener("click", (event) => {
+        this.setPreviewPage(event.currentTarget.dataset.previewPage);
+      });
+    });
 
     this.shadowRoot.getElementById("refresh").addEventListener("click", () => this.loadThemeFiles());
     this.shadowRoot.getElementById("load-file").addEventListener("click", () => this.loadSelectedTheme());
