@@ -1,8 +1,9 @@
 {
   "name": "HA Theme Generator",
+  "content_in_root": false,
   "render_readme": true,
   "domains": [
-    "theme_generator"
+    "frontend"
   ],
-  "homeassistant": "2025.1.0"
+  "homeassistant": "2024.6.0"
 }

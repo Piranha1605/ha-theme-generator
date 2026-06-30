@@ -2,8 +2,8 @@
   "config": {
     "step": {
       "user": {
-        "title": "Theme Generator einrichten",
-        "description": "Erstellt ein Seitenleisten-Panel zum Generieren und Speichern von Home Assistant Themes."
+        "title": "Theme Generator",
+        "description": "Theme Generator als Seitenleiste hinzufügen."
       }
     },
     "abort": {
