@@ -993,14 +993,58 @@ class ThemeGeneratorPanel extends HTMLElement {
     editor.setSelectionRange(start, end);
   }
 
-  extractColor(key, fallback = "#03a9f4") {
-    const value = this.extractValue(key, fallback);
+  isCssColorValue(value) {
+    const clean = String(value || "").trim();
 
-    if (this.isHexColor(value)) {
-      return value;
+    return (
+      /^#[0-9a-fA-F]{3}$/.test(clean) ||
+      /^#[0-9a-fA-F]{6}$/.test(clean) ||
+      /^rgb\(/i.test(clean) ||
+      /^rgba\(/i.test(clean) ||
+      clean === "transparent"
+    );
+  }
+
+  resolveThemeValue(key, fallback = "#03a9f4", seen = new Set()) {
+    if (seen.has(key)) {
+      return fallback;
+    }
+
+    seen.add(key);
+
+    const raw = this.extractValue(key, fallback).trim();
+
+    if (!raw) {
+      return fallback;
+    }
+
+    const varMatch = raw.match(/^var\(\s*--([a-zA-Z0-9_-]+)\s*(?:,\s*([^)]+))?\)$/);
+
+    if (varMatch) {
+      const refKey = varMatch[1];
+      const varFallback = varMatch[2]?.trim() || fallback;
+      return this.resolveThemeValue(refKey, varFallback, seen);
+    }
+
+    if (this.isCssColorValue(raw)) {
+      return raw;
+    }
+
+    return raw;
+  }
+
+  resolvedColorForPicker(key, fallback = "#03a9f4") {
+    const resolved = this.resolveThemeValue(key, fallback);
+
+    if (this.isHexColor(resolved)) {
+      return resolved;
     }
 
     return fallback;
+  }
+
+  extractColor(key, fallback = "#03a9f4") {
+    return this.resolveThemeValue(key, fallback);
   }
 
   setYamlColor(key, value) {
@@ -1009,19 +1053,19 @@ class ThemeGeneratorPanel extends HTMLElement {
 
   getPreviewVars() {
     return {
-      primary: this.extractColor("primary-color", "#03a9f4"),
-      accent: this.extractColor("accent-color", "#03a9f4"),
-      success: this.extractColor("success-color", "#4caf50"),
-      warning: this.extractColor("warning-color", "#ff9800"),
-      error: this.extractColor("error-color", "#f44336"),
-      info: this.extractColor("info-color", "#2196f3"),
-      bg: this.extractColor("primary-background-color", "#111111"),
-      card: this.extractColor("card-background-color", "#1c1c1c"),
-      text: this.extractColor("primary-text-color", "#e1e1e1"),
-      secondary: this.extractColor("secondary-text-color", "#9b9b9b"),
-      sidebar: this.extractColor("sidebar-background-color", "#111111"),
-      border: this.extractColor("ha-card-border-color", "#333333"),
-      bubble: this.extractColor("bubble-accent-color", "#03a9f4")
+      primary: this.resolveThemeValue("primary-color", "#03a9f4"),
+      accent: this.resolveThemeValue("accent-color", "#03a9f4"),
+      success: this.resolveThemeValue("success-color", "#4caf50"),
+      warning: this.resolveThemeValue("warning-color", "#ff9800"),
+      error: this.resolveThemeValue("error-color", "#f44336"),
+      info: this.resolveThemeValue("info-color", "#2196f3"),
+      bg: this.resolveThemeValue("primary-background-color", "#111111"),
+      card: this.resolveThemeValue("card-background-color", "#1c1c1c"),
+      text: this.resolveThemeValue("primary-text-color", "#e1e1e1"),
+      secondary: this.resolveThemeValue("secondary-text-color", "#9b9b9b"),
+      sidebar: this.resolveThemeValue("sidebar-background-color", "#111111"),
+      border: this.resolveThemeValue("ha-card-border-color", "#333333"),
+      bubble: this.resolveThemeValue("bubble-accent-color", "#03a9f4")
     };
   }
 
@@ -1047,13 +1091,13 @@ class ThemeGeneratorPanel extends HTMLElement {
       const open = !!this.openGroups[group.id];
 
       const swatches = group.fields.slice(0, 8).map((field) => {
-        const value = this.extractColor(field.key);
-        return `<span class="mini-swatch" style="background:${this.escape(value)}"></span>`;
+        const value = this.resolveThemeValue(field.key, "#03a9f4");
+        return `<span class="mini-swatch" title="${this.escape(field.key)}: ${this.escape(value)}" style="background:${this.escape(value)}"></span>`;
       }).join("");
 
       const fields = group.fields.map((field) => {
         const rawValue = this.extractValue(field.key, "#03a9f4");
-        const colorValue = this.isHexColor(rawValue) ? rawValue : "#03a9f4";
+        const colorValue = this.resolvedColorForPicker(field.key, "#03a9f4");
 
         return `
           <label class="color-field">
@@ -2428,7 +2472,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.10.3</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.10.4</span></h1>
             </div>
 
             <div class="controls">
