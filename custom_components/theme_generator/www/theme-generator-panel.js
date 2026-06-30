@@ -1320,6 +1320,78 @@ class ThemeGeneratorPanel extends HTMLElement {
     `;
   }
 
+  renderPreviewColorGroup(groupId) {
+    const group = this.colorGroups.find((item) => item.id === groupId);
+
+    if (!group) {
+      return "";
+    }
+
+    const fields = group.fields.map((field) => {
+      const rawValue = this.extractValue(field.key, "#03a9f4");
+      const colorValue = this.resolvedColorForPicker(field.key, "#03a9f4");
+      const isVar = String(rawValue).trim().toLowerCase().startsWith("var(");
+      const alpha = this.getAlphaPercent ? this.getAlphaPercent(rawValue) : 100;
+
+      return `
+        <article class="preview-field-card">
+          <div class="preview-field-head">
+            <div>
+              <strong>${this.escape(field.label)}</strong>
+              <code>${this.escape(field.key)}</code>
+            </div>
+            <input
+              type="color"
+              data-color-key="${this.escape(field.key)}"
+              value="${this.escape(colorValue)}"
+              ${isVar ? "disabled" : ""}
+            >
+          </div>
+
+          <input
+            class="value-input preview-value-input"
+            data-value-key="${this.escape(field.key)}"
+            value="${this.escape(rawValue)}"
+            spellcheck="false"
+          >
+
+          ${this.getAlphaPercent ? `
+            <div class="alpha-row preview-alpha-row">
+              <span>Transparenz</span>
+              <input
+                class="alpha-slider"
+                type="range"
+                min="0"
+                max="100"
+                value="${alpha}"
+                data-alpha-key="${this.escape(field.key)}"
+                ${isVar ? "disabled" : ""}
+              >
+              <strong>${alpha}%</strong>
+            </div>
+          ` : ""}
+
+          ${isVar ? `<div class="alpha-hint">var(...)-Verknüpfung bleibt geschützt</div>` : ""}
+        </article>
+      `;
+    }).join("");
+
+    return `
+      <section class="preview-color-editor">
+        <div class="preview-color-head">
+          <div>
+            <h2>${this.escape(group.title)}</h2>
+            <p>${this.escape(group.description)}</p>
+          </div>
+        </div>
+
+        <div class="preview-color-grid">
+          ${fields}
+        </div>
+      </section>
+    `;
+  }
+
   renderPreview() {
     const v = this.getPreviewVars ? this.getPreviewVars() : {
       primary: "#03a9f4",
@@ -1340,6 +1412,9 @@ class ThemeGeneratorPanel extends HTMLElement {
     const page = this.previewPage || "overview";
 
     const menu = [
+      ["basic", "mdi:palette", "Grundfarben"],
+      ["backgrounds", "mdi:image-filter-hdr", "Hintergründe"],
+      ["textcolors", "mdi:format-color-text", "Textfarben"],
       ["overview", "mdi:view-dashboard-outline", "Übersicht"],
       ["clock_weather", "mdi:weather-partly-cloudy", "Uhr & Wetter"],
       ["standard_cards", "mdi:cards-outline", "Standardkarten"],
@@ -1359,6 +1434,10 @@ class ThemeGeneratorPanel extends HTMLElement {
     `).join("");
 
     let cardsHtml = "";
+
+    if (["basic", "backgrounds", "textcolors"].includes(page)) {
+      cardsHtml += this.renderPreviewColorGroup(page);
+    }
 
     if (page === "clock_weather" || page === "overview") {
       cardsHtml += `
@@ -2907,7 +2986,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.1 - linke Gruppen sauber trennen */
+        /* v1.11.2 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -2990,6 +3069,117 @@ class ThemeGeneratorPanel extends HTMLElement {
         .color-field,
         .field-card {
           margin-bottom: 10px;
+        }
+
+
+        /* v1.11.2 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        .workbench,
+        .editor-layout,
+        .main-layout,
+        .content-grid,
+        .main-grid {
+          grid-template-columns: 1fr !important;
+        }
+
+        .left-column,
+        .left-panel,
+        .groups-column,
+        .settings-column,
+        .color-sidebar,
+        .field-sidebar,
+        .controls-left,
+        .generator-left {
+          display: none !important;
+        }
+
+        .right-column,
+        .right-panel,
+        .preview-column,
+        .editor-column,
+        .generator-right,
+        .panel-right {
+          grid-column: 1 / -1 !important;
+          width: 100% !important;
+          max-width: none !important;
+        }
+
+        .preview-color-editor {
+          margin-bottom: 18px;
+          padding: 18px;
+          border-radius: 22px;
+          background: var(--p-card);
+          border: 1px solid var(--p-border);
+        }
+
+        .preview-color-head h2 {
+          margin: 0;
+          font-size: 26px;
+        }
+
+        .preview-color-head p {
+          margin: 6px 0 0 0;
+          color: var(--p-secondary);
+        }
+
+        .preview-color-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+          gap: 14px;
+          margin-top: 16px;
+        }
+
+        .preview-field-card {
+          padding: 14px;
+          border-radius: 16px;
+          background: color-mix(in srgb, var(--p-bg) 55%, transparent);
+          border: 1px solid var(--p-border);
+        }
+
+        .preview-field-head {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) 48px;
+          gap: 12px;
+          align-items: center;
+          margin-bottom: 10px;
+        }
+
+        .preview-field-head strong {
+          display: block;
+          font-size: 14px;
+          margin-bottom: 4px;
+        }
+
+        .preview-field-head code {
+          display: block;
+          color: var(--p-secondary);
+          font-size: 11px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .preview-field-head input[type="color"] {
+          width: 46px;
+          height: 34px;
+          padding: 0;
+          border: 0;
+          background: transparent;
+        }
+
+        .preview-value-input {
+          width: 100%;
+        }
+
+        .preview-alpha-row {
+          margin-top: 10px;
+        }
+
+        .ha-content.clean-preview {
+          width: 100%;
+        }
+
+        .ha-preview {
+          width: 100%;
         }
 
         @media (max-width: 1050px) {
@@ -3076,7 +3266,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.11.1</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.11.2</span></h1>
             </div>
 
             <div class="controls">
