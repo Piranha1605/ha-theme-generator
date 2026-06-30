@@ -667,7 +667,7 @@ class ThemeGeneratorPanel extends HTMLElement {
     this.files = [];
     this.selectedFile = "";
     this.editorContent = DEFAULT_THEME;
-    this.activeView = "editor";
+    this.activeView = "preview";
     this.status = "Panel geladen. Theme-Dateien werden gesucht …";
 
     this.openGroups = {
@@ -1312,7 +1312,7 @@ class ThemeGeneratorPanel extends HTMLElement {
           display: inline-grid;
           grid-template-columns: 1fr 1fr;
           gap: 4px;
-          margin-bottom: 14px;
+          margin: 0;
           padding: 4px;
           border-radius: 999px;
           background: rgba(255,255,255,0.08);
@@ -1344,6 +1344,7 @@ class ThemeGeneratorPanel extends HTMLElement {
           justify-content: space-between;
           gap: 14px;
           margin-bottom: 12px;
+          min-height: 46px;
         }
 
         .inline-status {
@@ -1354,6 +1355,7 @@ class ThemeGeneratorPanel extends HTMLElement {
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
+          min-width: 0;
         }
 
         textarea {
@@ -1585,6 +1587,16 @@ class ThemeGeneratorPanel extends HTMLElement {
             width: 100%;
           }
 
+          .box-head {
+            align-items: stretch;
+            flex-direction: column;
+          }
+
+          .inline-status {
+            text-align: left;
+            white-space: normal;
+          }
+
           .view-switch {
             width: 100%;
           }
@@ -1631,14 +1643,12 @@ class ThemeGeneratorPanel extends HTMLElement {
           </aside>
 
           <section class="right-panel">
-            <div class="view-switch">
-              <button class="${this.activeView === "editor" ? "active" : ""}" id="view-editor">Editor</button>
-              <button class="${this.activeView === "preview" ? "active" : ""}" id="view-preview">Vorschau</button>
-            </div>
-
             <div class="box">
               <div class="box-head">
-                <h2>${this.activeView === "preview" ? "Vorschau" : "Editor"}</h2>
+                <div class="view-switch">
+                  <button class="${this.activeView === "editor" ? "active" : ""}" id="view-editor">Editor</button>
+                  <button class="${this.activeView === "preview" ? "active" : ""}" id="view-preview">Vorschau</button>
+                </div>
                 <div class="inline-status">${this.escape(this.status)}</div>
               </div>
               ${contentPanel}
@@ -1646,8 +1656,8 @@ class ThemeGeneratorPanel extends HTMLElement {
           </section>
         </div>
 
-        <code class="footer-code">Version: 1.7.4
-Modus: einklappbare Grundfarben mit Status im Editor-Kopf
+        <code class="footer-code">Version: 1.7.6
+Modus: Vorschau-Start mit Schalter im rechten Rahmen
 Status: Panel erfolgreich geladen</code>
       </div>
     `;
