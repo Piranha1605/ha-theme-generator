@@ -47,8 +47,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         frontend_url_path=PANEL_URL_PATH,
         require_admin=True,
         config={
-            "tag": PANEL_TAG,
-            "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.10.1",
+            "_panel_custom": {
+                "name": PANEL_TAG,
+                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.10.3",
+                "embed_iframe": False,
+                "trust_external_script": True,
+                "config": {},
+            }
         },
     )
 

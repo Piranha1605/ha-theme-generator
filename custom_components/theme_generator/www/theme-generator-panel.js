@@ -2428,7 +2428,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.10.1</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.10.3</span></h1>
             </div>
 
             <div class="controls">
