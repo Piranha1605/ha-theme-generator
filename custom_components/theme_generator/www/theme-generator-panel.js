@@ -870,12 +870,19 @@ class ThemeGeneratorPanel extends HTMLElement {
   }
 
   toggleGroup(id) {
+    const isOpen = !!this.openGroups[id];
+
     Object.keys(this.openGroups).forEach((key) => {
       this.openGroups[key] = false;
     });
 
-    this.openGroups[id] = true;
-    this.activeGroup = id;
+    if (!isOpen) {
+      this.openGroups[id] = true;
+      this.activeGroup = id;
+    } else {
+      this.activeGroup = "";
+    }
+
     this.render();
   }
 
@@ -1254,41 +1261,40 @@ class ThemeGeneratorPanel extends HTMLElement {
 
         .field-group {
           border-radius: 18px;
-          background: rgba(255,255,255,0.04);
-          border: 1px solid rgba(255,255,255,0.08);
-          overflow: hidden;
+          background: transparent;
+          border: 0;
+          overflow: visible;
         }
 
         .group-head {
           width: 100%;
-          height: auto;
-          min-height: 72px;
-          border-radius: 0;
-          border: 0;
-          background: transparent;
+          min-height: 86px;
+          border-radius: 16px;
+          border: 1px solid rgba(255,255,255,0.08);
+          background: rgba(255,255,255,0.04);
           display: grid;
-          grid-template-columns: 1fr auto;
+          grid-template-columns: 1fr 42px;
           grid-template-areas:
             "title arrow"
             "swatches swatches";
-          gap: 8px;
+          gap: 10px;
           align-items: center;
-          padding: 14px 16px;
+          padding: 16px;
           color: var(--primary-text-color, #ffffff);
           text-align: left;
         }
 
         .group-title {
           grid-area: title;
-          font-size: 17px;
-          font-weight: 800;
+          font-size: 18px;
+          font-weight: 900;
           line-height: 1.2;
         }
 
         .group-swatches {
           grid-area: swatches;
           display: flex;
-          gap: 7px;
+          gap: 8px;
           align-items: center;
           flex-wrap: wrap;
           padding-top: 2px;
@@ -1297,18 +1303,25 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
         .mini-swatch {
-          width: 16px;
-          height: 16px;
+          width: 17px;
+          height: 17px;
           border-radius: 999px;
-          border: 1px solid rgba(255,255,255,0.38);
+          border: 1px solid rgba(255,255,255,0.45);
           flex: 0 0 auto;
         }
 
         .group-arrow {
           grid-area: arrow;
-          font-size: 18px;
-          opacity: 0.75;
+          width: 34px;
+          height: 34px;
+          border-radius: 999px;
+          display: grid;
+          place-items: center;
+          font-size: 24px;
+          font-weight: 900;
+          opacity: 0.95;
           justify-self: end;
+          background: rgba(0,0,0,0.12);
         }
 
         .hint {
@@ -1669,7 +1682,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.7.8</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.7.9</span></h1>
             </div>
 
             <div class="controls">
