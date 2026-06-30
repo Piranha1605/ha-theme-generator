@@ -995,7 +995,7 @@ class ThemeGeneratorPanel extends HTMLElement {
     const v = this.getPreviewVars();
 
     return `
-      <div class="preview" style="
+      <div class="ha-preview" style="
         --p-primary:${v.primary};
         --p-accent:${v.accent};
         --p-success:${v.success};
@@ -1010,83 +1010,155 @@ class ThemeGeneratorPanel extends HTMLElement {
         --p-border:${v.border};
         --p-bubble:${v.bubble};
       ">
-        <div class="preview-shell">
-          <aside class="preview-sidebar">
-            <div class="preview-logo">HA</div>
-            <div class="preview-nav active">Home</div>
-            <div class="preview-nav">Energie</div>
-            <div class="preview-nav">Theme Generator</div>
-          </aside>
+        <aside class="ha-side">
+          <div class="ha-side-title">
+            <span class="ha-menu-icon">☰</span>
+            <span>Home Assistant</span>
+          </div>
 
-          <main class="preview-main">
-            <div class="preview-header">
-              <h2>Vorschau</h2>
-              <span>Home Assistant / Mushroom / Bubble / card-mod</span>
+          <nav class="ha-nav">
+            <div class="ha-nav-item active"><span>🎨</span> Grundfarben</div>
+            <div class="ha-nav-item"><span>🖼️</span> Hintergründe</div>
+            <div class="ha-nav-item"><span>▣</span> Karten</div>
+            <div class="ha-nav-item"><span>⏻</span> Schalter</div>
+            <div class="ha-nav-item"><span>▰</span> Slider</div>
+            <div class="ha-nav-item"><span>🍄</span> Mushroom</div>
+            <div class="ha-nav-item"><span>🫧</span> Bubble Card</div>
+            <div class="ha-nav-item"><span>⚙️</span> card-mod</div>
+          </nav>
+
+          <div class="ha-side-bottom">
+            <div class="ha-nav-item"><span>⚙️</span> Einstellungen</div>
+            <div class="ha-nav-item"><span>🔔</span> Benachrichtigungen</div>
+            <div class="ha-user">E</div>
+          </div>
+        </aside>
+
+        <section class="ha-main">
+          <header class="ha-topbar">
+            <div class="ha-top-left">
+              <span class="ha-top-icon active">⌂</span>
+              <span class="ha-top-icon">⚙</span>
+              <span class="ha-top-icon">✎</span>
             </div>
 
-            <section class="preview-grid">
-              <article class="preview-card">
-                <h3>Home Assistant Karte</h3>
-                <p>Standardkarte mit Text, Status und Icon.</p>
-                <div class="preview-state">
-                  <span class="dot"></span>
-                  Licht Wohnzimmer · eingeschaltet
-                </div>
-              </article>
+            <div class="ha-top-right">
+              <span>＋</span>
+              <span>⌕</span>
+              <span class="ha-chat">▣</span>
+              <span>✎</span>
+            </div>
+          </header>
 
-              <article class="preview-card mushroom-card">
-                <h3>Mushroom</h3>
-                <div class="mush-row">
-                  <div class="mush-icon">💡</div>
-                  <div>
-                    <strong>Mushroom Light Card</strong>
-                    <small>Helligkeit 72 %</small>
-                  </div>
-                </div>
-                <div class="mush-chip-row">
-                  <span>Wohnzimmer</span>
-                  <span>Auto</span>
-                  <span>Szene</span>
-                </div>
-              </article>
+          <div class="ha-content">
+            <div class="ha-chips">
+              <div class="ha-chip error">▣ Büro offen</div>
+              <div class="ha-chip success">⌂ Garage geschlossen</div>
+              <div class="ha-chip success">▥ Terrassentür geschlossen</div>
+              <div class="ha-chip info">Server CPU 59,0 °C</div>
+              <div class="ha-chip active">Health Score 94 %</div>
+              <div class="ha-chip">An</div>
+              <div class="ha-chip">Aus</div>
+              <div class="ha-chip active">Server</div>
+            </div>
 
-              <article class="preview-card bubble-card">
-                <h3>Bubble Card</h3>
-                <div class="bubble-line">
-                  <div class="bubble-icon">⚡</div>
-                  <div>
-                    <strong>Bubble Button</strong>
-                    <small>Aktiv · 23 W</small>
-                  </div>
+            <div class="ha-dashboard-grid">
+              <section class="ha-weather-card">
+                <div class="ha-weather-icon">☁</div>
+                <div class="ha-weather-info">
+                  <div class="ha-weather-sub">Bewölkt, 20°C</div>
+                  <div class="ha-clock">20:29</div>
+                  <div class="ha-date">30.6.2026</div>
                 </div>
-                <div class="bubble-buttons">
-                  <span>Ein</span>
-                  <span>50 %</span>
-                  <span>Timer</span>
-                </div>
-              </article>
 
-              <article class="preview-card cardmod-card">
-                <h3>card-mod</h3>
-                <p>Beispiel für Rahmen, Rundung und angepassten Kartenstil.</p>
-                <div class="cardmod-inner">
-                  card-mod-card-yaml
+                <div class="ha-forecast">
+                  <div><span>Di</span><small>17°C</small><b style="--bar:72%"></b><small>21°C</small></div>
+                  <div><span>Mi</span><small>17°C</small><b style="--bar:86%"></b><small>25°C</small></div>
+                  <div><span>Do</span><small>17°C</small><b style="--bar:68%"></b><small>21°C</small></div>
+                  <div><span>Fr</span><small>14°C</small><b style="--bar:54%"></b><small>20°C</small></div>
+                  <div><span>Sa</span><small>13°C</small><b style="--bar:78%"></b><small>22°C</small></div>
                 </div>
-              </article>
+              </section>
 
-              <article class="preview-card status-card">
-                <h3>Statusfarben</h3>
-                <div class="status-row"><span style="background:var(--p-success)"></span> Erfolg</div>
-                <div class="status-row"><span style="background:var(--p-warning)"></span> Warnung</div>
-                <div class="status-row"><span style="background:var(--p-error)"></span> Fehler</div>
-                <div class="status-row"><span style="background:var(--p-info)"></span> Info</div>
-              </article>
+              <section class="ha-right-stack">
+                <div class="ha-mini-card">
+                  <div class="ha-round-icon">💡</div>
+                  <div><strong>Gartenbeleuchtung</strong><small>Aus</small></div>
+                </div>
+                <div class="ha-mini-card active">
+                  <div class="ha-round-icon dark">●</div>
+                  <div><strong>Mopedgarage</strong><small>Aus</small></div>
+                </div>
+              </section>
+            </div>
+
+            <section class="ha-rooms">
+              <div class="ha-section-title">
+                <span>⌂</span>
+                <strong>Räume</strong>
+              </div>
+
+              <div class="ha-room-grid">
+                <div class="ha-room-card"><span></span><strong>Küche</strong></div>
+                <div class="ha-room-card"><span></span><strong>Wohnzimmer</strong></div>
+                <div class="ha-room-card"><span></span><strong>Schlafzimmer</strong></div>
+                <div class="ha-room-card active"><span>▣</span><strong>Büro</strong><small>Geöffnet</small></div>
+                <div class="ha-room-card"><span></span><strong>Garten</strong><small>Aus</small></div>
+                <div class="ha-room-card"><span></span><strong>Garage</strong><small>Aus</small></div>
+                <div class="ha-room-card"><span>🐟</span><strong>Aquarien</strong></div>
+                <div class="ha-room-card"><span></span><strong>Energie</strong></div>
+                <div class="ha-room-card"><span></span><strong>System</strong><small>59,0 °C</small></div>
+              </div>
             </section>
-          </main>
-        </div>
+
+            <section class="ha-theme-samples">
+              <div class="ha-sample-card">
+                <h3>Grundfarben</h3>
+                <div class="ha-status-list">
+                  <div><span style="background:var(--p-primary)"></span> Primärfarbe</div>
+                  <div><span style="background:var(--p-accent)"></span> Akzentfarbe</div>
+                  <div><span style="background:var(--p-success)"></span> Erfolg</div>
+                  <div><span style="background:var(--p-warning)"></span> Warnung</div>
+                  <div><span style="background:var(--p-error)"></span> Fehler</div>
+                  <div><span style="background:var(--p-info)"></span> Info</div>
+                </div>
+              </div>
+
+              <div class="ha-sample-card">
+                <h3>Schalter</h3>
+                <div class="ha-switch-row"><span>Switch aus</span><i></i></div>
+                <div class="ha-switch-row on"><span>Switch an</span><i></i></div>
+                <div class="ha-switch-row disabled"><span>Deaktiviert</span><i></i></div>
+              </div>
+
+              <div class="ha-sample-card mushroom-like">
+                <h3>Mushroom</h3>
+                <div class="ha-mush-line">
+                  <span>💡</span>
+                  <div><strong>Mushroom Light</strong><small>Helligkeit 72 %</small></div>
+                </div>
+                <div class="ha-mush-chips">
+                  <b>Wohnzimmer</b><b>Auto</b><b>Szene</b>
+                </div>
+              </div>
+
+              <div class="ha-sample-card bubble-like">
+                <h3>Bubble Card</h3>
+                <div class="ha-mush-line">
+                  <span>⚡</span>
+                  <div><strong>Bubble Button</strong><small>Aktiv · 23 W</small></div>
+                </div>
+                <div class="ha-mush-chips">
+                  <b>Ein</b><b>50 %</b><b>Timer</b>
+                </div>
+              </div>
+            </section>
+          </div>
+        </section>
       </div>
     `;
   }
+
 
   render() {
     const options = [
@@ -1611,6 +1683,419 @@ class ThemeGeneratorPanel extends HTMLElement {
           white-space: pre-wrap;
         }
 
+
+        /* Home Assistant nahe Vorschau */
+        .ha-preview {
+          min-height: 720px;
+          display: grid;
+          grid-template-columns: 220px minmax(0, 1fr);
+          background: var(--p-bg);
+          color: var(--p-text);
+          border: 1px solid var(--p-border);
+          border-radius: 20px;
+          overflow: hidden;
+        }
+
+        .ha-side {
+          background: var(--p-sidebar);
+          border-right: 1px solid var(--p-border);
+          display: flex;
+          flex-direction: column;
+          min-height: 720px;
+        }
+
+        .ha-side-title {
+          height: 54px;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 0 16px;
+          font-size: 18px;
+          border-bottom: 1px solid var(--p-border);
+        }
+
+        .ha-menu-icon {
+          font-size: 18px;
+          opacity: 0.75;
+        }
+
+        .ha-nav {
+          padding: 10px 6px;
+        }
+
+        .ha-nav-item {
+          height: 38px;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 0 12px;
+          border-radius: 6px;
+          color: var(--p-text);
+          font-weight: 650;
+          font-size: 13px;
+        }
+
+        .ha-nav-item span {
+          width: 22px;
+          text-align: center;
+          opacity: 0.75;
+        }
+
+        .ha-nav-item.active {
+          background: color-mix(in srgb, var(--p-primary) 16%, transparent);
+          color: var(--p-primary);
+        }
+
+        .ha-side-bottom {
+          margin-top: auto;
+          padding: 10px 6px 14px 6px;
+        }
+
+        .ha-user {
+          width: 36px;
+          height: 36px;
+          margin: 10px 0 0 8px;
+          border-radius: 999px;
+          display: grid;
+          place-items: center;
+          background: color-mix(in srgb, var(--p-primary) 28%, white);
+          color: var(--p-text);
+          font-weight: 800;
+        }
+
+        .ha-main {
+          background: var(--p-bg);
+          min-width: 0;
+        }
+
+        .ha-topbar {
+          height: 42px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          background: var(--p-primary);
+          color: white;
+          padding: 0 16px;
+        }
+
+        .ha-top-left,
+        .ha-top-right {
+          display: flex;
+          align-items: center;
+          gap: 20px;
+          font-weight: 800;
+        }
+
+        .ha-top-icon.active,
+        .ha-chat {
+          width: 38px;
+          height: 38px;
+          border-radius: 999px;
+          display: grid;
+          place-items: center;
+          background: rgba(255,255,255,0.14);
+        }
+
+        .ha-content {
+          padding: 22px;
+        }
+
+        .ha-chips {
+          display: flex;
+          justify-content: center;
+          gap: 8px;
+          flex-wrap: wrap;
+          margin-bottom: 18px;
+        }
+
+        .ha-chip {
+          height: 30px;
+          display: flex;
+          align-items: center;
+          padding: 0 12px;
+          border-radius: 999px;
+          background: var(--p-card);
+          border: 1px solid var(--p-border);
+          color: var(--p-text);
+          font-size: 12px;
+          font-weight: 700;
+        }
+
+        .ha-chip.success { color: var(--p-success); }
+        .ha-chip.error { color: var(--p-error); }
+        .ha-chip.info { color: var(--p-info); }
+        .ha-chip.active { color: var(--p-primary); }
+
+        .ha-dashboard-grid {
+          display: grid;
+          grid-template-columns: minmax(320px, 520px) minmax(180px, 280px);
+          gap: 12px;
+          justify-content: center;
+          align-items: start;
+        }
+
+        .ha-weather-card {
+          background: var(--p-card);
+          border: 1px solid var(--p-border);
+          border-radius: 12px;
+          min-height: 260px;
+          padding: 24px;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 12px;
+          box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+        }
+
+        .ha-weather-icon {
+          font-size: 78px;
+          color: color-mix(in srgb, var(--p-primary) 18%, transparent);
+          align-self: center;
+          justify-self: center;
+        }
+
+        .ha-weather-info {
+          text-align: center;
+        }
+
+        .ha-weather-sub {
+          color: var(--p-secondary);
+          font-size: 13px;
+        }
+
+        .ha-clock {
+          font-size: 46px;
+          line-height: 1.05;
+          margin-top: 6px;
+        }
+
+        .ha-date {
+          color: var(--p-secondary);
+          font-size: 13px;
+        }
+
+        .ha-forecast {
+          grid-column: 1 / -1;
+          display: grid;
+          gap: 8px;
+        }
+
+        .ha-forecast div {
+          display: grid;
+          grid-template-columns: 28px 44px 1fr 44px;
+          gap: 8px;
+          align-items: center;
+          font-size: 12px;
+        }
+
+        .ha-forecast small {
+          color: var(--p-secondary);
+        }
+
+        .ha-forecast b {
+          height: 18px;
+          border-radius: 999px;
+          background:
+            linear-gradient(90deg, color-mix(in srgb, var(--p-success) 40%, transparent), var(--p-warning));
+          width: var(--bar);
+          display: block;
+        }
+
+        .ha-right-stack {
+          display: grid;
+          gap: 10px;
+        }
+
+        .ha-mini-card {
+          display: flex;
+          gap: 12px;
+          align-items: center;
+          background: var(--p-card);
+          border: 1px solid transparent;
+          border-radius: 999px;
+          padding: 10px 14px;
+        }
+
+        .ha-mini-card.active {
+          border-color: var(--p-border);
+        }
+
+        .ha-mini-card small,
+        .ha-room-card small,
+        .ha-mush-line small {
+          display: block;
+          color: var(--p-secondary);
+          font-size: 11px;
+        }
+
+        .ha-round-icon {
+          width: 34px;
+          height: 34px;
+          border-radius: 999px;
+          display: grid;
+          place-items: center;
+          background: color-mix(in srgb, var(--p-primary) 12%, transparent);
+        }
+
+        .ha-round-icon.dark {
+          background: #4b5563;
+          color: white;
+        }
+
+        .ha-rooms {
+          max-width: 820px;
+          margin: 18px auto 0 auto;
+        }
+
+        .ha-section-title {
+          display: flex;
+          gap: 14px;
+          align-items: center;
+          margin: 0 0 14px 8px;
+        }
+
+        .ha-room-grid {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(160px, 1fr));
+          gap: 10px;
+        }
+
+        .ha-room-card {
+          min-height: 44px;
+          border-radius: 999px;
+          background: var(--p-card);
+          border: 1px solid var(--p-border);
+          display: grid;
+          grid-template-columns: 38px 1fr;
+          align-items: center;
+          gap: 10px;
+          padding: 6px 14px 6px 6px;
+          font-size: 12px;
+        }
+
+        .ha-room-card span {
+          width: 34px;
+          height: 34px;
+          border-radius: 999px;
+          display: grid;
+          place-items: center;
+          background: rgba(255,255,255,0.45);
+        }
+
+        .ha-room-card.active span {
+          color: var(--p-error);
+        }
+
+        .ha-theme-samples {
+          max-width: 980px;
+          margin: 22px auto 0 auto;
+          display: grid;
+          grid-template-columns: repeat(4, minmax(160px, 1fr));
+          gap: 12px;
+        }
+
+        .ha-sample-card {
+          background: var(--p-card);
+          border: 1px solid var(--p-border);
+          border-radius: 16px;
+          padding: 14px;
+          box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+        }
+
+        .ha-sample-card h3 {
+          margin: 0 0 10px 0;
+        }
+
+        .ha-status-list {
+          display: grid;
+          gap: 7px;
+        }
+
+        .ha-status-list div {
+          display: flex;
+          gap: 8px;
+          align-items: center;
+          font-size: 12px;
+        }
+
+        .ha-status-list span {
+          width: 12px;
+          height: 12px;
+          border-radius: 999px;
+        }
+
+        .ha-switch-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin: 8px 0;
+          font-size: 12px;
+        }
+
+        .ha-switch-row i {
+          width: 42px;
+          height: 24px;
+          border-radius: 999px;
+          background: color-mix(in srgb, var(--p-secondary) 40%, transparent);
+          position: relative;
+        }
+
+        .ha-switch-row i::after {
+          content: "";
+          width: 20px;
+          height: 20px;
+          border-radius: 999px;
+          background: white;
+          position: absolute;
+          left: 2px;
+          top: 2px;
+        }
+
+        .ha-switch-row.on i {
+          background: var(--p-primary);
+        }
+
+        .ha-switch-row.on i::after {
+          left: 20px;
+        }
+
+        .ha-switch-row.disabled {
+          opacity: 0.45;
+        }
+
+        .ha-mush-line {
+          display: flex;
+          gap: 10px;
+          align-items: center;
+        }
+
+        .ha-mush-line > span {
+          width: 38px;
+          height: 38px;
+          border-radius: 14px;
+          display: grid;
+          place-items: center;
+          background: color-mix(in srgb, var(--p-primary) 15%, transparent);
+        }
+
+        .ha-mush-chips {
+          display: flex;
+          gap: 8px;
+          margin-top: 12px;
+          flex-wrap: wrap;
+        }
+
+        .ha-mush-chips b {
+          padding: 7px 10px;
+          border-radius: 999px;
+          background: color-mix(in srgb, var(--p-primary) 13%, transparent);
+          font-size: 11px;
+        }
+
+        .bubble-like {
+          border-color: var(--p-bubble);
+        }
+
+
         @media (max-width: 1050px) {
           .controls {
             grid-template-columns: 1fr 1fr;
@@ -1628,13 +2113,26 @@ class ThemeGeneratorPanel extends HTMLElement {
             position: static;
           }
 
-          .preview-shell {
+          .preview-shell,
+          .ha-preview,
+          .ha-dashboard-grid,
+          .ha-theme-samples {
             grid-template-columns: 1fr;
           }
 
           .preview-sidebar {
             border-right: none;
             border-bottom: 1px solid var(--p-border);
+          }
+
+          .ha-side {
+            min-height: auto;
+            border-right: none;
+            border-bottom: 1px solid var(--p-border);
+          }
+
+          .ha-room-grid {
+            grid-template-columns: 1fr 1fr;
           }
         }
 
@@ -1682,7 +2180,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.7.9</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.8.0</span></h1>
             </div>
 
             <div class="controls">
