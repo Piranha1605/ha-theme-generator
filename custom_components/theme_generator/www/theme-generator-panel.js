@@ -693,8 +693,23 @@ class ThemeGeneratorPanel extends HTMLElement {
           { key: "state-inactive-color", label: "Status inaktiv" },
           { key: "state-unavailable-color", label: "Nicht verfügbar" }
         ]
+      ,
+      {
+        id: "backgrounds",
+        title: "Hintergründe",
+        description: "Seitenhintergrund, Sekundärflächen, Karten und klare Bereiche.",
+        fields: [
+          { key: "primary-background-color", label: "Seitenhintergrund" },
+          { key: "secondary-background-color", label: "Sekundärhintergrund" },
+          { key: "card-background-color", label: "Kartenhintergrund" },
+          { key: "clear-background-color", label: "Klarer Hintergrund" },
+          { key: "mdc-theme-background", label: "MDC Hintergrund" },
+          { key: "mdc-theme-surface", label: "MDC Oberfläche" },
+          { key: "md-sys-color-surface", label: "MD Oberfläche" },
+          { key: "md-sys-color-surface-container", label: "MD Container" }
+        ]
       }
-    ];
+      }    ];
   }
 
   set hass(hass) {
@@ -1026,8 +1041,8 @@ class ThemeGeneratorPanel extends HTMLElement {
           </div>
 
           <nav class="ha-nav">
-            <div class="ha-nav-item active"><ha-icon icon="mdi:palette" class="ha-nav-icon"></ha-icon> Grundfarben</div>
-            <div class="ha-nav-item"><ha-icon icon="mdi:image-outline" class="ha-nav-icon"></ha-icon> Hintergründe</div>
+            <div class="ha-nav-item ${this.activeGroup === "basic" ? "active" : ""}"><ha-icon icon="mdi:palette" class="ha-nav-icon"></ha-icon> Grundfarben</div>
+            <div class="ha-nav-item ${this.activeGroup === "backgrounds" ? "active" : ""}"><ha-icon icon="mdi:image-outline" class="ha-nav-icon"></ha-icon> Hintergründe</div>
             <div class="ha-nav-item"><ha-icon icon="mdi:cards-outline" class="ha-nav-icon"></ha-icon> Karten</div>
             <div class="ha-nav-item"><ha-icon icon="mdi:toggle-switch-outline" class="ha-nav-icon"></ha-icon> Schalter</div>
             <div class="ha-nav-item"><ha-icon icon="mdi:tune-variant" class="ha-nav-icon"></ha-icon> Slider</div>
@@ -1100,6 +1115,22 @@ class ThemeGeneratorPanel extends HTMLElement {
                   <div><span style="background:var(--p-warning)"></span> Warnung</div>
                   <div><span style="background:var(--p-error)"></span> Fehler</div>
                   <div><span style="background:var(--p-info)"></span> Info</div>
+                </div>
+              </article>
+
+              <article class="ha-big-card background-like">
+                <div class="big-card-head">
+                  <ha-icon icon="mdi:image-outline"></ha-icon>
+                  <h3>Hintergründe</h3>
+                </div>
+                <div class="background-preview">
+                  <div class="background-page">
+                    Seite
+                    <div class="background-section">
+                      Sekundär
+                      <div class="background-card">Karte</div>
+                    </div>
+                  </div>
                 </div>
               </article>
 
@@ -2183,7 +2214,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
         .ha-big-preview-cards {
           display: grid;
-          grid-template-columns: repeat(2, minmax(260px, 1fr));
+          grid-template-columns: repeat(3, minmax(240px, 1fr));
           gap: 18px;
           max-width: 920px;
           margin: 0 auto;
@@ -2229,6 +2260,40 @@ class ThemeGeneratorPanel extends HTMLElement {
         .ha-status-list.big span {
           width: 16px;
           height: 16px;
+        }
+
+        .background-preview {
+          border-radius: 18px;
+          overflow: hidden;
+          border: 1px solid var(--p-border);
+          background: var(--p-bg);
+          padding: 14px;
+        }
+
+        .background-page {
+          min-height: 130px;
+          border-radius: 14px;
+          background: var(--p-bg);
+          color: var(--p-secondary);
+          padding: 12px;
+          font-size: 12px;
+          font-weight: 800;
+        }
+
+        .background-section {
+          margin-top: 12px;
+          border-radius: 12px;
+          background: color-mix(in srgb, var(--p-card) 65%, var(--p-bg));
+          padding: 12px;
+        }
+
+        .background-card {
+          margin-top: 10px;
+          border-radius: 12px;
+          background: var(--p-card);
+          color: var(--p-text);
+          border: 1px solid var(--p-border);
+          padding: 14px;
         }
 
         @media (max-width: 1050px) {
@@ -2315,7 +2380,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.8.4</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.9.0</span></h1>
             </div>
 
             <div class="controls">
