@@ -1058,75 +1058,42 @@ class ThemeGeneratorPanel extends HTMLElement {
               <ha-icon icon="mdi:plus"></ha-icon>
               <ha-icon icon="mdi:magnify"></ha-icon>
               <ha-icon class="ha-chat" icon="mdi:message-outline"></ha-icon>
-              <span>✎</span>
+              <ha-icon icon="mdi:pencil"></ha-icon>
             </div>
           </header>
 
-          <div class="ha-content">
-            <div class="ha-chips">
-              <div class="ha-chip error">▣ Büro offen</div>
-              <div class="ha-chip success">⌂ Garage geschlossen</div>
-              <div class="ha-chip success">▥ Terrassentür geschlossen</div>
-              <div class="ha-chip info">Server CPU 59,0 °C</div>
-              <div class="ha-chip active">Health Score 94 %</div>
-              <div class="ha-chip">An</div>
-              <div class="ha-chip">Aus</div>
-              <div class="ha-chip active">Server</div>
-            </div>
-
-            <div class="ha-dashboard-grid">
-              <section class="ha-weather-card">
-                <ha-icon class="ha-weather-icon" icon="mdi:weather-partly-cloudy"></ha-icon>
-                <div class="ha-weather-info">
-                  <div class="ha-weather-sub">Bewölkt, 20°C</div>
-                  <div class="ha-clock">20:29</div>
-                  <div class="ha-date">30.6.2026</div>
+          <div class="ha-content clean-preview">
+            <section class="ha-top-preview-cards">
+              <article class="ha-clock-card">
+                <div class="ha-card-icon">
+                  <ha-icon icon="mdi:clock-outline"></ha-icon>
                 </div>
-
-                <div class="ha-forecast">
-                  <div><span>Di</span><small>17°C</small><b style="--bar:72%"></b><small>21°C</small></div>
-                  <div><span>Mi</span><small>17°C</small><b style="--bar:86%"></b><small>25°C</small></div>
-                  <div><span>Do</span><small>17°C</small><b style="--bar:68%"></b><small>21°C</small></div>
-                  <div><span>Fr</span><small>14°C</small><b style="--bar:54%"></b><small>20°C</small></div>
-                  <div><span>Sa</span><small>13°C</small><b style="--bar:78%"></b><small>22°C</small></div>
+                <div>
+                  <div class="ha-clock-label">Uhrzeit</div>
+                  <div class="ha-clock-big">20:29</div>
+                  <div class="ha-clock-sub">Home Assistant</div>
                 </div>
-              </section>
+              </article>
 
-              <section class="ha-right-stack">
-                <div class="ha-mini-card">
-                  <div class="ha-round-icon">💡</div>
-                  <div><strong>Gartenbeleuchtung</strong><small>Aus</small></div>
+              <article class="ha-weather-simple-card">
+                <div class="ha-card-icon weather">
+                  <ha-icon icon="mdi:weather-partly-cloudy"></ha-icon>
                 </div>
-                <div class="ha-mini-card active">
-                  <div class="ha-round-icon dark">●</div>
-                  <div><strong>Mopedgarage</strong><small>Aus</small></div>
+                <div>
+                  <div class="ha-clock-label">Wetter</div>
+                  <div class="ha-weather-temp">20 °C</div>
+                  <div class="ha-clock-sub">Teilweise bewölkt</div>
                 </div>
-              </section>
-            </div>
-
-            <section class="ha-rooms">
-              <div class="ha-section-title">
-                <span>⌂</span>
-                <strong>Räume</strong>
-              </div>
-
-              <div class="ha-room-grid">
-                <div class="ha-room-card"><span></span><strong>Küche</strong></div>
-                <div class="ha-room-card"><span></span><strong>Wohnzimmer</strong></div>
-                <div class="ha-room-card"><span></span><strong>Schlafzimmer</strong></div>
-                <div class="ha-room-card active"><span>▣</span><strong>Büro</strong><small>Geöffnet</small></div>
-                <div class="ha-room-card"><span></span><strong>Garten</strong><small>Aus</small></div>
-                <div class="ha-room-card"><span></span><strong>Garage</strong><small>Aus</small></div>
-                <div class="ha-room-card"><span>🐟</span><strong>Aquarien</strong></div>
-                <div class="ha-room-card"><span></span><strong>Energie</strong></div>
-                <div class="ha-room-card"><span></span><strong>System</strong><small>59,0 °C</small></div>
-              </div>
+              </article>
             </section>
 
-            <section class="ha-theme-samples">
-              <div class="ha-sample-card">
-                <h3>Grundfarben</h3>
-                <div class="ha-status-list">
+            <section class="ha-big-preview-cards">
+              <article class="ha-big-card">
+                <div class="big-card-head">
+                  <ha-icon icon="mdi:palette"></ha-icon>
+                  <h3>Grundfarben</h3>
+                </div>
+                <div class="ha-status-list big">
                   <div><span style="background:var(--p-primary)"></span> Primärfarbe</div>
                   <div><span style="background:var(--p-accent)"></span> Akzentfarbe</div>
                   <div><span style="background:var(--p-success)"></span> Erfolg</div>
@@ -1134,17 +1101,23 @@ class ThemeGeneratorPanel extends HTMLElement {
                   <div><span style="background:var(--p-error)"></span> Fehler</div>
                   <div><span style="background:var(--p-info)"></span> Info</div>
                 </div>
-              </div>
+              </article>
 
-              <div class="ha-sample-card">
-                <h3>Schalter</h3>
-                <div class="ha-switch-row"><span>Switch aus</span><i></i></div>
-                <div class="ha-switch-row on"><span>Switch an</span><i></i></div>
+              <article class="ha-big-card">
+                <div class="big-card-head">
+                  <ha-icon icon="mdi:toggle-switch-outline"></ha-icon>
+                  <h3>Schalter</h3>
+                </div>
+                <div class="ha-switch-row"><span>Standard aus</span><i></i></div>
+                <div class="ha-switch-row on"><span>Standard an</span><i></i></div>
                 <div class="ha-switch-row disabled"><span>Deaktiviert</span><i></i></div>
-              </div>
+              </article>
 
-              <div class="ha-sample-card mushroom-like">
-                <h3>Mushroom</h3>
+              <article class="ha-big-card mushroom-like">
+                <div class="big-card-head">
+                  <ha-icon icon="mdi:mushroom-outline"></ha-icon>
+                  <h3>Mushroom</h3>
+                </div>
                 <div class="ha-mush-line">
                   <span><ha-icon icon="mdi:lightbulb-on-outline"></ha-icon></span>
                   <div><strong>Mushroom Light</strong><small>Helligkeit 72 %</small></div>
@@ -1152,10 +1125,13 @@ class ThemeGeneratorPanel extends HTMLElement {
                 <div class="ha-mush-chips">
                   <b>Wohnzimmer</b><b>Auto</b><b>Szene</b>
                 </div>
-              </div>
+              </article>
 
-              <div class="ha-sample-card bubble-like">
-                <h3>Bubble Card</h3>
+              <article class="ha-big-card bubble-like">
+                <div class="big-card-head">
+                  <ha-icon icon="mdi:circle-multiple-outline"></ha-icon>
+                  <h3>Bubble Card</h3>
+                </div>
                 <div class="ha-mush-line">
                   <span><ha-icon icon="mdi:flash"></ha-icon></span>
                   <div><strong>Bubble Button</strong><small>Aktiv · 23 W</small></div>
@@ -1163,7 +1139,7 @@ class ThemeGeneratorPanel extends HTMLElement {
                 <div class="ha-mush-chips">
                   <b>Ein</b><b>50 %</b><b>Timer</b>
                 </div>
-              </div>
+              </article>
             </section>
           </div>
         </section>
@@ -2139,6 +2115,122 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
+
+        /* v1.8.4 reduzierte, neutrale HA-Vorschau */
+        .clean-preview {
+          padding: 28px;
+        }
+
+        .ha-top-preview-cards {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(220px, 1fr));
+          gap: 18px;
+          max-width: 920px;
+          margin: 0 auto 22px auto;
+        }
+
+        .ha-clock-card,
+        .ha-weather-simple-card {
+          min-height: 150px;
+          background: var(--p-card);
+          border: 1px solid var(--p-border);
+          border-radius: 22px;
+          padding: 22px;
+          display: flex;
+          align-items: center;
+          gap: 18px;
+          box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+        }
+
+        .ha-card-icon {
+          width: 64px;
+          height: 64px;
+          border-radius: 20px;
+          display: grid;
+          place-items: center;
+          background: color-mix(in srgb, var(--p-primary) 15%, transparent);
+          color: var(--p-primary);
+          flex: 0 0 auto;
+        }
+
+        .ha-card-icon ha-icon {
+          --mdc-icon-size: 38px;
+        }
+
+        .ha-card-icon.weather {
+          color: var(--p-info);
+        }
+
+        .ha-clock-label {
+          color: var(--p-secondary);
+          font-size: 14px;
+          font-weight: 700;
+        }
+
+        .ha-clock-big,
+        .ha-weather-temp {
+          color: var(--p-text);
+          font-size: 46px;
+          line-height: 1;
+          font-weight: 500;
+          margin: 4px 0;
+        }
+
+        .ha-clock-sub {
+          color: var(--p-secondary);
+          font-size: 13px;
+        }
+
+        .ha-big-preview-cards {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(260px, 1fr));
+          gap: 18px;
+          max-width: 920px;
+          margin: 0 auto;
+        }
+
+        .ha-big-card {
+          min-height: 220px;
+          background: var(--p-card);
+          border: 1px solid var(--p-border);
+          border-radius: 22px;
+          padding: 22px;
+          box-shadow: 0 14px 32px rgba(0,0,0,0.10);
+        }
+
+        .big-card-head {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          margin-bottom: 18px;
+        }
+
+        .big-card-head h3 {
+          margin: 0;
+          font-size: 20px;
+        }
+
+        .big-card-head ha-icon {
+          color: var(--p-primary);
+          --mdc-icon-size: 26px;
+        }
+
+        .ha-status-list.big {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 12px;
+        }
+
+        .ha-status-list.big div {
+          font-size: 14px;
+          font-weight: 650;
+        }
+
+        .ha-status-list.big span {
+          width: 16px;
+          height: 16px;
+        }
+
         @media (max-width: 1050px) {
           .controls {
             grid-template-columns: 1fr 1fr;
@@ -2223,7 +2315,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.8.3</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.8.4</span></h1>
             </div>
 
             <div class="controls">
