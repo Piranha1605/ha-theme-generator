@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Theme Generator",
-        "description": "Theme Generator als Seitenleiste hinzufügen."
+        "description": "Theme Generator zur Seitenleiste hinzufügen."
       }
     },
     "abort": {
