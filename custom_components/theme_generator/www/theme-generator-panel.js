@@ -693,6 +693,21 @@ class ThemeGeneratorPanel extends HTMLElement {
           { key: "state-inactive-color", label: "Status inaktiv" },
           { key: "state-unavailable-color", label: "Nicht verfügbar" }
         ]
+      },
+      {
+        id: "backgrounds",
+        title: "Hintergründe",
+        description: "Seitenhintergrund, Sekundärflächen, Karten und klare Bereiche.",
+        fields: [
+          { key: "primary-background-color", label: "Seitenhintergrund" },
+          { key: "secondary-background-color", label: "Sekundärhintergrund" },
+          { key: "card-background-color", label: "Kartenhintergrund" },
+          { key: "clear-background-color", label: "Klarer Hintergrund" },
+          { key: "mdc-theme-background", label: "MDC Hintergrund" },
+          { key: "mdc-theme-surface", label: "MDC Oberfläche" },
+          { key: "md-sys-color-surface", label: "MD Oberfläche" },
+          { key: "md-sys-color-surface-container", label: "MD Container" }
+        ]
       }
     ];
   }
@@ -2315,7 +2330,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.9.1</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.9.2</span></h1>
             </div>
 
             <div class="controls">
