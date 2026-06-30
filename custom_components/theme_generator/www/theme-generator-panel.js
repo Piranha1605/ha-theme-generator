@@ -497,7 +497,7 @@ class ThemeGeneratorPanel extends HTMLElement {
           <textarea id="editor" spellcheck="false">${this.escape(this.editorContent)}</textarea>
         </div>
 
-        <code>Version: 1.3.0
+        <code>Version: 1.3.1
 Modus: Standard-Theme im Editor
 Status: Panel erfolgreich geladen</code>
       </div>
