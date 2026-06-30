@@ -981,6 +981,117 @@ class ThemeGeneratorPanel extends HTMLElement {
     return;
   }
 
+  hexToRgb(value) {
+    const clean = String(value || "").trim();
+
+    let hex = clean.replace("#", "");
+
+    if (hex.length === 3) {
+      hex = hex.split("").map((char) => char + char).join("");
+    }
+
+    if (!/^[0-9a-fA-F]{6}$/.test(hex)) {
+      return null;
+    }
+
+    return {
+      r: parseInt(hex.slice(0, 2), 16),
+      g: parseInt(hex.slice(2, 4), 16),
+      b: parseInt(hex.slice(4, 6), 16),
+    };
+  }
+
+  parseRgbValue(value) {
+    const clean = String(value || "").trim();
+
+    let match = clean.match(/^rgba\(\s*([0-9.]+)\s*,\s*([0-9.]+)\s*,\s*([0-9.]+)\s*,\s*([0-9.]+)\s*\)$/i);
+
+    if (match) {
+      return {
+        r: Math.round(Number(match[1])),
+        g: Math.round(Number(match[2])),
+        b: Math.round(Number(match[3])),
+        a: Math.max(0, Math.min(1, Number(match[4]))),
+      };
+    }
+
+    match = clean.match(/^rgb\(\s*([0-9.]+)\s*,\s*([0-9.]+)\s*,\s*([0-9.]+)\s*\)$/i);
+
+    if (match) {
+      return {
+        r: Math.round(Number(match[1])),
+        g: Math.round(Number(match[2])),
+        b: Math.round(Number(match[3])),
+        a: 1,
+      };
+    }
+
+    return null;
+  }
+
+  getAlphaPercent(value) {
+    const clean = String(value || "").trim();
+
+    if (/^var\(/i.test(clean)) {
+      return 100;
+    }
+
+    const rgb = this.parseRgbValue(clean);
+
+    if (rgb) {
+      return Math.round(rgb.a * 100);
+    }
+
+    return 100;
+  }
+
+  withAlpha(value, alphaPercent, fallback = "#03a9f4") {
+    const clean = String(value || "").trim();
+    const alpha = Math.max(0, Math.min(100, Number(alphaPercent))) / 100;
+
+    if (/^var\(/i.test(clean)) {
+      return clean;
+    }
+
+    let rgb = this.parseRgbValue(clean);
+
+    if (!rgb && this.isHexColor(clean)) {
+      rgb = this.hexToRgb(clean);
+    }
+
+    if (!rgb) {
+      rgb = this.hexToRgb(fallback) || { r: 3, g: 169, b: 244 };
+    }
+
+    const roundedAlpha = Math.round(alpha * 100) / 100;
+
+    if (roundedAlpha >= 1) {
+      return `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+    }
+
+    return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${roundedAlpha.toFixed(2)})`;
+  }
+
+  setYamlAlpha(key, alphaPercent) {
+    const rawValue = this.extractValue(key, "#03a9f4");
+    const newValue = this.withAlpha(rawValue, alphaPercent, this.resolvedColorForPicker ? this.resolvedColorForPicker(key, "#03a9f4") : "#03a9f4");
+
+    if (/^var\(/i.test(String(rawValue).trim())) {
+      this.status = `Transparenz bei ${key} nicht geändert, weil der Wert eine var(...)-Verknüpfung ist.`;
+      this.updateStatusOnly?.();
+      return;
+    }
+
+    if (this.setYamlValue) {
+      this.setYamlValue(key, newValue);
+    } else if (this.setYamlColor) {
+      this.setYamlColor(key, newValue);
+    }
+
+    this.status = `${key} Transparenz: ${alphaPercent}%`;
+    this.render();
+  }
+
   isCssColorValue(value) {
     const clean = String(value || "").trim();
 
@@ -2761,6 +2872,40 @@ class ThemeGeneratorPanel extends HTMLElement {
           margin-right: 5px;
         }
 
+
+        .alpha-row {
+          display: grid;
+          grid-template-columns: auto minmax(80px, 1fr) 42px;
+          gap: 10px;
+          align-items: center;
+          margin-top: 10px;
+          font-size: 12px;
+          color: var(--secondary-text-color, #aeb7c8);
+        }
+
+        .alpha-row input[type="range"] {
+          width: 100%;
+          accent-color: var(--primary-color, #03a9f4);
+        }
+
+        .alpha-row strong {
+          text-align: right;
+          color: var(--primary-text-color, #ffffff);
+          font-size: 12px;
+        }
+
+        .alpha-hint {
+          margin-top: 6px;
+          font-size: 11px;
+          color: var(--secondary-text-color, #aeb7c8);
+          opacity: 0.8;
+        }
+
+        .alpha-slider:disabled {
+          opacity: 0.45;
+          cursor: not-allowed;
+        }
+
         @media (max-width: 1050px) {
           .controls {
             grid-template-columns: 1fr 1fr;
@@ -2845,7 +2990,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.10.9</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.11.0</span></h1>
             </div>
 
             <div class="controls">
