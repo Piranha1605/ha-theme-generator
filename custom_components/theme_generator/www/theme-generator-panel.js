@@ -733,16 +733,24 @@ class ThemeGeneratorPanel extends HTMLElement {
   set hass(hass) {
     this._hass = hass;
 
-    if (!this.initialized) {
-      this.initialized = true;
-      this.loadThemeFiles();
-    }
+    try {
+      if (!this.initialized) {
+        this.initialized = true;
+        this.loadThemeFiles();
+      }
 
-    this.render();
+      this.render();
+    } catch (err) {
+      this.renderFatalError(err);
+    }
   }
 
   connectedCallback() {
-    this.render();
+    try {
+      this.render();
+    } catch (err) {
+      this.renderFatalError(err);
+    }
   }
 
   async apiCall(message) {
@@ -2420,7 +2428,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.9.8</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.9.9</span></h1>
             </div>
 
             <div class="controls">

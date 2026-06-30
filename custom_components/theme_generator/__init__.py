@@ -48,7 +48,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         require_admin=True,
         config={
             "tag": PANEL_TAG,
-            "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.9.8",
+            "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.9.9",
         },
     )
 
