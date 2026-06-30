@@ -1091,7 +1091,7 @@ class ThemeGeneratorPanel extends HTMLElement {
           <textarea id="editor" spellcheck="false">${this.escape(this.editorContent)}</textarea>
         </div>
 
-        <code>Version: 1.6.0
+        <code>Version: 1.6.1
 Modus: vollständige Basis mit HA / Mushroom / Bubble / card-mod
 Status: Panel erfolgreich geladen</code>
       </div>
