@@ -386,15 +386,15 @@ class ThemeGeneratorPanel extends HTMLElement {
           <div class="grid">
             <div>
               <label>Theme-Datei</label>
-              <select id="file-select" ?disabled="${this.loading}">
+              <select id="file-select" ${this.loading ? "disabled" : ""}>
                 ${fileOptions}
               </select>
             </div>
 
-            <button id="refresh" ?disabled="${this.loading}">Aktualisieren</button>
-            <button id="base" ?disabled="${this.loading}">Grundtheme laden</button>
-            <button class="primary" id="save-new" ?disabled="${this.loading}">Als neue Datei speichern</button>
-            <button class="warning" id="overwrite" ?disabled="${this.loading || !this.selectedFile}">Überschreiben</button>
+            <button id="refresh" ${this.loading ? "disabled" : ""}>Aktualisieren</button>
+            <button id="base" ${this.loading ? "disabled" : ""}>Grundtheme laden</button>
+            <button class="primary" id="save-new" ${this.loading ? "disabled" : ""}>Als neue Datei speichern</button>
+            <button class="warning" id="overwrite" ${this.loading || !this.selectedFile ? "disabled" : ""}>Überschreiben</button>
           </div>
 
           <div class="selected">
