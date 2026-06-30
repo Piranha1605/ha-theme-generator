@@ -49,7 +49,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         config={
             "_panel_custom": {
                 "name": PANEL_TAG,
-                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.10.4",
+                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.10.5",
                 "embed_iframe": False,
                 "trust_external_script": True,
                 "config": {},
@@ -140,6 +140,30 @@ def _overwrite_theme_file_sync(hass: HomeAssistant, filename: str, content: str)
     }
 
 
+def _rename_theme_root(content: str, new_theme_name: str) -> str:
+    """Rename the first top-level YAML theme key to the new file stem."""
+    lines = content.splitlines()
+
+    for index, line in enumerate(lines):
+        stripped = line.strip()
+
+        if not stripped or stripped.startswith("#"):
+            continue
+
+        if line.startswith((" ", "\t")):
+            continue
+
+        match = re.match(r"^([A-Za-z0-9_-]+):\s*$", line)
+
+        if match:
+            lines[index] = f"{new_theme_name}:"
+            return "\n".join(lines) + ("\n" if content.endswith("\n") else "")
+
+        break
+
+    return content
+
+
 def _save_theme_file_version_sync(hass: HomeAssistant, filename: str, content: str) -> dict:
     original = _safe_theme_file(hass, filename)
 
@@ -149,16 +173,19 @@ def _save_theme_file_version_sync(hass: HomeAssistant, filename: str, content: s
     counter = 1
 
     while True:
-        candidate = original.parent / f"{clean_stem}_v{counter}{suffix}"
+        candidate_stem = f"{clean_stem}_v{counter}"
+        candidate = original.parent / f"{candidate_stem}{suffix}"
 
         if not candidate.exists():
-            candidate.write_text(content, encoding="utf-8")
+            new_content = _rename_theme_root(content, candidate_stem)
+            candidate.write_text(new_content, encoding="utf-8")
 
             base = _themes_path(hass).resolve()
 
             return {
                 "filename": candidate.resolve().relative_to(base).as_posix(),
-                "content": content,
+                "content": new_content,
+                "theme_name": candidate_stem,
             }
 
         counter += 1
