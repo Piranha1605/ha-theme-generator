@@ -1116,11 +1116,6 @@ class ThemeGeneratorPanel extends HTMLElement {
           border-color: rgba(255,255,255,0.18);
         }
 
-        button.active {
-          background: #3c8ae9;
-          border-color: #3c8ae9;
-        }
-
         button:disabled {
           opacity: 0.55;
           cursor: not-allowed;
@@ -1132,11 +1127,35 @@ class ThemeGeneratorPanel extends HTMLElement {
           font-size: 14px;
         }
 
-        .tabs {
-          display: flex;
-          gap: 10px;
-          margin-top: 22px;
-          flex-wrap: wrap;
+        .view-switch {
+          display: inline-grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 4px;
+          margin-top: 0;
+          margin-bottom: 14px;
+          padding: 4px;
+          border-radius: 999px;
+          background: rgba(255,255,255,0.08);
+          border: 1px solid rgba(255,255,255,0.12);
+          width: fit-content;
+        }
+
+        .view-switch button {
+          height: 38px;
+          min-width: 110px;
+          border-radius: 999px;
+          border: 0;
+          background: transparent;
+          color: var(--secondary-text-color, #9ca3af);
+          padding: 0 18px;
+          font-weight: 800;
+          cursor: pointer;
+        }
+
+        .view-switch button.active {
+          background: #3c8ae9;
+          color: white;
+          box-shadow: 0 8px 18px rgba(60,138,233,0.28);
         }
 
         .workspace {
@@ -1438,6 +1457,15 @@ class ThemeGeneratorPanel extends HTMLElement {
           button {
             width: 100%;
           }
+
+          .view-switch {
+            width: 100%;
+          }
+
+          .view-switch button {
+            width: auto;
+            min-width: 0;
+          }
         }
       </style>
 
@@ -1481,9 +1509,9 @@ class ThemeGeneratorPanel extends HTMLElement {
           </aside>
 
           <section class="right-panel">
-            <div class="tabs">
-              <button class="ghost ${this.activeView === "editor" ? "active" : ""}" id="view-editor">Editor</button>
-              <button class="ghost ${this.activeView === "preview" ? "active" : ""}" id="view-preview">Vorschau</button>
+            <div class="view-switch">
+              <button class="${this.activeView === "editor" ? "active" : ""}" id="view-editor">Editor</button>
+              <button class="${this.activeView === "preview" ? "active" : ""}" id="view-preview">Vorschau</button>
             </div>
 
             <div class="box">
@@ -1493,7 +1521,7 @@ class ThemeGeneratorPanel extends HTMLElement {
           </section>
         </div>
 
-        <code class="footer-code">Version: 1.7.1
+        <code class="footer-code">Version: 1.7.2
 Modus: Grundfarben links, Editor/Vorschau rechts
 Status: Panel erfolgreich geladen</code>
       </div>
