@@ -20,16 +20,21 @@ from .const import (
 )
 
 
+THEMES_DIR = "themes"
+
+
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     return True
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    static_path = hass.config.path(f"custom_components/{DOMAIN}/www")
+
     await hass.http.async_register_static_paths(
         [
             StaticPathConfig(
                 f"/{DOMAIN}_static",
-                hass.config.path(f"custom_components/{DOMAIN}/www"),
+                static_path,
                 True,
             )
         ]
@@ -43,18 +48,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         frontend_url_path=PANEL_URL_PATH,
         require_admin=True,
         config={
-            "_panel_custom": {
-                "name": PANEL_TAG,
-                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.9.6",
-                "embed_iframe": False,
-                "trust_external": False,
-            }
+            "tag": PANEL_TAG,
+            "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.9.7",
         },
     )
 
     websocket_api.async_register_command(hass, websocket_list_theme_files)
     websocket_api.async_register_command(hass, websocket_read_theme_file)
     websocket_api.async_register_command(hass, websocket_save_theme_file_version)
+    websocket_api.async_register_command(hass, websocket_overwrite_theme_file)
 
     return True
 
@@ -64,8 +66,8 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return True
 
 
-def _themes_dir(hass: HomeAssistant) -> Path:
-    path = Path(hass.config.path("themes"))
+def _themes_path(hass: HomeAssistant) -> Path:
+    path = Path(hass.config.path(THEMES_DIR))
     path.mkdir(parents=True, exist_ok=True)
     return path
 
@@ -82,7 +84,7 @@ def _safe_theme_file(hass: HomeAssistant, filename: str) -> Path:
     if any(part in ("..", "") for part in relative.parts):
         raise ValueError("Ungültiger Dateipfad.")
 
-    if relative.suffix not in (".yaml", ".yml"):
+    if relative.suffix.lower() not in (".yaml", ".yml"):
         relative = relative.with_suffix(".yaml")
 
     base = _themes_path(hass).resolve()
@@ -98,188 +100,189 @@ def _safe_theme_file(hass: HomeAssistant, filename: str) -> Path:
 
 
 def _list_theme_files_sync(hass: HomeAssistant) -> list[str]:
-    themes_dir = _themes_dir(hass)
+    base = _themes_path(hass).resolve()
 
-    return sorted(
-        item.name
-        for item in themes_dir.iterdir()
-        if item.is_file() and item.suffix.lower() in (".yaml", ".yml")
-    )
+    files: list[str] = []
+
+    for path in base.rglob("*"):
+        if not path.is_file():
+            continue
+
+        if path.suffix.lower() not in (".yaml", ".yml"):
+            continue
+
+        files.append(path.resolve().relative_to(base).as_posix())
+
+    return sorted(files, key=str.lower)
 
 
 def _read_theme_file_sync(hass: HomeAssistant, filename: str) -> dict:
-    target = _safe_theme_file(hass, filename)
+    path = _safe_theme_file(hass, filename)
 
-    if not target.exists():
-        raise FileNotFoundError(f"Theme-Datei nicht gefunden: {target.name}")
+    if not path.exists():
+        raise FileNotFoundError(f"Theme-Datei nicht gefunden: {filename}")
+
+    base = _themes_path(hass).resolve()
 
     return {
-        "filename": target.name,
-        "content": target.read_text(encoding="utf-8"),
+        "filename": path.resolve().relative_to(base).as_posix(),
+        "content": path.read_text(encoding="utf-8"),
     }
 
 
-def _version_base_name(filename: str) -> tuple[str, str]:
-    clean_name = Path(filename or "ha_standard_basis.yaml").name
+def _overwrite_theme_file_sync(hass: HomeAssistant, filename: str, content: str) -> dict:
+    path = _safe_theme_file(hass, filename)
+    path.write_text(content, encoding="utf-8")
 
-    if not clean_name.endswith((".yaml", ".yml")):
-        clean_name = f"{clean_name}.yaml"
+    base = _themes_path(hass).resolve()
 
-    path = Path(clean_name)
-    suffix = path.suffix
-    stem = path.stem
-
-    stem = re.sub(r"_v\d+$", "", stem)
-
-    return stem, suffix
-
-
-def _extract_top_level_theme_names(content: str) -> list[str]:
-    names: list[str] = []
-
-    for line in content.splitlines():
-        if not line.strip():
-            continue
-
-        if line.startswith((" ", "\t", "#", "-")):
-            continue
-
-        match = re.match(r'^("?)([^":]+)\1:\s*(?:#.*)?$', line)
-
-        if match:
-            name = match.group(2).strip()
-
-            if name and name not in names:
-                names.append(name)
-
-    return names
-
-
-def _rename_theme_names_for_version(content: str, version: int, fallback_stem: str) -> str:
-    names = _extract_top_level_theme_names(content)
-
-    if not names:
-        return f"{fallback_stem}_v{version}:\n" + content
-
-    mapping: dict[str, str] = {}
-
-    for old_name in names:
-        base_name = re.sub(r"_v\d+$", "", old_name)
-        mapping[old_name] = f"{base_name}_v{version}"
-
-    new_content = content
-
-    for old_name, new_name in mapping.items():
-        new_content = re.sub(
-            rf'^("?){re.escape(old_name)}\1:',
-            f"{new_name}:",
-            new_content,
-            flags=re.MULTILINE,
-        )
-
-    for old_name, new_name in mapping.items():
-        new_content = re.sub(
-            rf'(?<![A-Za-z0-9_-]){re.escape(old_name)}(?![A-Za-z0-9_-])',
-            new_name,
-            new_content,
-        )
-
-    return new_content
+    return {
+        "filename": path.resolve().relative_to(base).as_posix(),
+        "content": content,
+    }
 
 
 def _save_theme_file_version_sync(hass: HomeAssistant, filename: str, content: str) -> dict:
-    base = _themes_dir(hass).resolve()
-    stem, suffix = _version_base_name(filename)
+    original = _safe_theme_file(hass, filename)
 
-    version = 1
+    suffix = original.suffix or ".yaml"
+    clean_stem = re.sub(r"_v\d+$", "", original.stem)
+
+    counter = 1
 
     while True:
-        new_name = f"{stem}_v{version}{suffix}"
-        target = (base / new_name).resolve()
+        candidate = original.parent / f"{clean_stem}_v{counter}{suffix}"
 
-        if base not in target.parents:
-            raise ValueError("Ungültiger Dateipfad.")
+        if not candidate.exists():
+            candidate.write_text(content, encoding="utf-8")
 
-        if not target.exists():
-            new_content = _rename_theme_names_for_version(content, version, stem)
-            target.write_text(new_content, encoding="utf-8")
+            base = _themes_path(hass).resolve()
 
             return {
-                "filename": target.name,
-                "content": new_content,
-                "saved": True,
+                "filename": candidate.resolve().relative_to(base).as_posix(),
+                "content": content,
             }
 
-        version += 1
+        counter += 1
 
 
-@callback
+async def _reload_themes(hass: HomeAssistant) -> None:
+    await hass.services.async_call(
+        "frontend",
+        "reload_themes",
+        blocking=False,
+    )
+
+
 @websocket_api.websocket_command(
     {
         vol.Required("type"): "theme_generator/list_theme_files",
     }
 )
-@websocket_api.async_response
-async def websocket_list_theme_files(hass: HomeAssistant, connection, msg) -> None:
-    try:
-        files = await hass.async_add_executor_job(_list_theme_files_sync, hass)
-
-        connection.send_result(
-            msg["id"],
-            {
-                "files": files,
-            },
-        )
-    except Exception as err:
-        connection.send_error(msg["id"], "theme_generator_error", str(err))
-
-
 @callback
+def websocket_list_theme_files(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict,
+) -> None:
+    async def _async_handle() -> None:
+        try:
+            files = await hass.async_add_executor_job(_list_theme_files_sync, hass)
+
+            connection.send_result(
+                msg["id"],
+                {
+                    "files": files,
+                },
+            )
+        except Exception as err:
+            connection.send_error(msg["id"], "theme_generator_error", str(err))
+
+    hass.async_create_task(_async_handle())
+
+
 @websocket_api.websocket_command(
     {
         vol.Required("type"): "theme_generator/read_theme_file",
         vol.Required("filename"): str,
     }
 )
-@websocket_api.async_response
-async def websocket_read_theme_file(hass: HomeAssistant, connection, msg) -> None:
-    try:
-        result = await hass.async_add_executor_job(
-            _read_theme_file_sync,
-            hass,
-            msg["filename"],
-        )
-
-        connection.send_result(msg["id"], result)
-    except Exception as err:
-        connection.send_error(msg["id"], "theme_generator_error", str(err))
-
-
 @callback
+def websocket_read_theme_file(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict,
+) -> None:
+    async def _async_handle() -> None:
+        try:
+            result = await hass.async_add_executor_job(
+                _read_theme_file_sync,
+                hass,
+                msg["filename"],
+            )
+
+            connection.send_result(msg["id"], result)
+        except Exception as err:
+            connection.send_error(msg["id"], "theme_generator_error", str(err))
+
+    hass.async_create_task(_async_handle())
+
+
 @websocket_api.websocket_command(
     {
         vol.Required("type"): "theme_generator/save_theme_file_version",
-        vol.Optional("filename", default="ha_standard_basis.yaml"): str,
+        vol.Required("filename"): str,
         vol.Required("content"): str,
     }
 )
-@websocket_api.async_response
-async def websocket_save_theme_file_version(hass: HomeAssistant, connection, msg) -> None:
-    try:
-        result = await hass.async_add_executor_job(
-            _save_theme_file_version_sync,
-            hass,
-            msg.get("filename") or "ha_standard_basis.yaml",
-            msg["content"],
-        )
+@callback
+def websocket_save_theme_file_version(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict,
+) -> None:
+    async def _async_handle() -> None:
+        try:
+            result = await hass.async_add_executor_job(
+                _save_theme_file_version_sync,
+                hass,
+                msg["filename"],
+                msg["content"],
+            )
 
-        await hass.services.async_call(
-            "frontend",
-            "reload_themes",
-            {},
-            blocking=False,
-        )
+            await _reload_themes(hass)
+            connection.send_result(msg["id"], result)
+        except Exception as err:
+            connection.send_error(msg["id"], "theme_generator_error", str(err))
 
-        connection.send_result(msg["id"], result)
-    except Exception as err:
-        connection.send_error(msg["id"], "theme_generator_error", str(err))
+    hass.async_create_task(_async_handle())
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "theme_generator/overwrite_theme_file",
+        vol.Required("filename"): str,
+        vol.Required("content"): str,
+    }
+)
+@callback
+def websocket_overwrite_theme_file(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict,
+) -> None:
+    async def _async_handle() -> None:
+        try:
+            result = await hass.async_add_executor_job(
+                _overwrite_theme_file_sync,
+                hass,
+                msg["filename"],
+                msg["content"],
+            )
+
+            await _reload_themes(hass)
+            connection.send_result(msg["id"], result)
+        except Exception as err:
+            connection.send_error(msg["id"], "theme_generator_error", str(err))
+
+    hass.async_create_task(_async_handle())
