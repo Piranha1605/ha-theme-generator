@@ -45,7 +45,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         config={
             "_panel_custom": {
                 "name": PANEL_TAG,
-                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.5.0",
+                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.5.1",
                 "embed_iframe": False,
                 "trust_external": False,
             }
@@ -110,6 +110,100 @@ def _read_theme_file_sync(hass: HomeAssistant, filename: str) -> dict:
     }
 
 
+def _version_base_name(filename: str) -> tuple[str, str]:
+    clean_name = Path(filename or "ha_standard_basis.yaml").name
+
+    if not clean_name.endswith((".yaml", ".yml")):
+        clean_name = f"{clean_name}.yaml"
+
+    path = Path(clean_name)
+    suffix = path.suffix
+    stem = path.stem
+
+    stem = re.sub(r"_v\d+$", "", stem)
+
+    return stem, suffix
+
+
+def _extract_top_level_theme_names(content: str) -> list[str]:
+    names: list[str] = []
+
+    for line in content.splitlines():
+        if not line.strip():
+            continue
+
+        if line.startswith((" ", "\t", "#", "-")):
+            continue
+
+        match = re.match(r'^("?)([^":]+)\1:\s*(?:#.*)?$', line)
+
+        if match:
+            name = match.group(2).strip()
+
+            if name and name not in names:
+                names.append(name)
+
+    return names
+
+
+def _rename_theme_names_for_version(content: str, version: int, fallback_stem: str) -> str:
+    names = _extract_top_level_theme_names(content)
+
+    if not names:
+        return f"{fallback_stem}_v{version}:\n" + content
+
+    mapping: dict[str, str] = {}
+
+    for old_name in names:
+        base_name = re.sub(r"_v\d+$", "", old_name)
+        mapping[old_name] = f"{base_name}_v{version}"
+
+    new_content = content
+
+    for old_name, new_name in mapping.items():
+        new_content = re.sub(
+            rf'^("?){re.escape(old_name)}\1:',
+            f"{new_name}:",
+            new_content,
+            flags=re.MULTILINE,
+        )
+
+    for old_name, new_name in mapping.items():
+        new_content = re.sub(
+            rf'(?<![A-Za-z0-9_-]){re.escape(old_name)}(?![A-Za-z0-9_-])',
+            new_name,
+            new_content,
+        )
+
+    return new_content
+
+
+def _save_theme_file_version_sync(hass: HomeAssistant, filename: str, content: str) -> dict:
+    base = _themes_dir(hass).resolve()
+    stem, suffix = _version_base_name(filename)
+
+    version = 1
+
+    while True:
+        new_name = f"{stem}_v{version}{suffix}"
+        target = (base / new_name).resolve()
+
+        if base not in target.parents:
+            raise ValueError("Ungültiger Dateipfad.")
+
+        if not target.exists():
+            new_content = _rename_theme_names_for_version(content, version, stem)
+            target.write_text(new_content, encoding="utf-8")
+
+            return {
+                "filename": target.name,
+                "content": new_content,
+                "saved": True,
+            }
+
+        version += 1
+
+
 @callback
 @websocket_api.websocket_command(
     {
@@ -150,44 +244,6 @@ async def websocket_read_theme_file(hass: HomeAssistant, connection, msg) -> Non
         connection.send_result(msg["id"], result)
     except Exception as err:
         connection.send_error(msg["id"], "theme_generator_error", str(err))
-
-
-def _version_base_name(filename: str) -> tuple[str, str]:
-    clean_name = Path(filename or "ha_standard_basis.yaml").name
-
-    if not clean_name.endswith((".yaml", ".yml")):
-        clean_name = f"{clean_name}.yaml"
-
-    path = Path(clean_name)
-    suffix = path.suffix
-    stem = path.stem
-
-    stem = re.sub(r"_v\d+$", "", stem)
-
-    return stem, suffix
-
-
-def _save_theme_file_version_sync(hass: HomeAssistant, filename: str, content: str) -> dict:
-    base = _themes_dir(hass)
-    stem, suffix = _version_base_name(filename)
-
-    version = 1
-
-    while True:
-        new_name = f"{stem}_v{version}{suffix}"
-        target = (base / new_name).resolve()
-
-        if base.resolve() not in target.parents:
-            raise ValueError("Ungültiger Dateipfad.")
-
-        if not target.exists():
-            target.write_text(content, encoding="utf-8")
-            return {
-                "filename": target.name,
-                "saved": True,
-            }
-
-        version += 1
 
 
 @callback

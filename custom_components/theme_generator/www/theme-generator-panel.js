@@ -274,6 +274,7 @@ class ThemeGeneratorPanel extends HTMLElement {
       });
 
       this.selectedFile = result.filename;
+      this.editorContent = result.content || this.editorContent;
       this.status = `Gespeichert als neue Datei: ${result.filename}`;
 
       await this.loadThemeFiles();
@@ -565,7 +566,7 @@ class ThemeGeneratorPanel extends HTMLElement {
           <textarea id="editor" spellcheck="false">${this.escape(this.editorContent)}</textarea>
         </div>
 
-        <code>Version: 1.5.0
+        <code>Version: 1.5.1
 Modus: Theme-Datei laden und als neue Version speichern
 Status: Panel erfolgreich geladen</code>
       </div>
