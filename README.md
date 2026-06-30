@@ -8,7 +8,7 @@
   Ein Home-Assistant-Theme-Werkzeug für die Seitenleiste.
 </p>
 
-## Aktuelle Version: 1.9.5
+## Aktuelle Version: 1.9.6
 
 Diese Version ist die neue saubere Basis nach dem Neustart des Projekts.
 

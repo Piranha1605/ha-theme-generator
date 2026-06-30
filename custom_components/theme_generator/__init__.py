@@ -45,7 +45,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         config={
             "_panel_custom": {
                 "name": PANEL_TAG,
-                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.9.5",
+                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.9.6",
                 "embed_iframe": False,
                 "trust_external": False,
             }
@@ -74,17 +74,26 @@ def _safe_theme_file(hass: HomeAssistant, filename: str) -> Path:
     if not filename:
         raise ValueError("Dateiname fehlt.")
 
-    clean_name = Path(filename).name
+    relative = Path(filename)
 
-    if not clean_name.endswith((".yaml", ".yml")):
-        clean_name = f"{clean_name}.yaml"
+    if relative.is_absolute():
+        raise ValueError("Absolute Pfade sind nicht erlaubt.")
 
-    base = _themes_dir(hass).resolve()
-    target = (base / clean_name).resolve()
-
-    if base not in target.parents:
+    if any(part in ("..", "") for part in relative.parts):
         raise ValueError("Ungültiger Dateipfad.")
 
+    if relative.suffix not in (".yaml", ".yml"):
+        relative = relative.with_suffix(".yaml")
+
+    base = _themes_path(hass).resolve()
+    target = (base / relative).resolve()
+
+    try:
+        target.relative_to(base)
+    except ValueError as err:
+        raise ValueError("Datei liegt außerhalb von /config/themes.") from err
+
+    target.parent.mkdir(parents=True, exist_ok=True)
     return target
 
 
