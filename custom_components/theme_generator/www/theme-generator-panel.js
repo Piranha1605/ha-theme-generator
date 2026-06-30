@@ -1033,10 +1033,23 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
         .header {
+          display: grid;
+          grid-template-columns: auto minmax(0, 1fr);
+          gap: 18px;
+          align-items: start;
+          margin-bottom: 18px;
+        }
+
+        .header-main {
+          min-width: 0;
+        }
+
+        .title-row {
           display: flex;
           align-items: center;
           gap: 18px;
-          margin-bottom: 18px;
+          flex-wrap: wrap;
+          margin-bottom: 12px;
         }
 
         .logo {
@@ -1072,30 +1085,32 @@ class ThemeGeneratorPanel extends HTMLElement {
 
         .controls {
           display: grid;
-          grid-template-columns: minmax(260px, 1fr) auto auto auto auto auto;
-          gap: 12px;
-          margin-top: 24px;
+          grid-template-columns: minmax(240px, 420px) repeat(5, auto);
+          gap: 8px;
           align-items: center;
+          width: 100%;
         }
 
         select {
-          height: 46px;
-          border-radius: 14px;
+          height: 38px;
+          border-radius: 12px;
           border: 1px solid rgba(255,255,255,0.18);
           background: #111827;
           color: #f9fafb;
-          padding: 0 14px;
-          font-size: 15px;
+          padding: 0 12px;
+          font-size: 13px;
           outline: none;
+          min-width: 0;
         }
 
         button {
-          height: 46px;
+          height: 38px;
           border-radius: 999px;
           border: 1px solid #3c8ae9;
           background: #3c8ae9;
           color: white;
-          padding: 0 18px;
+          padding: 0 14px;
+          font-size: 13px;
           font-weight: 700;
           cursor: pointer;
           white-space: nowrap;
@@ -1427,6 +1442,10 @@ class ThemeGeneratorPanel extends HTMLElement {
             grid-template-columns: 1fr 1fr;
           }
 
+          .header {
+            grid-template-columns: 1fr;
+          }
+
           .workspace {
             grid-template-columns: 1fr;
           }
@@ -1477,22 +1496,23 @@ class ThemeGeneratorPanel extends HTMLElement {
             </svg>
           </div>
 
-          <div>
-            <h1>Theme Generator</h1>
-            <p>Grundfarben ändern. Links die Felder, rechts Editor oder Vorschau.</p>
+          <div class="header-main">
+            <div class="title-row">
+              <h1>Theme Generator</h1>
+            </div>
+
+            <div class="controls">
+              <select id="theme-select" ${this.loading ? "disabled" : ""}>
+                ${options}
+              </select>
+
+              <button id="refresh" ${this.loading ? "disabled" : ""}>Aktualisieren</button>
+              <button class="secondary" id="load-file" ${this.loading || !this.selectedFile ? "disabled" : ""}>Datei laden</button>
+              <button class="secondary" id="default-theme" ${this.loading ? "disabled" : ""}>Standard laden</button>
+              <button id="save-version" ${this.loading ? "disabled" : ""}>Neue Version</button>
+              <button class="danger" id="overwrite" ${this.loading || !this.selectedFile ? "disabled" : ""}>Überschreiben</button>
+            </div>
           </div>
-        </div>
-
-        <div class="controls">
-          <select id="theme-select" ${this.loading ? "disabled" : ""}>
-            ${options}
-          </select>
-
-          <button id="refresh" ${this.loading ? "disabled" : ""}>Aktualisieren</button>
-          <button class="secondary" id="load-file" ${this.loading || !this.selectedFile ? "disabled" : ""}>Datei laden</button>
-          <button class="secondary" id="default-theme" ${this.loading ? "disabled" : ""}>Standard laden</button>
-          <button id="save-version" ${this.loading ? "disabled" : ""}>Neue Version</button>
-          <button class="danger" id="overwrite" ${this.loading || !this.selectedFile ? "disabled" : ""}>Überschreiben</button>
         </div>
 
         <div class="status">${this.escape(this.status)}</div>
@@ -1521,7 +1541,7 @@ class ThemeGeneratorPanel extends HTMLElement {
           </section>
         </div>
 
-        <code class="footer-code">Version: 1.7.2
+        <code class="footer-code">Version: 1.7.3
 Modus: Grundfarben links, Editor/Vorschau rechts
 Status: Panel erfolgreich geladen</code>
       </div>
