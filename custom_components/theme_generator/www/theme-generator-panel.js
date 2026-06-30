@@ -667,7 +667,21 @@ class ThemeGeneratorPanel extends HTMLElement {
     this.files = [];
     this.selectedFile = "";
     this.editorContent = DEFAULT_THEME;
+    this.activeView = "editor";
     this.status = "Panel geladen. Theme-Dateien werden gesucht …";
+
+    this.colorFields = [
+      { key: "primary-color", label: "Primärfarbe" },
+      { key: "accent-color", label: "Akzentfarbe" },
+      { key: "primary-background-color", label: "Hintergrund" },
+      { key: "card-background-color", label: "Karten" },
+      { key: "primary-text-color", label: "Text" },
+      { key: "secondary-text-color", label: "Sekundärtext" },
+      { key: "sidebar-background-color", label: "Sidebar" },
+      { key: "ha-card-border-color", label: "Karten-Rahmen" },
+      { key: "mushroom-card-background", label: "Mushroom" },
+      { key: "bubble-accent-color", label: "Bubble Akzent" }
+    ];
   }
 
   set hass(hass) {
@@ -719,6 +733,37 @@ class ThemeGeneratorPanel extends HTMLElement {
     } catch (err) {
       this.loading = false;
       this.status = `Fehler beim Laden der Theme-Dateien: ${err?.message || err}`;
+      console.error(err);
+      this.render();
+    }
+  }
+
+  async loadSelectedTheme() {
+    if (!this.selectedFile) {
+      this.status = "Bitte zuerst eine Theme-Datei auswählen.";
+      this.render();
+      return;
+    }
+
+    this.loading = true;
+    this.status = `${this.selectedFile} wird geladen …`;
+    this.render();
+
+    try {
+      const result = await this.apiCall({
+        type: "theme_generator/read_theme_file",
+        filename: this.selectedFile,
+      });
+
+      this.selectedFile = result.filename;
+      this.editorContent = result.content || "";
+      this.status = `Geladen: ${this.selectedFile}`;
+
+      this.loading = false;
+      this.render();
+    } catch (err) {
+      this.loading = false;
+      this.status = `Fehler beim Laden der Theme-Datei: ${err?.message || err}`;
       console.error(err);
       this.render();
     }
@@ -798,42 +843,158 @@ class ThemeGeneratorPanel extends HTMLElement {
     }
   }
 
-  async loadSelectedTheme() {
-    if (!this.selectedFile) {
-      this.status = "Bitte zuerst eine Theme-Datei auswählen.";
-      this.render();
-      return;
-    }
-
-    this.loading = true;
-    this.status = `${this.selectedFile} wird geladen …`;
-    this.render();
-
-    try {
-      const result = await this.apiCall({
-        type: "theme_generator/read_theme_file",
-        filename: this.selectedFile,
-      });
-
-      this.selectedFile = result.filename;
-      this.editorContent = result.content || "";
-      this.status = `Geladen: ${this.selectedFile}`;
-
-      this.loading = false;
-      this.render();
-    } catch (err) {
-      this.loading = false;
-      this.status = `Fehler beim Laden der Theme-Datei: ${err?.message || err}`;
-      console.error(err);
-      this.render();
-    }
-  }
-
   resetDefaultTheme() {
     this.selectedFile = "";
     this.editorContent = DEFAULT_THEME;
     this.status = "Standard-Basis wurde in den Editor geladen.";
     this.render();
+  }
+
+  setView(view) {
+    this.activeView = view;
+    this.render();
+  }
+
+  extractColor(key, fallback = "#03a9f4") {
+    const regex = new RegExp(`${this.escapeRegex(key)}:\\s*["']?([^"'\\n]+)["']?`);
+    const match = this.editorContent.match(regex);
+    if (!match) return fallback;
+
+    const value = match[1].trim();
+
+    if (/^#[0-9a-fA-F]{6}$/.test(value)) {
+      return value;
+    }
+
+    return fallback;
+  }
+
+  setYamlColor(key, value) {
+    const escapedKey = this.escapeRegex(key);
+    const regex = new RegExp(`(${escapedKey}:\\s*)["'][^"'\\n]+["']`, "g");
+
+    if (regex.test(this.editorContent)) {
+      this.editorContent = this.editorContent.replace(regex, `$1"${value}"`);
+    } else {
+      this.editorContent = this.editorContent.trimEnd() + `\n  ${key}: "${value}"\n`;
+    }
+
+    this.status = `Farbe geändert: ${key} → ${value}`;
+    this.render();
+  }
+
+  getPreviewVars() {
+    return {
+      primary: this.extractColor("primary-color", "#03a9f4"),
+      accent: this.extractColor("accent-color", "#03a9f4"),
+      bg: this.extractColor("primary-background-color", "#111111"),
+      card: this.extractColor("card-background-color", "#1c1c1c"),
+      text: this.extractColor("primary-text-color", "#e1e1e1"),
+      secondary: this.extractColor("secondary-text-color", "#9b9b9b"),
+      sidebar: this.extractColor("sidebar-background-color", "#111111"),
+      border: this.extractColor("ha-card-border-color", "#333333"),
+      mushroom: this.extractColor("mushroom-card-background", "#1c1c1c"),
+      bubble: this.extractColor("bubble-accent-color", "#03a9f4")
+    };
+  }
+
+  renderColorControls() {
+    return this.colorFields.map((field) => {
+      const value = this.extractColor(field.key);
+      return `
+        <label class="color-field">
+          <span>${this.escape(field.label)}</span>
+          <input type="color" data-color-key="${this.escape(field.key)}" value="${this.escape(value)}">
+          <code>${this.escape(field.key)}</code>
+        </label>
+      `;
+    }).join("");
+  }
+
+  renderPreview() {
+    const v = this.getPreviewVars();
+
+    return `
+      <div class="preview" style="
+        --p-primary:${v.primary};
+        --p-accent:${v.accent};
+        --p-bg:${v.bg};
+        --p-card:${v.card};
+        --p-text:${v.text};
+        --p-secondary:${v.secondary};
+        --p-sidebar:${v.sidebar};
+        --p-border:${v.border};
+        --p-mushroom:${v.mushroom};
+        --p-bubble:${v.bubble};
+      ">
+        <div class="preview-shell">
+          <aside class="preview-sidebar">
+            <div class="preview-logo">HA</div>
+            <div class="preview-nav active">Home</div>
+            <div class="preview-nav">Energie</div>
+            <div class="preview-nav">Theme Generator</div>
+          </aside>
+
+          <main class="preview-main">
+            <div class="preview-header">
+              <h2>Vorschau</h2>
+              <span>Home Assistant / Mushroom / Bubble / card-mod</span>
+            </div>
+
+            <section class="preview-grid">
+              <article class="preview-card">
+                <h3>Home Assistant Karte</h3>
+                <p>Standardkarte mit Text, Status und Icon.</p>
+                <div class="preview-state">
+                  <span class="dot"></span>
+                  Licht Wohnzimmer · eingeschaltet
+                </div>
+              </article>
+
+              <article class="preview-card mushroom-card">
+                <h3>Mushroom</h3>
+                <div class="mush-row">
+                  <div class="mush-icon">💡</div>
+                  <div>
+                    <strong>Mushroom Light Card</strong>
+                    <small>Helligkeit 72 %</small>
+                  </div>
+                </div>
+                <div class="mush-chip-row">
+                  <span>Wohnzimmer</span>
+                  <span>Auto</span>
+                  <span>Szene</span>
+                </div>
+              </article>
+
+              <article class="preview-card bubble-card">
+                <h3>Bubble Card</h3>
+                <div class="bubble-line">
+                  <div class="bubble-icon">⚡</div>
+                  <div>
+                    <strong>Bubble Button</strong>
+                    <small>Aktiv · 23 W</small>
+                  </div>
+                </div>
+                <div class="bubble-buttons">
+                  <span>Ein</span>
+                  <span>50 %</span>
+                  <span>Timer</span>
+                </div>
+              </article>
+
+              <article class="preview-card cardmod-card">
+                <h3>card-mod</h3>
+                <p>Beispiel für Rahmen, Rundung und angepassten Kartenstil.</p>
+                <div class="cardmod-inner">
+                  card-mod-card-yaml
+                </div>
+              </article>
+            </section>
+          </main>
+        </div>
+      </div>
+    `;
   }
 
   render() {
@@ -845,9 +1006,9 @@ class ThemeGeneratorPanel extends HTMLElement {
       }),
     ].join("");
 
-    const fileList = this.files.length
-      ? this.files.map((file) => `<li>${this.escape(file)}</li>`).join("")
-      : `<li class="muted">Noch keine Theme-Dateien gefunden.</li>`;
+    const contentPanel = this.activeView === "preview"
+      ? this.renderPreview()
+      : `<textarea id="editor" spellcheck="false">${this.escape(this.editorContent)}</textarea>`;
 
     this.shadowRoot.innerHTML = `
       <style>
@@ -862,7 +1023,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
         .card {
-          max-width: 1280px;
+          max-width: 1380px;
           margin: 0 auto;
           padding: 28px;
           border-radius: 24px;
@@ -884,8 +1045,7 @@ class ThemeGeneratorPanel extends HTMLElement {
           border-radius: 18px;
           display: grid;
           place-items: center;
-          background:
-            radial-gradient(circle at 30% 20%, rgba(255,255,255,0.35), transparent 35%),
+          background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.35), transparent 35%),
             linear-gradient(145deg, #3c8ae9, #7c3aed);
           box-shadow: 0 12px 30px rgba(60,138,233,0.35);
           flex: 0 0 auto;
@@ -951,6 +1111,16 @@ class ThemeGeneratorPanel extends HTMLElement {
           border-color: #ef4444;
         }
 
+        button.ghost {
+          background: transparent;
+          border-color: rgba(255,255,255,0.18);
+        }
+
+        button.active {
+          background: #3c8ae9;
+          border-color: #3c8ae9;
+        }
+
         button:disabled {
           opacity: 0.55;
           cursor: not-allowed;
@@ -962,8 +1132,15 @@ class ThemeGeneratorPanel extends HTMLElement {
           font-size: 14px;
         }
 
-        .box {
+        .tabs {
+          display: flex;
+          gap: 10px;
           margin-top: 22px;
+          flex-wrap: wrap;
+        }
+
+        .box {
+          margin-top: 18px;
           padding: 18px;
           border-radius: 18px;
           background: rgba(0,0,0,0.24);
@@ -975,23 +1152,9 @@ class ThemeGeneratorPanel extends HTMLElement {
           font-size: 18px;
         }
 
-        ul {
-          margin: 0;
-          padding-left: 22px;
-        }
-
-        li {
-          margin: 6px 0;
-          color: var(--primary-text-color, #ffffff);
-        }
-
-        .muted {
-          color: var(--secondary-text-color, #9ca3af);
-        }
-
         textarea {
           width: 100%;
-          min-height: 620px;
+          min-height: 680px;
           box-sizing: border-box;
           resize: vertical;
           border: 1px solid rgba(255,255,255,0.12);
@@ -1006,7 +1169,207 @@ class ThemeGeneratorPanel extends HTMLElement {
           tab-size: 2;
         }
 
-        code {
+        .color-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+          gap: 12px;
+        }
+
+        .color-field {
+          display: grid;
+          grid-template-columns: 1fr auto;
+          gap: 8px;
+          align-items: center;
+          padding: 12px;
+          border-radius: 14px;
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .color-field span {
+          font-weight: 700;
+          font-size: 13px;
+        }
+
+        .color-field code {
+          grid-column: 1 / -1;
+          color: #9ca3af;
+          font-size: 11px;
+          background: transparent;
+          padding: 0;
+          margin: 0;
+        }
+
+        input[type="color"] {
+          width: 42px;
+          height: 34px;
+          border: none;
+          border-radius: 10px;
+          background: transparent;
+          cursor: pointer;
+        }
+
+        .preview {
+          background: var(--p-bg);
+          color: var(--p-text);
+          border-radius: 22px;
+          overflow: hidden;
+          border: 1px solid var(--p-border);
+          min-height: 680px;
+        }
+
+        .preview-shell {
+          display: grid;
+          grid-template-columns: 220px 1fr;
+          min-height: 680px;
+        }
+
+        .preview-sidebar {
+          background: var(--p-sidebar);
+          border-right: 1px solid var(--p-border);
+          padding: 20px;
+        }
+
+        .preview-logo {
+          width: 48px;
+          height: 48px;
+          border-radius: 14px;
+          display: grid;
+          place-items: center;
+          background: var(--p-primary);
+          color: white;
+          font-weight: 800;
+          margin-bottom: 22px;
+        }
+
+        .preview-nav {
+          padding: 12px 14px;
+          border-radius: 14px;
+          margin-bottom: 8px;
+          color: var(--p-secondary);
+        }
+
+        .preview-nav.active {
+          background: color-mix(in srgb, var(--p-primary) 18%, transparent);
+          color: var(--p-primary);
+          font-weight: 800;
+        }
+
+        .preview-main {
+          padding: 24px;
+        }
+
+        .preview-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: end;
+          gap: 16px;
+          margin-bottom: 20px;
+        }
+
+        .preview-header h2 {
+          margin: 0;
+          font-size: 30px;
+        }
+
+        .preview-header span {
+          color: var(--p-secondary);
+        }
+
+        .preview-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+          gap: 18px;
+        }
+
+        .preview-card {
+          background: var(--p-card);
+          color: var(--p-text);
+          border: 1px solid var(--p-border);
+          border-radius: 20px;
+          padding: 18px;
+          min-height: 150px;
+          box-shadow: 0 14px 32px rgba(0,0,0,0.20);
+        }
+
+        .preview-card h3 {
+          margin: 0 0 10px 0;
+        }
+
+        .preview-card p,
+        .preview-card small {
+          color: var(--p-secondary);
+        }
+
+        .preview-state {
+          margin-top: 18px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          color: var(--p-text);
+        }
+
+        .dot {
+          width: 12px;
+          height: 12px;
+          border-radius: 999px;
+          background: var(--p-accent);
+          box-shadow: 0 0 18px var(--p-accent);
+        }
+
+        .mush-row,
+        .bubble-line {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+
+        .mush-icon,
+        .bubble-icon {
+          width: 46px;
+          height: 46px;
+          display: grid;
+          place-items: center;
+          border-radius: 15px;
+          background: color-mix(in srgb, var(--p-primary) 18%, transparent);
+        }
+
+        .mush-chip-row,
+        .bubble-buttons {
+          display: flex;
+          gap: 8px;
+          flex-wrap: wrap;
+          margin-top: 18px;
+        }
+
+        .mush-chip-row span,
+        .bubble-buttons span {
+          padding: 8px 12px;
+          border-radius: 999px;
+          background: color-mix(in srgb, var(--p-primary) 14%, transparent);
+          color: var(--p-text);
+          font-size: 12px;
+          font-weight: 700;
+        }
+
+        .bubble-card {
+          border-color: var(--p-bubble);
+        }
+
+        .cardmod-card {
+          border-style: dashed;
+        }
+
+        .cardmod-inner {
+          margin-top: 18px;
+          padding: 12px;
+          border-radius: 14px;
+          background: rgba(0,0,0,0.22);
+          color: var(--p-secondary);
+          font-family: monospace;
+        }
+
+        .footer-code {
           display: block;
           margin-top: 18px;
           padding: 14px;
@@ -1019,6 +1382,15 @@ class ThemeGeneratorPanel extends HTMLElement {
         @media (max-width: 1050px) {
           .controls {
             grid-template-columns: 1fr 1fr;
+          }
+
+          .preview-shell {
+            grid-template-columns: 1fr;
+          }
+
+          .preview-sidebar {
+            border-right: none;
+            border-bottom: 1px solid var(--p-border);
           }
         }
 
@@ -1047,7 +1419,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div>
             <h1>Theme Generator</h1>
-            <p>Basis-Theme mit Bereichen für Home Assistant, Mushroom, Bubble Card und card-mod.</p>
+            <p>Farben ändern, Vorschau prüfen und bei Bedarf in den YAML-Editor wechseln.</p>
           </div>
         </div>
 
@@ -1056,66 +1428,45 @@ class ThemeGeneratorPanel extends HTMLElement {
             ${options}
           </select>
 
-          <button id="refresh" ${this.loading ? "disabled" : ""}>
-            Aktualisieren
-          </button>
-
-          <button class="secondary" id="load-file" ${this.loading || !this.selectedFile ? "disabled" : ""}>
-            Datei laden
-          </button>
-
-          <button class="secondary" id="default-theme" ${this.loading ? "disabled" : ""}>
-            Standard laden
-          </button>
-
-          <button id="save-version" ${this.loading ? "disabled" : ""}>
-            Neue Version
-          </button>
-
-          <button class="danger" id="overwrite" ${this.loading || !this.selectedFile ? "disabled" : ""}>
-            Überschreiben
-          </button>
+          <button id="refresh" ${this.loading ? "disabled" : ""}>Aktualisieren</button>
+          <button class="secondary" id="load-file" ${this.loading || !this.selectedFile ? "disabled" : ""}>Datei laden</button>
+          <button class="secondary" id="default-theme" ${this.loading ? "disabled" : ""}>Standard laden</button>
+          <button id="save-version" ${this.loading ? "disabled" : ""}>Neue Version</button>
+          <button class="danger" id="overwrite" ${this.loading || !this.selectedFile ? "disabled" : ""}>Überschreiben</button>
         </div>
 
         <div class="status">${this.escape(this.status)}</div>
 
         <div class="box">
-          <h2>Gefundene Theme-Dateien</h2>
-          <ul>
-            ${fileList}
-          </ul>
+          <h2>Farben</h2>
+          <div class="color-grid">
+            ${this.renderColorControls()}
+          </div>
+        </div>
+
+        <div class="tabs">
+          <button class="ghost ${this.activeView === "editor" ? "active" : ""}" id="view-editor">Editor</button>
+          <button class="ghost ${this.activeView === "preview" ? "active" : ""}" id="view-preview">Vorschau</button>
         </div>
 
         <div class="box">
-          <h2>Editor</h2>
-          <textarea id="editor" spellcheck="false">${this.escape(this.editorContent)}</textarea>
+          <h2>${this.activeView === "preview" ? "Vorschau" : "Editor"}</h2>
+          ${contentPanel}
         </div>
 
-        <code>Version: 1.6.1
-Modus: vollständige Basis mit HA / Mushroom / Bubble / card-mod
+        <code class="footer-code">Version: 1.7.0
+Modus: Farbfelder mit Editor/Vorschau-Umschalter
 Status: Panel erfolgreich geladen</code>
       </div>
     `;
 
-    this.shadowRoot.getElementById("refresh").addEventListener("click", () => {
-      this.loadThemeFiles();
-    });
-
-    this.shadowRoot.getElementById("load-file").addEventListener("click", () => {
-      this.loadSelectedTheme();
-    });
-
-    this.shadowRoot.getElementById("default-theme").addEventListener("click", () => {
-      this.resetDefaultTheme();
-    });
-
-    this.shadowRoot.getElementById("save-version").addEventListener("click", () => {
-      this.saveAsVersion();
-    });
-
-    this.shadowRoot.getElementById("overwrite").addEventListener("click", () => {
-      this.overwriteSelectedTheme();
-    });
+    this.shadowRoot.getElementById("refresh").addEventListener("click", () => this.loadThemeFiles());
+    this.shadowRoot.getElementById("load-file").addEventListener("click", () => this.loadSelectedTheme());
+    this.shadowRoot.getElementById("default-theme").addEventListener("click", () => this.resetDefaultTheme());
+    this.shadowRoot.getElementById("save-version").addEventListener("click", () => this.saveAsVersion());
+    this.shadowRoot.getElementById("overwrite").addEventListener("click", () => this.overwriteSelectedTheme());
+    this.shadowRoot.getElementById("view-editor").addEventListener("click", () => this.setView("editor"));
+    this.shadowRoot.getElementById("view-preview").addEventListener("click", () => this.setView("preview"));
 
     this.shadowRoot.getElementById("theme-select").addEventListener("change", (event) => {
       this.selectedFile = event.target.value;
@@ -1125,9 +1476,23 @@ Status: Panel erfolgreich geladen</code>
       this.render();
     });
 
-    this.shadowRoot.getElementById("editor").addEventListener("input", (event) => {
-      this.editorContent = event.target.value;
+    const editor = this.shadowRoot.getElementById("editor");
+
+    if (editor) {
+      editor.addEventListener("input", (event) => {
+        this.editorContent = event.target.value;
+      });
+    }
+
+    this.shadowRoot.querySelectorAll("input[type='color'][data-color-key]").forEach((input) => {
+      input.addEventListener("input", (event) => {
+        this.setYamlColor(event.target.dataset.colorKey, event.target.value);
+      });
     });
+  }
+
+  escapeRegex(value) {
+    return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   }
 
   escape(value) {
