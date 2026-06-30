@@ -25,17 +25,13 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    static_path = hass.config.path(f"custom_components/{DOMAIN}/www")
+    source_file = Path(hass.config.path(f"custom_components/{DOMAIN}/www/{PANEL_FILENAME}"))
+    target_dir = Path(hass.config.path(f"www/{DOMAIN}"))
+    target_dir.mkdir(parents=True, exist_ok=True)
+    target_file = target_dir / PANEL_FILENAME
 
-    await hass.http.async_register_static_paths(
-        [
-            StaticPathConfig(
-                f"/{DOMAIN}",
-                static_path,
-                True,
-            )
-        ]
-    )
+    if source_file.exists():
+        target_file.write_text(source_file.read_text(encoding="utf-8"), encoding="utf-8")
 
     frontend.async_register_built_in_panel(
         hass,
@@ -46,7 +42,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         require_admin=True,
         config={
             "tag": PANEL_TAG,
-            "module_url": f"/{DOMAIN}/{PANEL_FILENAME}?v=0.5.3",
+            "module_url": f"/local/{DOMAIN}/{PANEL_FILENAME}?v=0.5.4",
         },
     )
 
