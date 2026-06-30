@@ -2906,6 +2906,92 @@ class ThemeGeneratorPanel extends HTMLElement {
           cursor: not-allowed;
         }
 
+
+        /* v1.11.1 - linke Gruppen sauber trennen */
+        .left-panel,
+        .settings-panel,
+        .controls-panel,
+        .color-panel {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .group-card,
+        .color-group,
+        .editor-group,
+        .section-card {
+          position: relative;
+          overflow: hidden;
+          margin-bottom: 0 !important;
+          border-radius: 16px;
+        }
+
+        .group-header,
+        .color-group-header,
+        .section-header {
+          position: relative;
+          min-height: 64px;
+          box-sizing: border-box;
+          padding: 14px 16px 12px 16px !important;
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) 38px;
+          gap: 10px;
+          align-items: center;
+        }
+
+        .group-header h2,
+        .color-group-header h2,
+        .section-header h2 {
+          margin: 0;
+          line-height: 1.15;
+          font-size: 19px;
+        }
+
+        .group-swatches,
+        .mini-swatches,
+        .swatch-row,
+        .color-preview-row {
+          grid-column: 1 / -1;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 7px;
+          margin-top: 8px;
+          max-width: 100%;
+          overflow: hidden;
+        }
+
+        .mini-swatch {
+          flex: 0 0 auto;
+          width: 18px !important;
+          height: 18px !important;
+          margin: 0 !important;
+          box-sizing: border-box;
+        }
+
+        .group-body,
+        .color-group-body,
+        .section-body {
+          padding: 10px 12px 14px 12px !important;
+          box-sizing: border-box;
+        }
+
+        .collapse-button,
+        .group-toggle,
+        .section-toggle {
+          width: 34px;
+          height: 34px;
+          min-width: 34px;
+          border-radius: 999px;
+          align-self: start;
+          margin-top: 0;
+        }
+
+        .color-field,
+        .field-card {
+          margin-bottom: 10px;
+        }
+
         @media (max-width: 1050px) {
           .controls {
             grid-template-columns: 1fr 1fr;
@@ -2990,7 +3076,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.11.0</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.11.1</span></h1>
             </div>
 
             <div class="controls">
