@@ -670,6 +670,7 @@ class ThemeGeneratorPanel extends HTMLElement {
     this.activeView = "preview";
     this.status = "Panel geladen. Theme-Dateien werden gesucht …";
     this.previewPage = "overview";
+    this.settingsFilter = "all";
     this._editorScrollTop = 0;
     this._editorSelectionStart = 0;
     this._editorSelectionEnd = 0;
@@ -1354,7 +1355,30 @@ class ThemeGeneratorPanel extends HTMLElement {
       });
     }
 
-    return found.sort((a, b) => a.key.localeCompare(b.key));
+    const filter = this.settingsFilter || "all";
+
+    const filterMap = {
+      all: [],
+      header: ["app-header", "app-toolbar", "header"],
+      sidebar: ["sidebar"],
+      cards: ["ha-card", "card-background", "paper-card"],
+      icons: ["icon", "paper-item-icon", "state-icon"],
+      states: ["state-", "success", "warning", "error", "info"],
+      switches: ["switch", "toggle"],
+      sliders: ["slider"],
+      inputs: ["input", "textfield", "select", "mdc-text-field", "mdc-select"],
+      mushroom: ["mushroom"],
+      bubble: ["bubble"],
+      cardmod: ["card-mod", "card_mod"]
+    };
+
+    const needles = filterMap[filter] || [];
+
+    const filtered = needles.length
+      ? found.filter((item) => needles.some((needle) => item.key.toLowerCase().includes(needle)))
+      : found;
+
+    return filtered.sort((a, b) => a.key.localeCompare(b.key));
   }
 
   renderPreviewColorGroup(groupId) {
@@ -1420,6 +1444,29 @@ class ThemeGeneratorPanel extends HTMLElement {
       `;
     }).join("");
 
+    const filterHtml = groupId === "all_settings" ? `
+      <div class="settings-filter-row">
+        ${[
+          ["all", "Alle"],
+          ["header", "Header"],
+          ["sidebar", "Sidebar"],
+          ["cards", "Karten"],
+          ["icons", "Icons"],
+          ["states", "Status"],
+          ["switches", "Schalter"],
+          ["sliders", "Slider"],
+          ["inputs", "Eingabefelder"],
+          ["mushroom", "Mushroom"],
+          ["bubble", "Bubble"],
+          ["cardmod", "card-mod"]
+        ].map(([id, label]) => `
+          <button class="${this.settingsFilter === id ? "active" : ""}" data-settings-filter="${id}">
+            ${label}
+          </button>
+        `).join("")}
+      </div>
+    ` : "";
+
     return `
       <section class="preview-color-editor">
         <div class="preview-color-head">
@@ -1428,6 +1475,8 @@ class ThemeGeneratorPanel extends HTMLElement {
             <p>${this.escape(group.description)}</p>
           </div>
         </div>
+
+        ${filterHtml}
 
         <div class="preview-color-grid">
           ${fields}
@@ -3031,7 +3080,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.3 - linke Gruppen sauber trennen */
+        /* v1.11.4 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -3117,7 +3166,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.3 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.11.4 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -3228,7 +3277,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.3 - Alle Settings */
+        /* v1.11.4 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -3241,6 +3290,33 @@ class ThemeGeneratorPanel extends HTMLElement {
         .ha-nav-item {
           min-height: 34px;
           line-height: 1.15;
+        }
+
+
+        /* v1.11.4 - Filter fuer Alle Settings */
+        .settings-filter-row {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          margin: 16px 0 18px 0;
+        }
+
+        .settings-filter-row button {
+          height: 32px;
+          border-radius: 999px;
+          padding: 0 12px;
+          border: 1px solid var(--p-border);
+          background: color-mix(in srgb, var(--p-bg) 60%, transparent);
+          color: var(--p-text);
+          font-size: 12px;
+          font-weight: 800;
+          cursor: pointer;
+        }
+
+        .settings-filter-row button.active {
+          background: var(--p-primary);
+          border-color: var(--p-primary);
+          color: #ffffff;
         }
 
         @media (max-width: 1050px) {
@@ -3327,7 +3403,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.11.3</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.11.4</span></h1>
             </div>
 
             <div class="controls">
@@ -3366,6 +3442,14 @@ class ThemeGeneratorPanel extends HTMLElement {
         </div>
       </div>
     `;
+
+    this.shadowRoot.querySelectorAll("[data-settings-filter]").forEach((item) => {
+      item.addEventListener("click", (event) => {
+        this.settingsFilter = event.currentTarget.dataset.settingsFilter || "all";
+        this.previewPage = "all_settings";
+        this.render();
+      });
+    });
 
     this.shadowRoot.querySelectorAll("[data-preview-page]").forEach((item) => {
       item.addEventListener("click", (event) => {
