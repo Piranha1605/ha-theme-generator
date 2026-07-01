@@ -1631,26 +1631,30 @@ class ThemeGeneratorPanel extends HTMLElement {
 
     if (page === "clock_weather" || page === "overview") {
       cardsHtml += `
-        <section class="ha-top-preview-cards">
-          <article class="ha-clock-card">
-            <div class="ha-card-icon">
-              <ha-icon icon="mdi:clock-outline"></ha-icon>
-            </div>
-            <div>
-              <div class="ha-clock-label">Uhrzeit</div>
-              <div class="ha-clock-big">20:29</div>
-              <div class="ha-clock-sub">Home Assistant</div>
-            </div>
-          </article>
+        <section class="ha-big-preview-cards compact-overview">
+          <article class="ha-big-card overview-combined-card">
+            <div class="overview-two">
+              <div class="overview-metric">
+                <div class="ha-card-icon">
+                  <ha-icon icon="mdi:clock-outline"></ha-icon>
+                </div>
+                <div>
+                  <div class="ha-clock-label">Uhrzeit</div>
+                  <div class="ha-clock-big">20:29</div>
+                  <div class="ha-clock-sub">Home Assistant</div>
+                </div>
+              </div>
 
-          <article class="ha-weather-simple-card">
-            <div class="ha-card-icon weather">
-              <ha-icon icon="mdi:weather-partly-cloudy"></ha-icon>
-            </div>
-            <div>
-              <div class="ha-clock-label">Wetter</div>
-              <div class="ha-weather-temp">20 °C</div>
-              <div class="ha-clock-sub">Teilweise bewölkt</div>
+              <div class="overview-metric">
+                <div class="ha-card-icon weather">
+                  <ha-icon icon="mdi:weather-partly-cloudy"></ha-icon>
+                </div>
+                <div>
+                  <div class="ha-clock-label">Wetter</div>
+                  <div class="ha-weather-temp">20 °C</div>
+                  <div class="ha-clock-sub">Teilweise bewölkt</div>
+                </div>
+              </div>
             </div>
           </article>
         </section>
@@ -1659,22 +1663,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
     if (page === "overview" || page === "standard_cards") {
       cardsHtml += `
-        <section class="ha-big-preview-cards">
-          <article class="ha-big-card">
-            <div class="big-card-head">
-              <ha-icon icon="mdi:palette"></ha-icon>
-              <h3>Grundfarben</h3>
-            </div>
-            <div class="ha-status-list big">
-              <div><span style="background:var(--p-primary)"></span> Primärfarbe</div>
-              <div><span style="background:var(--p-accent)"></span> Akzentfarbe</div>
-              <div><span style="background:var(--p-success)"></span> Erfolg</div>
-              <div><span style="background:var(--p-warning)"></span> Warnung</div>
-              <div><span style="background:var(--p-error)"></span> Fehler</div>
-              <div><span style="background:var(--p-info)"></span> Info</div>
-            </div>
-          </article>
-
+        <section class="ha-big-preview-cards compact-overview">
           <article class="ha-big-card">
             <div class="big-card-head">
               <ha-icon icon="mdi:home-assistant"></ha-icon>
@@ -1691,81 +1680,93 @@ class ThemeGeneratorPanel extends HTMLElement {
               <span class="state-text">21,4 °C</span>
             </div>
           </article>
-        </section>
-      `;
-    }
 
-    if (page === "overview" || page === "switches") {
-      cardsHtml += `
-        <section class="ha-big-preview-cards">
           <article class="ha-big-card">
             <div class="big-card-head">
-              <ha-icon icon="mdi:toggle-switch-outline"></ha-icon>
-              <h3>Schalter</h3>
+              <ha-icon icon="mdi:palette"></ha-icon>
+              <h3>Theme-Farben</h3>
             </div>
-            <div class="ha-switch-row"><span>Standard aus</span><i></i></div>
-            <div class="ha-switch-row on"><span>Standard an</span><i></i></div>
-            <div class="ha-switch-row disabled"><span>Deaktiviert</span><i></i></div>
+            <div class="ha-status-list big clean-swatches">
+              <div><span style="background:var(--p-primary)"></span> Primär</div>
+              <div><span style="background:var(--p-accent)"></span> Akzent</div>
+              <div><span style="background:var(--p-success)"></span> Erfolg</div>
+              <div><span style="background:var(--p-warning)"></span> Warnung</div>
+              <div><span style="background:var(--p-error)"></span> Fehler</div>
+              <div><span style="background:var(--p-info)"></span> Info</div>
+            </div>
           </article>
         </section>
       `;
     }
 
-    if (page === "overview" || page === "sliders") {
+    if (page === "overview" || page === "switches" || page === "sliders") {
       cardsHtml += `
-        <section class="ha-big-preview-cards">
-          <article class="ha-big-card">
+        <section class="ha-big-preview-cards compact-overview">
+          <article class="ha-big-card controls-card">
             <div class="big-card-head">
               <ha-icon icon="mdi:tune-variant"></ha-icon>
-              <h3>Slider</h3>
+              <h3>Schalter & Slider</h3>
             </div>
-            <div class="ha-slider-row">
-              <span>Helligkeit</span>
-              <div class="ha-slider"><b style="width:72%"></b></div>
-            </div>
-            <div class="ha-slider-row">
-              <span>Lautstärke</span>
-              <div class="ha-slider"><b style="width:45%"></b></div>
+
+            <div class="control-split">
+              <div>
+                <div class="ha-switch-row"><span>Standard aus</span><i></i></div>
+                <div class="ha-switch-row on"><span>Standard an</span><i></i></div>
+                <div class="ha-switch-row disabled"><span>Deaktiviert</span><i></i></div>
+              </div>
+
+              <div>
+                <div class="ha-slider-row">
+                  <span>Helligkeit</span>
+                  <div class="ha-slider"><b style="width:72%"></b></div>
+                </div>
+                <div class="ha-slider-row">
+                  <span>Lautstärke</span>
+                  <div class="ha-slider"><b style="width:45%"></b></div>
+                </div>
+              </div>
             </div>
           </article>
         </section>
       `;
     }
 
-    if (page === "overview" || page === "mushroom") {
+    if (page === "overview" || page === "mushroom" || page === "bubble") {
       cardsHtml += `
-        <section class="ha-big-preview-cards">
-          <article class="ha-big-card mushroom-like">
-            <div class="big-card-head">
-              <ha-icon icon="mdi:mushroom-outline"></ha-icon>
-              <h3>Mushroom</h3>
+        <section class="ha-big-preview-cards compact-overview">
+          <article class="ha-big-card real-mushroom-card">
+            <div class="real-card-row">
+              <div class="real-icon">
+                <ha-icon icon="mdi:lightbulb-on-outline"></ha-icon>
+              </div>
+              <div class="real-card-text">
+                <strong>Wohnzimmer Licht</strong>
+                <small>Helligkeit 72 %</small>
+              </div>
+              <div class="real-toggle on"></div>
             </div>
-            <div class="ha-mush-line">
-              <span><ha-icon icon="mdi:lightbulb-on-outline"></ha-icon></span>
-              <div><strong>Mushroom Light</strong><small>Helligkeit 72 %</small></div>
-            </div>
-            <div class="ha-mush-chips">
-              <b>Wohnzimmer</b><b>Auto</b><b>Szene</b>
+            <div class="real-chip-row">
+              <span>Wohnzimmer</span>
+              <span>Auto</span>
+              <span>Szene</span>
             </div>
           </article>
-        </section>
-      `;
-    }
 
-    if (page === "overview" || page === "bubble") {
-      cardsHtml += `
-        <section class="ha-big-preview-cards">
-          <article class="ha-big-card bubble-like">
-            <div class="big-card-head">
-              <ha-icon icon="mdi:circle-multiple-outline"></ha-icon>
-              <h3>Bubble Card</h3>
+          <article class="ha-big-card real-bubble-card">
+            <div class="bubble-pill">
+              <div class="real-icon bubble">
+                <ha-icon icon="mdi:flash"></ha-icon>
+              </div>
+              <div class="real-card-text">
+                <strong>Bubble Button</strong>
+                <small>Aktiv · 23 W</small>
+              </div>
+              <div class="bubble-action">Ein</div>
             </div>
-            <div class="ha-mush-line">
-              <span><ha-icon icon="mdi:flash"></ha-icon></span>
-              <div><strong>Bubble Button</strong><small>Aktiv · 23 W</small></div>
-            </div>
-            <div class="ha-mush-chips">
-              <b>Ein</b><b>50 %</b><b>Timer</b>
+            <div class="real-chip-row">
+              <span>50 %</span>
+              <span>Timer</span>
+              <span>Popup</span>
             </div>
           </article>
         </section>
@@ -3176,7 +3177,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.8 - linke Gruppen sauber trennen */
+        /* v1.11.9 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -3262,7 +3263,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.8 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.11.9 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -3373,7 +3374,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.8 - Alle Settings */
+        /* v1.11.9 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -3389,7 +3390,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.8 - Filter fuer Alle Settings */
+        /* v1.11.9 - Filter fuer Alle Settings */
         .settings-filter-row {
           display: flex;
           flex-wrap: wrap;
@@ -3416,7 +3417,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.8 - einklappbares linkes Settings-Menü */
+        /* v1.11.9 - einklappbares linkes Settings-Menü */
         .settings-parent {
           display: grid !important;
           grid-template-columns: 26px minmax(0, 1fr) 22px;
@@ -3464,6 +3465,172 @@ class ThemeGeneratorPanel extends HTMLElement {
 
         .settings-filter-row {
           display: none !important;
+        }
+
+
+        /* v1.11.9 - Menü dezenter + Übersicht aufgeräumt */
+        .settings-submenu .ha-nav-item,
+        .settings-submenu .settings-child {
+          background: transparent !important;
+          border-color: transparent !important;
+          color: var(--p-text) !important;
+          border-radius: 10px;
+        }
+
+        .settings-submenu .settings-child.active {
+          background: color-mix(in srgb, var(--p-primary) 14%, transparent) !important;
+          border-color: color-mix(in srgb, var(--p-primary) 18%, transparent) !important;
+          color: var(--p-primary) !important;
+          font-weight: 900;
+        }
+
+        .settings-parent.active,
+        .settings-parent {
+          background: color-mix(in srgb, var(--p-primary) 10%, transparent) !important;
+          border-color: color-mix(in srgb, var(--p-primary) 16%, transparent) !important;
+          color: var(--p-text) !important;
+        }
+
+        .compact-overview {
+          max-width: 920px;
+          margin: 0 auto;
+        }
+
+        .overview-combined-card {
+          min-height: 150px;
+        }
+
+        .overview-two {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 24px;
+          align-items: center;
+        }
+
+        .overview-metric {
+          display: flex;
+          align-items: center;
+          gap: 18px;
+        }
+
+        .controls-card {
+          min-height: 190px;
+        }
+
+        .control-split {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 28px;
+        }
+
+        .clean-swatches {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .real-mushroom-card,
+        .real-bubble-card {
+          min-height: 150px;
+        }
+
+        .real-card-row,
+        .bubble-pill {
+          display: flex;
+          align-items: center;
+          gap: 14px;
+          padding: 12px;
+          border-radius: 20px;
+          background: color-mix(in srgb, var(--p-bg) 42%, transparent);
+          border: 1px solid color-mix(in srgb, var(--p-border) 70%, transparent);
+        }
+
+        .real-icon {
+          width: 46px;
+          height: 46px;
+          display: grid;
+          place-items: center;
+          border-radius: 999px;
+          background: color-mix(in srgb, var(--p-primary) 18%, transparent);
+          color: var(--p-primary);
+        }
+
+        .real-icon.bubble {
+          background: color-mix(in srgb, var(--p-bubble) 22%, transparent);
+          color: var(--p-bubble);
+        }
+
+        .real-card-text {
+          min-width: 0;
+          flex: 1;
+        }
+
+        .real-card-text strong {
+          display: block;
+          font-size: 14px;
+        }
+
+        .real-card-text small {
+          display: block;
+          color: var(--p-secondary);
+          margin-top: 2px;
+        }
+
+        .real-toggle {
+          width: 44px;
+          height: 24px;
+          border-radius: 999px;
+          background: color-mix(in srgb, var(--p-secondary) 28%, transparent);
+          position: relative;
+        }
+
+        .real-toggle::after {
+          content: "";
+          position: absolute;
+          width: 20px;
+          height: 20px;
+          top: 2px;
+          left: 2px;
+          border-radius: 999px;
+          background: var(--p-card);
+        }
+
+        .real-toggle.on {
+          background: var(--p-primary);
+        }
+
+        .real-toggle.on::after {
+          left: 22px;
+        }
+
+        .bubble-action {
+          padding: 7px 12px;
+          border-radius: 999px;
+          background: var(--p-bubble);
+          color: #fff;
+          font-weight: 900;
+          font-size: 12px;
+        }
+
+        .real-chip-row {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          margin-top: 12px;
+        }
+
+        .real-chip-row span {
+          padding: 6px 10px;
+          border-radius: 999px;
+          background: color-mix(in srgb, var(--p-primary) 14%, transparent);
+          color: var(--p-text);
+          font-weight: 800;
+          font-size: 12px;
+        }
+
+        @media (max-width: 900px) {
+          .overview-two,
+          .control-split {
+            grid-template-columns: 1fr;
+          }
         }
 
         @media (max-width: 1050px) {
@@ -3550,7 +3717,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.11.8</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.11.9</span></h1>
             </div>
 
             <div class="controls">
