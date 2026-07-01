@@ -65,7 +65,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         config={
             "_panel_custom": {
                 "name": PANEL_TAG,
-                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.15.6",
+                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.15.7",
                 "embed_iframe": False,
                 "trust_external_script": True,
                 "config": {},
@@ -188,6 +188,354 @@ def _rename_theme_root(content: str, new_theme_name: str) -> str:
     return content
 
 
+
+# ---------------------------------------------------------------------
+# Theme Output Formatter
+# ---------------------------------------------------------------------
+
+THEME_OUTPUT_SECTIONS = [
+    {
+        "title": "Grundfarben",
+        "keys": [
+            "primary-color",
+            "accent-color",
+            "mdc-theme-primary",
+            "mdc-theme-secondary",
+            "link-text-color",
+            "success-color",
+            "warning-color",
+            "error-color",
+            "info-color",
+        ],
+        "prefixes": [],
+        "contains": [],
+    },
+    {
+        "title": "Hintergründe",
+        "keys": [
+            "primary-background-color",
+            "secondary-background-color",
+            "card-background-color",
+            "clear-background-color",
+            "divider-color",
+            "outline-color",
+        ],
+        "prefixes": [],
+        "contains": [
+            "background-color",
+            "background",
+            "surface",
+        ],
+    },
+    {
+        "title": "Karten",
+        "keys": [
+            "ha-card-background",
+            "ha-card-border-color",
+            "ha-card-border-radius",
+            "ha-card-border-width",
+            "ha-card-box-shadow",
+            "paper-card-background-color",
+        ],
+        "prefixes": [
+            "ha-card-",
+        ],
+        "contains": [
+            "card-",
+        ],
+    },
+    {
+        "title": "Text",
+        "keys": [
+            "primary-text-color",
+            "secondary-text-color",
+            "disabled-text-color",
+            "text-primary-color",
+            "text-light-primary-color",
+        ],
+        "prefixes": [],
+        "contains": [
+            "text-color",
+            "font",
+        ],
+    },
+    {
+        "title": "Header",
+        "keys": [],
+        "prefixes": [
+            "app-header-",
+            "app-toolbar-",
+        ],
+        "contains": [
+            "header",
+            "toolbar",
+        ],
+    },
+    {
+        "title": "Sidebar",
+        "keys": [],
+        "prefixes": [
+            "sidebar-",
+        ],
+        "contains": [],
+    },
+    {
+        "title": "Icons",
+        "keys": [
+            "paper-item-icon-color",
+            "paper-item-icon-active-color",
+            "state-icon-color",
+            "state-icon-active-color",
+        ],
+        "prefixes": [],
+        "contains": [
+            "icon-color",
+            "icon-active-color",
+        ],
+    },
+    {
+        "title": "Statusfarben",
+        "keys": [
+            "state-active-color",
+            "state-inactive-color",
+            "state-unavailable-color",
+            "state-on-color",
+            "state-off-color",
+        ],
+        "prefixes": [
+            "state-",
+        ],
+        "contains": [],
+    },
+    {
+        "title": "Schalter",
+        "keys": [],
+        "prefixes": [
+            "switch-",
+            "toggle-",
+            "paper-toggle-button-",
+        ],
+        "contains": [],
+    },
+    {
+        "title": "Slider",
+        "keys": [],
+        "prefixes": [
+            "slider-",
+        ],
+        "contains": [
+            "slider",
+        ],
+    },
+    {
+        "title": "Eingabefelder",
+        "keys": [],
+        "prefixes": [
+            "input-",
+            "textfield-",
+            "mdc-text-field-",
+            "mdc-select-",
+            "paper-input-",
+            "paper-dropdown-",
+        ],
+        "contains": [],
+    },
+    {
+        "title": "Mushroom",
+        "keys": [],
+        "prefixes": [
+            "mush-",
+            "mushroom-",
+        ],
+        "contains": [],
+    },
+    {
+        "title": "Bubble Card",
+        "keys": [],
+        "prefixes": [
+            "bubble-",
+            "bubble-card-",
+        ],
+        "contains": [],
+    },
+    {
+        "title": "card-mod",
+        "keys": [
+            "card-mod-theme",
+            "card-mod-card",
+            "card-mod-root",
+            "card-mod-view",
+        ],
+        "prefixes": [
+            "card-mod-",
+            "card_mod-",
+        ],
+        "contains": [],
+    },
+    {
+        "title": "Material / MDC / Paper",
+        "keys": [],
+        "prefixes": [
+            "mdc-",
+            "md-",
+            "paper-",
+        ],
+        "contains": [],
+    },
+    {
+        "title": "Badges, Dialoge & Tabellen",
+        "keys": [],
+        "prefixes": [
+            "label-badge-",
+            "dialog-",
+            "paper-dialog-",
+            "paper-toast-",
+            "table-",
+        ],
+        "contains": [],
+    },
+    {
+        "title": "Modi",
+        "keys": [
+            "modes",
+        ],
+        "prefixes": [],
+        "contains": [],
+    },
+]
+
+
+def _theme_output_section_index(key: str) -> int:
+    lower = str(key or "").lower()
+
+    for index, section in enumerate(THEME_OUTPUT_SECTIONS):
+        if lower in section.get("keys", []):
+            return index
+
+        for prefix in section.get("prefixes", []):
+            if lower.startswith(prefix):
+                return index
+
+    for index, section in enumerate(THEME_OUTPUT_SECTIONS):
+        for needle in section.get("contains", []):
+            if needle in lower:
+                return index
+
+    return len(THEME_OUTPUT_SECTIONS)
+
+
+def _theme_output_key_sort(section_index: int, key: str):
+    lower = str(key or "").lower()
+
+    if section_index < len(THEME_OUTPUT_SECTIONS):
+        keys = THEME_OUTPUT_SECTIONS[section_index].get("keys", [])
+
+        if lower in keys:
+            return (0, keys.index(lower), lower)
+
+    return (1, 9999, lower)
+
+
+def _yaml_scalar_for_theme_output(value):
+    if isinstance(value, str):
+        if "\n" in value:
+            return None
+
+        dumped = yaml.safe_dump(
+            value,
+            allow_unicode=True,
+            default_flow_style=True,
+            sort_keys=False,
+        ).strip()
+
+        if dumped.endswith("\n..."):
+            dumped = dumped[:-4].strip()
+
+        return dumped
+
+    if isinstance(value, (int, float, bool)) or value is None:
+        dumped = yaml.safe_dump(
+            value,
+            allow_unicode=True,
+            default_flow_style=True,
+            sort_keys=False,
+        ).strip()
+
+        if dumped.endswith("\n..."):
+            dumped = dumped[:-4].strip()
+
+        return dumped
+
+    return None
+
+
+def _append_theme_output_value(lines: list[str], key: str, value) -> None:
+    scalar = _yaml_scalar_for_theme_output(value)
+
+    if scalar is not None:
+        lines.append(f"  {key}: {scalar}")
+        return
+
+    if isinstance(value, str):
+        lines.append(f"  {key}: |")
+
+        for line in value.splitlines():
+            lines.append(f"    {line}")
+
+        if value.endswith("\n"):
+            lines.append("")
+
+        return
+
+    dumped = yaml.safe_dump(
+        value,
+        allow_unicode=True,
+        sort_keys=False,
+        default_flow_style=False,
+    ).rstrip()
+
+    lines.append(f"  {key}:")
+
+    for line in dumped.splitlines():
+        lines.append(f"    {line}")
+
+
+def _format_theme_output(theme_name: str, theme_values: dict) -> str:
+    if not isinstance(theme_values, dict):
+        return yaml.safe_dump(
+            {theme_name: theme_values},
+            sort_keys=False,
+            allow_unicode=True,
+            default_flow_style=False,
+        )
+
+    buckets: dict[int, list[str]] = {}
+
+    for key in theme_values.keys():
+        section_index = _theme_output_section_index(str(key))
+        buckets.setdefault(section_index, []).append(str(key))
+
+    lines = [f"{theme_name}:"]
+
+    for section_index in sorted(buckets.keys()):
+        keys = buckets[section_index]
+        keys.sort(key=lambda item: _theme_output_key_sort(section_index, item))
+
+        if section_index < len(THEME_OUTPUT_SECTIONS):
+            section_title = THEME_OUTPUT_SECTIONS[section_index]["title"]
+        else:
+            section_title = "Sonstiges"
+
+        lines.append("")
+        lines.append(f"  # {section_title}")
+
+        for key in keys:
+            _append_theme_output_value(lines, key, theme_values[key])
+
+    lines.append("")
+    return "\n".join(lines)
+
+
 def _save_theme_file_version_sync(hass: HomeAssistant, filename: str, content: str) -> dict:
     themes_dir = Path(hass.config.path("themes"))
     themes_dir.mkdir(parents=True, exist_ok=True)
@@ -240,12 +588,7 @@ def _save_theme_file_version_sync(hass: HomeAssistant, filename: str, content: s
                 theme_values = dict(theme_values)
                 theme_values["card-mod-theme"] = new_theme_name
 
-                new_content = yaml.safe_dump(
-                    {new_theme_name: theme_values},
-                    sort_keys=False,
-                    allow_unicode=True,
-                    default_flow_style=False,
-                )
+                new_content = _format_theme_output(new_theme_name, theme_values)
             else:
                 new_content = re.sub(
                     r"^([^\n:#][^:\n]*):",
