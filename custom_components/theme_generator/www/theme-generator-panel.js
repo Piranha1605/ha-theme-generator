@@ -670,7 +670,8 @@ class ThemeGeneratorPanel extends HTMLElement {
     this.activeView = "preview";
     this.status = "Panel geladen. Theme-Dateien werden gesucht …";
     this.previewPage = "all_settings";
-    this.settingsFilter = "all";
+    this.settingsFilter = "basic";
+    this.settingsMenuOpen = true;
     this._editorScrollTop = 0;
     this._editorSelectionStart = 0;
     this._editorSelectionEnd = 0;
@@ -1386,7 +1387,7 @@ class ThemeGeneratorPanel extends HTMLElement {
       });
     }
 
-    const filter = this.settingsFilter || "all";
+    const filter = this.settingsFilter || "basic";
 
     const filterMap = {
       all: [],
@@ -1442,8 +1443,8 @@ class ThemeGeneratorPanel extends HTMLElement {
     const group = groupId === "all_settings"
       ? {
           id: "all_settings",
-          title: "Farben & Einstellungen",
-          description: "Alle Farben und Einstellungen aus der geladenen Theme-Datei. Wähle unten eine Kategorie aus.",
+          title: "Theme Settings",
+          description: "Wähle links eine Kategorie aus und bearbeite die passenden Theme-Werte.",
           fields: this.getAllThemeFields()
         }
       : this.colorGroups.find((item) => item.id === groupId);
@@ -1567,25 +1568,60 @@ class ThemeGeneratorPanel extends HTMLElement {
 
     const page = this.previewPage || "overview";
 
-    const menu = [
-      ["all_settings", "mdi:palette-swatch", "Farben & Einstellungen"],
+    const settingsItems = [
+      ["basic", "mdi:palette", "Grundfarben"],
+      ["backgrounds", "mdi:image-filter-hdr", "Hintergründe"],
+      ["textcolors", "mdi:format-color-text", "Textfarben"],
+      ["header", "mdi:page-layout-header", "Header"],
+      ["sidebar", "mdi:view-sidebar", "Sidebar"],
+      ["cards", "mdi:cards-outline", "Karten"],
+      ["icons", "mdi:icons", "Icons"],
+      ["states", "mdi:checkbox-marked-circle-outline", "Statusfarben"],
+      ["switches", "mdi:toggle-switch-outline", "Schalter"],
+      ["sliders", "mdi:tune-variant", "Slider"],
+      ["inputs", "mdi:form-textbox", "Eingabefelder"],
+      ["mushroom", "mdi:mushroom-outline", "Mushroom"],
+      ["bubble", "mdi:circle-multiple-outline", "Bubble Card"],
+      ["cardmod", "mdi:code-braces", "card-mod"]
+    ];
+
+    const previewItems = [
       ["overview", "mdi:view-dashboard-outline", "Vorschau"],
       ["clock_weather", "mdi:weather-partly-cloudy", "Uhr & Wetter"],
       ["standard_cards", "mdi:cards-outline", "Standardkarten"],
-      ["switches", "mdi:toggle-switch-outline", "Schalter"],
-      ["sliders", "mdi:tune-variant", "Slider"],
-      ["mushroom", "mdi:mushroom-outline", "Mushroom"],
-      ["bubble", "mdi:circle-multiple-outline", "Bubble Card"],
-      ["cardmod", "mdi:code-braces", "card-mod"],
       ["custom_cards", "mdi:card-plus-outline", "Eigene Karten"]
     ];
 
-    const menuHtml = menu.map(([id, icon, label]) => `
-      <div class="ha-nav-item ${page === id ? "active" : ""}" data-preview-page="${id}">
-        <ha-icon icon="${icon}" class="ha-nav-icon"></ha-icon>
-        ${label}
-      </div>
-    `).join("");
+    const settingsMenuHtml = `
+      <button class="ha-nav-item settings-parent ${page === "all_settings" ? "active" : ""}" data-settings-menu-toggle="1">
+        <ha-icon icon="mdi:palette-swatch" class="ha-nav-icon"></ha-icon>
+        <span>Theme Settings</span>
+        <span class="settings-chevron">${this.settingsMenuOpen ? "▾" : "▸"}</span>
+      </button>
+
+      ${this.settingsMenuOpen ? `
+        <div class="settings-submenu">
+          ${settingsItems.map(([id, icon, label]) => `
+            <button class="ha-nav-item settings-child ${page === "all_settings" && this.settingsFilter === id ? "active" : ""}" data-settings-nav="${id}">
+              <ha-icon icon="${icon}" class="ha-nav-icon"></ha-icon>
+              <span>${label}</span>
+            </button>
+          `).join("")}
+        </div>
+      ` : ""}
+    `;
+
+    const previewMenuHtml = `
+      <div class="menu-section-label">Vorschau</div>
+      ${previewItems.map(([id, icon, label]) => `
+        <div class="ha-nav-item ${page === id ? "active" : ""}" data-preview-page="${id}">
+          <ha-icon icon="${icon}" class="ha-nav-icon"></ha-icon>
+          ${label}
+        </div>
+      `).join("")}
+    `;
+
+    const menuHtml = settingsMenuHtml + previewMenuHtml;
 
     let cardsHtml = "";
 
@@ -3140,7 +3176,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.7 - linke Gruppen sauber trennen */
+        /* v1.11.8 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -3226,7 +3262,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.7 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.11.8 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -3337,7 +3373,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.7 - Alle Settings */
+        /* v1.11.8 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -3353,7 +3389,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.7 - Filter fuer Alle Settings */
+        /* v1.11.8 - Filter fuer Alle Settings */
         .settings-filter-row {
           display: flex;
           flex-wrap: wrap;
@@ -3377,6 +3413,57 @@ class ThemeGeneratorPanel extends HTMLElement {
           background: var(--p-primary);
           border-color: var(--p-primary);
           color: #ffffff;
+        }
+
+
+        /* v1.11.8 - einklappbares linkes Settings-Menü */
+        .settings-parent {
+          display: grid !important;
+          grid-template-columns: 26px minmax(0, 1fr) 22px;
+          align-items: center;
+          width: 100%;
+          cursor: pointer;
+        }
+
+        .settings-parent span {
+          min-width: 0;
+        }
+
+        .settings-chevron {
+          text-align: right;
+          color: var(--p-secondary);
+          font-weight: 900;
+        }
+
+        .settings-submenu {
+          display: grid;
+          gap: 4px;
+          margin: 4px 0 10px 0;
+          padding-left: 10px;
+          border-left: 2px solid color-mix(in srgb, var(--p-primary) 28%, transparent);
+        }
+
+        .settings-child {
+          min-height: 32px !important;
+          padding-left: 8px !important;
+          opacity: 0.92;
+        }
+
+        .settings-child.active {
+          opacity: 1;
+        }
+
+        .menu-section-label {
+          margin: 14px 0 6px 8px;
+          color: var(--p-secondary);
+          font-size: 11px;
+          font-weight: 900;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+        }
+
+        .settings-filter-row {
+          display: none !important;
         }
 
         @media (max-width: 1050px) {
@@ -3463,7 +3550,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.11.7</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.11.8</span></h1>
             </div>
 
             <div class="controls">
@@ -3506,6 +3593,21 @@ class ThemeGeneratorPanel extends HTMLElement {
     this.shadowRoot.querySelectorAll("[data-settings-filter]").forEach((item) => {
       item.addEventListener("click", (event) => {
         this.settingsFilter = event.currentTarget.dataset.settingsFilter || "all";
+        this.previewPage = "all_settings";
+        this.render();
+      });
+    });
+
+    this.shadowRoot.querySelectorAll("[data-settings-menu-toggle]").forEach((item) => {
+      item.addEventListener("click", () => {
+        this.settingsMenuOpen = !this.settingsMenuOpen;
+        this.render();
+      });
+    });
+
+    this.shadowRoot.querySelectorAll("[data-settings-nav]").forEach((item) => {
+      item.addEventListener("click", (event) => {
+        this.settingsFilter = event.currentTarget.dataset.settingsNav || "basic";
         this.previewPage = "all_settings";
         this.render();
       });
