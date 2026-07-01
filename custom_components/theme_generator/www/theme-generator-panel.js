@@ -669,7 +669,7 @@ class ThemeGeneratorPanel extends HTMLElement {
     this.editorContent = DEFAULT_THEME;
     this.activeView = "preview";
     this.status = "Panel geladen. Theme-Dateien werden gesucht …";
-    this.previewPage = "overview";
+    this.previewPage = "all_settings";
     this.settingsFilter = "all";
     this._editorScrollTop = 0;
     this._editorSelectionStart = 0;
@@ -1390,6 +1390,32 @@ class ThemeGeneratorPanel extends HTMLElement {
 
     const filterMap = {
       all: [],
+      basic: [
+        "primary-color",
+        "accent-color",
+        "mdc-theme-secondary",
+        "success-color",
+        "warning-color",
+        "error-color",
+        "info-color",
+        "state-active-color",
+        "state-inactive-color",
+        "state-unavailable-color"
+      ],
+      backgrounds: [
+        "background",
+        "surface",
+        "card-background",
+        "clear-background",
+        "divider-color"
+      ],
+      textcolors: [
+        "text",
+        "on-primary",
+        "on-secondary",
+        "on-surface",
+        "disabled-text"
+      ],
       header: ["app-header", "app-toolbar", "header"],
       sidebar: ["sidebar"],
       cards: ["ha-card", "card-background", "paper-card"],
@@ -1416,8 +1442,8 @@ class ThemeGeneratorPanel extends HTMLElement {
     const group = groupId === "all_settings"
       ? {
           id: "all_settings",
-          title: "Alle Settings",
-          description: "Alle direkt gefundenen Theme-Variablen aus der geladenen YAML-Datei.",
+          title: "Farben & Einstellungen",
+          description: "Alle Farben und Einstellungen aus der geladenen Theme-Datei. Wähle unten eine Kategorie aus."
           fields: this.getAllThemeFields()
         }
       : this.colorGroups.find((item) => item.id === groupId);
@@ -1482,6 +1508,9 @@ class ThemeGeneratorPanel extends HTMLElement {
       <div class="settings-filter-row">
         ${[
           ["all", "Alle"],
+          ["basic", "Grundfarben"],
+          ["backgrounds", "Hintergründe"],
+          ["textcolors", "Textfarben"],
           ["header", "Header"],
           ["sidebar", "Sidebar"],
           ["cards", "Karten"],
@@ -1539,11 +1568,8 @@ class ThemeGeneratorPanel extends HTMLElement {
     const page = this.previewPage || "overview";
 
     const menu = [
-      ["all_settings", "mdi:format-list-bulleted-square", "Alle Settings"],
-      ["basic", "mdi:palette", "Grundfarben"],
-      ["backgrounds", "mdi:image-filter-hdr", "Hintergründe"],
-      ["textcolors", "mdi:format-color-text", "Textfarben"],
-      ["overview", "mdi:view-dashboard-outline", "Übersicht"],
+      ["all_settings", "mdi:palette-swatch", "Farben & Einstellungen"],
+      ["overview", "mdi:view-dashboard-outline", "Vorschau"],
       ["clock_weather", "mdi:weather-partly-cloudy", "Uhr & Wetter"],
       ["standard_cards", "mdi:cards-outline", "Standardkarten"],
       ["switches", "mdi:toggle-switch-outline", "Schalter"],
