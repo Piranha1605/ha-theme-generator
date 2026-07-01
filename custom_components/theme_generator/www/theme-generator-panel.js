@@ -1443,7 +1443,7 @@ class ThemeGeneratorPanel extends HTMLElement {
       ? {
           id: "all_settings",
           title: "Farben & Einstellungen",
-          description: "Alle Farben und Einstellungen aus der geladenen Theme-Datei. Wähle unten eine Kategorie aus."
+          description: "Alle Farben und Einstellungen aus der geladenen Theme-Datei. Wähle unten eine Kategorie aus.",
           fields: this.getAllThemeFields()
         }
       : this.colorGroups.find((item) => item.id === groupId);
@@ -3140,7 +3140,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.6 - linke Gruppen sauber trennen */
+        /* v1.11.7 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -3226,7 +3226,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.6 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.11.7 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -3337,7 +3337,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.6 - Alle Settings */
+        /* v1.11.7 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -3353,7 +3353,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.6 - Filter fuer Alle Settings */
+        /* v1.11.7 - Filter fuer Alle Settings */
         .settings-filter-row {
           display: flex;
           flex-wrap: wrap;
@@ -3463,7 +3463,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.11.6</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.11.7</span></h1>
             </div>
 
             <div class="controls">
