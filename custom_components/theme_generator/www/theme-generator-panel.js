@@ -3220,7 +3220,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.3 - linke Gruppen sauber trennen */
+        /* v1.12.4 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -3306,7 +3306,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.3 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.12.4 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -3417,7 +3417,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.3 - Alle Settings */
+        /* v1.12.4 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -3433,7 +3433,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.3 - Filter fuer Alle Settings */
+        /* v1.12.4 - Filter fuer Alle Settings */
         .settings-filter-row {
           display: flex;
           flex-wrap: wrap;
@@ -3460,7 +3460,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.3 - einklappbares linkes Settings-Menü */
+        /* v1.12.4 - einklappbares linkes Settings-Menü */
         .settings-parent {
           display: grid !important;
           grid-template-columns: 26px minmax(0, 1fr) 22px;
@@ -3511,7 +3511,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.3 - Menü dezenter + Übersicht aufgeräumt */
+        /* v1.12.4 - Menü dezenter + Übersicht aufgeräumt */
         .settings-submenu .ha-nav-item,
         .settings-submenu .settings-child {
           background: transparent !important;
@@ -3670,7 +3670,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.3 - sauberes Kartenraster */
+        /* v1.12.4 - sauberes Kartenraster */
         .ha-content.clean-preview {
           display: flex;
           justify-content: center;
@@ -3811,7 +3811,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.3 - Vorschau-Raster repariert */
+        /* v1.12.4 - Vorschau-Raster repariert */
         .ha-content.clean-preview {
           display: flex !important;
           flex-direction: column !important;
@@ -3882,7 +3882,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.3 - Farbkarten und Vorschau sauber ausrichten */
+        /* v1.12.4 - Farbkarten und Vorschau sauber ausrichten */
 
         .ha-nav-icon {
           width: 22px !important;
@@ -4103,7 +4103,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.3 - finaler Layout-Fix */
+        /* v1.12.4 - finaler Layout-Fix */
         .ha-preview {
           grid-template-columns: 250px minmax(0, 1fr) !important;
           width: 100% !important;
@@ -4233,6 +4233,50 @@ class ThemeGeneratorPanel extends HTMLElement {
           .preview-color-grid {
             grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
           }
+        }
+
+
+        /* v1.12.4 - Menütext vollständig anzeigen */
+        .ha-side {
+          width: 280px !important;
+          min-width: 280px !important;
+          max-width: 280px !important;
+        }
+
+        .ha-preview {
+          grid-template-columns: 280px minmax(0, 1fr) !important;
+        }
+
+        .ha-nav-item span,
+        .settings-child span,
+        .settings-parent span {
+          width: auto !important;
+          flex: 1 1 auto !important;
+          min-width: 0 !important;
+          max-width: none !important;
+          text-align: left !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+          white-space: nowrap !important;
+        }
+
+        .ha-nav-icon,
+        .ha-nav-item .ha-nav-icon,
+        .settings-child ha-icon,
+        .settings-parent ha-icon {
+          width: 24px !important;
+          min-width: 24px !important;
+          max-width: 24px !important;
+          flex: 0 0 24px !important;
+          text-align: center !important;
+        }
+
+        .settings-child {
+          grid-template-columns: 28px minmax(0, 1fr) !important;
+        }
+
+        .settings-parent {
+          grid-template-columns: 28px minmax(0, 1fr) 18px !important;
         }
 
         @media (max-width: 1050px) {
@@ -4417,7 +4461,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.12.3</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.12.4</span></h1>
             </div>
 
             <div class="controls">
