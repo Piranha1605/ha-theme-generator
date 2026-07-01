@@ -3177,7 +3177,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.9 - linke Gruppen sauber trennen */
+        /* v1.12.0 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -3263,7 +3263,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.9 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.12.0 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -3374,7 +3374,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.9 - Alle Settings */
+        /* v1.12.0 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -3390,7 +3390,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.9 - Filter fuer Alle Settings */
+        /* v1.12.0 - Filter fuer Alle Settings */
         .settings-filter-row {
           display: flex;
           flex-wrap: wrap;
@@ -3417,7 +3417,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.9 - einklappbares linkes Settings-Menü */
+        /* v1.12.0 - einklappbares linkes Settings-Menü */
         .settings-parent {
           display: grid !important;
           grid-template-columns: 26px minmax(0, 1fr) 22px;
@@ -3468,7 +3468,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.9 - Menü dezenter + Übersicht aufgeräumt */
+        /* v1.12.0 - Menü dezenter + Übersicht aufgeräumt */
         .settings-submenu .ha-nav-item,
         .settings-submenu .settings-child {
           background: transparent !important;
@@ -3626,6 +3626,173 @@ class ThemeGeneratorPanel extends HTMLElement {
           font-size: 12px;
         }
 
+
+        /* v1.12.0 - sauberes Kartenraster */
+        .ha-content.clean-preview {
+          display: flex;
+          justify-content: center;
+          align-items: flex-start;
+          padding: 34px 28px;
+        }
+
+        .compact-overview,
+        .ha-big-preview-cards.compact-overview {
+          width: min(100%, 980px);
+          max-width: 980px;
+          margin: 0 auto;
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 18px;
+          align-items: stretch;
+        }
+
+        .ha-big-preview-cards {
+          width: min(100%, 980px);
+          max-width: 980px;
+          margin: 0 auto;
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 18px;
+          align-items: stretch;
+        }
+
+        .ha-big-card {
+          width: 100%;
+          min-height: 210px !important;
+          height: 210px;
+          margin: 0 !important;
+          padding: 22px !important;
+          border-radius: 22px;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+        }
+
+        .overview-combined-card {
+          grid-column: span 2;
+          height: 170px !important;
+          min-height: 170px !important;
+        }
+
+        .overview-two {
+          height: 100%;
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 24px;
+          align-items: center;
+        }
+
+        .overview-metric {
+          height: 100%;
+          display: flex;
+          align-items: center;
+          gap: 18px;
+          min-width: 0;
+        }
+
+        .ha-card-icon {
+          flex: 0 0 auto;
+        }
+
+        .ha-clock-big,
+        .ha-weather-temp {
+          line-height: 1;
+        }
+
+        .big-card-head {
+          margin-bottom: 16px;
+        }
+
+        .entity-row {
+          min-height: 44px;
+          align-items: center;
+        }
+
+        .controls-card {
+          grid-column: span 2;
+          height: 210px !important;
+          min-height: 210px !important;
+        }
+
+        .control-split {
+          flex: 1;
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 34px;
+          align-items: center;
+        }
+
+        .ha-switch-row {
+          min-height: 34px;
+          align-items: center;
+        }
+
+        .ha-slider-row {
+          margin: 0 0 18px 0;
+        }
+
+        .real-mushroom-card,
+        .real-bubble-card {
+          height: 210px !important;
+          min-height: 210px !important;
+          justify-content: center;
+        }
+
+        .real-card-row,
+        .bubble-pill {
+          min-height: 76px;
+        }
+
+        .real-chip-row {
+          margin-top: 16px;
+        }
+
+        .clean-swatches {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 12px 24px;
+        }
+
+        .clean-swatches div {
+          display: flex;
+          align-items: center;
+          gap: 9px;
+          min-height: 24px;
+        }
+
+        .clean-swatches span {
+          width: 16px;
+          height: 16px;
+          border-radius: 999px;
+          flex: 0 0 auto;
+        }
+
+        @media (max-width: 900px) {
+          .compact-overview,
+          .ha-big-preview-cards,
+          .ha-big-preview-cards.compact-overview {
+            grid-template-columns: 1fr;
+            max-width: 100%;
+          }
+
+          .overview-combined-card,
+          .controls-card {
+            grid-column: span 1;
+            height: auto !important;
+            min-height: 210px !important;
+          }
+
+          .overview-two,
+          .control-split {
+            grid-template-columns: 1fr;
+          }
+
+          .ha-big-card {
+            height: auto;
+            min-height: 210px !important;
+          }
+        }
+
         @media (max-width: 900px) {
           .overview-two,
           .control-split {
@@ -3717,7 +3884,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.11.9</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.12.0</span></h1>
             </div>
 
             <div class="controls">
