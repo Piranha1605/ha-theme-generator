@@ -3472,30 +3472,23 @@ class ThemeGeneratorPanel extends HTMLElement {
   }
 
   renderEditorView() {
+    const filename = this.selectedFile || this.workFile || "kein Theme geladen";
+
     return `
-      <section class="editor-split-view">
-        <div class="editor-code-pane">
-          <div class="editor-pane-head">
+      <section class="editor-single-layout">
+        <div class="editor-single-card">
+          <div class="editor-single-head">
             <div>
-              <strong>Theme-Code</strong>
-              <span>${this.selectedFile ? this.escape(this.selectedFile) : "Geladenes Theme"}</span>
+              <h3>Theme-Code</h3>
+              <p>${this.escape(filename)}</p>
             </div>
           </div>
 
-          <textarea id="editor" spellcheck="false">${this.escape(this.editorContent)}</textarea>
-        </div>
-
-        <div class="editor-preview-pane">
-          <div class="editor-pane-head">
-            <div>
-              <strong>Live-Vorschau</strong>
-              <span>Vorschau basiert auf dem aktuell geladenen Theme-Code</span>
-            </div>
-          </div>
-
-          <div class="editor-preview-box">
-            ${this.renderPreview()}
-          </div>
+          <textarea
+            id="theme-editor"
+            class="theme-editor editor-single-textarea"
+            spellcheck="false"
+          >${this.escape(this.editorContent)}</textarea>
         </div>
       </section>
     `;
@@ -4736,7 +4729,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.4 - linke Gruppen sauber trennen */
+        /* v1.15.5 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -4822,7 +4815,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.4 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.15.5 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -4933,7 +4926,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.4 - Alle Settings */
+        /* v1.15.5 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -4949,7 +4942,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.4 - Filter fuer Alle Settings */
+        /* v1.15.5 - Filter fuer Alle Settings */
         .settings-filter-row {
           display: flex;
           flex-wrap: wrap;
@@ -4976,7 +4969,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.4 - einklappbares linkes Settings-Menü */
+        /* v1.15.5 - einklappbares linkes Settings-Menü */
         .settings-parent {
           display: grid !important;
           grid-template-columns: 26px minmax(0, 1fr) 22px;
@@ -5027,7 +5020,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.4 - Menü dezenter + Übersicht aufgeräumt */
+        /* v1.15.5 - Menü dezenter + Übersicht aufgeräumt */
         .settings-submenu .ha-nav-item,
         .settings-submenu .settings-child {
           background: transparent !important;
@@ -5186,7 +5179,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.4 - sauberes Kartenraster */
+        /* v1.15.5 - sauberes Kartenraster */
         .ha-content.clean-preview {
           display: flex;
           justify-content: center;
@@ -5327,7 +5320,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.4 - Vorschau-Raster repariert */
+        /* v1.15.5 - Vorschau-Raster repariert */
         .ha-content.clean-preview {
           display: flex !important;
           flex-direction: column !important;
@@ -5398,7 +5391,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.4 - Farbkarten und Vorschau sauber ausrichten */
+        /* v1.15.5 - Farbkarten und Vorschau sauber ausrichten */
 
         .ha-nav-icon {
           width: 22px !important;
@@ -5619,7 +5612,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.4 - finaler Layout-Fix */
+        /* v1.15.5 - finaler Layout-Fix */
         .ha-preview {
           grid-template-columns: 250px minmax(0, 1fr) !important;
           width: 100% !important;
@@ -5752,7 +5745,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.4 - Menütext vollständig anzeigen */
+        /* v1.15.5 - Menütext vollständig anzeigen */
         .ha-side {
           width: 280px !important;
           min-width: 280px !important;
@@ -5796,7 +5789,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.4 - Mushroom/Bubble/card-mod sauber gruppieren */
+        /* v1.15.5 - Mushroom/Bubble/card-mod sauber gruppieren */
         .preview-section-title {
           grid-column: 1 / -1;
           margin: 12px 0 -4px 0;
@@ -5818,7 +5811,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.4 - Farbformat Auswahl und Alpha nur bei Farben */
+        /* v1.15.5 - Farbformat Auswahl und Alpha nur bei Farben */
         .format-row {
           display: flex;
           gap: 8px;
@@ -5857,7 +5850,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.4 - Demo Buttons Vorschauseite */
+        /* v1.15.5 - Demo Buttons Vorschauseite */
         .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -6089,7 +6082,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.4 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
+        /* v1.15.5 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
         .ha-content .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -6169,7 +6162,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.4 - Eigene Demo-Seite mit gespeicherter YAML */
+        /* v1.15.5 - Eigene Demo-Seite mit gespeicherter YAML */
         .demo-page-editor-shell {
           width: min(100%, 1240px);
           margin: 0 auto;
@@ -6290,7 +6283,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.4 - Demo Seite als echtes Home-Assistant iframe */
+        /* v1.15.5 - Demo Seite als echtes Home-Assistant iframe */
         .demo-iframe-shell {
           width: min(100%, 1240px);
           margin: 0 auto;
@@ -6374,7 +6367,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.4 - iframe Demo Seite ohne Home Assistant Seitenmenü */
+        /* v1.15.5 - iframe Demo Seite ohne Home Assistant Seitenmenü */
         .demo-iframe-frame {
           position: relative;
           height: 720px;
@@ -6401,7 +6394,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.4 - Editor links, Live-Vorschau rechts */
+        /* v1.15.5 - Editor links, Live-Vorschau rechts */
         .editor-split-view {
           display: grid;
           grid-template-columns: minmax(420px, 0.95fr) minmax(460px, 1.05fr);
@@ -6705,7 +6698,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
       
 
-        /* v1.15.4 - View Tabs immer nebeneinander */
+        /* v1.15.5 - View Tabs immer nebeneinander */
         .view-switch {
           display: inline-flex;
           flex-direction: row;
@@ -6725,7 +6718,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.4 - Template Bibliothek */
+        /* v1.15.5 - Template Bibliothek */
         .templates-page {
           display: grid;
           gap: 18px;
@@ -6864,7 +6857,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 
 
-        /* v1.15.4 - card-mod neue Blöcke */
+        /* v1.15.5 - card-mod neue Blöcke */
         .cardmod-add-actions {
           margin-top: -4px;
           padding-top: 8px;
@@ -6877,7 +6870,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.4 - card-mod / CSS Codekarten */
+        /* v1.15.5 - card-mod / CSS Codekarten */
         .code-field-card {
           align-items: stretch;
         }
@@ -6922,7 +6915,7 @@ class ThemeGeneratorPanel extends HTMLElement {
           width: auto;
         }
 
-        /* v1.15.4 - View Tabs immer in einer Zeile */
+        /* v1.15.5 - View Tabs immer in einer Zeile */
         .view-switch {
           display: inline-flex;
           flex-direction: row;
@@ -6942,6 +6935,51 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
+
+        /* v1.15.5 - Editor ohne Live-Vorschau */
+        .editor-single-layout {
+          display: block;
+          width: 100%;
+        }
+
+        .editor-single-card {
+          border: 1px solid var(--ha-card-border-color);
+          border-radius: 24px;
+          background: var(--card-background-color);
+          overflow: hidden;
+          box-shadow: var(--ha-card-box-shadow);
+        }
+
+        .editor-single-head {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          gap: 16px;
+          padding: 16px 18px;
+          border-bottom: 1px solid var(--ha-card-border-color);
+        }
+
+        .editor-single-head h3 {
+          margin: 0 0 4px;
+          font-size: 18px;
+        }
+
+        .editor-single-head p {
+          margin: 0;
+          color: var(--secondary-text-color);
+          font-size: 13px;
+        }
+
+        .editor-single-textarea {
+          width: 100%;
+          min-height: 72vh;
+          border: 0;
+          border-radius: 0;
+          resize: vertical;
+          box-sizing: border-box;
+        }
+
+
 </style>
 
       <div class="card">
@@ -6954,7 +6992,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.15.4</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.15.5</span></h1>
             </div>
 
             <div class="controls">
