@@ -2489,7 +2489,15 @@ class ThemeGeneratorPanel extends HTMLElement {
   }
 
 
+  normalizePreviewPage() {
+    if (this.previewPage === "custom_cards") {
+      this.previewPage = "demo_page";
+    }
+  }
+
   renderPreview() {
+    this.normalizePreviewPage();
+
     const v = this.getPreviewVars ? this.getPreviewVars() : {
       primary: "#03a9f4",
       accent: "#03a9f4",
@@ -2527,8 +2535,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
     const previewItems = [
       ["overview", "mdi:view-dashboard-outline", "Vorschau"],
-      ["demo_page", "mdi:file-document-edit-outline", "Demo Seite"],
-      ["custom_cards", "mdi:card-plus-outline", "Eigene Karten"]
+      ["demo_page", "mdi:file-document-edit-outline", "Demo Seite"]
     ];
 
     const settingsMenuHtml = `
@@ -4120,7 +4127,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.7 - linke Gruppen sauber trennen */
+        /* v1.13.8 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -4206,7 +4213,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.7 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.13.8 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -4317,7 +4324,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.7 - Alle Settings */
+        /* v1.13.8 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -4333,7 +4340,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.7 - Filter fuer Alle Settings */
+        /* v1.13.8 - Filter fuer Alle Settings */
         .settings-filter-row {
           display: flex;
           flex-wrap: wrap;
@@ -4360,7 +4367,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.7 - einklappbares linkes Settings-Menü */
+        /* v1.13.8 - einklappbares linkes Settings-Menü */
         .settings-parent {
           display: grid !important;
           grid-template-columns: 26px minmax(0, 1fr) 22px;
@@ -4411,7 +4418,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.7 - Menü dezenter + Übersicht aufgeräumt */
+        /* v1.13.8 - Menü dezenter + Übersicht aufgeräumt */
         .settings-submenu .ha-nav-item,
         .settings-submenu .settings-child {
           background: transparent !important;
@@ -4570,7 +4577,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.7 - sauberes Kartenraster */
+        /* v1.13.8 - sauberes Kartenraster */
         .ha-content.clean-preview {
           display: flex;
           justify-content: center;
@@ -4711,7 +4718,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.7 - Vorschau-Raster repariert */
+        /* v1.13.8 - Vorschau-Raster repariert */
         .ha-content.clean-preview {
           display: flex !important;
           flex-direction: column !important;
@@ -4782,7 +4789,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.7 - Farbkarten und Vorschau sauber ausrichten */
+        /* v1.13.8 - Farbkarten und Vorschau sauber ausrichten */
 
         .ha-nav-icon {
           width: 22px !important;
@@ -5003,7 +5010,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.7 - finaler Layout-Fix */
+        /* v1.13.8 - finaler Layout-Fix */
         .ha-preview {
           grid-template-columns: 250px minmax(0, 1fr) !important;
           width: 100% !important;
@@ -5136,7 +5143,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.7 - Menütext vollständig anzeigen */
+        /* v1.13.8 - Menütext vollständig anzeigen */
         .ha-side {
           width: 280px !important;
           min-width: 280px !important;
@@ -5180,7 +5187,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.7 - Mushroom/Bubble/card-mod sauber gruppieren */
+        /* v1.13.8 - Mushroom/Bubble/card-mod sauber gruppieren */
         .preview-section-title {
           grid-column: 1 / -1;
           margin: 12px 0 -4px 0;
@@ -5202,7 +5209,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.7 - Farbformat Auswahl und Alpha nur bei Farben */
+        /* v1.13.8 - Farbformat Auswahl und Alpha nur bei Farben */
         .format-row {
           display: flex;
           gap: 8px;
@@ -5241,7 +5248,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.7 - Demo Buttons Vorschauseite */
+        /* v1.13.8 - Demo Buttons Vorschauseite */
         .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -5473,7 +5480,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.7 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
+        /* v1.13.8 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
         .ha-content .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -5553,7 +5560,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.7 - Eigene Demo-Seite mit gespeicherter YAML */
+        /* v1.13.8 - Eigene Demo-Seite mit gespeicherter YAML */
         .demo-page-editor-shell {
           width: min(100%, 1240px);
           margin: 0 auto;
@@ -5674,7 +5681,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.7 - Demo Seite als echtes Home-Assistant iframe */
+        /* v1.13.8 - Demo Seite als echtes Home-Assistant iframe */
         .demo-iframe-shell {
           width: min(100%, 1240px);
           margin: 0 auto;
@@ -5758,7 +5765,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.7 - iframe Demo Seite ohne Home Assistant Seitenmenü */
+        /* v1.13.8 - iframe Demo Seite ohne Home Assistant Seitenmenü */
         .demo-iframe-frame {
           position: relative;
           height: 720px;
@@ -6007,7 +6014,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.13.7</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.13.8</span></h1>
             </div>
 
             <div class="controls">
