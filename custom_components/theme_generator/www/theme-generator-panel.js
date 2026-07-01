@@ -671,6 +671,7 @@ class ThemeGeneratorPanel extends HTMLElement {
     this.status = "Panel geladen. Theme-Dateien werden gesucht …";
     this.previewPage = "all_settings";
     this.demoIframeUrl = localStorage.getItem("theme_generator_demo_iframe_url") || "/lovelace/default_view";
+    this.demoIframeHideSidebar = localStorage.getItem("theme_generator_demo_iframe_hide_sidebar") !== "false";
 
     this.demoPageFiles = [];
     this.demoPageFile = "demo_preview.yaml";
@@ -2400,32 +2401,64 @@ class ThemeGeneratorPanel extends HTMLElement {
 
   saveDemoIframeUrl() {
     const input = this.shadowRoot?.getElementById("demo-iframe-url");
-    const url = this.normalizeDemoIframeUrl(input?.value || this.demoIframeUrl);
-
-    this.demoIframeUrl = url;
-    localStorage.setItem("theme_generator_demo_iframe_url", url);
-    this.status = `Demo-Seite gespeichert: ${url}`;
-    this.render();
-  }
-
-  reloadDemoIframe() {
-    const input = this.shadowRoot?.getElementById("demo-iframe-url");
     const iframe = this.shadowRoot?.getElementById("demo-iframe");
-
     const url = this.normalizeDemoIframeUrl(input?.value || this.demoIframeUrl);
 
     this.demoIframeUrl = url;
     localStorage.setItem("theme_generator_demo_iframe_url", url);
+
+    if (input) {
+      input.value = url;
+    }
 
     if (iframe) {
       iframe.src = url;
     }
 
+    this.status = `Demo-Seite gespeichert: ${url}`;
+  }
+
+  reloadDemoIframe() {
+    const input = this.shadowRoot?.getElementById("demo-iframe-url");
+    const iframe = this.shadowRoot?.getElementById("demo-iframe");
+    const url = this.normalizeDemoIframeUrl(input?.value || this.demoIframeUrl);
+
+    this.demoIframeUrl = url;
+    localStorage.setItem("theme_generator_demo_iframe_url", url);
+
+    if (input) {
+      input.value = url;
+    }
+
+    if (iframe) {
+      iframe.src = url + (url.includes("?") ? "&" : "?") + "_tg_reload=" + Date.now();
+    }
+
     this.status = `Demo-Seite geladen: ${url}`;
+  }
+
+  setDefaultDemoIframeUrl() {
+    const input = this.shadowRoot?.getElementById("demo-iframe-url");
+
+    this.demoIframeUrl = "/lovelace/default_view";
+    localStorage.setItem("theme_generator_demo_iframe_url", this.demoIframeUrl);
+
+    if (input) {
+      input.value = this.demoIframeUrl;
+    }
+
+    this.reloadDemoIframe();
+  }
+
+  toggleDemoIframeSidebar() {
+    this.demoIframeHideSidebar = !this.demoIframeHideSidebar;
+    localStorage.setItem("theme_generator_demo_iframe_hide_sidebar", this.demoIframeHideSidebar ? "true" : "false");
+    this.render();
   }
 
   renderDemoPagePreview() {
     const url = this.normalizeDemoIframeUrl(this.demoIframeUrl || "/lovelace/default_view");
+    const hideSidebar = this.demoIframeHideSidebar !== false;
 
     return `
       <section class="demo-iframe-shell">
@@ -2441,13 +2474,14 @@ class ThemeGeneratorPanel extends HTMLElement {
           <button type="button" id="demo-iframe-save">Speichern</button>
           <button type="button" id="demo-iframe-load">Laden</button>
           <button type="button" id="demo-iframe-home">Standard</button>
+          <button type="button" id="demo-iframe-sidebar">${hideSidebar ? "Menü zeigen" : "Menü ausblenden"}</button>
         </div>
 
         <div class="demo-iframe-help">
           Beispiel: <code>/lovelace/default_view</code>, <code>/lovelace/serversteuerung</code> oder <code>/dashboard-serversteuerung/0</code>
         </div>
 
-        <div class="demo-iframe-frame">
+        <div class="demo-iframe-frame ${hideSidebar ? "hide-ha-sidebar" : ""}">
           <iframe id="demo-iframe" src="${this.escape(url)}"></iframe>
         </div>
       </section>
@@ -4086,7 +4120,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.6 - linke Gruppen sauber trennen */
+        /* v1.13.7 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -4172,7 +4206,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.6 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.13.7 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -4283,7 +4317,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.6 - Alle Settings */
+        /* v1.13.7 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -4299,7 +4333,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.6 - Filter fuer Alle Settings */
+        /* v1.13.7 - Filter fuer Alle Settings */
         .settings-filter-row {
           display: flex;
           flex-wrap: wrap;
@@ -4326,7 +4360,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.6 - einklappbares linkes Settings-Menü */
+        /* v1.13.7 - einklappbares linkes Settings-Menü */
         .settings-parent {
           display: grid !important;
           grid-template-columns: 26px minmax(0, 1fr) 22px;
@@ -4377,7 +4411,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.6 - Menü dezenter + Übersicht aufgeräumt */
+        /* v1.13.7 - Menü dezenter + Übersicht aufgeräumt */
         .settings-submenu .ha-nav-item,
         .settings-submenu .settings-child {
           background: transparent !important;
@@ -4536,7 +4570,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.6 - sauberes Kartenraster */
+        /* v1.13.7 - sauberes Kartenraster */
         .ha-content.clean-preview {
           display: flex;
           justify-content: center;
@@ -4677,7 +4711,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.6 - Vorschau-Raster repariert */
+        /* v1.13.7 - Vorschau-Raster repariert */
         .ha-content.clean-preview {
           display: flex !important;
           flex-direction: column !important;
@@ -4748,7 +4782,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.6 - Farbkarten und Vorschau sauber ausrichten */
+        /* v1.13.7 - Farbkarten und Vorschau sauber ausrichten */
 
         .ha-nav-icon {
           width: 22px !important;
@@ -4969,7 +5003,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.6 - finaler Layout-Fix */
+        /* v1.13.7 - finaler Layout-Fix */
         .ha-preview {
           grid-template-columns: 250px minmax(0, 1fr) !important;
           width: 100% !important;
@@ -5102,7 +5136,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.6 - Menütext vollständig anzeigen */
+        /* v1.13.7 - Menütext vollständig anzeigen */
         .ha-side {
           width: 280px !important;
           min-width: 280px !important;
@@ -5146,7 +5180,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.6 - Mushroom/Bubble/card-mod sauber gruppieren */
+        /* v1.13.7 - Mushroom/Bubble/card-mod sauber gruppieren */
         .preview-section-title {
           grid-column: 1 / -1;
           margin: 12px 0 -4px 0;
@@ -5168,7 +5202,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.6 - Farbformat Auswahl und Alpha nur bei Farben */
+        /* v1.13.7 - Farbformat Auswahl und Alpha nur bei Farben */
         .format-row {
           display: flex;
           gap: 8px;
@@ -5207,7 +5241,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.6 - Demo Buttons Vorschauseite */
+        /* v1.13.7 - Demo Buttons Vorschauseite */
         .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -5439,7 +5473,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.6 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
+        /* v1.13.7 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
         .ha-content .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -5519,7 +5553,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.6 - Eigene Demo-Seite mit gespeicherter YAML */
+        /* v1.13.7 - Eigene Demo-Seite mit gespeicherter YAML */
         .demo-page-editor-shell {
           width: min(100%, 1240px);
           margin: 0 auto;
@@ -5640,7 +5674,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.6 - Demo Seite als echtes Home-Assistant iframe */
+        /* v1.13.7 - Demo Seite als echtes Home-Assistant iframe */
         .demo-iframe-shell {
           width: min(100%, 1240px);
           margin: 0 auto;
@@ -5721,6 +5755,44 @@ class ThemeGeneratorPanel extends HTMLElement {
           border: 0;
           display: block;
           background: var(--p-bg);
+        }
+
+
+        /* v1.13.7 - iframe Demo Seite ohne Home Assistant Seitenmenü */
+        .demo-iframe-frame {
+          position: relative;
+          height: 720px;
+          border-radius: 20px;
+          overflow: hidden;
+          border: 1px solid var(--p-border);
+          background: var(--p-bg);
+          box-shadow: 0 18px 45px rgba(0,0,0,0.16);
+        }
+
+        .demo-iframe-frame iframe {
+          width: 100%;
+          height: 100%;
+          border: 0;
+          display: block;
+          background: var(--p-bg);
+        }
+
+        .demo-iframe-frame.hide-ha-sidebar iframe {
+          width: calc(100% + 255px) !important;
+          height: 100% !important;
+          margin-left: -255px !important;
+          max-width: none !important;
+        }
+
+        @media (max-width: 900px) {
+          .demo-iframe-frame {
+            height: 620px;
+          }
+
+          .demo-iframe-frame.hide-ha-sidebar iframe {
+            width: calc(100% + 220px) !important;
+            margin-left: -220px !important;
+          }
         }
 
         @media (max-width: 900px) {
@@ -5935,7 +6007,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.13.6</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.13.7</span></h1>
             </div>
 
             <div class="controls">
@@ -6011,6 +6083,30 @@ class ThemeGeneratorPanel extends HTMLElement {
     this.shadowRoot.getElementById("overwrite").addEventListener("click", () => this.overwriteSelectedTheme());
     this.shadowRoot.getElementById("view-editor").addEventListener("click", () => this.setView("editor"));
     this.shadowRoot.getElementById("view-preview").addEventListener("click", () => this.setView("preview"));
+
+    this.shadowRoot.getElementById("demo-iframe-save")?.addEventListener("click", () => {
+      this.saveDemoIframeUrl();
+    });
+
+    this.shadowRoot.getElementById("demo-iframe-load")?.addEventListener("click", () => {
+      this.reloadDemoIframe();
+    });
+
+    this.shadowRoot.getElementById("demo-iframe-home")?.addEventListener("click", () => {
+      this.setDefaultDemoIframeUrl();
+    });
+
+    this.shadowRoot.getElementById("demo-iframe-sidebar")?.addEventListener("click", () => {
+      this.toggleDemoIframeSidebar();
+    });
+
+    this.shadowRoot.getElementById("demo-iframe-url")?.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        this.saveDemoIframeUrl();
+      }
+    });
+
+
 
     this.shadowRoot.getElementById("demo-page-list")?.addEventListener("click", () => {
       this.loadDemoPageFiles();
