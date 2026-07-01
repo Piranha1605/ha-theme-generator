@@ -668,6 +668,7 @@ class ThemeGeneratorPanel extends HTMLElement {
     this.selectedFile = "";
     this.workFile = "";
     this.workMeta = null;
+    this.autoLoadedWorkTheme = false;
     this.workSaveTimer = null;
 
     this.editorContent = DEFAULT_THEME;
@@ -783,6 +784,33 @@ class ThemeGeneratorPanel extends HTMLElement {
     throw new Error("Keine WebSocket-Verbindung gefunden.");
   }
 
+  async loadLastWorkTheme() {
+    if (!this._hass || this.autoLoadedWorkTheme) {
+      return;
+    }
+
+    this.autoLoadedWorkTheme = true;
+
+    try {
+      const result = await this.apiCall({
+        type: "theme_generator/read_last_work_theme"
+      });
+
+      if (!result?.found) {
+        return;
+      }
+
+      this.selectedFile = result.filename || "";
+      this.workFile = result.work_file || "";
+      this.workMeta = result.meta || null;
+      this.editorContent = result.content || this.editorContent;
+      this.status = `Arbeitsversion automatisch geladen: ${this.workFile}`;
+      this.render();
+    } catch (err) {
+      console.warn("Keine Arbeitsversion automatisch geladen", err);
+    }
+  }
+
   async createWorkThemeFromSelected() {
     if (!this.selectedFile) {
       this.status = "Bitte zuerst eine Theme-Datei auswählen.";
@@ -799,6 +827,7 @@ class ThemeGeneratorPanel extends HTMLElement {
     this.workFile = result.work_file || "";
     this.workMeta = result.meta || null;
     this.editorContent = result.content || "";
+    this.autoLoadedWorkTheme = true;
 
     return result;
   }
@@ -851,6 +880,8 @@ class ThemeGeneratorPanel extends HTMLElement {
 
       this.loading = false;
       this.render();
+
+      await this.loadLastWorkTheme();
     } catch (err) {
       this.loading = false;
       this.status = `Fehler beim Laden der Theme-Dateien: ${err?.message || err}`;
@@ -858,6 +889,7 @@ class ThemeGeneratorPanel extends HTMLElement {
       this.render();
     }
   }
+
 
   async loadSelectedTheme() {
     if (!this.selectedFile) {
@@ -4221,7 +4253,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.3 - linke Gruppen sauber trennen */
+        /* v1.14.4 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -4307,7 +4339,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.3 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.14.4 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -4418,7 +4450,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.3 - Alle Settings */
+        /* v1.14.4 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -4434,7 +4466,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.3 - Filter fuer Alle Settings */
+        /* v1.14.4 - Filter fuer Alle Settings */
         .settings-filter-row {
           display: flex;
           flex-wrap: wrap;
@@ -4461,7 +4493,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.3 - einklappbares linkes Settings-Menü */
+        /* v1.14.4 - einklappbares linkes Settings-Menü */
         .settings-parent {
           display: grid !important;
           grid-template-columns: 26px minmax(0, 1fr) 22px;
@@ -4512,7 +4544,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.3 - Menü dezenter + Übersicht aufgeräumt */
+        /* v1.14.4 - Menü dezenter + Übersicht aufgeräumt */
         .settings-submenu .ha-nav-item,
         .settings-submenu .settings-child {
           background: transparent !important;
@@ -4671,7 +4703,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.3 - sauberes Kartenraster */
+        /* v1.14.4 - sauberes Kartenraster */
         .ha-content.clean-preview {
           display: flex;
           justify-content: center;
@@ -4812,7 +4844,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.3 - Vorschau-Raster repariert */
+        /* v1.14.4 - Vorschau-Raster repariert */
         .ha-content.clean-preview {
           display: flex !important;
           flex-direction: column !important;
@@ -4883,7 +4915,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.3 - Farbkarten und Vorschau sauber ausrichten */
+        /* v1.14.4 - Farbkarten und Vorschau sauber ausrichten */
 
         .ha-nav-icon {
           width: 22px !important;
@@ -5104,7 +5136,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.3 - finaler Layout-Fix */
+        /* v1.14.4 - finaler Layout-Fix */
         .ha-preview {
           grid-template-columns: 250px minmax(0, 1fr) !important;
           width: 100% !important;
@@ -5237,7 +5269,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.3 - Menütext vollständig anzeigen */
+        /* v1.14.4 - Menütext vollständig anzeigen */
         .ha-side {
           width: 280px !important;
           min-width: 280px !important;
@@ -5281,7 +5313,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.3 - Mushroom/Bubble/card-mod sauber gruppieren */
+        /* v1.14.4 - Mushroom/Bubble/card-mod sauber gruppieren */
         .preview-section-title {
           grid-column: 1 / -1;
           margin: 12px 0 -4px 0;
@@ -5303,7 +5335,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.3 - Farbformat Auswahl und Alpha nur bei Farben */
+        /* v1.14.4 - Farbformat Auswahl und Alpha nur bei Farben */
         .format-row {
           display: flex;
           gap: 8px;
@@ -5342,7 +5374,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.3 - Demo Buttons Vorschauseite */
+        /* v1.14.4 - Demo Buttons Vorschauseite */
         .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -5574,7 +5606,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.3 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
+        /* v1.14.4 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
         .ha-content .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -5654,7 +5686,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.3 - Eigene Demo-Seite mit gespeicherter YAML */
+        /* v1.14.4 - Eigene Demo-Seite mit gespeicherter YAML */
         .demo-page-editor-shell {
           width: min(100%, 1240px);
           margin: 0 auto;
@@ -5775,7 +5807,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.3 - Demo Seite als echtes Home-Assistant iframe */
+        /* v1.14.4 - Demo Seite als echtes Home-Assistant iframe */
         .demo-iframe-shell {
           width: min(100%, 1240px);
           margin: 0 auto;
@@ -5859,7 +5891,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.3 - iframe Demo Seite ohne Home Assistant Seitenmenü */
+        /* v1.14.4 - iframe Demo Seite ohne Home Assistant Seitenmenü */
         .demo-iframe-frame {
           position: relative;
           height: 720px;
@@ -5886,7 +5918,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.3 - Editor links, Live-Vorschau rechts */
+        /* v1.14.4 - Editor links, Live-Vorschau rechts */
         .editor-split-view {
           display: grid;
           grid-template-columns: minmax(420px, 0.95fr) minmax(460px, 1.05fr);
@@ -6200,7 +6232,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.14.3</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.14.4</span></h1>
             </div>
 
             <div class="controls">
