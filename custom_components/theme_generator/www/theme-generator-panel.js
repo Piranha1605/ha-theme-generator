@@ -1713,90 +1713,69 @@ class ThemeGeneratorPanel extends HTMLElement {
     const filter = this.settingsFilter || "";
 
     if (filter === "mushroom") {
-      return [
-        {
-          id: "mushroom_background",
-          title: "Hintergrund",
-          description: "Mushroom Karten-Hintergründe und Card-Flächen.",
-          fields: [
-            { key: "mush-card-primary-background", label: "Mushroom Card Primary Background" },
-            { key: "mush-card-secondary-background", label: "Mushroom Card Secondary Background" },
-            { key: "mushroom-card-background", label: "Mushroom Card Background Legacy" },
-            { key: "mush-card-box-shadow", label: "Mushroom Card Box Shadow" }
-          ]
-        },
-        {
-          id: "mushroom_radius",
-          title: "Rahmen & Rundungen",
-          description: "Radius, Abstände und Schatten für Cards und Chips.",
-          fields: [
-            { key: "mush-card-border-radius", label: "Mushroom Card Border Radius" },
-            { key: "mushroom-card-border-radius", label: "Mushroom Card Border Radius Legacy" },
-            { key: "mush-chip-border-radius", label: "Mushroom Chip Border Radius" },
-            { key: "mush-chip-spacing", label: "Mushroom Chip Spacing" },
-            { key: "mush-chip-box-shadow", label: "Mushroom Chip Box Shadow" }
-          ]
-        },
-        {
-          id: "mushroom_text",
-          title: "Text",
-          description: "Primär-, Sekundär- und deaktivierte Textfarben sowie Schriftwerte.",
-          fields: [
-            { key: "mush-primary-text-color", label: "Mushroom Primary Text Color" },
-            { key: "mush-secondary-text-color", label: "Mushroom Secondary Text Color" },
-            { key: "mush-disabled-text-color", label: "Mushroom Disabled Text Color" },
-            { key: "mushroom-card-primary-color", label: "Mushroom Card Primary Color Legacy" },
-            { key: "mushroom-card-secondary-color", label: "Mushroom Card Secondary Color Legacy" },
-            { key: "mush-card-primary-font-size", label: "Mushroom Primary Font Size" },
-            { key: "mush-card-secondary-font-size", label: "Mushroom Secondary Font Size" },
-            { key: "mush-card-primary-font-weight", label: "Mushroom Primary Font Weight" },
-            { key: "mush-card-secondary-font-weight", label: "Mushroom Secondary Font Weight" }
-          ]
-        },
-        {
-          id: "mushroom_icons_status",
-          title: "Icons & Statusfarben",
-          description: "Icons, Akzentfarbe und Statusfarben.",
-          fields: [
-            { key: "mush-icon-color", label: "Mushroom Icon Color" },
-            { key: "mush-icon-active-color", label: "Mushroom Icon Active Color" },
-            { key: "mush-accent-color", label: "Mushroom Accent Color" },
-            { key: "mush-success-color", label: "Mushroom Success Color" },
-            { key: "mush-warning-color", label: "Mushroom Warning Color" },
-            { key: "mush-danger-color", label: "Mushroom Danger Color" },
-            { key: "mush-info-color", label: "Mushroom Info Color" }
-          ]
-        },
-        {
-          id: "mushroom_chips",
-          title: "Chips",
-          description: "Chip-Hintergrund, Rahmen, Text, Icons und aktive Zustände.",
-          fields: [
-            { key: "mush-chip-background", label: "Mushroom Chip Background" },
-            { key: "mush-chip-border-color", label: "Mushroom Chip Border Color" },
-            { key: "mush-chip-text-color", label: "Mushroom Chip Text Color" },
-            { key: "mush-chip-color", label: "Mushroom Chip Color Legacy" },
-            { key: "mush-chip-icon-color", label: "Mushroom Chip Icon Color" },
-            { key: "mush-chip-active-background", label: "Mushroom Chip Active Background" },
-            { key: "mush-chip-active-text-color", label: "Mushroom Chip Active Text Color" },
-            { key: "mush-chip-active-icon-color", label: "Mushroom Chip Active Icon Color" }
-          ]
-        },
-        {
-          id: "mushroom_slider_badges",
-          title: "Slider, Badges & Divider",
-          description: "Slider-Farben, Badge-Farben und Trennlinien.",
-          fields: [
-            { key: "mush-slider-color", label: "Mushroom Slider Color" },
-            { key: "mush-slider-track-color", label: "Mushroom Slider Track Color" },
-            { key: "mush-slider-background-color", label: "Mushroom Slider Background Color" },
-            { key: "mush-badge-background", label: "Mushroom Badge Background" },
-            { key: "mush-badge-text-color", label: "Mushroom Badge Text Color" },
-            { key: "mush-badge-icon-color", label: "Mushroom Badge Icon Color" },
-            { key: "mush-divider-color", label: "Mushroom Divider Color" }
-          ]
-        }
-      ];
+      if (
+        lower.includes("primary-background") ||
+        lower.includes("secondary-background") ||
+        lower.includes("background") ||
+        lower.includes("box-shadow")
+      ) {
+        return "Hintergrund";
+      }
+
+      if (
+        lower.includes("border-radius") ||
+        lower.includes("radius") ||
+        lower.includes("spacing") ||
+        lower.includes("shadow")
+      ) {
+        return "Rahmen & Rundungen";
+      }
+
+      if (
+        lower.includes("chip")
+      ) {
+        return "Chips";
+      }
+
+      if (
+        lower.includes("slider")
+      ) {
+        return "Slider";
+      }
+
+      if (
+        lower.includes("badge")
+      ) {
+        return "Badges";
+      }
+
+      if (
+        lower.includes("divider")
+      ) {
+        return "Divider";
+      }
+
+      if (
+        lower.includes("icon") ||
+        lower.includes("accent") ||
+        lower.includes("success") ||
+        lower.includes("warning") ||
+        lower.includes("danger") ||
+        lower.includes("info")
+      ) {
+        return "Icons & Statusfarben";
+      }
+
+      if (
+        lower.includes("text") ||
+        lower.includes("primary-color") ||
+        lower.includes("secondary-color") ||
+        lower.includes("font")
+      ) {
+        return "Text";
+      }
+
+      return "Allgemein";
     }
 
     if (filter === "bubble") {
@@ -4757,7 +4736,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.0 - linke Gruppen sauber trennen */
+        /* v1.15.1 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -4843,7 +4822,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.0 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.15.1 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -4954,7 +4933,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.0 - Alle Settings */
+        /* v1.15.1 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -4970,7 +4949,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.0 - Filter fuer Alle Settings */
+        /* v1.15.1 - Filter fuer Alle Settings */
         .settings-filter-row {
           display: flex;
           flex-wrap: wrap;
@@ -4997,7 +4976,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.0 - einklappbares linkes Settings-Menü */
+        /* v1.15.1 - einklappbares linkes Settings-Menü */
         .settings-parent {
           display: grid !important;
           grid-template-columns: 26px minmax(0, 1fr) 22px;
@@ -5048,7 +5027,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.0 - Menü dezenter + Übersicht aufgeräumt */
+        /* v1.15.1 - Menü dezenter + Übersicht aufgeräumt */
         .settings-submenu .ha-nav-item,
         .settings-submenu .settings-child {
           background: transparent !important;
@@ -5207,7 +5186,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.0 - sauberes Kartenraster */
+        /* v1.15.1 - sauberes Kartenraster */
         .ha-content.clean-preview {
           display: flex;
           justify-content: center;
@@ -5348,7 +5327,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.0 - Vorschau-Raster repariert */
+        /* v1.15.1 - Vorschau-Raster repariert */
         .ha-content.clean-preview {
           display: flex !important;
           flex-direction: column !important;
@@ -5419,7 +5398,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.0 - Farbkarten und Vorschau sauber ausrichten */
+        /* v1.15.1 - Farbkarten und Vorschau sauber ausrichten */
 
         .ha-nav-icon {
           width: 22px !important;
@@ -5640,7 +5619,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.0 - finaler Layout-Fix */
+        /* v1.15.1 - finaler Layout-Fix */
         .ha-preview {
           grid-template-columns: 250px minmax(0, 1fr) !important;
           width: 100% !important;
@@ -5773,7 +5752,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.0 - Menütext vollständig anzeigen */
+        /* v1.15.1 - Menütext vollständig anzeigen */
         .ha-side {
           width: 280px !important;
           min-width: 280px !important;
@@ -5817,7 +5796,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.0 - Mushroom/Bubble/card-mod sauber gruppieren */
+        /* v1.15.1 - Mushroom/Bubble/card-mod sauber gruppieren */
         .preview-section-title {
           grid-column: 1 / -1;
           margin: 12px 0 -4px 0;
@@ -5839,7 +5818,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.0 - Farbformat Auswahl und Alpha nur bei Farben */
+        /* v1.15.1 - Farbformat Auswahl und Alpha nur bei Farben */
         .format-row {
           display: flex;
           gap: 8px;
@@ -5878,7 +5857,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.0 - Demo Buttons Vorschauseite */
+        /* v1.15.1 - Demo Buttons Vorschauseite */
         .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -6110,7 +6089,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.0 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
+        /* v1.15.1 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
         .ha-content .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -6190,7 +6169,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.0 - Eigene Demo-Seite mit gespeicherter YAML */
+        /* v1.15.1 - Eigene Demo-Seite mit gespeicherter YAML */
         .demo-page-editor-shell {
           width: min(100%, 1240px);
           margin: 0 auto;
@@ -6311,7 +6290,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.0 - Demo Seite als echtes Home-Assistant iframe */
+        /* v1.15.1 - Demo Seite als echtes Home-Assistant iframe */
         .demo-iframe-shell {
           width: min(100%, 1240px);
           margin: 0 auto;
@@ -6395,7 +6374,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.0 - iframe Demo Seite ohne Home Assistant Seitenmenü */
+        /* v1.15.1 - iframe Demo Seite ohne Home Assistant Seitenmenü */
         .demo-iframe-frame {
           position: relative;
           height: 720px;
@@ -6422,7 +6401,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.0 - Editor links, Live-Vorschau rechts */
+        /* v1.15.1 - Editor links, Live-Vorschau rechts */
         .editor-split-view {
           display: grid;
           grid-template-columns: minmax(420px, 0.95fr) minmax(460px, 1.05fr);
@@ -6726,7 +6705,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
       
 
-        /* v1.15.0 - View Tabs immer nebeneinander */
+        /* v1.15.1 - View Tabs immer nebeneinander */
         .view-switch {
           display: inline-flex;
           flex-direction: row;
@@ -6746,7 +6725,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.0 - Template Bibliothek */
+        /* v1.15.1 - Template Bibliothek */
         .templates-page {
           display: grid;
           gap: 18px;
@@ -6885,7 +6864,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 
 
-        /* v1.15.0 - card-mod neue Blöcke */
+        /* v1.15.1 - card-mod neue Blöcke */
         .cardmod-add-actions {
           margin-top: -4px;
           padding-top: 8px;
@@ -6898,7 +6877,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.15.0 - card-mod / CSS Codekarten */
+        /* v1.15.1 - card-mod / CSS Codekarten */
         .code-field-card {
           align-items: stretch;
         }
@@ -6943,7 +6922,7 @@ class ThemeGeneratorPanel extends HTMLElement {
           width: auto;
         }
 
-        /* v1.15.0 - View Tabs immer in einer Zeile */
+        /* v1.15.1 - View Tabs immer in einer Zeile */
         .view-switch {
           display: inline-flex;
           flex-direction: row;
@@ -6975,7 +6954,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.15.0</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.15.1</span></h1>
             </div>
 
             <div class="controls">
