@@ -677,6 +677,9 @@ class ThemeGeneratorPanel extends HTMLElement {
     this.previewPage = "all_settings";
     this.demoIframeUrl = localStorage.getItem("theme_generator_demo_iframe_url") || "/lovelace/default_view";
     this.demoIframeHideSidebar = localStorage.getItem("theme_generator_demo_iframe_hide_sidebar") !== "false";
+    this.templates = [];
+    this.templatesLoaded = false;
+
 
     this.demoPageFiles = [];
     this.demoPageFile = "demo_preview.yaml";
@@ -2070,6 +2073,183 @@ class ThemeGeneratorPanel extends HTMLElement {
     `;
   }
 
+  async loadTemplates() {
+    if (!this._hass) return;
+
+    try {
+      const result = await this.apiCall({
+        type: "theme_generator/list_templates"
+      });
+
+      this.templates = result.templates || [];
+      this.templatesLoaded = true;
+      this.status = this.templates.length
+        ? `${this.templates.length} Template(s) geladen.`
+        : "Keine Templates gefunden.";
+      this.render();
+    } catch (err) {
+      this.templatesLoaded = true;
+      this.status = `Templates konnten nicht geladen werden: ${err?.message || err}`;
+      console.error(err);
+      this.render();
+    }
+  }
+
+  renderTemplateWithVariables(template) {
+    let yaml = template?.template || "";
+    const variables = template?.variables || {};
+
+    Object.entries(variables).forEach(([key, value]) => {
+      const pattern = new RegExp("\\{\\{\\s*" + this.escapeRegExp(key) + "\\s*\\}\\}", "g");
+      yaml = yaml.replace(pattern, String(value));
+    });
+
+    return yaml;
+  }
+
+  escapeRegExp(value) {
+    return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  templatePreviewSrc(template) {
+    const svg = template?.preview_svg || "";
+
+    if (!svg) {
+      return "";
+    }
+
+    return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+  }
+
+  async copyTemplateYaml(templateId) {
+    const template = this.templates.find((item) => item.id === templateId);
+
+    if (!template) {
+      this.status = "Template nicht gefunden.";
+      this.safeRender();
+      return;
+    }
+
+    const yaml = this.renderTemplateWithVariables(template);
+
+    try {
+      await navigator.clipboard.writeText(yaml);
+      this.status = `Template kopiert: ${template.name}`;
+    } catch (err) {
+      this.status = `Kopieren fehlgeschlagen: ${err?.message || err}`;
+    }
+
+    this.safeRender();
+  }
+
+  insertTemplateYaml(templateId) {
+    const template = this.templates.find((item) => item.id === templateId);
+
+    if (!template) {
+      this.status = "Template nicht gefunden.";
+      this.safeRender();
+      return;
+    }
+
+    const yaml = this.renderTemplateWithVariables(template);
+    const separator = this.editorContent.trim()
+      ? "\n\n# --- Template: " + template.name + " ---\n"
+      : "# --- Template: " + template.name + " ---\n";
+
+    this.editorContent = (this.editorContent || "") + separator + yaml;
+    this.status = `Template in Editor eingefügt: ${template.name}`;
+    this.activeView = "editor";
+    this.safeRender();
+  }
+
+  renderTemplatesView() {
+    if (!this.templatesLoaded) {
+      setTimeout(() => this.loadTemplates(), 0);
+    }
+
+    if (!this.templatesLoaded) {
+      return `
+        <section class="templates-page">
+          <div class="templates-head">
+            <h2>Templates</h2>
+            <p>Template-Bibliothek wird geladen …</p>
+          </div>
+        </section>
+      `;
+    }
+
+    if (!this.templates.length) {
+      return `
+        <section class="templates-page">
+          <div class="templates-head">
+            <h2>Templates</h2>
+            <p>Keine Templates gefunden. Der Ordner wird unter <code>/config/theme_generator/templates</code> angelegt.</p>
+          </div>
+          <button type="button" id="templates-refresh">Templates neu laden</button>
+        </section>
+      `;
+    }
+
+    return `
+      <section class="templates-page">
+        <div class="templates-head">
+          <div>
+            <h2>Templates</h2>
+            <p>Fertige Style-Vorlagen mit Variablen und Vorschaubild. Die Snippets können kopiert oder in den Editor eingefügt werden.</p>
+          </div>
+          <button type="button" id="templates-refresh">Templates neu laden</button>
+        </div>
+
+        <div class="templates-grid">
+          ${this.templates.map((template) => {
+            const preview = this.templatePreviewSrc(template);
+            const variables = Object.entries(template.variables || {});
+            const yaml = this.renderTemplateWithVariables(template);
+
+            return `
+              <article class="template-card">
+                <div class="template-preview">
+                  ${preview
+                    ? `<img src="${preview}" alt="${this.escape(template.name)} Vorschau">`
+                    : `<div class="template-preview-empty">Keine Vorschau</div>`}
+                </div>
+
+                <div class="template-body">
+                  <div class="template-meta">
+                    <span>${this.escape(template.category || "template")}</span>
+                    ${template.target ? `<span>${this.escape(template.target)}</span>` : ""}
+                  </div>
+
+                  <h3>${this.escape(template.name)}</h3>
+                  <p>${this.escape(template.description || "")}</p>
+
+                  <div class="template-vars">
+                    ${variables.map(([key, value]) => `
+                      <div>
+                        <span>${this.escape(key)}</span>
+                        <code>${this.escape(String(value))}</code>
+                      </div>
+                    `).join("")}
+                  </div>
+
+                  <details class="template-yaml">
+                    <summary>YAML anzeigen</summary>
+                    <pre>${this.escape(yaml)}</pre>
+                  </details>
+
+                  <div class="template-actions">
+                    <button type="button" data-template-copy="${this.escape(template.id)}">Kopieren</button>
+                    <button type="button" class="secondary" data-template-insert="${this.escape(template.id)}">In Editor einfügen</button>
+                  </div>
+                </div>
+              </article>
+            `;
+          }).join("")}
+        </div>
+      </section>
+    `;
+  }
+
   renderDemoButtonsPreview() {
     const v = this.getPreviewVars ? this.getPreviewVars() : {
       primary: "#03a9f4",
@@ -3044,7 +3224,9 @@ class ThemeGeneratorPanel extends HTMLElement {
 
     const contentPanel = this.activeView === "preview"
       ? this.renderPreview()
-      : this.renderEditorView();
+      : this.activeView === "templates"
+        ? this.renderTemplatesView()
+        : this.renderEditorView();
 
     this.shadowRoot.innerHTML = `
       <style>
@@ -4264,7 +4446,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.5 - linke Gruppen sauber trennen */
+        /* v1.14.6 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -4350,7 +4532,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.5 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.14.6 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -4461,7 +4643,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.5 - Alle Settings */
+        /* v1.14.6 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -4477,7 +4659,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.5 - Filter fuer Alle Settings */
+        /* v1.14.6 - Filter fuer Alle Settings */
         .settings-filter-row {
           display: flex;
           flex-wrap: wrap;
@@ -4504,7 +4686,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.5 - einklappbares linkes Settings-Menü */
+        /* v1.14.6 - einklappbares linkes Settings-Menü */
         .settings-parent {
           display: grid !important;
           grid-template-columns: 26px minmax(0, 1fr) 22px;
@@ -4555,7 +4737,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.5 - Menü dezenter + Übersicht aufgeräumt */
+        /* v1.14.6 - Menü dezenter + Übersicht aufgeräumt */
         .settings-submenu .ha-nav-item,
         .settings-submenu .settings-child {
           background: transparent !important;
@@ -4714,7 +4896,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.5 - sauberes Kartenraster */
+        /* v1.14.6 - sauberes Kartenraster */
         .ha-content.clean-preview {
           display: flex;
           justify-content: center;
@@ -4855,7 +5037,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.5 - Vorschau-Raster repariert */
+        /* v1.14.6 - Vorschau-Raster repariert */
         .ha-content.clean-preview {
           display: flex !important;
           flex-direction: column !important;
@@ -4926,7 +5108,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.5 - Farbkarten und Vorschau sauber ausrichten */
+        /* v1.14.6 - Farbkarten und Vorschau sauber ausrichten */
 
         .ha-nav-icon {
           width: 22px !important;
@@ -5147,7 +5329,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.5 - finaler Layout-Fix */
+        /* v1.14.6 - finaler Layout-Fix */
         .ha-preview {
           grid-template-columns: 250px minmax(0, 1fr) !important;
           width: 100% !important;
@@ -5280,7 +5462,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.5 - Menütext vollständig anzeigen */
+        /* v1.14.6 - Menütext vollständig anzeigen */
         .ha-side {
           width: 280px !important;
           min-width: 280px !important;
@@ -5324,7 +5506,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.5 - Mushroom/Bubble/card-mod sauber gruppieren */
+        /* v1.14.6 - Mushroom/Bubble/card-mod sauber gruppieren */
         .preview-section-title {
           grid-column: 1 / -1;
           margin: 12px 0 -4px 0;
@@ -5346,7 +5528,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.5 - Farbformat Auswahl und Alpha nur bei Farben */
+        /* v1.14.6 - Farbformat Auswahl und Alpha nur bei Farben */
         .format-row {
           display: flex;
           gap: 8px;
@@ -5385,7 +5567,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.5 - Demo Buttons Vorschauseite */
+        /* v1.14.6 - Demo Buttons Vorschauseite */
         .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -5617,7 +5799,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.5 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
+        /* v1.14.6 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
         .ha-content .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -5697,7 +5879,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.5 - Eigene Demo-Seite mit gespeicherter YAML */
+        /* v1.14.6 - Eigene Demo-Seite mit gespeicherter YAML */
         .demo-page-editor-shell {
           width: min(100%, 1240px);
           margin: 0 auto;
@@ -5818,7 +6000,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.5 - Demo Seite als echtes Home-Assistant iframe */
+        /* v1.14.6 - Demo Seite als echtes Home-Assistant iframe */
         .demo-iframe-shell {
           width: min(100%, 1240px);
           margin: 0 auto;
@@ -5902,7 +6084,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.5 - iframe Demo Seite ohne Home Assistant Seitenmenü */
+        /* v1.14.6 - iframe Demo Seite ohne Home Assistant Seitenmenü */
         .demo-iframe-frame {
           position: relative;
           height: 720px;
@@ -5929,7 +6111,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.5 - Editor links, Live-Vorschau rechts */
+        /* v1.14.6 - Editor links, Live-Vorschau rechts */
         .editor-split-view {
           display: grid;
           grid-template-columns: minmax(420px, 0.95fr) minmax(460px, 1.05fr);
@@ -6231,7 +6413,145 @@ class ThemeGeneratorPanel extends HTMLElement {
             min-width: 0;
           }
         }
-      </style>
+      
+        /* v1.14.6 - Template Bibliothek */
+        .templates-page {
+          display: grid;
+          gap: 18px;
+        }
+
+        .templates-head {
+          display: flex;
+          justify-content: space-between;
+          gap: 16px;
+          align-items: flex-start;
+        }
+
+        .templates-head h2 {
+          margin: 0 0 6px;
+          font-size: 22px;
+        }
+
+        .templates-head p {
+          margin: 0;
+          color: var(--secondary-text-color);
+          line-height: 1.45;
+        }
+
+        .templates-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+          gap: 18px;
+        }
+
+        .template-card {
+          border: 1px solid var(--ha-card-border-color);
+          border-radius: 24px;
+          background: var(--card-background-color);
+          overflow: hidden;
+          box-shadow: var(--ha-card-box-shadow);
+        }
+
+        .template-preview {
+          background: var(--secondary-background-color);
+          aspect-ratio: 16 / 7.5;
+          display: grid;
+          place-items: center;
+          overflow: hidden;
+        }
+
+        .template-preview img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+        }
+
+        .template-preview-empty {
+          color: var(--secondary-text-color);
+        }
+
+        .template-body {
+          padding: 16px;
+          display: grid;
+          gap: 12px;
+        }
+
+        .template-meta {
+          display: flex;
+          gap: 8px;
+          flex-wrap: wrap;
+        }
+
+        .template-meta span {
+          font-size: 12px;
+          padding: 5px 9px;
+          border-radius: 999px;
+          background: var(--secondary-background-color);
+          color: var(--secondary-text-color);
+        }
+
+        .template-body h3 {
+          margin: 0;
+          font-size: 18px;
+        }
+
+        .template-body p {
+          margin: 0;
+          color: var(--secondary-text-color);
+          line-height: 1.45;
+        }
+
+        .template-vars {
+          display: grid;
+          gap: 6px;
+        }
+
+        .template-vars div {
+          display: flex;
+          justify-content: space-between;
+          gap: 10px;
+          align-items: center;
+          padding: 7px 9px;
+          border-radius: 12px;
+          background: var(--secondary-background-color);
+        }
+
+        .template-vars span {
+          color: var(--secondary-text-color);
+        }
+
+        .template-vars code {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 180px;
+        }
+
+        .template-yaml summary {
+          cursor: pointer;
+          color: var(--primary-color);
+          font-weight: 700;
+        }
+
+        .template-yaml pre {
+          max-height: 220px;
+          overflow: auto;
+          padding: 12px;
+          border-radius: 14px;
+          background: var(--secondary-background-color);
+          font-size: 12px;
+          line-height: 1.45;
+        }
+
+        .template-actions {
+          display: flex;
+          gap: 10px;
+          flex-wrap: wrap;
+        }
+
+
+</style>
 
       <div class="card">
         <div class="header">
@@ -6243,7 +6563,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.14.5</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.14.6</span></h1>
             </div>
 
             <div class="controls">
@@ -6273,6 +6593,7 @@ class ThemeGeneratorPanel extends HTMLElement {
                 <div class="view-switch">
                   <button class="${this.activeView === "editor" ? "active" : ""}" id="view-editor">Editor</button>
                   <button class="${this.activeView === "preview" ? "active" : ""}" id="view-preview">Vorschau</button>
+                    <button class="${this.activeView === "templates" ? "active" : ""}" id="view-templates">Templates</button>
                 </div>
                 <div class="inline-status">${this.escape(this.status)}</div>
               </div>
@@ -6319,6 +6640,10 @@ class ThemeGeneratorPanel extends HTMLElement {
     this.shadowRoot.getElementById("overwrite").addEventListener("click", () => this.overwriteSelectedTheme());
     this.shadowRoot.getElementById("view-editor").addEventListener("click", () => this.setView("editor"));
     this.shadowRoot.getElementById("view-preview").addEventListener("click", () => this.setView("preview"));
+      this.shadowRoot.getElementById("view-templates")?.addEventListener("click", () => {
+        this.setView("templates");
+        this.loadTemplates();
+      });
 
     this.shadowRoot.getElementById("demo-iframe-save")?.addEventListener("click", () => {
       this.saveDemoIframeUrl();
@@ -6341,6 +6666,23 @@ class ThemeGeneratorPanel extends HTMLElement {
         this.saveDemoIframeUrl();
       }
     });
+
+      this.shadowRoot.getElementById("templates-refresh")?.addEventListener("click", () => {
+        this.loadTemplates();
+      });
+
+      this.shadowRoot.querySelectorAll("[data-template-copy]").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          this.copyTemplateYaml(event.currentTarget.dataset.templateCopy);
+        });
+      });
+
+      this.shadowRoot.querySelectorAll("[data-template-insert]").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          this.insertTemplateYaml(event.currentTarget.dataset.templateInsert);
+        });
+      });
+
 
 
 

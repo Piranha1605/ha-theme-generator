@@ -51,7 +51,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         config={
             "_panel_custom": {
                 "name": PANEL_TAG,
-                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.14.5",
+                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.14.6",
                 "embed_iframe": False,
                 "trust_external_script": True,
                 "config": {},
@@ -70,6 +70,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     websocket_api.async_register_command(hass, websocket_create_work_theme)
     websocket_api.async_register_command(hass, websocket_read_last_work_theme)
     websocket_api.async_register_command(hass, websocket_save_work_theme)
+    websocket_api.async_register_command(hass, websocket_list_templates)
 
     return True
 
@@ -547,6 +548,161 @@ async def websocket_parse_demo_page_yaml(hass, connection, msg):
             "cards": [],
             "error": str(err),
         })
+
+
+
+# ---------------------------------------------------------------------
+# Template Library
+# ---------------------------------------------------------------------
+
+TEMPLATE_DIR = "theme_generator/templates"
+
+DEFAULT_TEMPLATE_FILES = {
+    "bubble/bubble_neumorph_button.yaml": """name: Bubble Neumorph Button
+type: bubble-card-style
+target: bubble-button-card
+category: bubble
+description: Runder Bubble Button mit Neumorph-Hintergrund, Glow und Icon-Farbe.
+preview: bubble_neumorph_button.svg
+
+variables:
+  radius: "24px"
+  glow_color: "rgba(60,138,233,0.14)"
+  icon_color: "rgba(255,255,255,0.84)"
+
+template: |
+  styles: |
+    .bubble-button-card-container {
+      border-radius: {{ radius }} !important;
+      background:
+        radial-gradient(circle at top left, {{ glow_color }}, transparent 44%),
+        linear-gradient(145deg, var(--nm-bg-2), var(--nm-bg-1)) !important;
+      border: 1px solid var(--ha-card-border-color) !important;
+      box-shadow: var(--ha-card-box-shadow) !important;
+    }
+    .bubble-icon {
+      color: {{ icon_color }} !important;
+    }
+""",
+    "bubble/bubble_neumorph_button.svg": """<svg xmlns="http://www.w3.org/2000/svg" width="900" height="420" viewBox="0 0 900 420">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#303949"/>
+      <stop offset="1" stop-color="#151922"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="20%" cy="15%" r="65%">
+      <stop offset="0" stop-color="#3c8ae9" stop-opacity=".35"/>
+      <stop offset=".55" stop-color="#3c8ae9" stop-opacity=".08"/>
+      <stop offset="1" stop-color="#3c8ae9" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="shadow" x="-30%" y="-40%" width="160%" height="180%">
+      <feDropShadow dx="14" dy="18" stdDeviation="18" flood-color="#000000" flood-opacity=".38"/>
+      <feDropShadow dx="-8" dy="-8" stdDeviation="12" flood-color="#ffffff" flood-opacity=".06"/>
+    </filter>
+  </defs>
+  <rect width="900" height="420" rx="36" fill="#10141c"/>
+  <rect x="58" y="58" width="784" height="304" rx="34" fill="url(#bg)" filter="url(#shadow)"/>
+  <rect x="58" y="58" width="784" height="304" rx="34" fill="url(#glow)"/>
+  <rect x="58.5" y="58.5" width="783" height="303" rx="33.5" fill="none" stroke="#ffffff" stroke-opacity=".12"/>
+  <circle cx="162" cy="210" r="58" fill="#222a38" stroke="#ffffff" stroke-opacity=".10"/>
+  <path d="M162 164c-23 0-42 19-42 42 0 31 42 70 42 70s42-39 42-70c0-23-19-42-42-42zm0 60a18 18 0 1 1 0-36 18 18 0 0 1 0 36z" fill="#ffffff" opacity=".84"/>
+  <text x="250" y="190" font-family="Inter,Arial,sans-serif" font-size="34" font-weight="700" fill="#ffffff" opacity=".92">Bubble Neumorph</text>
+  <text x="250" y="238" font-family="Inter,Arial,sans-serif" font-size="24" fill="#ffffff" opacity=".58">Button Style Template</text>
+  <rect x="665" y="172" width="104" height="76" rx="38" fill="#1d2430" stroke="#ffffff" stroke-opacity=".12"/>
+  <circle cx="730" cy="210" r="30" fill="#3c8ae9" opacity=".82"/>
+</svg>
+""",
+}
+
+
+def _template_root(hass):
+    return Path(hass.config.path(TEMPLATE_DIR))
+
+
+def _ensure_default_templates_sync(hass):
+    root = _template_root(hass)
+    root.mkdir(parents=True, exist_ok=True)
+
+    for relative, content in DEFAULT_TEMPLATE_FILES.items():
+        target = root / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+
+        if not target.exists():
+            target.write_text(content, encoding="utf-8")
+
+
+
+def _list_templates_sync(hass):
+    _ensure_default_templates_sync(hass)
+
+    root = _template_root(hass)
+    templates = []
+
+    for path in sorted(root.rglob("*.yaml")):
+        if not path.is_file():
+            continue
+
+        try:
+            raw = path.read_text(encoding="utf-8")
+            data = yaml.safe_load(raw) or {}
+        except Exception as err:
+            templates.append({
+                "id": str(path.relative_to(root)),
+                "filename": str(path.relative_to(root)),
+                "name": path.stem,
+                "category": "Fehler",
+                "description": f"Template konnte nicht gelesen werden: {err}",
+                "variables": {},
+                "template": "",
+                "preview": "",
+                "preview_svg": "",
+                "error": str(err),
+            })
+            continue
+
+        preview_name = data.get("preview") or ""
+        preview_svg = ""
+
+        if preview_name:
+            preview_path = path.parent / str(preview_name)
+            try:
+                if preview_path.exists() and preview_path.is_file() and preview_path.suffix.lower() == ".svg":
+                    preview_svg = preview_path.read_text(encoding="utf-8", errors="ignore")
+            except Exception:
+                preview_svg = ""
+
+        templates.append({
+            "id": str(path.relative_to(root)),
+            "filename": str(path.relative_to(root)),
+            "name": data.get("name") or path.stem,
+            "type": data.get("type") or "",
+            "target": data.get("target") or "",
+            "category": data.get("category") or path.parent.name,
+            "description": data.get("description") or "",
+            "variables": data.get("variables") or {},
+            "template": data.get("template") or "",
+            "preview": preview_name,
+            "preview_svg": preview_svg,
+            "error": "",
+        })
+
+    return {
+        "templates": templates,
+        "directory": TEMPLATE_DIR,
+    }
+
+
+@websocket_api.websocket_command({
+    vol.Required("type"): "theme_generator/list_templates",
+})
+@websocket_api.async_response
+async def websocket_list_templates(hass, connection, msg):
+    try:
+        result = await hass.async_add_executor_job(_list_templates_sync, hass)
+        connection.send_result(msg["id"], result)
+    except Exception as err:
+        _LOGGER.exception("Failed to list theme generator templates")
+        connection.send_error(msg["id"], "list_templates_failed", str(err))
 
 
 # ---------------------------------------------------------------------
