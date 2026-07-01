@@ -1,4 +1,5 @@
 from __future__ import annotations
+import yaml
 from pathlib import Path
 import voluptuous as vol
 from homeassistant.components import websocket_api
@@ -49,7 +50,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         config={
             "_panel_custom": {
                 "name": PANEL_TAG,
-                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.13.2",
+                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.13.3",
                 "embed_iframe": False,
                 "trust_external_script": True,
                 "config": {},
@@ -64,6 +65,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     websocket_api.async_register_command(hass, websocket_list_demo_page_files)
     websocket_api.async_register_command(hass, websocket_read_demo_page_file)
     websocket_api.async_register_command(hass, websocket_save_demo_page_file)
+    websocket_api.async_register_command(hass, websocket_parse_demo_page_yaml)
 
     return True
 
@@ -496,3 +498,48 @@ async def websocket_save_demo_page_file(hass, connection, msg):
     saved = await hass.async_add_executor_job(_save_file)
     connection.send_result(msg["id"], {"filename": saved, "saved": True})
 
+
+
+
+@websocket_api.websocket_command({
+    vol.Required("type"): f"{DOMAIN}/parse_demo_page_yaml",
+    vol.Required("content"): str,
+})
+async def websocket_parse_demo_page_yaml(hass, connection, msg):
+    content = str(msg.get("content") or "")
+
+    def _parse_yaml():
+        if not content.strip():
+            return {"cards": []}
+
+        data = yaml.safe_load(content) or {}
+
+        if isinstance(data, list):
+            return {"cards": data}
+
+        if isinstance(data, dict):
+            if isinstance(data.get("cards"), list):
+                return {"cards": data.get("cards")}
+
+            if isinstance(data.get("sections"), list):
+                cards = []
+
+                for section in data.get("sections") or []:
+                    if isinstance(section, dict) and isinstance(section.get("cards"), list):
+                        cards.extend(section.get("cards") or [])
+
+                return {"cards": cards}
+
+            if data.get("type"):
+                return {"cards": [data]}
+
+        return {"cards": []}
+
+    try:
+        result = await hass.async_add_executor_job(_parse_yaml)
+        connection.send_result(msg["id"], result)
+    except Exception as err:
+        connection.send_result(msg["id"], {
+            "cards": [],
+            "error": str(err),
+        })

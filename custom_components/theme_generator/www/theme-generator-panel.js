@@ -2263,16 +2263,32 @@ class ThemeGeneratorPanel extends HTMLElement {
       return;
     }
 
-    host.innerHTML = "";
+    const editor = this.shadowRoot?.getElementById("demo-page-editor");
 
-    const parsed = this.parseDemoPageYaml();
+    if (editor) {
+      this.demoPageContent = editor.value;
+    }
 
-    if (parsed.error) {
+    host.innerHTML = `<div class="demo-page-empty">Vorschau wird geladen...</div>`;
+
+    let parsed = null;
+
+    try {
+      parsed = await this._hass.callWS({
+        type: "theme_generator/parse_demo_page_yaml",
+        content: this.demoPageContent || ""
+      });
+    } catch (err) {
+      host.innerHTML = `<div class="demo-page-error">YAML konnte nicht im Backend gelesen werden: ${this.escape(err.message || err)}</div>`;
+      return;
+    }
+
+    if (parsed?.error) {
       host.innerHTML = `<div class="demo-page-error">${this.escape(parsed.error)}</div>`;
       return;
     }
 
-    const cards = parsed.cards || [];
+    const cards = parsed?.cards || [];
 
     if (!cards.length) {
       host.innerHTML = `<div class="demo-page-empty">Keine Karten in der Demo-YAML gefunden.</div>`;
@@ -2287,6 +2303,8 @@ class ThemeGeneratorPanel extends HTMLElement {
       host.innerHTML = `<div class="demo-page-error">Home-Assistant Card Helpers konnten nicht geladen werden.</div>`;
       return;
     }
+
+    host.innerHTML = "";
 
     for (const config of cards) {
       try {
@@ -2306,6 +2324,7 @@ class ThemeGeneratorPanel extends HTMLElement {
       }
     }
   }
+
 
   renderDemoPagePreview() {
     const fileOptions = (this.demoPageFiles || []).map((file) => `
@@ -3977,7 +3996,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.2 - linke Gruppen sauber trennen */
+        /* v1.13.3 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -4063,7 +4082,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.2 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.13.3 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -4174,7 +4193,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.2 - Alle Settings */
+        /* v1.13.3 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -4190,7 +4209,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.2 - Filter fuer Alle Settings */
+        /* v1.13.3 - Filter fuer Alle Settings */
         .settings-filter-row {
           display: flex;
           flex-wrap: wrap;
@@ -4217,7 +4236,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.2 - einklappbares linkes Settings-Menü */
+        /* v1.13.3 - einklappbares linkes Settings-Menü */
         .settings-parent {
           display: grid !important;
           grid-template-columns: 26px minmax(0, 1fr) 22px;
@@ -4268,7 +4287,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.2 - Menü dezenter + Übersicht aufgeräumt */
+        /* v1.13.3 - Menü dezenter + Übersicht aufgeräumt */
         .settings-submenu .ha-nav-item,
         .settings-submenu .settings-child {
           background: transparent !important;
@@ -4427,7 +4446,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.2 - sauberes Kartenraster */
+        /* v1.13.3 - sauberes Kartenraster */
         .ha-content.clean-preview {
           display: flex;
           justify-content: center;
@@ -4568,7 +4587,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.2 - Vorschau-Raster repariert */
+        /* v1.13.3 - Vorschau-Raster repariert */
         .ha-content.clean-preview {
           display: flex !important;
           flex-direction: column !important;
@@ -4639,7 +4658,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.2 - Farbkarten und Vorschau sauber ausrichten */
+        /* v1.13.3 - Farbkarten und Vorschau sauber ausrichten */
 
         .ha-nav-icon {
           width: 22px !important;
@@ -4860,7 +4879,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.2 - finaler Layout-Fix */
+        /* v1.13.3 - finaler Layout-Fix */
         .ha-preview {
           grid-template-columns: 250px minmax(0, 1fr) !important;
           width: 100% !important;
@@ -4993,7 +5012,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.2 - Menütext vollständig anzeigen */
+        /* v1.13.3 - Menütext vollständig anzeigen */
         .ha-side {
           width: 280px !important;
           min-width: 280px !important;
@@ -5037,7 +5056,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.2 - Mushroom/Bubble/card-mod sauber gruppieren */
+        /* v1.13.3 - Mushroom/Bubble/card-mod sauber gruppieren */
         .preview-section-title {
           grid-column: 1 / -1;
           margin: 12px 0 -4px 0;
@@ -5059,7 +5078,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.2 - Farbformat Auswahl und Alpha nur bei Farben */
+        /* v1.13.3 - Farbformat Auswahl und Alpha nur bei Farben */
         .format-row {
           display: flex;
           gap: 8px;
@@ -5098,7 +5117,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.2 - Demo Buttons Vorschauseite */
+        /* v1.13.3 - Demo Buttons Vorschauseite */
         .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -5330,7 +5349,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.2 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
+        /* v1.13.3 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
         .ha-content .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -5410,7 +5429,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.2 - Eigene Demo-Seite mit gespeicherter YAML */
+        /* v1.13.3 - Eigene Demo-Seite mit gespeicherter YAML */
         .demo-page-editor-shell {
           width: min(100%, 1240px);
           margin: 0 auto;
@@ -5732,7 +5751,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.13.2</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.13.3</span></h1>
             </div>
 
             <div class="controls">
