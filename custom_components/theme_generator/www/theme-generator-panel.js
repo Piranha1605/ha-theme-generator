@@ -670,6 +670,8 @@ class ThemeGeneratorPanel extends HTMLElement {
     this.activeView = "preview";
     this.status = "Panel geladen. Theme-Dateien werden gesucht …";
     this.previewPage = "all_settings";
+    this.demoIframeUrl = localStorage.getItem("theme_generator_demo_iframe_url") || "/lovelace/default_view";
+
     this.demoPageFiles = [];
     this.demoPageFile = "demo_preview.yaml";
     this.demoPageContent = "";
@@ -2368,44 +2370,90 @@ class ThemeGeneratorPanel extends HTMLElement {
   }
 
 
+  normalizeDemoIframeUrl(value) {
+    let url = String(value || "").trim();
+
+    if (!url) {
+      return "/lovelace/default_view";
+    }
+
+    if (url.startsWith("http://") || url.startsWith("https://")) {
+      try {
+        const parsed = new URL(url);
+
+        if (parsed.origin === window.location.origin) {
+          return parsed.pathname + parsed.search + parsed.hash;
+        }
+
+        return url;
+      } catch (err) {
+        return "/lovelace/default_view";
+      }
+    }
+
+    if (!url.startsWith("/")) {
+      url = "/" + url;
+    }
+
+    return url;
+  }
+
+  saveDemoIframeUrl() {
+    const input = this.shadowRoot?.getElementById("demo-iframe-url");
+    const url = this.normalizeDemoIframeUrl(input?.value || this.demoIframeUrl);
+
+    this.demoIframeUrl = url;
+    localStorage.setItem("theme_generator_demo_iframe_url", url);
+    this.status = `Demo-Seite gespeichert: ${url}`;
+    this.render();
+  }
+
+  reloadDemoIframe() {
+    const input = this.shadowRoot?.getElementById("demo-iframe-url");
+    const iframe = this.shadowRoot?.getElementById("demo-iframe");
+
+    const url = this.normalizeDemoIframeUrl(input?.value || this.demoIframeUrl);
+
+    this.demoIframeUrl = url;
+    localStorage.setItem("theme_generator_demo_iframe_url", url);
+
+    if (iframe) {
+      iframe.src = url;
+    }
+
+    this.status = `Demo-Seite geladen: ${url}`;
+  }
+
   renderDemoPagePreview() {
-    const fileOptions = (this.demoPageFiles || []).map((file) => `
-      <option value="${this.escape(file)}" ${file === this.demoPageFile ? "selected" : ""}>${this.escape(file)}</option>
-    `).join("");
+    const url = this.normalizeDemoIframeUrl(this.demoIframeUrl || "/lovelace/default_view");
 
     return `
-      <section class="demo-page-editor-shell">
-        <div class="demo-page-head">
+      <section class="demo-iframe-shell">
+        <div class="demo-iframe-head">
           <div>
             <h2>Demo Seite</h2>
-            <p>Eigene Lovelace-YAML laden, bearbeiten, speichern und als echte Karten-Vorschau rendern.</p>
+            <p>Zeigt ein echtes Home-Assistant-Dashboard als Vorschau. Mushroom, Bubble und andere Custom Cards werden dadurch original gerendert.</p>
           </div>
         </div>
 
-        <div class="demo-page-toolbar">
-          <select id="demo-page-select">
-            ${fileOptions}
-          </select>
-
-          <input id="demo-page-filename" value="${this.escape(this.demoPageFile || "demo_preview.yaml")}" spellcheck="false">
-
-          <button type="button" id="demo-page-list">Dateien suchen</button>
-          <button type="button" id="demo-page-load">Datei laden</button>
-          <button type="button" id="demo-page-save">Demo speichern</button>
-          <button type="button" id="demo-page-render">Vorschau aktualisieren</button>
+        <div class="demo-iframe-toolbar">
+          <input id="demo-iframe-url" value="${this.escape(url)}" spellcheck="false" placeholder="/lovelace/default_view">
+          <button type="button" id="demo-iframe-save">Speichern</button>
+          <button type="button" id="demo-iframe-load">Laden</button>
+          <button type="button" id="demo-iframe-home">Standard</button>
         </div>
 
-        <div class="demo-page-layout">
-          <textarea id="demo-page-editor" spellcheck="false">${this.escape(this.demoPageContent || "")}</textarea>
+        <div class="demo-iframe-help">
+          Beispiel: <code>/lovelace/default_view</code>, <code>/lovelace/serversteuerung</code> oder <code>/dashboard-serversteuerung/0</code>
+        </div>
 
-          <div class="demo-page-preview">
-            <div class="demo-page-preview-title">Live-Vorschau</div>
-            <div id="demo-page-rendered" class="demo-page-rendered"></div>
-          </div>
+        <div class="demo-iframe-frame">
+          <iframe id="demo-iframe" src="${this.escape(url)}"></iframe>
         </div>
       </section>
     `;
   }
+
 
   renderPreview() {
     const v = this.getPreviewVars ? this.getPreviewVars() : {
@@ -4038,7 +4086,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.4 - linke Gruppen sauber trennen */
+        /* v1.13.5 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -4124,7 +4172,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.4 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.13.5 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -4235,7 +4283,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.4 - Alle Settings */
+        /* v1.13.5 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -4251,7 +4299,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.4 - Filter fuer Alle Settings */
+        /* v1.13.5 - Filter fuer Alle Settings */
         .settings-filter-row {
           display: flex;
           flex-wrap: wrap;
@@ -4278,7 +4326,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.4 - einklappbares linkes Settings-Menü */
+        /* v1.13.5 - einklappbares linkes Settings-Menü */
         .settings-parent {
           display: grid !important;
           grid-template-columns: 26px minmax(0, 1fr) 22px;
@@ -4329,7 +4377,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.4 - Menü dezenter + Übersicht aufgeräumt */
+        /* v1.13.5 - Menü dezenter + Übersicht aufgeräumt */
         .settings-submenu .ha-nav-item,
         .settings-submenu .settings-child {
           background: transparent !important;
@@ -4488,7 +4536,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.4 - sauberes Kartenraster */
+        /* v1.13.5 - sauberes Kartenraster */
         .ha-content.clean-preview {
           display: flex;
           justify-content: center;
@@ -4629,7 +4677,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.4 - Vorschau-Raster repariert */
+        /* v1.13.5 - Vorschau-Raster repariert */
         .ha-content.clean-preview {
           display: flex !important;
           flex-direction: column !important;
@@ -4700,7 +4748,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.4 - Farbkarten und Vorschau sauber ausrichten */
+        /* v1.13.5 - Farbkarten und Vorschau sauber ausrichten */
 
         .ha-nav-icon {
           width: 22px !important;
@@ -4921,7 +4969,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.4 - finaler Layout-Fix */
+        /* v1.13.5 - finaler Layout-Fix */
         .ha-preview {
           grid-template-columns: 250px minmax(0, 1fr) !important;
           width: 100% !important;
@@ -5054,7 +5102,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.4 - Menütext vollständig anzeigen */
+        /* v1.13.5 - Menütext vollständig anzeigen */
         .ha-side {
           width: 280px !important;
           min-width: 280px !important;
@@ -5098,7 +5146,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.4 - Mushroom/Bubble/card-mod sauber gruppieren */
+        /* v1.13.5 - Mushroom/Bubble/card-mod sauber gruppieren */
         .preview-section-title {
           grid-column: 1 / -1;
           margin: 12px 0 -4px 0;
@@ -5120,7 +5168,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.4 - Farbformat Auswahl und Alpha nur bei Farben */
+        /* v1.13.5 - Farbformat Auswahl und Alpha nur bei Farben */
         .format-row {
           display: flex;
           gap: 8px;
@@ -5159,7 +5207,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.4 - Demo Buttons Vorschauseite */
+        /* v1.13.5 - Demo Buttons Vorschauseite */
         .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -5391,7 +5439,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.4 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
+        /* v1.13.5 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
         .ha-content .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -5471,7 +5519,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.4 - Eigene Demo-Seite mit gespeicherter YAML */
+        /* v1.13.5 - Eigene Demo-Seite mit gespeicherter YAML */
         .demo-page-editor-shell {
           width: min(100%, 1240px);
           margin: 0 auto;
@@ -5589,6 +5637,100 @@ class ThemeGeneratorPanel extends HTMLElement {
 
         .demo-page-error {
           color: var(--p-error);
+        }
+
+
+        /* v1.13.5 - Demo Seite als echtes Home-Assistant iframe */
+        .demo-iframe-shell {
+          width: min(100%, 1240px);
+          margin: 0 auto;
+          padding: 28px;
+          box-sizing: border-box;
+        }
+
+        .demo-iframe-head {
+          margin-bottom: 16px;
+        }
+
+        .demo-iframe-head h2 {
+          margin: 0 0 8px 0;
+          font-size: 32px;
+          line-height: 1.1;
+          color: var(--p-text);
+        }
+
+        .demo-iframe-head p {
+          margin: 0;
+          color: var(--p-secondary);
+          font-size: 14px;
+        }
+
+        .demo-iframe-toolbar {
+          display: grid;
+          grid-template-columns: minmax(280px, 1fr) auto auto auto;
+          gap: 10px;
+          align-items: center;
+          margin-bottom: 10px;
+        }
+
+        .demo-iframe-toolbar input,
+        .demo-iframe-toolbar button {
+          height: 42px;
+          border-radius: 13px;
+          border: 1px solid var(--p-border);
+          background: var(--p-card);
+          color: var(--p-text);
+          padding: 0 14px;
+          box-sizing: border-box;
+          font-weight: 750;
+        }
+
+        .demo-iframe-toolbar button {
+          background: var(--p-primary);
+          color: white;
+          cursor: pointer;
+          border-color: var(--p-primary);
+        }
+
+        .demo-iframe-help {
+          color: var(--p-secondary);
+          font-size: 12px;
+          margin-bottom: 14px;
+        }
+
+        .demo-iframe-help code {
+          background: color-mix(in srgb, var(--p-card) 86%, black 8%);
+          color: var(--p-text);
+          padding: 3px 7px;
+          border-radius: 8px;
+          border: 1px solid var(--p-border);
+        }
+
+        .demo-iframe-frame {
+          height: 720px;
+          border-radius: 20px;
+          overflow: hidden;
+          border: 1px solid var(--p-border);
+          background: var(--p-bg);
+          box-shadow: 0 18px 45px rgba(0,0,0,0.16);
+        }
+
+        .demo-iframe-frame iframe {
+          width: 100%;
+          height: 100%;
+          border: 0;
+          display: block;
+          background: var(--p-bg);
+        }
+
+        @media (max-width: 900px) {
+          .demo-iframe-toolbar {
+            grid-template-columns: 1fr;
+          }
+
+          .demo-iframe-frame {
+            height: 620px;
+          }
         }
 
         @media (max-width: 1150px) {
@@ -5793,7 +5935,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.13.4</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.13.5</span></h1>
             </div>
 
             <div class="controls">
