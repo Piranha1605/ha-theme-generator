@@ -1,9 +1,9 @@
 from __future__ import annotations
-
 from pathlib import Path
+import voluptuous as vol
+from homeassistant.components import websocket_api
 import re
 
-import voluptuous as vol
 
 from homeassistant.components import frontend, websocket_api
 from homeassistant.components.http import StaticPathConfig
@@ -49,7 +49,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         config={
             "_panel_custom": {
                 "name": PANEL_TAG,
-                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.13.1",
+                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.13.2",
                 "embed_iframe": False,
                 "trust_external_script": True,
                 "config": {},
@@ -61,6 +61,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     websocket_api.async_register_command(hass, websocket_read_theme_file)
     websocket_api.async_register_command(hass, websocket_save_theme_file_version)
     websocket_api.async_register_command(hass, websocket_overwrite_theme_file)
+    websocket_api.async_register_command(hass, websocket_list_demo_page_files)
+    websocket_api.async_register_command(hass, websocket_read_demo_page_file)
+    websocket_api.async_register_command(hass, websocket_save_demo_page_file)
 
     return True
 
@@ -286,3 +289,210 @@ def websocket_overwrite_theme_file(hass: HomeAssistant, connection, msg) -> None
             connection.send_error(msg["id"], "theme_generator_error", str(err))
 
     hass.async_create_task(_async_handle())
+
+
+# ---------------------------------------------------------------------
+# Demo Page YAML files
+# ---------------------------------------------------------------------
+
+DEMO_PAGE_DIR = "theme_generator"
+DEMO_PAGE_DEFAULT_FILE = "demo_preview.yaml"
+
+
+def _demo_page_dir(hass):
+    return Path(hass.config.path(DEMO_PAGE_DIR))
+
+
+def _safe_demo_page_file(filename):
+    name = str(filename or DEMO_PAGE_DEFAULT_FILE).strip()
+
+    if not name:
+        name = DEMO_PAGE_DEFAULT_FILE
+
+    name = name.replace("\\", "/").split("/")[-1]
+
+    if not name.endswith((".yaml", ".yml")):
+        name = f"{name}.yaml"
+
+    if name.startswith(".") or ".." in name:
+        raise ValueError("Invalid demo page filename")
+
+    return name
+
+
+def _default_demo_page_yaml():
+    return """type: sections
+title: Serversteuerung Vergleich
+icon: mdi:cog
+max_columns: 4
+sections:
+  - type: grid
+    cards:
+      - type: heading
+        heading: HA Standard
+        icon: mdi:home-assistant
+      - type: tile
+        entity: switch.tasmota_4
+        name: Lüftersteuerung
+        icon: mdi:fan
+        tap_action:
+          action: toggle
+      - type: tile
+        entity: light.buro_serversteuerrung_server_led
+        name: Server LED
+        icon: mdi:led-strip-variant
+        features:
+          - type: light-brightness
+      - type: tile
+        entity: button.buro_serversteuerrung_server_led_aus
+        name: LED komplett aus
+        icon: mdi:power
+      - type: tile
+        entity: select.buro_serversteuerrung_server_led_effekt
+        name: LED Effekt
+        icon: mdi:creation
+      - type: tile
+        entity: number.buro_serversteuerrung_server_led_geschwindigkeit
+        name: LED Geschwindigkeit
+        icon: mdi:speedometer
+      - type: tile
+        entity: number.buro_serversteuerrung_server_led_helligkeit
+        name: LED Helligkeit
+        icon: mdi:brightness-6
+
+  - type: grid
+    cards:
+      - type: custom:mushroom-title-card
+        title: Mushroom
+        subtitle: Serversteuerung
+      - type: custom:mushroom-entity-card
+        entity: switch.tasmota_4
+        name: Lüftersteuerung
+        icon: mdi:fan
+        tap_action:
+          action: toggle
+      - type: custom:mushroom-light-card
+        entity: light.buro_serversteuerrung_server_led
+        name: Server LED
+        icon: mdi:led-strip-variant
+        use_light_color: true
+        show_brightness_control: true
+        show_color_control: true
+      - type: custom:mushroom-select-card
+        entity: select.buro_serversteuerrung_server_led_effekt
+        name: LED Effekt
+        icon: mdi:creation
+      - type: custom:mushroom-number-card
+        entity: number.buro_serversteuerrung_server_led_geschwindigkeit
+        name: LED Geschwindigkeit
+        icon: mdi:speedometer
+        display_mode: slider
+      - type: custom:mushroom-number-card
+        entity: number.buro_serversteuerrung_server_led_helligkeit
+        name: LED Helligkeit
+        icon: mdi:brightness-6
+        display_mode: slider
+
+  - type: grid
+    cards:
+      - type: custom:bubble-card
+        card_type: separator
+        name: Bubble
+        icon: mdi:circle-multiple-outline
+      - type: custom:bubble-card
+        card_type: button
+        button_type: switch
+        entity: switch.tasmota_4
+        name: Lüftersteuerung
+        icon: mdi:fan
+      - type: custom:bubble-card
+        card_type: button
+        button_type: slider
+        entity: light.buro_serversteuerrung_server_led
+        name: Server LED
+        icon: mdi:led-strip-variant
+      - type: custom:bubble-card
+        card_type: select
+        entity: select.buro_serversteuerrung_server_led_effekt
+        name: LED Effekt
+        icon: mdi:creation
+
+  - type: grid
+    cards:
+      - type: custom:bubble-card
+        card_type: separator
+        name: Theme Settings
+        icon: mdi:compare
+      - type: custom:mushroom-number-card
+        entity: input_number.dashboard_card_transparenz
+        name: Card Transparenz
+        icon: mdi:blur
+        display_mode: slider
+"""
+
+
+@websocket_api.websocket_command({
+    vol.Required("type"): f"{DOMAIN}/list_demo_page_files",
+})
+async def websocket_list_demo_page_files(hass, connection, msg):
+    def _list_files():
+        folder = _demo_page_dir(hass)
+        folder.mkdir(parents=True, exist_ok=True)
+
+        default_file = folder / DEMO_PAGE_DEFAULT_FILE
+
+        if not default_file.exists():
+            default_file.write_text(_default_demo_page_yaml(), encoding="utf-8")
+
+        return sorted([
+            item.name
+            for item in folder.iterdir()
+            if item.is_file() and item.suffix.lower() in (".yaml", ".yml")
+        ])
+
+    files = await hass.async_add_executor_job(_list_files)
+    connection.send_result(msg["id"], {"files": files})
+
+
+@websocket_api.websocket_command({
+    vol.Required("type"): f"{DOMAIN}/read_demo_page_file",
+    vol.Optional("filename", default=DEMO_PAGE_DEFAULT_FILE): str,
+})
+async def websocket_read_demo_page_file(hass, connection, msg):
+    filename = _safe_demo_page_file(msg.get("filename"))
+
+    def _read_file():
+        folder = _demo_page_dir(hass)
+        folder.mkdir(parents=True, exist_ok=True)
+
+        path = folder / filename
+
+        if not path.exists():
+            path.write_text(_default_demo_page_yaml(), encoding="utf-8")
+
+        return path.read_text(encoding="utf-8")
+
+    content = await hass.async_add_executor_job(_read_file)
+    connection.send_result(msg["id"], {"filename": filename, "content": content})
+
+
+@websocket_api.websocket_command({
+    vol.Required("type"): f"{DOMAIN}/save_demo_page_file",
+    vol.Required("filename"): str,
+    vol.Required("content"): str,
+})
+async def websocket_save_demo_page_file(hass, connection, msg):
+    filename = _safe_demo_page_file(msg.get("filename"))
+    content = str(msg.get("content") or "")
+
+    def _save_file():
+        folder = _demo_page_dir(hass)
+        folder.mkdir(parents=True, exist_ok=True)
+
+        path = folder / filename
+        path.write_text(content, encoding="utf-8")
+        return filename
+
+    saved = await hass.async_add_executor_job(_save_file)
+    connection.send_result(msg["id"], {"filename": saved, "saved": True})
+

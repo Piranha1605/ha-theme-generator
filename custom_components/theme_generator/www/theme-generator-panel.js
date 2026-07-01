@@ -670,6 +670,10 @@ class ThemeGeneratorPanel extends HTMLElement {
     this.activeView = "preview";
     this.status = "Panel geladen. Theme-Dateien werden gesucht …";
     this.previewPage = "all_settings";
+    this.demoPageFiles = [];
+    this.demoPageFile = "demo_preview.yaml";
+    this.demoPageContent = "";
+
     this.settingsFilter = "basic";
     this.settingsMenuOpen = true;
     this._editorScrollTop = 0;
@@ -2122,6 +2126,226 @@ class ThemeGeneratorPanel extends HTMLElement {
     `;
   }
 
+  async loadDemoPageFiles() {
+    if (!this._hass) {
+      return;
+    }
+
+    try {
+      const result = await this._hass.callWS({
+        type: "theme_generator/list_demo_page_files"
+      });
+
+      this.demoPageFiles = result.files || [];
+
+      if (!this.demoPageFile && this.demoPageFiles.length) {
+        this.demoPageFile = this.demoPageFiles[0];
+      }
+
+      this.render();
+    } catch (err) {
+      this.status = `Demo-Dateien konnten nicht geladen werden: ${err.message || err}`;
+      this.render();
+    }
+  }
+
+  async loadDemoPageFile(filename = this.demoPageFile || "demo_preview.yaml") {
+    if (!this._hass) {
+      return;
+    }
+
+    try {
+      const result = await this._hass.callWS({
+        type: "theme_generator/read_demo_page_file",
+        filename
+      });
+
+      this.demoPageFile = result.filename || filename;
+      this.demoPageContent = result.content || "";
+      this.status = `Demo-Seite geladen: ${this.demoPageFile}`;
+      this.render();
+
+      setTimeout(() => this.renderDemoPageCards(), 0);
+    } catch (err) {
+      this.status = `Demo-Seite konnte nicht geladen werden: ${err.message || err}`;
+      this.render();
+    }
+  }
+
+  async saveDemoPageFile() {
+    if (!this._hass) {
+      return;
+    }
+
+    const editor = this.shadowRoot?.getElementById("demo-page-editor");
+    const nameInput = this.shadowRoot?.getElementById("demo-page-filename");
+
+    const filename = (nameInput?.value || this.demoPageFile || "demo_preview.yaml").trim();
+    const content = editor?.value || this.demoPageContent || "";
+
+    try {
+      const result = await this._hass.callWS({
+        type: "theme_generator/save_demo_page_file",
+        filename,
+        content
+      });
+
+      this.demoPageFile = result.filename || filename;
+      this.demoPageContent = content;
+      this.status = `Demo-Seite gespeichert: ${this.demoPageFile}`;
+
+      await this.loadDemoPageFiles();
+      this.render();
+
+      setTimeout(() => this.renderDemoPageCards(), 0);
+    } catch (err) {
+      this.status = `Demo-Seite konnte nicht gespeichert werden: ${err.message || err}`;
+      this.render();
+    }
+  }
+
+  parseDemoPageYaml() {
+    const raw = String(this.demoPageContent || "").trim();
+
+    if (!raw) {
+      return { cards: [] };
+    }
+
+    try {
+      const parser = window.jsyaml || window.jsYaml || window.YAML;
+
+      if (!parser || !parser.load) {
+        return {
+          error: "YAML-Parser im Home-Assistant-Frontend nicht verfügbar.",
+          cards: []
+        };
+      }
+
+      const data = parser.load(raw) || {};
+
+      if (Array.isArray(data)) {
+        return { cards: data };
+      }
+
+      if (Array.isArray(data.cards)) {
+        return { cards: data.cards };
+      }
+
+      if (Array.isArray(data.sections)) {
+        const cards = [];
+
+        data.sections.forEach((section) => {
+          if (Array.isArray(section.cards)) {
+            cards.push(...section.cards);
+          }
+        });
+
+        return { cards };
+      }
+
+      if (data.type) {
+        return { cards: [data] };
+      }
+
+      return { cards: [] };
+    } catch (err) {
+      return {
+        error: err.message || String(err),
+        cards: []
+      };
+    }
+  }
+
+  async renderDemoPageCards() {
+    const host = this.shadowRoot?.getElementById("demo-page-rendered");
+
+    if (!host || !this._hass) {
+      return;
+    }
+
+    host.innerHTML = "";
+
+    const parsed = this.parseDemoPageYaml();
+
+    if (parsed.error) {
+      host.innerHTML = `<div class="demo-page-error">${this.escape(parsed.error)}</div>`;
+      return;
+    }
+
+    const cards = parsed.cards || [];
+
+    if (!cards.length) {
+      host.innerHTML = `<div class="demo-page-empty">Keine Karten in der Demo-YAML gefunden.</div>`;
+      return;
+    }
+
+    let helpers = null;
+
+    try {
+      helpers = await window.loadCardHelpers();
+    } catch (err) {
+      host.innerHTML = `<div class="demo-page-error">Home-Assistant Card Helpers konnten nicht geladen werden.</div>`;
+      return;
+    }
+
+    for (const config of cards) {
+      try {
+        const wrap = document.createElement("div");
+        wrap.className = "demo-page-card-wrap";
+
+        const card = await helpers.createCardElement(config);
+        card.hass = this._hass;
+
+        wrap.appendChild(card);
+        host.appendChild(wrap);
+      } catch (err) {
+        const wrap = document.createElement("div");
+        wrap.className = "demo-page-error";
+        wrap.textContent = `${config?.type || "Karte"} konnte nicht gerendert werden: ${err.message || err}`;
+        host.appendChild(wrap);
+      }
+    }
+  }
+
+  renderDemoPagePreview() {
+    const fileOptions = (this.demoPageFiles || []).map((file) => `
+      <option value="${this.escape(file)}" ${file === this.demoPageFile ? "selected" : ""}>${this.escape(file)}</option>
+    `).join("");
+
+    return `
+      <section class="demo-page-editor-shell">
+        <div class="demo-page-head">
+          <div>
+            <h2>Demo Seite</h2>
+            <p>Eigene Lovelace-YAML laden, bearbeiten, speichern und als echte Karten-Vorschau rendern.</p>
+          </div>
+        </div>
+
+        <div class="demo-page-toolbar">
+          <select id="demo-page-select">
+            ${fileOptions}
+          </select>
+
+          <input id="demo-page-filename" value="${this.escape(this.demoPageFile || "demo_preview.yaml")}" spellcheck="false">
+
+          <button type="button" id="demo-page-list">Dateien suchen</button>
+          <button type="button" id="demo-page-load">Datei laden</button>
+          <button type="button" id="demo-page-save">Demo speichern</button>
+          <button type="button" id="demo-page-render">Vorschau aktualisieren</button>
+        </div>
+
+        <div class="demo-page-layout">
+          <textarea id="demo-page-editor" spellcheck="false">${this.escape(this.demoPageContent || "")}</textarea>
+
+          <div class="demo-page-preview">
+            <div class="demo-page-preview-title">Live-Vorschau</div>
+            <div id="demo-page-rendered" class="demo-page-rendered"></div>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
   renderPreview() {
     const v = this.getPreviewVars ? this.getPreviewVars() : {
       primary: "#03a9f4",
@@ -2160,7 +2384,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
     const previewItems = [
       ["overview", "mdi:view-dashboard-outline", "Vorschau"],
-      ["demo_buttons", "mdi:view-grid-plus-outline", "Demo Buttons"],
+      ["demo_page", "mdi:file-document-edit-outline", "Demo Seite"],
       ["custom_cards", "mdi:card-plus-outline", "Eigene Karten"]
     ];
 
@@ -2197,8 +2421,8 @@ class ThemeGeneratorPanel extends HTMLElement {
 
     let cardsHtml = "";
 
-    if (page === "demo_buttons") {
-      cardsHtml += this.renderDemoButtonsPreview();
+    if (page === "demo_page") {
+      cardsHtml += this.renderDemoPagePreview();
     }
 
     if (["all_settings", "basic", "backgrounds", "textcolors"].includes(page)) {
@@ -3753,7 +3977,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.1 - linke Gruppen sauber trennen */
+        /* v1.13.2 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -3839,7 +4063,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.1 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.13.2 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -3950,7 +4174,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.1 - Alle Settings */
+        /* v1.13.2 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -3966,7 +4190,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.1 - Filter fuer Alle Settings */
+        /* v1.13.2 - Filter fuer Alle Settings */
         .settings-filter-row {
           display: flex;
           flex-wrap: wrap;
@@ -3993,7 +4217,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.1 - einklappbares linkes Settings-Menü */
+        /* v1.13.2 - einklappbares linkes Settings-Menü */
         .settings-parent {
           display: grid !important;
           grid-template-columns: 26px minmax(0, 1fr) 22px;
@@ -4044,7 +4268,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.1 - Menü dezenter + Übersicht aufgeräumt */
+        /* v1.13.2 - Menü dezenter + Übersicht aufgeräumt */
         .settings-submenu .ha-nav-item,
         .settings-submenu .settings-child {
           background: transparent !important;
@@ -4203,7 +4427,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.1 - sauberes Kartenraster */
+        /* v1.13.2 - sauberes Kartenraster */
         .ha-content.clean-preview {
           display: flex;
           justify-content: center;
@@ -4344,7 +4568,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.1 - Vorschau-Raster repariert */
+        /* v1.13.2 - Vorschau-Raster repariert */
         .ha-content.clean-preview {
           display: flex !important;
           flex-direction: column !important;
@@ -4415,7 +4639,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.1 - Farbkarten und Vorschau sauber ausrichten */
+        /* v1.13.2 - Farbkarten und Vorschau sauber ausrichten */
 
         .ha-nav-icon {
           width: 22px !important;
@@ -4636,7 +4860,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.1 - finaler Layout-Fix */
+        /* v1.13.2 - finaler Layout-Fix */
         .ha-preview {
           grid-template-columns: 250px minmax(0, 1fr) !important;
           width: 100% !important;
@@ -4769,7 +4993,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.1 - Menütext vollständig anzeigen */
+        /* v1.13.2 - Menütext vollständig anzeigen */
         .ha-side {
           width: 280px !important;
           min-width: 280px !important;
@@ -4813,7 +5037,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.1 - Mushroom/Bubble/card-mod sauber gruppieren */
+        /* v1.13.2 - Mushroom/Bubble/card-mod sauber gruppieren */
         .preview-section-title {
           grid-column: 1 / -1;
           margin: 12px 0 -4px 0;
@@ -4835,7 +5059,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.1 - Farbformat Auswahl und Alpha nur bei Farben */
+        /* v1.13.2 - Farbformat Auswahl und Alpha nur bei Farben */
         .format-row {
           display: flex;
           gap: 8px;
@@ -4874,7 +5098,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.1 - Demo Buttons Vorschauseite */
+        /* v1.13.2 - Demo Buttons Vorschauseite */
         .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -5106,7 +5330,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.1 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
+        /* v1.13.2 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
         .ha-content .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -5183,6 +5407,135 @@ class ThemeGeneratorPanel extends HTMLElement {
         .ha-content .demo-settings-note {
           border-color: var(--demo-border) !important;
           background: color-mix(in srgb, var(--demo-card) 75%, transparent) !important;
+        }
+
+
+        /* v1.13.2 - Eigene Demo-Seite mit gespeicherter YAML */
+        .demo-page-editor-shell {
+          width: min(100%, 1240px);
+          margin: 0 auto;
+          padding: 28px;
+          box-sizing: border-box;
+        }
+
+        .demo-page-head {
+          margin-bottom: 18px;
+        }
+
+        .demo-page-head h2 {
+          margin: 0 0 8px 0;
+          font-size: 32px;
+          line-height: 1.1;
+          color: var(--p-text);
+        }
+
+        .demo-page-head p {
+          margin: 0;
+          color: var(--p-secondary);
+          font-size: 14px;
+        }
+
+        .demo-page-toolbar {
+          display: grid;
+          grid-template-columns: minmax(140px, 1fr) minmax(180px, 1fr) auto auto auto auto;
+          gap: 10px;
+          align-items: center;
+          margin-bottom: 16px;
+        }
+
+        .demo-page-toolbar select,
+        .demo-page-toolbar input,
+        .demo-page-toolbar button {
+          height: 40px;
+          border-radius: 12px;
+          border: 1px solid var(--p-border);
+          background: var(--p-card);
+          color: var(--p-text);
+          padding: 0 12px;
+          box-sizing: border-box;
+          font-weight: 700;
+        }
+
+        .demo-page-toolbar button {
+          background: var(--p-primary);
+          color: white;
+          cursor: pointer;
+          border-color: var(--p-primary);
+        }
+
+        .demo-page-layout {
+          display: grid;
+          grid-template-columns: minmax(360px, 0.85fr) minmax(420px, 1.15fr);
+          gap: 16px;
+          align-items: stretch;
+        }
+
+        #demo-page-editor {
+          width: 100%;
+          min-height: 640px;
+          resize: vertical;
+          border-radius: 18px;
+          border: 1px solid var(--p-border);
+          background: color-mix(in srgb, var(--p-card) 90%, black 8%);
+          color: var(--p-text);
+          padding: 16px;
+          box-sizing: border-box;
+          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+          font-size: 13px;
+          line-height: 1.45;
+        }
+
+        .demo-page-preview {
+          min-height: 640px;
+          border-radius: 18px;
+          border: 1px solid var(--p-border);
+          background: var(--p-bg);
+          padding: 16px;
+          box-sizing: border-box;
+          overflow: auto;
+        }
+
+        .demo-page-preview-title {
+          color: var(--p-secondary);
+          font-size: 12px;
+          font-weight: 850;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          margin-bottom: 12px;
+        }
+
+        .demo-page-rendered {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 12px;
+          align-items: start;
+        }
+
+        .demo-page-card-wrap {
+          min-width: 0;
+        }
+
+        .demo-page-error,
+        .demo-page-empty {
+          border: 1px dashed var(--p-border);
+          background: color-mix(in srgb, var(--p-card) 70%, transparent);
+          color: var(--p-secondary);
+          padding: 14px;
+          border-radius: 14px;
+          font-size: 13px;
+          line-height: 1.35;
+        }
+
+        .demo-page-error {
+          color: var(--p-error);
+        }
+
+        @media (max-width: 1150px) {
+          .demo-page-layout,
+          .demo-page-toolbar,
+          .demo-page-rendered {
+            grid-template-columns: 1fr;
+          }
         }
 
         @media (max-width: 1300px) {
@@ -5379,7 +5732,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.13.1</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.13.2</span></h1>
             </div>
 
             <div class="controls">
@@ -5455,6 +5808,46 @@ class ThemeGeneratorPanel extends HTMLElement {
     this.shadowRoot.getElementById("overwrite").addEventListener("click", () => this.overwriteSelectedTheme());
     this.shadowRoot.getElementById("view-editor").addEventListener("click", () => this.setView("editor"));
     this.shadowRoot.getElementById("view-preview").addEventListener("click", () => this.setView("preview"));
+
+    this.shadowRoot.getElementById("demo-page-list")?.addEventListener("click", () => {
+      this.loadDemoPageFiles();
+    });
+
+    this.shadowRoot.getElementById("demo-page-select")?.addEventListener("change", (event) => {
+      this.demoPageFile = event.target.value || "demo_preview.yaml";
+
+      const input = this.shadowRoot.getElementById("demo-page-filename");
+
+      if (input) {
+        input.value = this.demoPageFile;
+      }
+    });
+
+    this.shadowRoot.getElementById("demo-page-load")?.addEventListener("click", () => {
+      const select = this.shadowRoot.getElementById("demo-page-select");
+      const input = this.shadowRoot.getElementById("demo-page-filename");
+      this.loadDemoPageFile(input?.value || select?.value || this.demoPageFile || "demo_preview.yaml");
+    });
+
+    this.shadowRoot.getElementById("demo-page-save")?.addEventListener("click", () => {
+      this.saveDemoPageFile();
+    });
+
+    this.shadowRoot.getElementById("demo-page-render")?.addEventListener("click", () => {
+      const editor = this.shadowRoot.getElementById("demo-page-editor");
+
+      if (editor) {
+        this.demoPageContent = editor.value;
+      }
+
+      this.renderDemoPageCards();
+    });
+
+    this.shadowRoot.getElementById("demo-page-editor")?.addEventListener("input", (event) => {
+      this.demoPageContent = event.target.value;
+    });
+
+
 
     this.shadowRoot.querySelectorAll("[data-toggle-group]").forEach((button) => {
       button.addEventListener("click", (event) => {

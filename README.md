@@ -12,7 +12,7 @@ Die Integration sitzt direkt in der Home-Assistant-Seitenleiste und hilft dabei,
 
 ## Aktuelle Version
 
-**v1.13.1**
+**v1.13.2**
 
 Diese Version verbessert die Farbbearbeitung deutlich:
 
