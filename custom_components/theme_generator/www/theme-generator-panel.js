@@ -1925,6 +1925,140 @@ class ThemeGeneratorPanel extends HTMLElement {
     return `#${toHex(parsed.r)}${toHex(parsed.g)}${toHex(parsed.b)}`;
   }
 
+  getThemeRootName() {
+    const lines = String(this.editorContent || "").split("\n");
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+
+      if (!trimmed || trimmed.startsWith("#")) {
+        continue;
+      }
+
+      if (!line.startsWith(" ") && trimmed.endsWith(":")) {
+        return trimmed.slice(0, -1).trim().replace(/^["']|["']$/g, "");
+      }
+    }
+
+    return "Theme";
+  }
+
+  getCardModSnippet(kind) {
+    const themeName = this.getThemeRootName();
+
+    if (kind === "card-mod-card") {
+      return `card-mod-card: |
+  ha-card {
+    background: var(--card-background-color);
+    border-radius: var(--ha-card-border-radius);
+    box-shadow: var(--ha-card-box-shadow);
+    border: 1px solid var(--ha-card-border-color);
+    overflow: hidden;
+  }`;
+    }
+
+    if (kind === "card-mod-root") {
+      return `card-mod-root: |
+  :host {
+    --ha-card-background: var(--card-background-color);
+    --ha-card-border-radius: var(--ha-card-border-radius);
+    --ha-card-box-shadow: var(--ha-card-box-shadow);
+  }`;
+    }
+
+    if (kind === "card-mod-theme") {
+      return `card-mod-theme: |
+  ${themeName}`;
+    }
+
+    return "";
+  }
+
+  findThemeIndentForNewKey() {
+    const lines = String(this.editorContent || "").split("\n");
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+
+      if (!trimmed || trimmed.startsWith("#")) {
+        continue;
+      }
+
+      if (!line.startsWith(" ") && trimmed.endsWith(":")) {
+        return "  ";
+      }
+    }
+
+    return "";
+  }
+
+  addCardModBlock(kind) {
+    const key = String(kind || "").trim();
+
+    if (!key) {
+      this.status = "Kein card-mod Typ gewählt.";
+      this.safeRender();
+      return;
+    }
+
+    const current = String(this.editorContent || "");
+    const existingIndex = current.indexOf(key + ":");
+
+    if (existingIndex >= 0) {
+      this.openEditorAtIndex(existingIndex, key.length);
+      this.status = `${key} ist bereits vorhanden.`;
+      this.safeRender();
+      return;
+    }
+
+    const snippet = this.getCardModSnippet(key);
+
+    if (!snippet) {
+      this.status = `Unbekannter card-mod Typ: ${key}`;
+      this.safeRender();
+      return;
+    }
+
+    const indent = this.findThemeIndentForNewKey();
+    const indentedSnippet = snippet
+      .split("\n")
+      .map((line) => line ? indent + line : line)
+      .join("\n");
+
+    const separator = current.trim() ? "\n\n# --- card-mod: " + key + " ---\n" : "";
+    this.editorContent = current + separator + indentedSnippet + "\n";
+
+    this.activeView = "editor";
+    this.status = `${key} wurde in den Editor eingefügt.`;
+    this.safeRender();
+
+    setTimeout(() => {
+      const index = this.editorContent.indexOf(key + ":");
+      this.openEditorAtIndex(index, key.length);
+      this.scheduleWorkThemeSave?.();
+    }, 80);
+  }
+
+  openEditorAtIndex(index, length = 0) {
+    this.activeView = "editor";
+    this.safeRender();
+
+    setTimeout(() => {
+      const editor = this.shadowRoot?.getElementById("theme-editor");
+
+      if (!editor) {
+        return;
+      }
+
+      editor.focus();
+
+      if (index >= 0) {
+        editor.setSelectionRange(index, index + length);
+        editor.scrollTop = Math.max(0, (index / Math.max(1, editor.value.length)) * editor.scrollHeight - 120);
+      }
+    }, 60);
+  }
+
   isCodeThemeValue(key, value) {
     const rawKey = String(key || "").toLowerCase();
     const rawValue = String(value || "");
@@ -1972,6 +2106,12 @@ class ThemeGeneratorPanel extends HTMLElement {
         <div class="code-field-actions">
           <button type="button" data-code-copy="${this.escape(encodedValue)}">Kopieren</button>
           <button type="button" class="secondary" data-code-open="${this.escape(encodedKey)}">Im Editor öffnen</button>
+        </div>
+
+        <div class="code-field-actions cardmod-add-actions">
+          <button type="button" data-cardmod-add="card-mod-card">+ card-mod-card</button>
+          <button type="button" data-cardmod-add="card-mod-root">+ card-mod-root</button>
+          <button type="button" data-cardmod-add="card-mod-theme">+ card-mod-theme</button>
         </div>
 
         <div class="field-note">card-mod / CSS-Codeblock · als Snippet oder Template nutzbar</div>
@@ -4541,7 +4681,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.8 - linke Gruppen sauber trennen */
+        /* v1.14.9 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -4627,7 +4767,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.8 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.14.9 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -4738,7 +4878,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.8 - Alle Settings */
+        /* v1.14.9 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -4754,7 +4894,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.8 - Filter fuer Alle Settings */
+        /* v1.14.9 - Filter fuer Alle Settings */
         .settings-filter-row {
           display: flex;
           flex-wrap: wrap;
@@ -4781,7 +4921,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.8 - einklappbares linkes Settings-Menü */
+        /* v1.14.9 - einklappbares linkes Settings-Menü */
         .settings-parent {
           display: grid !important;
           grid-template-columns: 26px minmax(0, 1fr) 22px;
@@ -4832,7 +4972,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.8 - Menü dezenter + Übersicht aufgeräumt */
+        /* v1.14.9 - Menü dezenter + Übersicht aufgeräumt */
         .settings-submenu .ha-nav-item,
         .settings-submenu .settings-child {
           background: transparent !important;
@@ -4991,7 +5131,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.8 - sauberes Kartenraster */
+        /* v1.14.9 - sauberes Kartenraster */
         .ha-content.clean-preview {
           display: flex;
           justify-content: center;
@@ -5132,7 +5272,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.8 - Vorschau-Raster repariert */
+        /* v1.14.9 - Vorschau-Raster repariert */
         .ha-content.clean-preview {
           display: flex !important;
           flex-direction: column !important;
@@ -5203,7 +5343,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.8 - Farbkarten und Vorschau sauber ausrichten */
+        /* v1.14.9 - Farbkarten und Vorschau sauber ausrichten */
 
         .ha-nav-icon {
           width: 22px !important;
@@ -5424,7 +5564,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.8 - finaler Layout-Fix */
+        /* v1.14.9 - finaler Layout-Fix */
         .ha-preview {
           grid-template-columns: 250px minmax(0, 1fr) !important;
           width: 100% !important;
@@ -5557,7 +5697,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.8 - Menütext vollständig anzeigen */
+        /* v1.14.9 - Menütext vollständig anzeigen */
         .ha-side {
           width: 280px !important;
           min-width: 280px !important;
@@ -5601,7 +5741,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.8 - Mushroom/Bubble/card-mod sauber gruppieren */
+        /* v1.14.9 - Mushroom/Bubble/card-mod sauber gruppieren */
         .preview-section-title {
           grid-column: 1 / -1;
           margin: 12px 0 -4px 0;
@@ -5623,7 +5763,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.8 - Farbformat Auswahl und Alpha nur bei Farben */
+        /* v1.14.9 - Farbformat Auswahl und Alpha nur bei Farben */
         .format-row {
           display: flex;
           gap: 8px;
@@ -5662,7 +5802,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.8 - Demo Buttons Vorschauseite */
+        /* v1.14.9 - Demo Buttons Vorschauseite */
         .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -5894,7 +6034,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.8 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
+        /* v1.14.9 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
         .ha-content .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -5974,7 +6114,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.8 - Eigene Demo-Seite mit gespeicherter YAML */
+        /* v1.14.9 - Eigene Demo-Seite mit gespeicherter YAML */
         .demo-page-editor-shell {
           width: min(100%, 1240px);
           margin: 0 auto;
@@ -6095,7 +6235,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.8 - Demo Seite als echtes Home-Assistant iframe */
+        /* v1.14.9 - Demo Seite als echtes Home-Assistant iframe */
         .demo-iframe-shell {
           width: min(100%, 1240px);
           margin: 0 auto;
@@ -6179,7 +6319,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.8 - iframe Demo Seite ohne Home Assistant Seitenmenü */
+        /* v1.14.9 - iframe Demo Seite ohne Home Assistant Seitenmenü */
         .demo-iframe-frame {
           position: relative;
           height: 720px;
@@ -6206,7 +6346,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.8 - Editor links, Live-Vorschau rechts */
+        /* v1.14.9 - Editor links, Live-Vorschau rechts */
         .editor-split-view {
           display: grid;
           grid-template-columns: minmax(420px, 0.95fr) minmax(460px, 1.05fr);
@@ -6510,7 +6650,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
       
 
-        /* v1.14.8 - View Tabs immer nebeneinander */
+        /* v1.14.9 - View Tabs immer nebeneinander */
         .view-switch {
           display: inline-flex;
           flex-direction: row;
@@ -6530,7 +6670,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.8 - Template Bibliothek */
+        /* v1.14.9 - Template Bibliothek */
         .templates-page {
           display: grid;
           gap: 18px;
@@ -6668,7 +6808,21 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 
 
-        /* v1.14.8 - card-mod / CSS Codekarten */
+
+        /* v1.14.9 - card-mod neue Blöcke */
+        .cardmod-add-actions {
+          margin-top: -4px;
+          padding-top: 8px;
+          border-top: 1px solid var(--ha-card-border-color);
+        }
+
+        .cardmod-add-actions button {
+          font-size: 12px;
+          padding: 9px 11px;
+        }
+
+
+        /* v1.14.9 - card-mod / CSS Codekarten */
         .code-field-card {
           align-items: stretch;
         }
@@ -6713,7 +6867,7 @@ class ThemeGeneratorPanel extends HTMLElement {
           width: auto;
         }
 
-        /* v1.14.8 - View Tabs immer in einer Zeile */
+        /* v1.14.9 - View Tabs immer in einer Zeile */
         .view-switch {
           display: inline-flex;
           flex-direction: row;
@@ -6745,7 +6899,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.14.8</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.14.9</span></h1>
             </div>
 
             <div class="controls">
@@ -6874,6 +7028,12 @@ class ThemeGeneratorPanel extends HTMLElement {
       this.shadowRoot.querySelectorAll("[data-code-open]").forEach((button) => {
         button.addEventListener("click", (event) => {
           this.openCodeThemeValueInEditor(event.currentTarget.dataset.codeOpen);
+        });
+      });
+
+      this.shadowRoot.querySelectorAll("[data-cardmod-add]").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          this.addCardModBlock(event.currentTarget.dataset.cardmodAdd);
         });
       });
 
