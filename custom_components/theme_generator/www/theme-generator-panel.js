@@ -1352,7 +1352,123 @@ class ThemeGeneratorPanel extends HTMLElement {
     `;
   }
 
+  ensureThemeDefaultsInEditor() {
+    if (this._ensuringThemeDefaults) {
+      return;
+    }
+
+    this._ensuringThemeDefaults = true;
+
+    try {
+      let content = String(this.editorContent || "");
+
+      if (!content.trim()) {
+        return;
+      }
+
+      const escapeRegExp = (value) => String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+      const hasKey = (key) => {
+        const pattern = new RegExp(`^\\s{2,}["']?${escapeRegExp(key)}["']?:`, "m");
+        return pattern.test(content);
+      };
+
+      const get = (key, fallback) => {
+        if (!this.extractValue) {
+          return fallback;
+        }
+
+        const value = this.extractValue(key, fallback);
+        const clean = String(value || "").trim();
+
+        if (!clean || clean.toLowerCase().startsWith("var(")) {
+          return fallback;
+        }
+
+        return clean;
+      };
+
+      const accent = get("accent-color", get("primary-color", "#03a9f4"));
+      const primaryText = get("primary-text-color", get("text-primary-color", "#e1e1e1"));
+      const secondaryText = get("secondary-text-color", get("text-secondary-color", "#9b9b9b"));
+      const cardBg = get("card-background-color", get("ha-card-background", "rgba(255,255,255,0.06)"));
+      const iconColor = get("state-icon-color", secondaryText);
+
+      const groups = [
+        {
+          title: "Mushroom Card",
+          values: {
+            "mushroom-card-primary-color": primaryText,
+            "mushroom-card-secondary-color": secondaryText,
+            "mushroom-card-background": cardBg,
+            "mushroom-card-border-radius": "12px",
+            "mush-chip-background": `rgba(3,169,244,0.14)`,
+            "mush-chip-color": primaryText,
+            "mush-chip-icon-color": accent,
+            "mush-control-background-color": "rgba(255,255,255,0.08)",
+            "mush-slider-color": accent,
+            "mush-toggle-color": accent,
+            "mush-icon-color": iconColor
+          }
+        },
+        {
+          title: "Bubble Card",
+          values: {
+            "bubble-main-background-color": cardBg,
+            "bubble-button-background-color": "rgba(255,255,255,0.07)",
+            "bubble-icon-background-color": "rgba(3,169,244,0.16)",
+            "bubble-accent-color": accent,
+            "bubble-border-radius": "18px",
+            "bubble-sub-button-background-color": "rgba(255,255,255,0.08)",
+            "bubble-sub-button-text-color": primaryText,
+            "bubble-name-color": primaryText,
+            "bubble-state-color": secondaryText,
+            "bubble-icon-color": iconColor,
+            "bubble-slider-color": accent,
+            "bubble-toggle-color": accent,
+            "bubble-popup-background-color": cardBg
+          }
+        },
+        {
+          title: "card-mod",
+          values: {
+            "card-mod-theme": "ha_standard_basis"
+          }
+        }
+      ];
+
+      const sections = [];
+
+      groups.forEach((group) => {
+        const missing = Object.entries(group.values).filter(([key]) => !hasKey(key));
+
+        if (!missing.length) {
+          return;
+        }
+
+        sections.push("");
+        sections.push(`  # ${group.title}`);
+
+        missing.forEach(([key, value]) => {
+          sections.push(`  ${key}: "${value}"`);
+        });
+      });
+
+      if (!sections.length) {
+        return;
+      }
+
+      this.editorContent = content.replace(/\s*$/, "") + "\n" + sections.join("\n") + "\n";
+    } finally {
+      this._ensuringThemeDefaults = false;
+    }
+  }
+
   getAllThemeFields() {
+    if (this.ensureThemeDefaultsInEditor) {
+      this.ensureThemeDefaultsInEditor();
+    }
+
     const found = [];
     const seen = new Set();
     const lines = String(this.editorContent || "").split("\n");
@@ -3303,7 +3419,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.5 - linke Gruppen sauber trennen */
+        /* v1.12.6 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -3389,7 +3505,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.5 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.12.6 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -3500,7 +3616,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.5 - Alle Settings */
+        /* v1.12.6 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -3516,7 +3632,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.5 - Filter fuer Alle Settings */
+        /* v1.12.6 - Filter fuer Alle Settings */
         .settings-filter-row {
           display: flex;
           flex-wrap: wrap;
@@ -3543,7 +3659,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.5 - einklappbares linkes Settings-Menü */
+        /* v1.12.6 - einklappbares linkes Settings-Menü */
         .settings-parent {
           display: grid !important;
           grid-template-columns: 26px minmax(0, 1fr) 22px;
@@ -3594,7 +3710,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.5 - Menü dezenter + Übersicht aufgeräumt */
+        /* v1.12.6 - Menü dezenter + Übersicht aufgeräumt */
         .settings-submenu .ha-nav-item,
         .settings-submenu .settings-child {
           background: transparent !important;
@@ -3753,7 +3869,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.5 - sauberes Kartenraster */
+        /* v1.12.6 - sauberes Kartenraster */
         .ha-content.clean-preview {
           display: flex;
           justify-content: center;
@@ -3894,7 +4010,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.5 - Vorschau-Raster repariert */
+        /* v1.12.6 - Vorschau-Raster repariert */
         .ha-content.clean-preview {
           display: flex !important;
           flex-direction: column !important;
@@ -3965,7 +4081,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.5 - Farbkarten und Vorschau sauber ausrichten */
+        /* v1.12.6 - Farbkarten und Vorschau sauber ausrichten */
 
         .ha-nav-icon {
           width: 22px !important;
@@ -4186,7 +4302,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.5 - finaler Layout-Fix */
+        /* v1.12.6 - finaler Layout-Fix */
         .ha-preview {
           grid-template-columns: 250px minmax(0, 1fr) !important;
           width: 100% !important;
@@ -4319,7 +4435,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.5 - Menütext vollständig anzeigen */
+        /* v1.12.6 - Menütext vollständig anzeigen */
         .ha-side {
           width: 280px !important;
           min-width: 280px !important;
@@ -4363,7 +4479,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.5 - Mushroom/Bubble/card-mod sauber gruppieren */
+        /* v1.12.6 - Mushroom/Bubble/card-mod sauber gruppieren */
         .preview-section-title {
           grid-column: 1 / -1;
           margin: 12px 0 -4px 0;
@@ -4566,7 +4682,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.12.5</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.12.6</span></h1>
             </div>
 
             <div class="controls">
