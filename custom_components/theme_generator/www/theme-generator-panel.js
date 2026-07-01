@@ -1327,7 +1327,7 @@ class ThemeGeneratorPanel extends HTMLElement {
     const lines = String(this.editorContent || "").split("\n");
 
     for (const line of lines) {
-      const match = line.match(/^\s{4,}([A-Za-z0-9_-]+):\s*(.+?)\s*$/);
+      const match = line.match(/^\s{2,}["']?([A-Za-z0-9_-]+)["']?:\s*(.+?)\s*$/);
 
       if (!match) {
         continue;
@@ -1337,6 +1337,10 @@ class ThemeGeneratorPanel extends HTMLElement {
       const value = String(match[2] || "").trim();
 
       if (!key || seen.has(key)) {
+        continue;
+      }
+
+      if (["modes", "light", "dark"].includes(key)) {
         continue;
       }
 
@@ -3080,7 +3084,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.4 - linke Gruppen sauber trennen */
+        /* v1.11.5 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -3166,7 +3170,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.4 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.11.5 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -3277,7 +3281,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.4 - Alle Settings */
+        /* v1.11.5 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -3293,7 +3297,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.4 - Filter fuer Alle Settings */
+        /* v1.11.5 - Filter fuer Alle Settings */
         .settings-filter-row {
           display: flex;
           flex-wrap: wrap;
@@ -3403,7 +3407,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.11.4</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.11.5</span></h1>
             </div>
 
             <div class="controls">
