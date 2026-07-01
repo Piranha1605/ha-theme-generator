@@ -1659,28 +1659,190 @@ class ThemeGeneratorPanel extends HTMLElement {
     return "";
   }
 
+  isDirectColorValue(value) {
+    const raw = String(value || "").trim();
+
+    if (!raw) {
+      return false;
+    }
+
+    const lower = raw.toLowerCase();
+
+    if (lower.startsWith("var(")) {
+      return false;
+    }
+
+    if (lower === "transparent") {
+      return true;
+    }
+
+    if (/^#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(raw)) {
+      return true;
+    }
+
+    if (/^rgba?\(/i.test(raw)) {
+      return true;
+    }
+
+    if (/^hsla?\(/i.test(raw)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  parseColorToRgba(value) {
+    const raw = String(value || "").trim();
+
+    if (!raw) {
+      return null;
+    }
+
+    const lower = raw.toLowerCase();
+
+    if (lower === "transparent") {
+      return { r: 0, g: 0, b: 0, a: 0 };
+    }
+
+    let hex = raw;
+
+    if (/^#([0-9a-f]{3})$/i.test(hex)) {
+      const m = hex.slice(1);
+      hex = "#" + m[0] + m[0] + m[1] + m[1] + m[2] + m[2];
+    }
+
+    if (/^#([0-9a-f]{6})$/i.test(hex)) {
+      return {
+        r: parseInt(hex.slice(1, 3), 16),
+        g: parseInt(hex.slice(3, 5), 16),
+        b: parseInt(hex.slice(5, 7), 16),
+        a: 1
+      };
+    }
+
+    if (/^#([0-9a-f]{8})$/i.test(hex)) {
+      return {
+        r: parseInt(hex.slice(1, 3), 16),
+        g: parseInt(hex.slice(3, 5), 16),
+        b: parseInt(hex.slice(5, 7), 16),
+        a: +(parseInt(hex.slice(7, 9), 16) / 255).toFixed(3)
+      };
+    }
+
+    const rgb = raw.match(/^rgba?\(\s*([0-9.]+)\s*,\s*([0-9.]+)\s*,\s*([0-9.]+)(?:\s*,\s*([0-9.]+))?\s*\)$/i);
+
+    if (rgb) {
+      return {
+        r: Math.max(0, Math.min(255, Math.round(Number(rgb[1])))),
+        g: Math.max(0, Math.min(255, Math.round(Number(rgb[2])))),
+        b: Math.max(0, Math.min(255, Math.round(Number(rgb[3])))),
+        a: rgb[4] === undefined ? 1 : Math.max(0, Math.min(1, Number(rgb[4])))
+      };
+    }
+
+    return null;
+  }
+
+  rgbaToHex(color) {
+    const toHex = (value) => Math.max(0, Math.min(255, Math.round(value))).toString(16).padStart(2, "0");
+    return `#${toHex(color.r)}${toHex(color.g)}${toHex(color.b)}`;
+  }
+
+  rgbaToRgb(color) {
+    return `rgb(${Math.round(color.r)},${Math.round(color.g)},${Math.round(color.b)})`;
+  }
+
+  rgbaToRgba(color, alpha = color.a) {
+    const cleanAlpha = Math.max(0, Math.min(1, Number(alpha)));
+    return `rgba(${Math.round(color.r)},${Math.round(color.g)},${Math.round(color.b)},${+cleanAlpha.toFixed(3)})`;
+  }
+
+  getColorFormat(value) {
+    const raw = String(value || "").trim().toLowerCase();
+
+    if (raw.startsWith("rgba(")) return "rgba";
+    if (raw.startsWith("rgb(")) return "rgb";
+    if (raw.startsWith("#")) return "hex";
+    if (raw === "transparent") return "rgba";
+
+    return "hex";
+  }
+
+  setRawThemeValue(key, value) {
+    const escapeRegExp = (raw) => String(raw).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const pattern = new RegExp(`^(\\s{2,}["']?${escapeRegExp(key)}["']?:\\s*)(.*)$`, "m");
+    const content = String(this.editorContent || "");
+
+    if (!pattern.test(content)) {
+      return;
+    }
+
+    const safeValue = String(value).replaceAll('"', '\\"');
+    this.editorContent = content.replace(pattern, `$1"${safeValue}"`);
+
+    if (this.render) {
+      this.render();
+    }
+  }
+
+  convertFieldColorFormat(key, format) {
+    const rawValue = this.extractValue(key, "");
+    const color = this.parseColorToRgba(rawValue);
+
+    if (!color) {
+      return;
+    }
+
+    let nextValue = rawValue;
+
+    if (format === "hex") {
+      nextValue = this.rgbaToHex(color);
+    } else if (format === "rgb") {
+      nextValue = this.rgbaToRgb(color);
+    } else if (format === "rgba") {
+      nextValue = this.rgbaToRgba(color, color.a);
+    }
+
+    this.setRawThemeValue(key, nextValue);
+  }
+
+  setFieldColorAlpha(key, alphaPercent) {
+    const rawValue = this.extractValue(key, "");
+    const color = this.parseColorToRgba(rawValue);
+
+    if (!color) {
+      return;
+    }
+
+    const alpha = Math.max(0, Math.min(100, Number(alphaPercent))) / 100;
+    const nextValue = this.rgbaToRgba(color, alpha);
+
+    this.setRawThemeValue(key, nextValue);
+  }
+
   renderPreviewFieldCard(field) {
-    const rawValue = this.extractValue(field.key, "#03a9f4");
-    const colorValue = this.resolvedColorForPicker(field.key, "#03a9f4");
-    const isVar = String(rawValue).trim().toLowerCase().startsWith("var(");
-    const editableKey = this.getEditableColorKey ? this.getEditableColorKey(field.key) : field.key;
-    const editableValue = this.extractValue(editableKey, rawValue);
-    const varTargetExists = editableKey !== field.key;
-    const alpha = this.getAlphaPercent ? this.getAlphaPercent(editableValue) : 100;
+    const rawValue = this.extractValue(field.key, "");
+    const isColor = this.isDirectColorValue(rawValue);
+    const colorValue = isColor ? this.resolvedColorForPicker(field.key, "#03a9f4") : "#03a9f4";
+    const parsedColor = isColor ? this.parseColorToRgba(rawValue) : null;
+    const alpha = parsedColor ? Math.round((parsedColor.a ?? 1) * 100) : 100;
+    const format = isColor ? this.getColorFormat(rawValue) : "";
 
     return `
-      <article class="preview-field-card">
+      <article class="preview-field-card ${isColor ? "is-color-field" : "is-value-field"}">
         <div class="preview-field-head">
           <div>
             <strong>${this.escape(field.label)}</strong>
             <code>${this.escape(field.key)}</code>
           </div>
-          <input
-            type="color"
-            data-color-key="${this.escape(field.key)}"
-            value="${this.escape(colorValue)}"
-            ${isVar && !varTargetExists ? "disabled" : ""}
-          >
+
+          ${isColor ? `
+            <input
+              type="color"
+              data-color-key="${this.escape(field.key)}"
+              value="${this.escape(colorValue)}"
+            >
+          ` : ""}
         </div>
 
         <input
@@ -1690,7 +1852,20 @@ class ThemeGeneratorPanel extends HTMLElement {
           spellcheck="false"
         >
 
-        ${this.getAlphaPercent ? `
+        ${isColor ? `
+          <div class="format-row">
+            ${["hex", "rgb", "rgba"].map((item) => `
+              <button
+                type="button"
+                class="${format === item ? "active" : ""}"
+                data-format-key="${this.escape(field.key)}"
+                data-format="${item}"
+              >
+                ${item.toUpperCase()}
+              </button>
+            `).join("")}
+          </div>
+
           <div class="alpha-row preview-alpha-row">
             <span>Transparenz</span>
             <input
@@ -1700,13 +1875,12 @@ class ThemeGeneratorPanel extends HTMLElement {
               max="100"
               value="${alpha}"
               data-alpha-key="${this.escape(field.key)}"
-              ${isVar && !varTargetExists ? "disabled" : ""}
             >
             <strong>${alpha}%</strong>
           </div>
-        ` : ""}
-
-        ${isVar ? `<div class="alpha-hint">${varTargetExists ? `verknüpft mit ${this.escape(editableKey)} · Änderungen gehen dorthin` : `var(...)-Ziel nicht gefunden`}</div>` : ""}
+        ` : `
+          <div class="value-hint">Kein Farbwert · Format und Transparenz nicht verfügbar</div>
+        `}
       </article>
     `;
   }
@@ -3419,7 +3593,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.6 - linke Gruppen sauber trennen */
+        /* v1.12.7 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -3505,7 +3679,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.6 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.12.7 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -3616,7 +3790,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.6 - Alle Settings */
+        /* v1.12.7 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -3632,7 +3806,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.6 - Filter fuer Alle Settings */
+        /* v1.12.7 - Filter fuer Alle Settings */
         .settings-filter-row {
           display: flex;
           flex-wrap: wrap;
@@ -3659,7 +3833,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.6 - einklappbares linkes Settings-Menü */
+        /* v1.12.7 - einklappbares linkes Settings-Menü */
         .settings-parent {
           display: grid !important;
           grid-template-columns: 26px minmax(0, 1fr) 22px;
@@ -3710,7 +3884,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.6 - Menü dezenter + Übersicht aufgeräumt */
+        /* v1.12.7 - Menü dezenter + Übersicht aufgeräumt */
         .settings-submenu .ha-nav-item,
         .settings-submenu .settings-child {
           background: transparent !important;
@@ -3869,7 +4043,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.6 - sauberes Kartenraster */
+        /* v1.12.7 - sauberes Kartenraster */
         .ha-content.clean-preview {
           display: flex;
           justify-content: center;
@@ -4010,7 +4184,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.6 - Vorschau-Raster repariert */
+        /* v1.12.7 - Vorschau-Raster repariert */
         .ha-content.clean-preview {
           display: flex !important;
           flex-direction: column !important;
@@ -4081,7 +4255,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.6 - Farbkarten und Vorschau sauber ausrichten */
+        /* v1.12.7 - Farbkarten und Vorschau sauber ausrichten */
 
         .ha-nav-icon {
           width: 22px !important;
@@ -4302,7 +4476,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.6 - finaler Layout-Fix */
+        /* v1.12.7 - finaler Layout-Fix */
         .ha-preview {
           grid-template-columns: 250px minmax(0, 1fr) !important;
           width: 100% !important;
@@ -4435,7 +4609,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.6 - Menütext vollständig anzeigen */
+        /* v1.12.7 - Menütext vollständig anzeigen */
         .ha-side {
           width: 280px !important;
           min-width: 280px !important;
@@ -4479,7 +4653,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.6 - Mushroom/Bubble/card-mod sauber gruppieren */
+        /* v1.12.7 - Mushroom/Bubble/card-mod sauber gruppieren */
         .preview-section-title {
           grid-column: 1 / -1;
           margin: 12px 0 -4px 0;
@@ -4498,6 +4672,45 @@ class ThemeGeneratorPanel extends HTMLElement {
           border-radius: 16px;
           color: var(--p-secondary);
           background: color-mix(in srgb, var(--p-card) 70%, transparent);
+        }
+
+
+        /* v1.12.7 - Farbformat Auswahl und Alpha nur bei Farben */
+        .format-row {
+          display: flex;
+          gap: 8px;
+          align-items: center;
+          margin-top: 2px;
+        }
+
+        .format-row button {
+          height: 28px;
+          padding: 0 12px;
+          border-radius: 999px;
+          border: 1px solid var(--p-border);
+          background: color-mix(in srgb, var(--p-card) 85%, transparent);
+          color: var(--p-secondary);
+          font-size: 11px;
+          font-weight: 800;
+          cursor: pointer;
+        }
+
+        .format-row button.active {
+          background: var(--p-primary);
+          border-color: var(--p-primary);
+          color: white;
+        }
+
+        .value-hint {
+          color: var(--p-secondary);
+          opacity: 0.8;
+          font-size: 12px;
+          line-height: 1.25;
+          margin-top: 2px;
+        }
+
+        .preview-field-card.is-value-field .preview-field-head {
+          grid-template-columns: minmax(0, 1fr) !important;
         }
 
         @media (max-width: 1050px) {
@@ -4682,7 +4895,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.12.6</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.12.7</span></h1>
             </div>
 
             <div class="controls">
@@ -4784,6 +4997,37 @@ class ThemeGeneratorPanel extends HTMLElement {
     this.shadowRoot.querySelectorAll("input[type='color'][data-color-key]").forEach((input) => {
       input.addEventListener("input", (event) => {
         this.setYamlColor(event.target.dataset.colorKey, event.target.value);
+      });
+    });
+
+    this.shadowRoot.querySelectorAll("[data-format-key]").forEach((button) => {
+      button.addEventListener("click", (event) => {
+        const key = event.currentTarget.dataset.formatKey;
+        const format = event.currentTarget.dataset.format;
+
+        if (this.convertFieldColorFormat) {
+          this.convertFieldColorFormat(key, format);
+        }
+      });
+    });
+
+    this.shadowRoot.querySelectorAll("[data-alpha-key]").forEach((input) => {
+      input.addEventListener("input", (event) => {
+        const row = event.currentTarget.closest(".alpha-row");
+        const label = row?.querySelector("strong, b");
+
+        if (label) {
+          label.textContent = `${event.currentTarget.value}%`;
+        }
+      });
+
+      input.addEventListener("change", (event) => {
+        const key = event.currentTarget.dataset.alphaKey;
+        const value = event.currentTarget.value;
+
+        if (this.setFieldColorAlpha) {
+          this.setFieldColorAlpha(key, value);
+        }
       });
     });
 
