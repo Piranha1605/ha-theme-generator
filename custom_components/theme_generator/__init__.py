@@ -28,6 +28,20 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     return True
 
 
+
+async def _reload_themes(hass: HomeAssistant) -> None:
+    """Reload Home Assistant frontend themes after writing theme files."""
+    try:
+        await hass.services.async_call(
+            "frontend",
+            "reload_themes",
+            {},
+            blocking=True,
+        )
+    except Exception:
+        _LOGGER.exception("Failed to reload frontend themes")
+
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     static_path = hass.config.path(f"custom_components/{DOMAIN}/www")
 
@@ -51,7 +65,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         config={
             "_panel_custom": {
                 "name": PANEL_TAG,
-                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.15.2",
+                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.15.3",
                 "embed_iframe": False,
                 "trust_external_script": True,
                 "config": {},
