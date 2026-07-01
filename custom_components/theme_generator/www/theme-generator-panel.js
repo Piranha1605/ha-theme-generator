@@ -1967,6 +1967,151 @@ class ThemeGeneratorPanel extends HTMLElement {
     `;
   }
 
+  renderDemoButtonsPreview() {
+    const v = this.getPreviewVars ? this.getPreviewVars() : {
+      primary: "#03a9f4",
+      accent: "#03a9f4",
+      success: "#4caf50",
+      warning: "#ff9800",
+      error: "#f44336",
+      info: "#2196f3",
+      bg: "#111111",
+      card: "#1c1c1c",
+      text: "#e1e1e1",
+      secondary: "#9b9b9b",
+      sidebar: "#111111",
+      border: "rgba(255,255,255,0.12)",
+      bubble: "#03a9f4"
+    };
+
+    const standardRows = [
+      ["mdi:fan", "Lüftersteuerung", "Ein", "switch"],
+      ["mdi:led-strip-variant", "Server LED", "72 %", "light"],
+      ["mdi:power", "LED komplett aus", "Button", "button"],
+      ["mdi:creation", "LED Effekt", "Rainbow", "select"],
+      ["mdi:speedometer", "LED Geschwindigkeit", "60 %", "number"],
+      ["mdi:brightness-6", "LED Helligkeit", "80 %", "number"]
+    ];
+
+    const mushroomRows = [
+      ["mdi:fan", "Lüftersteuerung", "Eingeschaltet", "toggle"],
+      ["mdi:led-strip-variant", "Server LED", "Helligkeit 72 %", "slider"],
+      ["mdi:power", "LED komplett aus", "Aktion", "button"],
+      ["mdi:creation", "LED Effekt", "Rainbow", "select"],
+      ["mdi:speedometer", "LED Geschwindigkeit", "60 %", "slider"],
+      ["mdi:brightness-6", "LED Helligkeit", "80 %", "slider"]
+    ];
+
+    const bubbleRows = [
+      ["mdi:fan", "Lüftersteuerung", "Ein", "switch"],
+      ["mdi:led-strip-variant", "Server LED", "72 %", "slider"],
+      ["mdi:power", "LED komplett aus", "Ausführen", "button"],
+      ["mdi:creation", "LED Effekt", "Rainbow", "select"],
+      ["mdi:speedometer", "LED Geschwindigkeit", "60 %", "state"],
+      ["mdi:brightness-6", "LED Helligkeit", "80 %", "state"]
+    ];
+
+    const renderStandard = ([icon, name, state, type]) => `
+      <div class="demo-tile-card">
+        <div class="demo-tile-icon">
+          <ha-icon icon="${icon}"></ha-icon>
+        </div>
+        <div class="demo-tile-info">
+          <strong>${this.escape(name)}</strong>
+          <span>${this.escape(state)}</span>
+        </div>
+        ${type === "switch" ? `<div class="demo-switch on"></div>` : ""}
+        ${type === "light" || type === "number" ? `<div class="demo-mini-slider"><i style="width:${type === "light" ? "72" : "60"}%"></i></div>` : ""}
+      </div>
+    `;
+
+    const renderMushroom = ([icon, name, state, type]) => `
+      <div class="demo-mushroom-card">
+        <div class="demo-mushroom-icon">
+          <ha-icon icon="${icon}"></ha-icon>
+        </div>
+        <div class="demo-mushroom-info">
+          <strong>${this.escape(name)}</strong>
+          <span>${this.escape(state)}</span>
+        </div>
+        ${type === "toggle" ? `<div class="demo-switch on"></div>` : ""}
+        ${type === "slider" ? `<div class="demo-mini-slider"><i></i></div>` : ""}
+      </div>
+    `;
+
+    const renderBubble = ([icon, name, state, type]) => `
+      <div class="demo-bubble-card">
+        <div class="demo-bubble-main">
+          <div class="demo-bubble-icon">
+            <ha-icon icon="${icon}"></ha-icon>
+          </div>
+          <div class="demo-bubble-info">
+            <strong>${this.escape(name)}</strong>
+            <span>${this.escape(state)}</span>
+          </div>
+          <div class="demo-bubble-action">${type === "switch" ? "Ein" : type === "slider" ? "72 %" : "Info"}</div>
+        </div>
+        ${type === "slider" ? `<div class="demo-bubble-slider"><i></i></div>` : ""}
+      </div>
+    `;
+
+    return `
+      <section class="demo-preview-page">
+        <div class="demo-preview-head">
+          <h2>Serversteuerung Vergleich</h2>
+          <p>Demo-Vorschau für HA Standard, Mushroom, Bubble und Theme Settings — angelehnt an deine YAML-Karte.</p>
+        </div>
+
+        <div class="demo-preview-grid">
+          <article class="demo-preview-column">
+            <div class="demo-column-title">
+              <ha-icon icon="mdi:home-assistant"></ha-icon>
+              <span>HA Standard</span>
+            </div>
+            ${standardRows.map(renderStandard).join("")}
+          </article>
+
+          <article class="demo-preview-column">
+            <div class="demo-column-title">
+              <ha-icon icon="mdi:mushroom-outline"></ha-icon>
+              <span>Mushroom</span>
+            </div>
+            ${mushroomRows.map(renderMushroom).join("")}
+          </article>
+
+          <article class="demo-preview-column">
+            <div class="demo-column-title">
+              <ha-icon icon="mdi:circle-multiple-outline"></ha-icon>
+              <span>Bubble</span>
+            </div>
+            ${bubbleRows.map(renderBubble).join("")}
+          </article>
+
+          <article class="demo-preview-column">
+            <div class="demo-column-title">
+              <ha-icon icon="mdi:compare"></ha-icon>
+              <span>Theme Settings</span>
+            </div>
+
+            <div class="demo-settings-card">
+              <div>
+                <strong>Card Transparenz</strong>
+                <span>input_number.dashboard_card_transparenz</span>
+              </div>
+              <div class="demo-settings-slider">
+                <i></i>
+              </div>
+            </div>
+
+            <div class="demo-settings-note">
+              Diese Seite ist eine reine Theme-Vorschau. Es werden keine echten Entitäten geschaltet.
+            </div>
+          </article>
+        </div>
+      </section>
+    `;
+  }
+
   renderPreview() {
     const v = this.getPreviewVars ? this.getPreviewVars() : {
       primary: "#03a9f4",
@@ -2005,6 +2150,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
     const previewItems = [
       ["overview", "mdi:view-dashboard-outline", "Vorschau"],
+      ["demo_buttons", "mdi:view-grid-plus-outline", "Demo Buttons"],
       ["custom_cards", "mdi:card-plus-outline", "Eigene Karten"]
     ];
 
@@ -2145,6 +2291,10 @@ class ThemeGeneratorPanel extends HTMLElement {
           </article>
         </section>
       `;
+    }
+
+    if (page === "demo_buttons") {
+      return this.renderDemoButtonsPreview();
     }
 
     if (page === "overview" || page === "mushroom" || page === "bubble") {
@@ -3593,7 +3743,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.9 - linke Gruppen sauber trennen */
+        /* v1.13.0 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -3679,7 +3829,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.9 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.13.0 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -3790,7 +3940,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.9 - Alle Settings */
+        /* v1.13.0 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -3806,7 +3956,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.9 - Filter fuer Alle Settings */
+        /* v1.13.0 - Filter fuer Alle Settings */
         .settings-filter-row {
           display: flex;
           flex-wrap: wrap;
@@ -3833,7 +3983,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.9 - einklappbares linkes Settings-Menü */
+        /* v1.13.0 - einklappbares linkes Settings-Menü */
         .settings-parent {
           display: grid !important;
           grid-template-columns: 26px minmax(0, 1fr) 22px;
@@ -3884,7 +4034,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.9 - Menü dezenter + Übersicht aufgeräumt */
+        /* v1.13.0 - Menü dezenter + Übersicht aufgeräumt */
         .settings-submenu .ha-nav-item,
         .settings-submenu .settings-child {
           background: transparent !important;
@@ -4043,7 +4193,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.9 - sauberes Kartenraster */
+        /* v1.13.0 - sauberes Kartenraster */
         .ha-content.clean-preview {
           display: flex;
           justify-content: center;
@@ -4184,7 +4334,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.9 - Vorschau-Raster repariert */
+        /* v1.13.0 - Vorschau-Raster repariert */
         .ha-content.clean-preview {
           display: flex !important;
           flex-direction: column !important;
@@ -4255,7 +4405,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.9 - Farbkarten und Vorschau sauber ausrichten */
+        /* v1.13.0 - Farbkarten und Vorschau sauber ausrichten */
 
         .ha-nav-icon {
           width: 22px !important;
@@ -4476,7 +4626,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.9 - finaler Layout-Fix */
+        /* v1.13.0 - finaler Layout-Fix */
         .ha-preview {
           grid-template-columns: 250px minmax(0, 1fr) !important;
           width: 100% !important;
@@ -4609,7 +4759,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.9 - Menütext vollständig anzeigen */
+        /* v1.13.0 - Menütext vollständig anzeigen */
         .ha-side {
           width: 280px !important;
           min-width: 280px !important;
@@ -4653,7 +4803,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.9 - Mushroom/Bubble/card-mod sauber gruppieren */
+        /* v1.13.0 - Mushroom/Bubble/card-mod sauber gruppieren */
         .preview-section-title {
           grid-column: 1 / -1;
           margin: 12px 0 -4px 0;
@@ -4675,7 +4825,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.9 - Farbformat Auswahl und Alpha nur bei Farben */
+        /* v1.13.0 - Farbformat Auswahl und Alpha nur bei Farben */
         .format-row {
           display: flex;
           gap: 8px;
@@ -4711,6 +4861,250 @@ class ThemeGeneratorPanel extends HTMLElement {
 
         .preview-field-card.is-value-field .preview-field-head {
           grid-template-columns: minmax(0, 1fr) !important;
+        }
+
+
+        /* v1.13.0 - Demo Buttons Vorschauseite */
+        .demo-preview-page {
+          width: min(100%, 1220px);
+          margin: 0 auto;
+          padding: 30px;
+          box-sizing: border-box;
+        }
+
+        .demo-preview-head {
+          margin-bottom: 22px;
+        }
+
+        .demo-preview-head h2 {
+          margin: 0 0 8px 0;
+          font-size: 32px;
+          line-height: 1.1;
+          color: var(--p-text);
+        }
+
+        .demo-preview-head p {
+          margin: 0;
+          color: var(--p-secondary);
+          font-size: 14px;
+        }
+
+        .demo-preview-grid {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 18px;
+          align-items: start;
+        }
+
+        .demo-preview-column {
+          border: 1px solid var(--p-border);
+          background: color-mix(in srgb, var(--p-card) 92%, transparent);
+          border-radius: 22px;
+          padding: 16px;
+          min-width: 0;
+          box-shadow: 0 18px 40px rgba(0,0,0,0.08);
+        }
+
+        .demo-column-title {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          min-height: 34px;
+          margin-bottom: 14px;
+          color: var(--p-text);
+          font-size: 17px;
+          font-weight: 850;
+        }
+
+        .demo-column-title ha-icon {
+          color: var(--p-primary);
+          --mdc-icon-size: 22px;
+        }
+
+        .demo-tile-card,
+        .demo-mushroom-card,
+        .demo-bubble-card,
+        .demo-settings-card {
+          border: 1px solid var(--p-border);
+          background: color-mix(in srgb, var(--p-card) 86%, white 8%);
+          border-radius: 16px;
+          padding: 12px;
+          margin-bottom: 12px;
+          min-height: 58px;
+          box-sizing: border-box;
+          color: var(--p-text);
+        }
+
+        .demo-tile-card {
+          display: grid;
+          grid-template-columns: 40px minmax(0, 1fr) auto;
+          gap: 10px;
+          align-items: center;
+        }
+
+        .demo-tile-icon,
+        .demo-mushroom-icon,
+        .demo-bubble-icon {
+          width: 38px;
+          height: 38px;
+          border-radius: 999px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: color-mix(in srgb, var(--p-primary) 18%, transparent);
+          color: var(--p-primary);
+        }
+
+        .demo-tile-icon ha-icon,
+        .demo-mushroom-icon ha-icon,
+        .demo-bubble-icon ha-icon {
+          --mdc-icon-size: 21px;
+        }
+
+        .demo-tile-info,
+        .demo-mushroom-info,
+        .demo-bubble-info,
+        .demo-settings-card > div:first-child {
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 3px;
+        }
+
+        .demo-tile-info strong,
+        .demo-mushroom-info strong,
+        .demo-bubble-info strong,
+        .demo-settings-card strong {
+          font-size: 13px;
+          color: var(--p-text);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .demo-tile-info span,
+        .demo-mushroom-info span,
+        .demo-bubble-info span,
+        .demo-settings-card span,
+        .demo-settings-note {
+          font-size: 11px;
+          color: var(--p-secondary);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .demo-switch {
+          width: 38px;
+          height: 22px;
+          border-radius: 999px;
+          background: color-mix(in srgb, var(--p-secondary) 22%, transparent);
+          position: relative;
+        }
+
+        .demo-switch::after {
+          content: "";
+          position: absolute;
+          top: 3px;
+          left: 3px;
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          background: white;
+          box-shadow: 0 1px 4px rgba(0,0,0,0.22);
+        }
+
+        .demo-switch.on {
+          background: var(--p-primary);
+        }
+
+        .demo-switch.on::after {
+          left: 19px;
+        }
+
+        .demo-mini-slider,
+        .demo-bubble-slider,
+        .demo-settings-slider {
+          height: 10px;
+          border-radius: 999px;
+          background: color-mix(in srgb, var(--p-secondary) 22%, transparent);
+          overflow: hidden;
+        }
+
+        .demo-mini-slider {
+          grid-column: 2 / -1;
+        }
+
+        .demo-mini-slider i,
+        .demo-bubble-slider i,
+        .demo-settings-slider i {
+          display: block;
+          height: 100%;
+          width: 72%;
+          border-radius: 999px;
+          background: var(--p-primary);
+        }
+
+        .demo-mushroom-card {
+          display: grid;
+          grid-template-columns: 42px minmax(0, 1fr) auto;
+          gap: 10px;
+          align-items: center;
+          border-radius: 20px;
+        }
+
+        .demo-bubble-card {
+          border-radius: 24px;
+          padding: 10px;
+        }
+
+        .demo-bubble-main {
+          display: grid;
+          grid-template-columns: 40px minmax(0, 1fr) auto;
+          gap: 10px;
+          align-items: center;
+        }
+
+        .demo-bubble-action {
+          min-width: 42px;
+          padding: 6px 10px;
+          border-radius: 999px;
+          background: var(--p-bubble);
+          color: white;
+          text-align: center;
+          font-size: 11px;
+          font-weight: 850;
+        }
+
+        .demo-bubble-slider {
+          margin: 10px 4px 2px 50px;
+        }
+
+        .demo-settings-card {
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+        }
+
+        .demo-settings-note {
+          white-space: normal;
+          line-height: 1.35;
+          border: 1px dashed var(--p-border);
+          border-radius: 16px;
+          padding: 12px;
+          background: color-mix(in srgb, var(--p-card) 75%, transparent);
+        }
+
+        @media (max-width: 1300px) {
+          .demo-preview-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+        }
+
+        @media (max-width: 820px) {
+          .demo-preview-grid {
+            grid-template-columns: 1fr;
+          }
         }
 
         @media (max-width: 1050px) {
@@ -4895,7 +5289,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.12.9</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.13.0</span></h1>
             </div>
 
             <div class="controls">
