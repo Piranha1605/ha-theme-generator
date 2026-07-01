@@ -65,7 +65,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         config={
             "_panel_custom": {
                 "name": PANEL_TAG,
-                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.15.5",
+                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.15.6",
                 "embed_iframe": False,
                 "trust_external_script": True,
                 "config": {},
@@ -237,6 +237,9 @@ def _save_theme_file_version_sync(hass: HomeAssistant, filename: str, content: s
             theme_values = parsed[first_key]
 
             if isinstance(theme_values, dict):
+                theme_values = dict(theme_values)
+                theme_values["card-mod-theme"] = new_theme_name
+
                 new_content = yaml.safe_dump(
                     {new_theme_name: theme_values},
                     sort_keys=False,
