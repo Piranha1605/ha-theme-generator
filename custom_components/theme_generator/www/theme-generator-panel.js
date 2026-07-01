@@ -1133,6 +1133,33 @@ class ThemeGeneratorPanel extends HTMLElement {
     return raw;
   }
 
+  getVarReferenceKey(value) {
+    const match = String(value || "").trim().match(/^var\(\s*--([a-zA-Z0-9_-]+)\s*(?:,[^)]+)?\)$/);
+
+    if (!match) {
+      return "";
+    }
+
+    return match[1];
+  }
+
+  getEditableColorKey(key) {
+    const rawValue = this.extractValue(key, "");
+    const refKey = this.getVarReferenceKey(rawValue);
+
+    if (!refKey) {
+      return key;
+    }
+
+    const refValue = this.extractValue(refKey, "");
+
+    if (!refValue) {
+      return key;
+    }
+
+    return refKey;
+  }
+
   resolvedColorForPicker(key, fallback = "#03a9f4") {
     const resolved = this.resolveThemeValue(key, fallback);
 
@@ -1403,7 +1430,10 @@ class ThemeGeneratorPanel extends HTMLElement {
       const rawValue = this.extractValue(field.key, "#03a9f4");
       const colorValue = this.resolvedColorForPicker(field.key, "#03a9f4");
       const isVar = String(rawValue).trim().toLowerCase().startsWith("var(");
-      const alpha = this.getAlphaPercent ? this.getAlphaPercent(rawValue) : 100;
+      const editableKey = this.getEditableColorKey ? this.getEditableColorKey(field.key) : field.key;
+      const editableValue = this.extractValue(editableKey, rawValue);
+      const varTargetExists = editableKey !== field.key;
+      const alpha = this.getAlphaPercent ? this.getAlphaPercent(editableValue) : 100;
 
       return `
         <article class="preview-field-card">
@@ -1416,7 +1446,7 @@ class ThemeGeneratorPanel extends HTMLElement {
               type="color"
               data-color-key="${this.escape(field.key)}"
               value="${this.escape(colorValue)}"
-              ${isVar ? "disabled" : ""}
+              ${isVar && !varTargetExists ? "disabled" : ""}
             >
           </div>
 
@@ -1437,13 +1467,13 @@ class ThemeGeneratorPanel extends HTMLElement {
                 max="100"
                 value="${alpha}"
                 data-alpha-key="${this.escape(field.key)}"
-                ${isVar ? "disabled" : ""}
+                ${isVar && !varTargetExists ? "disabled" : ""}
               >
               <strong>${alpha}%</strong>
             </div>
           ` : ""}
 
-          ${isVar ? `<div class="alpha-hint">var(...)-Verknüpfung bleibt geschützt</div>` : ""}
+          ${isVar ? `<div class="alpha-hint">${varTargetExists ? `verknüpft mit ${this.escape(editableKey)} · Änderungen gehen dorthin` : `var(...)-Ziel nicht gefunden`}</div>` : ""}
         </article>
       `;
     }).join("");
@@ -3084,7 +3114,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.5 - linke Gruppen sauber trennen */
+        /* v1.11.6 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -3170,7 +3200,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.5 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.11.6 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -3281,7 +3311,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.5 - Alle Settings */
+        /* v1.11.6 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -3297,7 +3327,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.5 - Filter fuer Alle Settings */
+        /* v1.11.6 - Filter fuer Alle Settings */
         .settings-filter-row {
           display: flex;
           flex-wrap: wrap;
@@ -3407,7 +3437,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.11.5</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.11.6</span></h1>
             </div>
 
             <div class="controls">
