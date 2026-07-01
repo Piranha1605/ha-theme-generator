@@ -2269,17 +2269,30 @@ class ThemeGeneratorPanel extends HTMLElement {
       this.demoPageContent = editor.value;
     }
 
-    host.innerHTML = `<div class="demo-page-empty">Vorschau wird geladen...</div>`;
+    const withTimeout = (promise, ms, message) => {
+      return Promise.race([
+        promise,
+        new Promise((_, reject) => {
+          setTimeout(() => reject(new Error(message)), ms);
+        })
+      ]);
+    };
+
+    host.innerHTML = `<div class="demo-page-empty">YAML wird gelesen...</div>`;
 
     let parsed = null;
 
     try {
-      parsed = await this._hass.callWS({
-        type: "theme_generator/parse_demo_page_yaml",
-        content: this.demoPageContent || ""
-      });
+      parsed = await withTimeout(
+        this._hass.callWS({
+          type: "theme_generator/parse_demo_page_yaml",
+          content: this.demoPageContent || ""
+        }),
+        8000,
+        "Backend-YAML-Parser antwortet nicht. Home Assistant bitte neu starten oder Integration neu laden."
+      );
     } catch (err) {
-      host.innerHTML = `<div class="demo-page-error">YAML konnte nicht im Backend gelesen werden: ${this.escape(err.message || err)}</div>`;
+      host.innerHTML = `<div class="demo-page-error">YAML konnte nicht gelesen werden: ${this.escape(err.message || err)}</div>`;
       return;
     }
 
@@ -2295,12 +2308,22 @@ class ThemeGeneratorPanel extends HTMLElement {
       return;
     }
 
+    host.innerHTML = `<div class="demo-page-empty">Home-Assistant Karten werden geladen...</div>`;
+
     let helpers = null;
 
     try {
-      helpers = await window.loadCardHelpers();
+      if (!window.loadCardHelpers) {
+        throw new Error("window.loadCardHelpers ist im Frontend nicht verfügbar.");
+      }
+
+      helpers = await withTimeout(
+        window.loadCardHelpers(),
+        8000,
+        "Home-Assistant Card Helpers antworten nicht."
+      );
     } catch (err) {
-      host.innerHTML = `<div class="demo-page-error">Home-Assistant Card Helpers konnten nicht geladen werden.</div>`;
+      host.innerHTML = `<div class="demo-page-error">Card Helpers konnten nicht geladen werden: ${this.escape(err.message || err)}</div>`;
       return;
     }
 
@@ -2311,7 +2334,26 @@ class ThemeGeneratorPanel extends HTMLElement {
         const wrap = document.createElement("div");
         wrap.className = "demo-page-card-wrap";
 
-        const card = await helpers.createCardElement(config);
+        let card = null;
+
+        try {
+          card = await withTimeout(
+            helpers.createCardElement(config),
+            8000,
+            `${config?.type || "Karte"} hat zu lange zum Laden gebraucht.`
+          );
+        } catch (helperError) {
+          const type = String(config?.type || "");
+
+          if (type.startsWith("custom:")) {
+            const tag = type.replace("custom:", "");
+            card = document.createElement(tag);
+            card.setConfig(config);
+          } else {
+            throw helperError;
+          }
+        }
+
         card.hass = this._hass;
 
         wrap.appendChild(card);
@@ -3996,7 +4038,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.3 - linke Gruppen sauber trennen */
+        /* v1.13.4 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -4082,7 +4124,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.3 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.13.4 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -4193,7 +4235,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.3 - Alle Settings */
+        /* v1.13.4 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -4209,7 +4251,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.3 - Filter fuer Alle Settings */
+        /* v1.13.4 - Filter fuer Alle Settings */
         .settings-filter-row {
           display: flex;
           flex-wrap: wrap;
@@ -4236,7 +4278,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.3 - einklappbares linkes Settings-Menü */
+        /* v1.13.4 - einklappbares linkes Settings-Menü */
         .settings-parent {
           display: grid !important;
           grid-template-columns: 26px minmax(0, 1fr) 22px;
@@ -4287,7 +4329,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.3 - Menü dezenter + Übersicht aufgeräumt */
+        /* v1.13.4 - Menü dezenter + Übersicht aufgeräumt */
         .settings-submenu .ha-nav-item,
         .settings-submenu .settings-child {
           background: transparent !important;
@@ -4446,7 +4488,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.3 - sauberes Kartenraster */
+        /* v1.13.4 - sauberes Kartenraster */
         .ha-content.clean-preview {
           display: flex;
           justify-content: center;
@@ -4587,7 +4629,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.3 - Vorschau-Raster repariert */
+        /* v1.13.4 - Vorschau-Raster repariert */
         .ha-content.clean-preview {
           display: flex !important;
           flex-direction: column !important;
@@ -4658,7 +4700,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.3 - Farbkarten und Vorschau sauber ausrichten */
+        /* v1.13.4 - Farbkarten und Vorschau sauber ausrichten */
 
         .ha-nav-icon {
           width: 22px !important;
@@ -4879,7 +4921,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.3 - finaler Layout-Fix */
+        /* v1.13.4 - finaler Layout-Fix */
         .ha-preview {
           grid-template-columns: 250px minmax(0, 1fr) !important;
           width: 100% !important;
@@ -5012,7 +5054,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.3 - Menütext vollständig anzeigen */
+        /* v1.13.4 - Menütext vollständig anzeigen */
         .ha-side {
           width: 280px !important;
           min-width: 280px !important;
@@ -5056,7 +5098,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.3 - Mushroom/Bubble/card-mod sauber gruppieren */
+        /* v1.13.4 - Mushroom/Bubble/card-mod sauber gruppieren */
         .preview-section-title {
           grid-column: 1 / -1;
           margin: 12px 0 -4px 0;
@@ -5078,7 +5120,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.3 - Farbformat Auswahl und Alpha nur bei Farben */
+        /* v1.13.4 - Farbformat Auswahl und Alpha nur bei Farben */
         .format-row {
           display: flex;
           gap: 8px;
@@ -5117,7 +5159,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.3 - Demo Buttons Vorschauseite */
+        /* v1.13.4 - Demo Buttons Vorschauseite */
         .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -5349,7 +5391,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.3 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
+        /* v1.13.4 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
         .ha-content .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -5429,7 +5471,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.13.3 - Eigene Demo-Seite mit gespeicherter YAML */
+        /* v1.13.4 - Eigene Demo-Seite mit gespeicherter YAML */
         .demo-page-editor-shell {
           width: min(100%, 1240px);
           margin: 0 auto;
@@ -5751,7 +5793,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.13.3</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.13.4</span></h1>
             </div>
 
             <div class="controls">
