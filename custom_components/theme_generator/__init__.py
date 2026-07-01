@@ -51,7 +51,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         config={
             "_panel_custom": {
                 "name": PANEL_TAG,
-                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.15.1",
+                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.15.2",
                 "embed_iframe": False,
                 "trust_external_script": True,
                 "config": {},
@@ -175,38 +175,89 @@ def _rename_theme_root(content: str, new_theme_name: str) -> str:
 
 
 def _save_theme_file_version_sync(hass: HomeAssistant, filename: str, content: str) -> dict:
-    original = _safe_theme_file(hass, filename)
+    themes_dir = Path(hass.config.path("themes"))
+    themes_dir.mkdir(parents=True, exist_ok=True)
 
-    suffix = original.suffix or ".yaml"
-    clean_stem = re.sub(r"_v\d+$", "", original.stem)
+    source_path = Path(str(filename or "theme.yaml"))
+    source_stem = source_path.stem
 
-    counter = 1
+    # Work-Namen und alte Versionssuffixe bereinigen
+    clean_stem = source_stem
+    clean_stem = re.sub(r"__work$", "", clean_stem, flags=re.IGNORECASE)
+    clean_stem = re.sub(r"_work$", "", clean_stem, flags=re.IGNORECASE)
+    clean_stem = re.sub(r"\s+work$", "", clean_stem, flags=re.IGNORECASE)
+    clean_stem = re.sub(r"_v\d+$", "", clean_stem, flags=re.IGNORECASE)
 
+    if not clean_stem:
+        clean_stem = "theme"
+
+    # Zielordner beibehalten, falls Theme in Unterordner liegt
+    relative_parent = source_path.parent
+    if str(relative_parent) in ("", "."):
+        target_dir = themes_dir
+        relative_prefix = Path()
+    else:
+        target_dir = themes_dir / relative_parent
+        relative_prefix = relative_parent
+
+    target_dir.mkdir(parents=True, exist_ok=True)
+
+    version = 1
     while True:
-        candidate_stem = f"{clean_stem}_v{counter}"
-        candidate = original.parent / f"{candidate_stem}{suffix}"
+        new_filename = f"{clean_stem}_v{version}.yaml"
+        target_path = target_dir / new_filename
 
-        if not candidate.exists():
-            new_content = _rename_theme_root(content, candidate_stem)
-            candidate.write_text(new_content, encoding="utf-8")
+        if not target_path.exists():
+            break
 
-            base = _themes_path(hass).resolve()
+        version += 1
 
-            return {
-                "filename": candidate.resolve().relative_to(base).as_posix(),
-                "content": new_content,
-                "theme_name": candidate_stem,
-            }
+    # YAML-Root für Home Assistant Theme-Liste sauber umbenennen
+    new_theme_name = f"{clean_stem} v{version}"
 
-        counter += 1
+    try:
+        parsed = yaml.safe_load(content) or {}
 
+        if isinstance(parsed, dict) and parsed:
+            first_key = next(iter(parsed.keys()))
+            theme_values = parsed[first_key]
 
-async def _reload_themes(hass: HomeAssistant) -> None:
-    await hass.services.async_call(
-        "frontend",
-        "reload_themes",
-        blocking=False,
-    )
+            if isinstance(theme_values, dict):
+                new_content = yaml.safe_dump(
+                    {new_theme_name: theme_values},
+                    sort_keys=False,
+                    allow_unicode=True,
+                    default_flow_style=False,
+                )
+            else:
+                new_content = re.sub(
+                    r"^([^\n:#][^:\n]*):",
+                    f"{new_theme_name}:",
+                    content,
+                    count=1,
+                    flags=re.MULTILINE,
+                )
+        else:
+            new_content = f"{new_theme_name}:\n" + str(content or "")
+
+    except Exception:
+        new_content = re.sub(
+            r"^([^\n:#][^:\n]*):",
+            f"{new_theme_name}:",
+            content,
+            count=1,
+            flags=re.MULTILINE,
+        )
+
+    target_path.write_text(new_content, encoding="utf-8")
+
+    result_filename = str(relative_prefix / new_filename) if str(relative_prefix) not in ("", ".") else new_filename
+
+    return {
+        "filename": result_filename,
+        "content": new_content,
+        "theme_name": new_theme_name,
+    }
 
 
 @websocket_api.websocket_command(
