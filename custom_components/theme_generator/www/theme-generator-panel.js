@@ -1925,8 +1925,103 @@ class ThemeGeneratorPanel extends HTMLElement {
     return `#${toHex(parsed.r)}${toHex(parsed.g)}${toHex(parsed.b)}`;
   }
 
+  isCodeThemeValue(key, value) {
+    const rawKey = String(key || "").toLowerCase();
+    const rawValue = String(value || "");
+
+    if (rawKey.startsWith("card-mod")) {
+      return true;
+    }
+
+    if (rawKey.includes("style") || rawKey.includes("styles")) {
+      return true;
+    }
+
+    if (rawValue.includes("\n") && (
+      rawValue.includes("{") ||
+      rawValue.includes("}") ||
+      rawValue.includes("ha-card") ||
+      rawValue.includes(":host") ||
+      rawValue.includes("$:") ||
+      rawValue.includes("card_mod") ||
+      rawValue.includes("card-mod")
+    )) {
+      return true;
+    }
+
+    return false;
+  }
+
+  renderCodeThemeCard(field, rawValue) {
+    const value = String(rawValue || "");
+    const encodedValue = encodeURIComponent(value);
+    const encodedKey = encodeURIComponent(field.key || "");
+
+    return `
+      <article class="preview-field-card code-field-card">
+        <div class="field-head">
+          <div>
+            <h4>${this.escape(field.label || field.key)}</h4>
+            <span>${this.escape(field.key)}</span>
+          </div>
+          <span class="code-badge">Code</span>
+        </div>
+
+        <textarea class="code-field-textarea" readonly spellcheck="false">${this.escape(value)}</textarea>
+
+        <div class="code-field-actions">
+          <button type="button" data-code-copy="${this.escape(encodedValue)}">Kopieren</button>
+          <button type="button" class="secondary" data-code-open="${this.escape(encodedKey)}">Im Editor öffnen</button>
+        </div>
+
+        <div class="field-note">card-mod / CSS-Codeblock · als Snippet oder Template nutzbar</div>
+      </article>
+    `;
+  }
+
+  async copyCodeThemeValue(encodedValue) {
+    const value = decodeURIComponent(encodedValue || "");
+
+    try {
+      await navigator.clipboard.writeText(value);
+      this.status = "Codeblock kopiert.";
+    } catch (err) {
+      this.status = `Kopieren fehlgeschlagen: ${err?.message || err}`;
+    }
+
+    this.safeRender();
+  }
+
+  openCodeThemeValueInEditor(encodedKey) {
+    const key = decodeURIComponent(encodedKey || "");
+
+    this.activeView = "editor";
+    this.status = key
+      ? `Editor geöffnet für Codewert: ${key}`
+      : "Editor geöffnet.";
+
+    this.safeRender();
+
+    setTimeout(() => {
+      const editor = this.shadowRoot?.getElementById("theme-editor");
+      if (!editor || !key) return;
+
+      const index = editor.value.indexOf(key + ":");
+      if (index >= 0) {
+        editor.focus();
+        editor.setSelectionRange(index, index + key.length);
+      } else {
+        editor.focus();
+      }
+    }, 50);
+  }
+
   renderPreviewFieldCard(field) {
     const rawValue = this.extractValue(field.key, "");
+
+    if (this.isCodeThemeValue(field.key, rawValue)) {
+      return this.renderCodeThemeCard(field, rawValue);
+    }
     const isColor = this.isDirectColorValue(rawValue);
     const parsedColor = isColor ? this.parseColorToRgba(rawValue) : null;
     const colorValue = parsedColor ? this.colorInputValueFromThemeValue(rawValue, "#000000") : "#000000";
@@ -4446,7 +4541,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.7 - linke Gruppen sauber trennen */
+        /* v1.14.8 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -4532,7 +4627,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.7 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.14.8 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -4643,7 +4738,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.7 - Alle Settings */
+        /* v1.14.8 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -4659,7 +4754,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.7 - Filter fuer Alle Settings */
+        /* v1.14.8 - Filter fuer Alle Settings */
         .settings-filter-row {
           display: flex;
           flex-wrap: wrap;
@@ -4686,7 +4781,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.7 - einklappbares linkes Settings-Menü */
+        /* v1.14.8 - einklappbares linkes Settings-Menü */
         .settings-parent {
           display: grid !important;
           grid-template-columns: 26px minmax(0, 1fr) 22px;
@@ -4737,7 +4832,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.7 - Menü dezenter + Übersicht aufgeräumt */
+        /* v1.14.8 - Menü dezenter + Übersicht aufgeräumt */
         .settings-submenu .ha-nav-item,
         .settings-submenu .settings-child {
           background: transparent !important;
@@ -4896,7 +4991,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.7 - sauberes Kartenraster */
+        /* v1.14.8 - sauberes Kartenraster */
         .ha-content.clean-preview {
           display: flex;
           justify-content: center;
@@ -5037,7 +5132,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.7 - Vorschau-Raster repariert */
+        /* v1.14.8 - Vorschau-Raster repariert */
         .ha-content.clean-preview {
           display: flex !important;
           flex-direction: column !important;
@@ -5108,7 +5203,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.7 - Farbkarten und Vorschau sauber ausrichten */
+        /* v1.14.8 - Farbkarten und Vorschau sauber ausrichten */
 
         .ha-nav-icon {
           width: 22px !important;
@@ -5329,7 +5424,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.7 - finaler Layout-Fix */
+        /* v1.14.8 - finaler Layout-Fix */
         .ha-preview {
           grid-template-columns: 250px minmax(0, 1fr) !important;
           width: 100% !important;
@@ -5462,7 +5557,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.7 - Menütext vollständig anzeigen */
+        /* v1.14.8 - Menütext vollständig anzeigen */
         .ha-side {
           width: 280px !important;
           min-width: 280px !important;
@@ -5506,7 +5601,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.7 - Mushroom/Bubble/card-mod sauber gruppieren */
+        /* v1.14.8 - Mushroom/Bubble/card-mod sauber gruppieren */
         .preview-section-title {
           grid-column: 1 / -1;
           margin: 12px 0 -4px 0;
@@ -5528,7 +5623,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.7 - Farbformat Auswahl und Alpha nur bei Farben */
+        /* v1.14.8 - Farbformat Auswahl und Alpha nur bei Farben */
         .format-row {
           display: flex;
           gap: 8px;
@@ -5567,7 +5662,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.7 - Demo Buttons Vorschauseite */
+        /* v1.14.8 - Demo Buttons Vorschauseite */
         .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -5799,7 +5894,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.7 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
+        /* v1.14.8 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
         .ha-content .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -5879,7 +5974,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.7 - Eigene Demo-Seite mit gespeicherter YAML */
+        /* v1.14.8 - Eigene Demo-Seite mit gespeicherter YAML */
         .demo-page-editor-shell {
           width: min(100%, 1240px);
           margin: 0 auto;
@@ -6000,7 +6095,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.7 - Demo Seite als echtes Home-Assistant iframe */
+        /* v1.14.8 - Demo Seite als echtes Home-Assistant iframe */
         .demo-iframe-shell {
           width: min(100%, 1240px);
           margin: 0 auto;
@@ -6084,7 +6179,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.7 - iframe Demo Seite ohne Home Assistant Seitenmenü */
+        /* v1.14.8 - iframe Demo Seite ohne Home Assistant Seitenmenü */
         .demo-iframe-frame {
           position: relative;
           height: 720px;
@@ -6111,7 +6206,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.7 - Editor links, Live-Vorschau rechts */
+        /* v1.14.8 - Editor links, Live-Vorschau rechts */
         .editor-split-view {
           display: grid;
           grid-template-columns: minmax(420px, 0.95fr) minmax(460px, 1.05fr);
@@ -6415,7 +6510,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
       
 
-        /* v1.14.7 - View Tabs immer nebeneinander */
+        /* v1.14.8 - View Tabs immer nebeneinander */
         .view-switch {
           display: inline-flex;
           flex-direction: row;
@@ -6435,7 +6530,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.7 - Template Bibliothek */
+        /* v1.14.8 - Template Bibliothek */
         .templates-page {
           display: grid;
           gap: 18px;
@@ -6572,6 +6667,72 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
+
+        /* v1.14.8 - card-mod / CSS Codekarten */
+        .code-field-card {
+          align-items: stretch;
+        }
+
+        .code-badge {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 999px;
+          padding: 5px 9px;
+          font-size: 12px;
+          font-weight: 700;
+          background: var(--secondary-background-color);
+          color: var(--primary-color);
+          border: 1px solid var(--ha-card-border-color);
+        }
+
+        .code-field-textarea {
+          width: 100%;
+          min-height: 170px;
+          resize: vertical;
+          border-radius: 14px;
+          border: 1px solid var(--ha-card-border-color);
+          background: var(--secondary-background-color);
+          color: var(--primary-text-color);
+          padding: 12px;
+          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+          font-size: 12px;
+          line-height: 1.45;
+          box-sizing: border-box;
+          white-space: pre;
+          overflow: auto;
+        }
+
+        .code-field-actions {
+          display: flex;
+          gap: 10px;
+          flex-wrap: wrap;
+        }
+
+        .code-field-actions button {
+          width: auto;
+        }
+
+        /* v1.14.8 - View Tabs immer in einer Zeile */
+        .view-switch {
+          display: inline-flex;
+          flex-direction: row;
+          align-items: center;
+          flex-wrap: nowrap;
+          gap: 6px;
+          width: auto;
+          max-width: 100%;
+          overflow-x: auto;
+          padding: 4px;
+        }
+
+        .view-switch button {
+          flex: 0 0 auto;
+          white-space: nowrap;
+          min-width: auto;
+        }
+
+
 </style>
 
       <div class="card">
@@ -6584,7 +6745,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.14.7</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.14.8</span></h1>
             </div>
 
             <div class="controls">
@@ -6701,6 +6862,18 @@ class ThemeGeneratorPanel extends HTMLElement {
       this.shadowRoot.querySelectorAll("[data-template-insert]").forEach((button) => {
         button.addEventListener("click", (event) => {
           this.insertTemplateYaml(event.currentTarget.dataset.templateInsert);
+        });
+      });
+
+      this.shadowRoot.querySelectorAll("[data-code-copy]").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          this.copyCodeThemeValue(event.currentTarget.dataset.codeCopy);
+        });
+      });
+
+      this.shadowRoot.querySelectorAll("[data-code-open]").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          this.openCodeThemeValueInEditor(event.currentTarget.dataset.codeOpen);
         });
       });
 
