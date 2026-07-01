@@ -1632,8 +1632,6 @@ class ThemeGeneratorPanel extends HTMLElement {
 
     const previewItems = [
       ["overview", "mdi:view-dashboard-outline", "Vorschau"],
-      ["clock_weather", "mdi:weather-partly-cloudy", "Uhr & Wetter"],
-      ["standard_cards", "mdi:cards-outline", "Standardkarten"],
       ["custom_cards", "mdi:card-plus-outline", "Eigene Karten"]
     ];
 
@@ -3222,7 +3220,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.2 - linke Gruppen sauber trennen */
+        /* v1.12.3 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -3308,7 +3306,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.2 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.12.3 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -3419,7 +3417,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.2 - Alle Settings */
+        /* v1.12.3 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -3435,7 +3433,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.2 - Filter fuer Alle Settings */
+        /* v1.12.3 - Filter fuer Alle Settings */
         .settings-filter-row {
           display: flex;
           flex-wrap: wrap;
@@ -3462,7 +3460,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.2 - einklappbares linkes Settings-Menü */
+        /* v1.12.3 - einklappbares linkes Settings-Menü */
         .settings-parent {
           display: grid !important;
           grid-template-columns: 26px minmax(0, 1fr) 22px;
@@ -3513,7 +3511,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.2 - Menü dezenter + Übersicht aufgeräumt */
+        /* v1.12.3 - Menü dezenter + Übersicht aufgeräumt */
         .settings-submenu .ha-nav-item,
         .settings-submenu .settings-child {
           background: transparent !important;
@@ -3672,7 +3670,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.2 - sauberes Kartenraster */
+        /* v1.12.3 - sauberes Kartenraster */
         .ha-content.clean-preview {
           display: flex;
           justify-content: center;
@@ -3813,7 +3811,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.2 - Vorschau-Raster repariert */
+        /* v1.12.3 - Vorschau-Raster repariert */
         .ha-content.clean-preview {
           display: flex !important;
           flex-direction: column !important;
@@ -3884,7 +3882,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.2 - Farbkarten und Vorschau sauber ausrichten */
+        /* v1.12.3 - Farbkarten und Vorschau sauber ausrichten */
 
         .ha-nav-icon {
           width: 22px !important;
@@ -4104,6 +4102,158 @@ class ThemeGeneratorPanel extends HTMLElement {
           }
         }
 
+
+        /* v1.12.3 - finaler Layout-Fix */
+        .ha-preview {
+          grid-template-columns: 250px minmax(0, 1fr) !important;
+          width: 100% !important;
+          overflow: hidden !important;
+        }
+
+        .ha-side {
+          width: 250px !important;
+          min-width: 250px !important;
+          max-width: 250px !important;
+          overflow: hidden !important;
+        }
+
+        .ha-main {
+          min-width: 0 !important;
+          overflow: hidden !important;
+        }
+
+        .ha-content.clean-preview {
+          width: 100% !important;
+          max-width: 100% !important;
+          overflow-x: hidden !important;
+          overflow-y: auto !important;
+          padding: 30px 26px !important;
+          box-sizing: border-box !important;
+        }
+
+        .settings-child {
+          grid-template-columns: 28px minmax(0, 1fr) !important;
+          padding-right: 10px !important;
+        }
+
+        .settings-child span,
+        .settings-parent span,
+        .ha-nav-item span {
+          min-width: 0 !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+          white-space: nowrap !important;
+        }
+
+        .preview-color-editor {
+          width: 100% !important;
+          max-width: 980px !important;
+          margin: 0 auto !important;
+          padding: 28px !important;
+          box-sizing: border-box !important;
+          overflow: hidden !important;
+        }
+
+        .preview-color-grid {
+          width: 100% !important;
+          max-width: 100% !important;
+          display: grid !important;
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          gap: 18px !important;
+          box-sizing: border-box !important;
+          overflow: hidden !important;
+        }
+
+        .preview-field-card {
+          width: 100% !important;
+          max-width: 100% !important;
+          min-width: 0 !important;
+          box-sizing: border-box !important;
+          overflow: hidden !important;
+        }
+
+        .preview-field-head {
+          width: 100% !important;
+          max-width: 100% !important;
+          display: grid !important;
+          grid-template-columns: minmax(0, 1fr) 54px !important;
+          gap: 12px !important;
+          box-sizing: border-box !important;
+        }
+
+        .preview-value-input,
+        .value-input,
+        .value-input.preview-value-input {
+          width: 100% !important;
+          max-width: 100% !important;
+          min-width: 0 !important;
+          box-sizing: border-box !important;
+        }
+
+        .alpha-row,
+        .preview-alpha-row,
+        .alpha-row.preview-alpha-row {
+          width: 100% !important;
+          max-width: 100% !important;
+          min-width: 0 !important;
+          display: grid !important;
+          grid-template-columns: 82px minmax(0, 1fr) 44px !important;
+          gap: 10px !important;
+          box-sizing: border-box !important;
+          overflow: hidden !important;
+        }
+
+        .alpha-row input[type="range"] {
+          width: 100% !important;
+          min-width: 0 !important;
+          max-width: 100% !important;
+        }
+
+        .ha-big-preview-cards,
+        .ha-big-preview-cards.compact-overview,
+        .compact-overview {
+          width: 100% !important;
+          max-width: 980px !important;
+          display: grid !important;
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          gap: 18px !important;
+          overflow: hidden !important;
+          box-sizing: border-box !important;
+        }
+
+        .ha-big-card {
+          width: 100% !important;
+          max-width: 100% !important;
+          min-width: 0 !important;
+          box-sizing: border-box !important;
+          overflow: hidden !important;
+        }
+
+        @media (min-width: 1500px) {
+          .preview-color-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          }
+        }
+
+        @media (max-width: 1050px) {
+          .ha-preview {
+            grid-template-columns: 1fr !important;
+          }
+
+          .ha-side {
+            width: 100% !important;
+            min-width: 0 !important;
+            max-width: 100% !important;
+          }
+
+          .preview-color-grid,
+          .ha-big-preview-cards,
+          .ha-big-preview-cards.compact-overview,
+          .compact-overview {
+            grid-template-columns: 1fr !important;
+          }
+        }
+
         @media (max-width: 1050px) {
           .preview-color-grid,
           .ha-big-preview-cards,
@@ -4267,7 +4417,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.12.2</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.12.3</span></h1>
             </div>
 
             <div class="controls">
