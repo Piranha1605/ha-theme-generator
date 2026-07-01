@@ -1618,16 +1618,16 @@ class ThemeGeneratorPanel extends HTMLElement {
       ["backgrounds", "mdi:image-filter-hdr", "Hintergründe"],
       ["textcolors", "mdi:format-color-text", "Textfarben"],
       ["header", "mdi:page-layout-header", "Header"],
-      ["sidebar", "mdi:view-sidebar", "Sidebar"],
+      ["sidebar", "mdi:dock-left", "Sidebar"],
       ["cards", "mdi:cards-outline", "Karten"],
-      ["icons", "mdi:icons", "Icons"],
-      ["states", "mdi:checkbox-marked-circle-outline", "Statusfarben"],
+      ["icons", "mdi:emoticon-outline", "Icons"],
+      ["states", "mdi:checkbox-marked-circle-auto-outline", "Statusfarben"],
       ["switches", "mdi:toggle-switch-outline", "Schalter"],
       ["sliders", "mdi:tune-variant", "Slider"],
-      ["inputs", "mdi:form-textbox", "Eingabefelder"],
+      ["inputs", "mdi:form-textbox-password", "Eingabefelder"],
       ["mushroom", "mdi:mushroom-outline", "Mushroom"],
       ["bubble", "mdi:circle-multiple-outline", "Bubble Card"],
-      ["cardmod", "mdi:code-braces", "card-mod"]
+      ["cardmod", "mdi:code-json", "card-mod"]
     ];
 
     const previewItems = [
@@ -3222,7 +3222,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.1 - linke Gruppen sauber trennen */
+        /* v1.12.2 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -3308,7 +3308,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.1 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.12.2 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -3419,7 +3419,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.1 - Alle Settings */
+        /* v1.12.2 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -3435,7 +3435,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.1 - Filter fuer Alle Settings */
+        /* v1.12.2 - Filter fuer Alle Settings */
         .settings-filter-row {
           display: flex;
           flex-wrap: wrap;
@@ -3462,7 +3462,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.1 - einklappbares linkes Settings-Menü */
+        /* v1.12.2 - einklappbares linkes Settings-Menü */
         .settings-parent {
           display: grid !important;
           grid-template-columns: 26px minmax(0, 1fr) 22px;
@@ -3513,7 +3513,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.1 - Menü dezenter + Übersicht aufgeräumt */
+        /* v1.12.2 - Menü dezenter + Übersicht aufgeräumt */
         .settings-submenu .ha-nav-item,
         .settings-submenu .settings-child {
           background: transparent !important;
@@ -3672,7 +3672,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.1 - sauberes Kartenraster */
+        /* v1.12.2 - sauberes Kartenraster */
         .ha-content.clean-preview {
           display: flex;
           justify-content: center;
@@ -3813,7 +3813,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.1 - Vorschau-Raster repariert */
+        /* v1.12.2 - Vorschau-Raster repariert */
         .ha-content.clean-preview {
           display: flex !important;
           flex-direction: column !important;
@@ -3881,6 +3881,250 @@ class ThemeGeneratorPanel extends HTMLElement {
         .real-card-row,
         .bubble-pill {
           min-width: 0;
+        }
+
+
+        /* v1.12.2 - Farbkarten und Vorschau sauber ausrichten */
+
+        .ha-nav-icon {
+          width: 22px !important;
+          min-width: 22px !important;
+          height: 22px !important;
+          display: inline-flex !important;
+          align-items: center;
+          justify-content: center;
+          opacity: 0.95;
+        }
+
+        .settings-child {
+          display: grid !important;
+          grid-template-columns: 26px minmax(0, 1fr) !important;
+          gap: 8px !important;
+          align-items: center !important;
+        }
+
+        .settings-child span {
+          min-width: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .preview-color-editor {
+          width: min(100%, 1120px) !important;
+          max-width: 1120px !important;
+          margin: 0 auto !important;
+          padding: 28px !important;
+          display: block !important;
+        }
+
+        .preview-color-head {
+          margin-bottom: 22px !important;
+        }
+
+        .preview-color-head h2 {
+          font-size: 34px !important;
+          line-height: 1.1 !important;
+          margin: 0 0 8px 0 !important;
+        }
+
+        .preview-color-head p {
+          max-width: 900px;
+          white-space: normal !important;
+          overflow: visible !important;
+          text-overflow: unset !important;
+        }
+
+        .preview-color-grid {
+          width: 100% !important;
+          display: grid !important;
+          grid-template-columns: repeat(2, minmax(320px, 1fr)) !important;
+          gap: 18px !important;
+          align-items: stretch !important;
+        }
+
+        .preview-field-card {
+          width: 100% !important;
+          min-width: 0 !important;
+          min-height: 185px !important;
+          height: auto !important;
+          padding: 18px !important;
+          border-radius: 18px !important;
+          display: flex !important;
+          flex-direction: column !important;
+          justify-content: flex-start !important;
+          gap: 10px !important;
+          overflow: hidden !important;
+        }
+
+        .preview-field-head {
+          display: grid !important;
+          grid-template-columns: minmax(0, 1fr) 54px !important;
+          gap: 14px !important;
+          align-items: start !important;
+          margin-bottom: 0 !important;
+        }
+
+        .preview-field-head strong {
+          display: block !important;
+          font-size: 16px !important;
+          line-height: 1.2 !important;
+          white-space: normal !important;
+        }
+
+        .preview-field-head code {
+          display: block !important;
+          margin-top: 4px !important;
+          font-size: 12px !important;
+          opacity: 0.8 !important;
+          white-space: nowrap !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+        }
+
+        .preview-field-head input[type="color"] {
+          width: 52px !important;
+          height: 40px !important;
+          border-radius: 10px !important;
+        }
+
+        .preview-value-input,
+        .value-input.preview-value-input {
+          width: 100% !important;
+          height: 38px !important;
+          min-height: 38px !important;
+          border-radius: 12px !important;
+          padding: 0 12px !important;
+          font-size: 13px !important;
+          box-sizing: border-box !important;
+        }
+
+        .preview-alpha-row,
+        .alpha-row.preview-alpha-row,
+        .alpha-row {
+          display: grid !important;
+          grid-template-columns: 88px minmax(0, 1fr) 46px !important;
+          gap: 12px !important;
+          align-items: center !important;
+          margin-top: 6px !important;
+          width: 100% !important;
+        }
+
+        .alpha-row span {
+          color: var(--p-secondary) !important;
+          opacity: 1 !important;
+          font-size: 12px !important;
+          white-space: nowrap !important;
+        }
+
+        .alpha-row input[type="range"] {
+          width: 100% !important;
+          min-width: 0 !important;
+        }
+
+        .alpha-row strong,
+        .alpha-row b {
+          color: var(--p-text) !important;
+          opacity: 1 !important;
+          font-size: 12px !important;
+          text-align: right !important;
+          white-space: nowrap !important;
+        }
+
+        .alpha-hint {
+          color: var(--p-secondary) !important;
+          opacity: 0.95 !important;
+          font-size: 12px !important;
+          line-height: 1.25 !important;
+        }
+
+        .ha-content.clean-preview {
+          display: block !important;
+          padding: 34px 28px !important;
+          overflow-x: hidden !important;
+          overflow-y: auto !important;
+        }
+
+        .ha-big-preview-cards,
+        .ha-big-preview-cards.compact-overview,
+        .compact-overview {
+          width: min(100%, 1040px) !important;
+          max-width: 1040px !important;
+          margin: 0 auto 18px auto !important;
+          display: grid !important;
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          gap: 18px !important;
+          align-items: stretch !important;
+        }
+
+        .ha-big-card {
+          box-sizing: border-box !important;
+          width: 100% !important;
+          min-width: 0 !important;
+          max-width: none !important;
+          height: 220px !important;
+          min-height: 220px !important;
+          margin: 0 !important;
+          overflow: hidden !important;
+        }
+
+        .overview-combined-card,
+        .controls-card {
+          grid-column: 1 / -1 !important;
+        }
+
+        .overview-combined-card {
+          height: 170px !important;
+          min-height: 170px !important;
+        }
+
+        .controls-card {
+          height: 220px !important;
+          min-height: 220px !important;
+        }
+
+        .real-mushroom-card,
+        .real-bubble-card {
+          height: 220px !important;
+          min-height: 220px !important;
+        }
+
+        .overview-two,
+        .control-split {
+          display: grid !important;
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          gap: 28px !important;
+          align-items: center !important;
+          height: 100% !important;
+        }
+
+        @media (min-width: 1500px) {
+          .preview-color-grid {
+            grid-template-columns: repeat(3, minmax(300px, 1fr)) !important;
+          }
+        }
+
+        @media (max-width: 1050px) {
+          .preview-color-grid,
+          .ha-big-preview-cards,
+          .ha-big-preview-cards.compact-overview,
+          .compact-overview {
+            grid-template-columns: 1fr !important;
+          }
+
+          .ha-big-card,
+          .controls-card,
+          .overview-combined-card,
+          .real-mushroom-card,
+          .real-bubble-card {
+            height: auto !important;
+            min-height: 210px !important;
+          }
+
+          .overview-two,
+          .control-split {
+            grid-template-columns: 1fr !important;
+          }
         }
 
         @media (max-width: 900px) {
@@ -4023,7 +4267,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.12.1</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.12.2</span></h1>
             </div>
 
             <div class="controls">
