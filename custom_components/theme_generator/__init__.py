@@ -1,4 +1,5 @@
 from __future__ import annotations
+import json
 import yaml
 from pathlib import Path
 import voluptuous as vol
@@ -50,7 +51,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         config={
             "_panel_custom": {
                 "name": PANEL_TAG,
-                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.14.0",
+                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.14.1",
                 "embed_iframe": False,
                 "trust_external_script": True,
                 "config": {},
@@ -66,6 +67,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     websocket_api.async_register_command(hass, websocket_read_demo_page_file)
     websocket_api.async_register_command(hass, websocket_save_demo_page_file)
     websocket_api.async_register_command(hass, websocket_parse_demo_page_yaml)
+    websocket_api.async_register_command(hass, websocket_create_work_theme)
+    websocket_api.async_register_command(hass, websocket_read_last_work_theme)
+    websocket_api.async_register_command(hass, websocket_save_work_theme)
 
     return True
 
@@ -543,3 +547,387 @@ async def websocket_parse_demo_page_yaml(hass, connection, msg):
             "cards": [],
             "error": str(err),
         })
+
+
+# ---------------------------------------------------------------------
+# Work Theme / Master Theme
+# ---------------------------------------------------------------------
+
+WORK_THEME_DIR = "theme_generator/work"
+WORK_THEME_LAST_FILE = "last_work_theme.json"
+
+MASTER_THEME_KEYS = [
+    # Grundfarben
+    "primary-color",
+    "accent-color",
+    "dark-primary-color",
+    "light-primary-color",
+    "disabled-text-color",
+    "divider-color",
+
+    # Hintergründe
+    "primary-background-color",
+    "secondary-background-color",
+    "clear-background-color",
+    "card-background-color",
+    "ha-card-background",
+    "ha-card-border-color",
+    "ha-card-border-radius",
+    "ha-card-box-shadow",
+
+    # Textfarben
+    "primary-text-color",
+    "secondary-text-color",
+    "text-primary-color",
+    "text-light-primary-color",
+    "paper-item-icon-color",
+    "paper-item-icon-active-color",
+
+    # Header / App
+    "app-header-background-color",
+    "app-header-text-color",
+    "app-header-selection-bar-color",
+    "app-header-edit-background-color",
+    "app-header-edit-text-color",
+
+    # Sidebar
+    "sidebar-background-color",
+    "sidebar-icon-color",
+    "sidebar-text-color",
+    "sidebar-selected-background-color",
+    "sidebar-selected-icon-color",
+    "sidebar-selected-text-color",
+
+    # Statusfarben
+    "state-active-color",
+    "state-inactive-color",
+    "state-unavailable-color",
+    "state-home-color",
+    "state-not_home-color",
+    "state-on-color",
+    "state-off-color",
+    "state-idle-color",
+
+    # Schalter / Slider
+    "switch-checked-button-color",
+    "switch-checked-track-color",
+    "switch-unchecked-button-color",
+    "switch-unchecked-track-color",
+    "slider-color",
+    "slider-secondary-color",
+    "slider-track-color",
+
+    # Eingabefelder
+    "input-fill-color",
+    "input-ink-color",
+    "input-label-ink-color",
+    "input-disabled-fill-color",
+    "input-disabled-ink-color",
+
+    # Mushroom
+    "mushroom-card-background",
+    "mushroom-card-primary-color",
+    "mushroom-card-secondary-color",
+    "mushroom-chip-background",
+    "mushroom-chip-border-radius",
+    "mushroom-shape-color",
+    "mushroom-shape-icon-color",
+    "mushroom-state-info-color",
+
+    # Bubble Card
+    "bubble-main-background-color",
+    "bubble-secondary-background-color",
+    "bubble-accent-color",
+    "bubble-icon-background-color",
+    "bubble-icon-color",
+    "bubble-name-color",
+    "bubble-state-color",
+    "bubble-border-radius",
+
+    # card-mod
+    "card-mod-theme",
+    "card-mod-card-yaml",
+    "card-mod-row-yaml",
+    "card-mod-more-info-yaml",
+]
+
+
+def _work_theme_dir(hass):
+    folder = Path(hass.config.path(WORK_THEME_DIR))
+    folder.mkdir(parents=True, exist_ok=True)
+    return folder
+
+
+def _safe_work_filename(filename: str) -> str:
+    name = str(filename or "theme").strip().replace("\\", "/").split("/")[-1]
+    stem = Path(name).stem
+
+    if not stem:
+        stem = "theme"
+
+    stem = re.sub(r"[^A-Za-z0-9_.-]+", "_", stem)
+    return f"{stem}__work.yaml"
+
+
+def _read_yaml_theme(content: str) -> tuple[str, dict]:
+    data = yaml.safe_load(content) or {}
+
+    if not isinstance(data, dict) or not data:
+        return "Theme Generator Work", {}
+
+    first_key = next(iter(data.keys()))
+    first_value = data.get(first_key)
+
+    if isinstance(first_value, dict):
+        return str(first_key), dict(first_value)
+
+    return "Theme Generator Work", dict(data)
+
+
+def _resolve_var_value(value, values: dict, seen=None):
+    if seen is None:
+        seen = set()
+
+    if not isinstance(value, str):
+        return value
+
+    raw = value.strip()
+
+    match = re.fullmatch(r"var\(--([A-Za-z0-9_-]+)\)", raw)
+
+    if not match:
+        return value
+
+    key = match.group(1)
+
+    if key in seen:
+        return value
+
+    if key not in values:
+        return value
+
+    seen.add(key)
+    return _resolve_var_value(values.get(key), values, seen)
+
+
+def _normalize_theme_content(content: str, work_theme_name: str) -> tuple[str, dict]:
+    original_theme_name, values = _read_yaml_theme(content)
+
+    resolved_values = {}
+    resolved_map = {}
+    missing_vars = {}
+
+    for key, value in values.items():
+        resolved = _resolve_var_value(value, values)
+
+        if isinstance(value, str) and value.strip().startswith("var("):
+            if resolved != value:
+                resolved_map[key] = {
+                    "original": value,
+                    "resolved": resolved,
+                }
+            else:
+                missing_vars[key] = value
+
+        resolved_values[key] = resolved
+
+    final_values = {}
+
+    for key in MASTER_THEME_KEYS:
+        if key in resolved_values:
+            final_values[key] = resolved_values[key]
+
+    # Zusätzliche direkte Home-Assistant-Theme-Werte hinten erhalten,
+    # aber interne Hilfsvariablen wie nm-bg-2 entfernen.
+    for key, value in resolved_values.items():
+        if key in final_values:
+            continue
+
+        if key.startswith(("nm-", "tg-", "theme-generator-")):
+            continue
+
+        if isinstance(value, str) and value.strip().startswith("var("):
+            continue
+
+        final_values[key] = value
+
+    output = yaml.safe_dump(
+        {work_theme_name: final_values},
+        allow_unicode=True,
+        sort_keys=False,
+        default_flow_style=False,
+        width=120,
+    )
+
+    meta = {
+        "source_theme_name": original_theme_name,
+        "work_theme_name": work_theme_name,
+        "resolved_vars": resolved_map,
+        "missing_vars": missing_vars,
+        "master_keys": MASTER_THEME_KEYS,
+    }
+
+    return output, meta
+
+
+def _create_work_theme_sync(hass: HomeAssistant, filename: str) -> dict:
+    source = _safe_theme_file(hass, filename)
+
+    if not source.exists():
+        raise FileNotFoundError(f"Theme-Datei nicht gefunden: {filename}")
+
+    source_base = _themes_path(hass).resolve()
+    source_relative = source.resolve().relative_to(source_base).as_posix()
+
+    content = source.read_text(encoding="utf-8")
+
+    work_folder = _work_theme_dir(hass)
+    work_filename = _safe_work_filename(source_relative)
+    work_theme_name = Path(work_filename).stem.replace("__work", " Work")
+
+    normalized_content, meta = _normalize_theme_content(content, work_theme_name)
+
+    work_path = work_folder / work_filename
+    meta_path = work_folder / f"{Path(work_filename).stem}.meta.json"
+    last_path = work_folder / WORK_THEME_LAST_FILE
+
+    work_path.write_text(normalized_content, encoding="utf-8")
+
+    meta.update({
+        "source_file": source_relative,
+        "work_file": work_filename,
+    })
+
+    meta_path.write_text(json.dumps(meta, indent=2, ensure_ascii=False), encoding="utf-8")
+    last_path.write_text(json.dumps({"work_file": work_filename, "source_file": source_relative}, indent=2, ensure_ascii=False), encoding="utf-8")
+
+    return {
+        "filename": source_relative,
+        "work_file": work_filename,
+        "content": normalized_content,
+        "meta": meta,
+    }
+
+
+def _read_last_work_theme_sync(hass: HomeAssistant) -> dict:
+    work_folder = _work_theme_dir(hass)
+    last_path = work_folder / WORK_THEME_LAST_FILE
+
+    if not last_path.exists():
+        return {"found": False}
+
+    data = json.loads(last_path.read_text(encoding="utf-8"))
+    work_file = _safe_work_filename(data.get("work_file") or data.get("source_file") or "theme")
+
+    # Wenn bereits ein work_file gespeichert wurde, nicht nochmal __work dranhängen.
+    if str(data.get("work_file", "")).endswith((".yaml", ".yml")):
+        work_file = str(data.get("work_file")).replace("\\", "/").split("/")[-1]
+
+    work_path = work_folder / work_file
+
+    if not work_path.exists():
+        return {"found": False}
+
+    meta_path = work_folder / f"{Path(work_file).stem}.meta.json"
+    meta = {}
+
+    if meta_path.exists():
+        meta = json.loads(meta_path.read_text(encoding="utf-8"))
+
+    return {
+        "found": True,
+        "filename": meta.get("source_file", data.get("source_file", "")),
+        "work_file": work_file,
+        "content": work_path.read_text(encoding="utf-8"),
+        "meta": meta,
+    }
+
+
+def _save_work_theme_sync(hass: HomeAssistant, work_file: str, source_file: str, content: str) -> dict:
+    work_folder = _work_theme_dir(hass)
+    safe_name = str(work_file or _safe_work_filename(source_file or "theme")).replace("\\", "/").split("/")[-1]
+
+    if not safe_name.endswith((".yaml", ".yml")):
+        safe_name = f"{safe_name}.yaml"
+
+    if safe_name.startswith(".") or ".." in safe_name:
+        raise ValueError("Ungültige Work-Datei.")
+
+    work_path = work_folder / safe_name
+    work_path.write_text(content, encoding="utf-8")
+
+    last_path = work_folder / WORK_THEME_LAST_FILE
+    last_path.write_text(json.dumps({"work_file": safe_name, "source_file": source_file}, indent=2, ensure_ascii=False), encoding="utf-8")
+
+    return {
+        "saved": True,
+        "filename": source_file,
+        "work_file": safe_name,
+        "content": content,
+    }
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "theme_generator/create_work_theme",
+        vol.Required("filename"): str,
+    }
+)
+@callback
+def websocket_create_work_theme(hass: HomeAssistant, connection, msg) -> None:
+    async def _async_handle() -> None:
+        try:
+            result = await hass.async_add_executor_job(
+                _create_work_theme_sync,
+                hass,
+                msg["filename"],
+            )
+            connection.send_result(msg["id"], result)
+        except Exception as err:
+            connection.send_error(msg["id"], "theme_generator_error", str(err))
+
+    hass.async_create_task(_async_handle())
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "theme_generator/read_last_work_theme",
+    }
+)
+@callback
+def websocket_read_last_work_theme(hass: HomeAssistant, connection, msg) -> None:
+    async def _async_handle() -> None:
+        try:
+            result = await hass.async_add_executor_job(_read_last_work_theme_sync, hass)
+            connection.send_result(msg["id"], result)
+        except Exception as err:
+            connection.send_error(msg["id"], "theme_generator_error", str(err))
+
+    hass.async_create_task(_async_handle())
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "theme_generator/save_work_theme",
+        vol.Required("work_file"): str,
+        vol.Required("source_file"): str,
+        vol.Required("content"): str,
+    }
+)
+@callback
+def websocket_save_work_theme(hass: HomeAssistant, connection, msg) -> None:
+    async def _async_handle() -> None:
+        try:
+            result = await hass.async_add_executor_job(
+                _save_work_theme_sync,
+                hass,
+                msg["work_file"],
+                msg["source_file"],
+                msg["content"],
+            )
+            connection.send_result(msg["id"], result)
+        except Exception as err:
+            connection.send_error(msg["id"], "theme_generator_error", str(err))
+
+    hass.async_create_task(_async_handle())
+
