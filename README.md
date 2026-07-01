@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/theme-generator-hero.svg" alt="HA Theme Generator" width="100%">
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/theme-generator-hero.png" alt="HA Theme Generator" width="100%">
 </p>
 
 # HA Theme Generator
