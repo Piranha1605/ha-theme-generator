@@ -1320,8 +1320,52 @@ class ThemeGeneratorPanel extends HTMLElement {
     `;
   }
 
+  getAllThemeFields() {
+    const found = [];
+    const seen = new Set();
+    const lines = String(this.editorContent || "").split("\n");
+
+    for (const line of lines) {
+      const match = line.match(/^\s{4,}([A-Za-z0-9_-]+):\s*(.+?)\s*$/);
+
+      if (!match) {
+        continue;
+      }
+
+      const key = match[1];
+      const value = String(match[2] || "").trim();
+
+      if (!key || seen.has(key)) {
+        continue;
+      }
+
+      if (!value || value === "|" || value === ">" || value === "{}" || value === "[]") {
+        continue;
+      }
+
+      seen.add(key);
+
+      found.push({
+        key,
+        label: key
+          .replaceAll("-", " ")
+          .replaceAll("_", " ")
+          .replace(/\b\w/g, (char) => char.toUpperCase())
+      });
+    }
+
+    return found.sort((a, b) => a.key.localeCompare(b.key));
+  }
+
   renderPreviewColorGroup(groupId) {
-    const group = this.colorGroups.find((item) => item.id === groupId);
+    const group = groupId === "all_settings"
+      ? {
+          id: "all_settings",
+          title: "Alle Settings",
+          description: "Alle direkt gefundenen Theme-Variablen aus der geladenen YAML-Datei.",
+          fields: this.getAllThemeFields()
+        }
+      : this.colorGroups.find((item) => item.id === groupId);
 
     if (!group) {
       return "";
@@ -1412,6 +1456,7 @@ class ThemeGeneratorPanel extends HTMLElement {
     const page = this.previewPage || "overview";
 
     const menu = [
+      ["all_settings", "mdi:format-list-bulleted-square", "Alle Settings"],
       ["basic", "mdi:palette", "Grundfarben"],
       ["backgrounds", "mdi:image-filter-hdr", "Hintergründe"],
       ["textcolors", "mdi:format-color-text", "Textfarben"],
@@ -1435,7 +1480,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
     let cardsHtml = "";
 
-    if (["basic", "backgrounds", "textcolors"].includes(page)) {
+    if (["all_settings", "basic", "backgrounds", "textcolors"].includes(page)) {
       cardsHtml += this.renderPreviewColorGroup(page);
     }
 
@@ -2986,7 +3031,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.2 - linke Gruppen sauber trennen */
+        /* v1.11.3 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -3072,7 +3117,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.11.2 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.11.3 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -3182,6 +3227,22 @@ class ThemeGeneratorPanel extends HTMLElement {
           width: 100%;
         }
 
+
+        /* v1.11.3 - Alle Settings */
+        .preview-color-grid {
+          grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
+        }
+
+        .ha-nav {
+          display: grid;
+          gap: 4px;
+        }
+
+        .ha-nav-item {
+          min-height: 34px;
+          line-height: 1.15;
+        }
+
         @media (max-width: 1050px) {
           .controls {
             grid-template-columns: 1fr 1fr;
@@ -3266,7 +3327,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.11.2</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.11.3</span></h1>
             </div>
 
             <div class="controls">
