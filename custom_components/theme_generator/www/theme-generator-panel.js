@@ -1433,11 +1433,29 @@ class ThemeGeneratorPanel extends HTMLElement {
       cardmod: ["card-mod", "card_mod"]
     };
 
+    const isolatedNeedles = {
+      mushroom: ["mushroom", "mush"],
+      bubble: ["bubble"],
+      cardmod: ["card-mod", "card_mod", "cardmod"]
+    };
+
+    const isIsolatedKey = (key) => {
+      const lower = String(key || "").toLowerCase();
+
+      return Object.values(isolatedNeedles).some((needles) =>
+        needles.some((needle) => lower.includes(needle))
+      );
+    };
+
     const needles = filterMap[filter] || [];
 
-    const filtered = needles.length
+    let filtered = needles.length
       ? found.filter((item) => needles.some((needle) => item.key.toLowerCase().includes(needle)))
       : found;
+
+    if (!["mushroom", "bubble", "cardmod", "all"].includes(filter)) {
+      filtered = filtered.filter((item) => !isIsolatedKey(item.key));
+    }
 
     return filtered.sort((a, b) => a.key.localeCompare(b.key));
   }
@@ -1484,6 +1502,99 @@ class ThemeGeneratorPanel extends HTMLElement {
     return map[this.settingsFilter || "basic"] || "Wähle links eine Kategorie aus.";
   }
 
+  getSpecialSectionTitle(key) {
+    const lower = String(key || "").toLowerCase();
+    const filter = this.settingsFilter || "";
+
+    if (filter === "mushroom") {
+      if (lower.includes("background")) return "Hintergrund";
+      if (lower.includes("primary") || lower.includes("secondary") || lower.includes("text")) return "Text";
+      if (lower.includes("icon")) return "Icons";
+      if (lower.includes("chip")) return "Chips";
+      if (lower.includes("slider")) return "Slider";
+      if (lower.includes("toggle") || lower.includes("switch")) return "Schalter";
+      if (lower.includes("border") || lower.includes("radius")) return "Rahmen & Rundungen";
+      return "Allgemein";
+    }
+
+    if (filter === "bubble") {
+      if (lower.includes("main") || lower.includes("background")) return "Hintergrund";
+      if (lower.includes("name") || lower.includes("state") || lower.includes("text")) return "Text";
+      if (lower.includes("icon")) return "Icons";
+      if (lower.includes("button") || lower.includes("sub-button")) return "Buttons";
+      if (lower.includes("accent")) return "Akzent";
+      if (lower.includes("slider")) return "Slider";
+      if (lower.includes("toggle") || lower.includes("switch")) return "Schalter";
+      if (lower.includes("border") || lower.includes("radius")) return "Rahmen & Rundungen";
+      return "Allgemein";
+    }
+
+    if (filter === "cardmod") {
+      if (lower.includes("theme")) return "Theme";
+      if (lower.includes("root")) return "Root";
+      if (lower.includes("view")) return "View";
+      if (lower.includes("card")) return "Karten";
+      if (lower.includes("row")) return "Rows";
+      if (lower.includes("more-info")) return "More Info";
+      if (lower.includes("yaml")) return "YAML";
+      return "Allgemein";
+    }
+
+    return "";
+  }
+
+  renderPreviewFieldCard(field) {
+    const rawValue = this.extractValue(field.key, "#03a9f4");
+    const colorValue = this.resolvedColorForPicker(field.key, "#03a9f4");
+    const isVar = String(rawValue).trim().toLowerCase().startsWith("var(");
+    const editableKey = this.getEditableColorKey ? this.getEditableColorKey(field.key) : field.key;
+    const editableValue = this.extractValue(editableKey, rawValue);
+    const varTargetExists = editableKey !== field.key;
+    const alpha = this.getAlphaPercent ? this.getAlphaPercent(editableValue) : 100;
+
+    return `
+      <article class="preview-field-card">
+        <div class="preview-field-head">
+          <div>
+            <strong>${this.escape(field.label)}</strong>
+            <code>${this.escape(field.key)}</code>
+          </div>
+          <input
+            type="color"
+            data-color-key="${this.escape(field.key)}"
+            value="${this.escape(colorValue)}"
+            ${isVar && !varTargetExists ? "disabled" : ""}
+          >
+        </div>
+
+        <input
+          class="value-input preview-value-input"
+          data-value-key="${this.escape(field.key)}"
+          value="${this.escape(rawValue)}"
+          spellcheck="false"
+        >
+
+        ${this.getAlphaPercent ? `
+          <div class="alpha-row preview-alpha-row">
+            <span>Transparenz</span>
+            <input
+              class="alpha-slider"
+              type="range"
+              min="0"
+              max="100"
+              value="${alpha}"
+              data-alpha-key="${this.escape(field.key)}"
+              ${isVar && !varTargetExists ? "disabled" : ""}
+            >
+            <strong>${alpha}%</strong>
+          </div>
+        ` : ""}
+
+        ${isVar ? `<div class="alpha-hint">${varTargetExists ? `verknüpft mit ${this.escape(editableKey)} · Änderungen gehen dorthin` : `var(...)-Ziel nicht gefunden`}</div>` : ""}
+      </article>
+    `;
+  }
+
   renderPreviewColorGroup(groupId) {
     const group = groupId === "all_settings"
       ? {
@@ -1498,57 +1609,29 @@ class ThemeGeneratorPanel extends HTMLElement {
       return "";
     }
 
-    const fields = group.fields.map((field) => {
-      const rawValue = this.extractValue(field.key, "#03a9f4");
-      const colorValue = this.resolvedColorForPicker(field.key, "#03a9f4");
-      const isVar = String(rawValue).trim().toLowerCase().startsWith("var(");
-      const editableKey = this.getEditableColorKey ? this.getEditableColorKey(field.key) : field.key;
-      const editableValue = this.extractValue(editableKey, rawValue);
-      const varTargetExists = editableKey !== field.key;
-      const alpha = this.getAlphaPercent ? this.getAlphaPercent(editableValue) : 100;
+    const groupedFilters = ["mushroom", "bubble", "cardmod"];
+    let fields = "";
 
-      return `
-        <article class="preview-field-card">
-          <div class="preview-field-head">
-            <div>
-              <strong>${this.escape(field.label)}</strong>
-              <code>${this.escape(field.key)}</code>
-            </div>
-            <input
-              type="color"
-              data-color-key="${this.escape(field.key)}"
-              value="${this.escape(colorValue)}"
-              ${isVar && !varTargetExists ? "disabled" : ""}
-            >
-          </div>
+    if (groupId === "all_settings" && groupedFilters.includes(this.settingsFilter)) {
+      const grouped = new Map();
 
-          <input
-            class="value-input preview-value-input"
-            data-value-key="${this.escape(field.key)}"
-            value="${this.escape(rawValue)}"
-            spellcheck="false"
-          >
+      group.fields.forEach((field) => {
+        const title = this.getSpecialSectionTitle(field.key) || "Allgemein";
 
-          ${this.getAlphaPercent ? `
-            <div class="alpha-row preview-alpha-row">
-              <span>Transparenz</span>
-              <input
-                class="alpha-slider"
-                type="range"
-                min="0"
-                max="100"
-                value="${alpha}"
-                data-alpha-key="${this.escape(field.key)}"
-                ${isVar && !varTargetExists ? "disabled" : ""}
-              >
-              <strong>${alpha}%</strong>
-            </div>
-          ` : ""}
+        if (!grouped.has(title)) {
+          grouped.set(title, []);
+        }
 
-          ${isVar ? `<div class="alpha-hint">${varTargetExists ? `verknüpft mit ${this.escape(editableKey)} · Änderungen gehen dorthin` : `var(...)-Ziel nicht gefunden`}</div>` : ""}
-        </article>
-      `;
-    }).join("");
+        grouped.get(title).push(field);
+      });
+
+      fields = Array.from(grouped.entries()).map(([title, items]) => `
+        <div class="preview-section-title">${this.escape(title)}</div>
+        ${items.map((field) => this.renderPreviewFieldCard(field)).join("")}
+      `).join("");
+    } else {
+      fields = group.fields.map((field) => this.renderPreviewFieldCard(field)).join("");
+    }
 
     const filterHtml = groupId === "all_settings" ? `
       <div class="settings-filter-row">
@@ -1588,7 +1671,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         ${filterHtml}
 
         <div class="preview-color-grid">
-          ${fields}
+          ${fields || `<div class="preview-empty-note">Keine passenden Werte in der geladenen Theme-Datei gefunden.</div>`}
         </div>
       </section>
     `;
@@ -3220,7 +3303,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.4 - linke Gruppen sauber trennen */
+        /* v1.12.5 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -3306,7 +3389,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.4 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.12.5 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -3417,7 +3500,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.4 - Alle Settings */
+        /* v1.12.5 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -3433,7 +3516,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.4 - Filter fuer Alle Settings */
+        /* v1.12.5 - Filter fuer Alle Settings */
         .settings-filter-row {
           display: flex;
           flex-wrap: wrap;
@@ -3460,7 +3543,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.4 - einklappbares linkes Settings-Menü */
+        /* v1.12.5 - einklappbares linkes Settings-Menü */
         .settings-parent {
           display: grid !important;
           grid-template-columns: 26px minmax(0, 1fr) 22px;
@@ -3511,7 +3594,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.4 - Menü dezenter + Übersicht aufgeräumt */
+        /* v1.12.5 - Menü dezenter + Übersicht aufgeräumt */
         .settings-submenu .ha-nav-item,
         .settings-submenu .settings-child {
           background: transparent !important;
@@ -3670,7 +3753,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.4 - sauberes Kartenraster */
+        /* v1.12.5 - sauberes Kartenraster */
         .ha-content.clean-preview {
           display: flex;
           justify-content: center;
@@ -3811,7 +3894,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.4 - Vorschau-Raster repariert */
+        /* v1.12.5 - Vorschau-Raster repariert */
         .ha-content.clean-preview {
           display: flex !important;
           flex-direction: column !important;
@@ -3882,7 +3965,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.4 - Farbkarten und Vorschau sauber ausrichten */
+        /* v1.12.5 - Farbkarten und Vorschau sauber ausrichten */
 
         .ha-nav-icon {
           width: 22px !important;
@@ -4103,7 +4186,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.4 - finaler Layout-Fix */
+        /* v1.12.5 - finaler Layout-Fix */
         .ha-preview {
           grid-template-columns: 250px minmax(0, 1fr) !important;
           width: 100% !important;
@@ -4236,7 +4319,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.4 - Menütext vollständig anzeigen */
+        /* v1.12.5 - Menütext vollständig anzeigen */
         .ha-side {
           width: 280px !important;
           min-width: 280px !important;
@@ -4277,6 +4360,28 @@ class ThemeGeneratorPanel extends HTMLElement {
 
         .settings-parent {
           grid-template-columns: 28px minmax(0, 1fr) 18px !important;
+        }
+
+
+        /* v1.12.5 - Mushroom/Bubble/card-mod sauber gruppieren */
+        .preview-section-title {
+          grid-column: 1 / -1;
+          margin: 12px 0 -4px 0;
+          padding: 10px 4px 6px 4px;
+          color: var(--p-text);
+          font-size: 18px;
+          font-weight: 850;
+          letter-spacing: 0.01em;
+          border-bottom: 1px solid var(--p-border);
+        }
+
+        .preview-empty-note {
+          grid-column: 1 / -1;
+          padding: 18px;
+          border: 1px dashed var(--p-border);
+          border-radius: 16px;
+          color: var(--p-secondary);
+          background: color-mix(in srgb, var(--p-card) 70%, transparent);
         }
 
         @media (max-width: 1050px) {
@@ -4461,7 +4566,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.12.4</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.12.5</span></h1>
             </div>
 
             <div class="controls">
