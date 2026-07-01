@@ -2511,8 +2511,10 @@ class ThemeGeneratorPanel extends HTMLElement {
       iframe.src = url;
     }
 
-    this.status = `Demo-Seite gespeichert: ${url}`;
+    this.status = `Demo-Standard gespeichert: ${url}`;
+    this.safeRender();
   }
+
 
   reloadDemoIframe() {
     const input = this.shadowRoot?.getElementById("demo-iframe-url");
@@ -2531,10 +2533,13 @@ class ThemeGeneratorPanel extends HTMLElement {
     }
 
     this.status = `Demo-Seite geladen: ${url}`;
+    this.safeRender();
   }
+
 
   setDefaultDemoIframeUrl() {
     const input = this.shadowRoot?.getElementById("demo-iframe-url");
+    const iframe = this.shadowRoot?.getElementById("demo-iframe");
 
     this.demoIframeUrl = "/lovelace/default_view";
     localStorage.setItem("theme_generator_demo_iframe_url", this.demoIframeUrl);
@@ -2543,8 +2548,14 @@ class ThemeGeneratorPanel extends HTMLElement {
       input.value = this.demoIframeUrl;
     }
 
-    this.reloadDemoIframe();
+    if (iframe) {
+      iframe.src = this.demoIframeUrl;
+    }
+
+    this.status = "Demo-Standard auf /lovelace/default_view zurückgesetzt.";
+    this.safeRender();
   }
+
 
   toggleDemoIframeSidebar() {
     this.demoIframeHideSidebar = !this.demoIframeHideSidebar;
@@ -2567,14 +2578,14 @@ class ThemeGeneratorPanel extends HTMLElement {
 
         <div class="demo-iframe-toolbar">
           <input id="demo-iframe-url" value="${this.escape(url)}" spellcheck="false" placeholder="/lovelace/default_view">
-          <button type="button" id="demo-iframe-save">Speichern</button>
+          <button type="button" id="demo-iframe-save">Als Standard speichern</button>
           <button type="button" id="demo-iframe-load">Laden</button>
-          <button type="button" id="demo-iframe-home">Standard</button>
+          <button type="button" id="demo-iframe-home">HA Standard</button>
           <button type="button" id="demo-iframe-sidebar">${hideSidebar ? "Menü zeigen" : "Menü ausblenden"}</button>
         </div>
 
         <div class="demo-iframe-help">
-          Beispiel: <code>/lovelace/default_view</code>, <code>/lovelace/serversteuerung</code> oder <code>/dashboard-serversteuerung/0</code>
+          Beispiel: <code>/lovelace/default_view</code>, <code>/lovelace/serversteuerung</code> oder <code>/dashboard-serversteuerung/0</code>. Mit <b>Als Standard speichern</b> wird dieser Link beim nächsten Öffnen automatisch verwendet.
         </div>
 
         <div class="demo-iframe-frame ${hideSidebar ? "hide-ha-sidebar" : ""}">
@@ -4253,7 +4264,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.4 - linke Gruppen sauber trennen */
+        /* v1.14.5 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -4339,7 +4350,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.4 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.14.5 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -4450,7 +4461,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.4 - Alle Settings */
+        /* v1.14.5 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -4466,7 +4477,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.4 - Filter fuer Alle Settings */
+        /* v1.14.5 - Filter fuer Alle Settings */
         .settings-filter-row {
           display: flex;
           flex-wrap: wrap;
@@ -4493,7 +4504,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.4 - einklappbares linkes Settings-Menü */
+        /* v1.14.5 - einklappbares linkes Settings-Menü */
         .settings-parent {
           display: grid !important;
           grid-template-columns: 26px minmax(0, 1fr) 22px;
@@ -4544,7 +4555,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.4 - Menü dezenter + Übersicht aufgeräumt */
+        /* v1.14.5 - Menü dezenter + Übersicht aufgeräumt */
         .settings-submenu .ha-nav-item,
         .settings-submenu .settings-child {
           background: transparent !important;
@@ -4703,7 +4714,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.4 - sauberes Kartenraster */
+        /* v1.14.5 - sauberes Kartenraster */
         .ha-content.clean-preview {
           display: flex;
           justify-content: center;
@@ -4844,7 +4855,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.4 - Vorschau-Raster repariert */
+        /* v1.14.5 - Vorschau-Raster repariert */
         .ha-content.clean-preview {
           display: flex !important;
           flex-direction: column !important;
@@ -4915,7 +4926,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.4 - Farbkarten und Vorschau sauber ausrichten */
+        /* v1.14.5 - Farbkarten und Vorschau sauber ausrichten */
 
         .ha-nav-icon {
           width: 22px !important;
@@ -5136,7 +5147,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.4 - finaler Layout-Fix */
+        /* v1.14.5 - finaler Layout-Fix */
         .ha-preview {
           grid-template-columns: 250px minmax(0, 1fr) !important;
           width: 100% !important;
@@ -5269,7 +5280,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.4 - Menütext vollständig anzeigen */
+        /* v1.14.5 - Menütext vollständig anzeigen */
         .ha-side {
           width: 280px !important;
           min-width: 280px !important;
@@ -5313,7 +5324,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.4 - Mushroom/Bubble/card-mod sauber gruppieren */
+        /* v1.14.5 - Mushroom/Bubble/card-mod sauber gruppieren */
         .preview-section-title {
           grid-column: 1 / -1;
           margin: 12px 0 -4px 0;
@@ -5335,7 +5346,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.4 - Farbformat Auswahl und Alpha nur bei Farben */
+        /* v1.14.5 - Farbformat Auswahl und Alpha nur bei Farben */
         .format-row {
           display: flex;
           gap: 8px;
@@ -5374,7 +5385,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.4 - Demo Buttons Vorschauseite */
+        /* v1.14.5 - Demo Buttons Vorschauseite */
         .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -5606,7 +5617,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.4 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
+        /* v1.14.5 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
         .ha-content .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -5686,7 +5697,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.4 - Eigene Demo-Seite mit gespeicherter YAML */
+        /* v1.14.5 - Eigene Demo-Seite mit gespeicherter YAML */
         .demo-page-editor-shell {
           width: min(100%, 1240px);
           margin: 0 auto;
@@ -5807,7 +5818,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.4 - Demo Seite als echtes Home-Assistant iframe */
+        /* v1.14.5 - Demo Seite als echtes Home-Assistant iframe */
         .demo-iframe-shell {
           width: min(100%, 1240px);
           margin: 0 auto;
@@ -5891,7 +5902,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.4 - iframe Demo Seite ohne Home Assistant Seitenmenü */
+        /* v1.14.5 - iframe Demo Seite ohne Home Assistant Seitenmenü */
         .demo-iframe-frame {
           position: relative;
           height: 720px;
@@ -5918,7 +5929,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.14.4 - Editor links, Live-Vorschau rechts */
+        /* v1.14.5 - Editor links, Live-Vorschau rechts */
         .editor-split-view {
           display: grid;
           grid-template-columns: minmax(420px, 0.95fr) minmax(460px, 1.05fr);
@@ -6232,7 +6243,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.14.4</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.14.5</span></h1>
             </div>
 
             <div class="controls">
