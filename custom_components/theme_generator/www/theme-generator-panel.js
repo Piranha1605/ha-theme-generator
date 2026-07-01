@@ -1075,6 +1075,9 @@ class ThemeGeneratorPanel extends HTMLElement {
   }
 
   setYamlAlpha(key, alphaPercent) {
+    if (this.setFieldAlpha) {
+      return this.setFieldAlpha(key, alphaPercent);
+    }
     const rawValue = this.extractValue(key, "#03a9f4");
     const newValue = this.withAlpha(rawValue, alphaPercent, this.resolvedColorForPicker ? this.resolvedColorForPicker(key, "#03a9f4") : "#03a9f4");
 
@@ -1439,12 +1442,54 @@ class ThemeGeneratorPanel extends HTMLElement {
     return filtered.sort((a, b) => a.key.localeCompare(b.key));
   }
 
+  getSettingsFilterTitle() {
+    const map = {
+      basic: "Grundfarben",
+      backgrounds: "Hintergründe",
+      textcolors: "Textfarben",
+      header: "Header",
+      sidebar: "Sidebar",
+      cards: "Karten",
+      icons: "Icons",
+      states: "Statusfarben",
+      switches: "Schalter",
+      sliders: "Slider",
+      inputs: "Eingabefelder",
+      mushroom: "Mushroom",
+      bubble: "Bubble Card",
+      cardmod: "card-mod"
+    };
+
+    return map[this.settingsFilter || "basic"] || "Theme Settings";
+  }
+
+  getSettingsFilterDescription() {
+    const map = {
+      basic: "Primärfarben, Akzentfarben und Statusfarben.",
+      backgrounds: "Hintergründe, Flächen, Karten und Container.",
+      textcolors: "Textfarben, Sekundärtexte und Material-Textfarben.",
+      header: "App-Header, Toolbar und obere Leiste.",
+      sidebar: "Linke Home-Assistant-Seitenleiste.",
+      cards: "Karten, Rahmen, Rundungen und Schatten.",
+      icons: "Iconfarben und Zustandsicons.",
+      states: "Statusfarben für aktive, inaktive und problematische Zustände.",
+      switches: "Schalter, Toggles und Auswahlschalter.",
+      sliders: "Slider, Regler, Helligkeit und Lautstärke.",
+      inputs: "Eingabefelder, Dropdowns und Select-Felder.",
+      mushroom: "Mushroom Card Farben, Chips und Icons.",
+      bubble: "Bubble Card Farben, Buttons und Popups.",
+      cardmod: "card-mod Theme- und Style-Werte."
+    };
+
+    return map[this.settingsFilter || "basic"] || "Wähle links eine Kategorie aus.";
+  }
+
   renderPreviewColorGroup(groupId) {
     const group = groupId === "all_settings"
       ? {
           id: "all_settings",
-          title: "Theme Settings",
-          description: "Wähle links eine Kategorie aus und bearbeite die passenden Theme-Werte.",
+          title: this.getSettingsFilterTitle ? this.getSettingsFilterTitle() : "Theme Settings",
+          description: this.getSettingsFilterDescription ? this.getSettingsFilterDescription() : "Wähle links eine Kategorie aus.",
           fields: this.getAllThemeFields()
         }
       : this.colorGroups.find((item) => item.id === groupId);
@@ -3177,7 +3222,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.0 - linke Gruppen sauber trennen */
+        /* v1.12.1 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -3263,7 +3308,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.0 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.12.1 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -3374,7 +3419,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.0 - Alle Settings */
+        /* v1.12.1 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -3390,7 +3435,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.0 - Filter fuer Alle Settings */
+        /* v1.12.1 - Filter fuer Alle Settings */
         .settings-filter-row {
           display: flex;
           flex-wrap: wrap;
@@ -3417,7 +3462,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.0 - einklappbares linkes Settings-Menü */
+        /* v1.12.1 - einklappbares linkes Settings-Menü */
         .settings-parent {
           display: grid !important;
           grid-template-columns: 26px minmax(0, 1fr) 22px;
@@ -3468,7 +3513,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.0 - Menü dezenter + Übersicht aufgeräumt */
+        /* v1.12.1 - Menü dezenter + Übersicht aufgeräumt */
         .settings-submenu .ha-nav-item,
         .settings-submenu .settings-child {
           background: transparent !important;
@@ -3627,7 +3672,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.12.0 - sauberes Kartenraster */
+        /* v1.12.1 - sauberes Kartenraster */
         .ha-content.clean-preview {
           display: flex;
           justify-content: center;
@@ -3767,6 +3812,100 @@ class ThemeGeneratorPanel extends HTMLElement {
           flex: 0 0 auto;
         }
 
+
+        /* v1.12.1 - Vorschau-Raster repariert */
+        .ha-content.clean-preview {
+          display: flex !important;
+          flex-direction: column !important;
+          align-items: center !important;
+          justify-content: flex-start !important;
+          gap: 18px !important;
+          padding: 34px 28px !important;
+          overflow-x: hidden;
+        }
+
+        .ha-big-preview-cards,
+        .ha-big-preview-cards.compact-overview,
+        .compact-overview {
+          width: min(100%, 980px) !important;
+          max-width: 980px !important;
+          margin: 0 auto !important;
+          display: grid !important;
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          gap: 18px !important;
+          align-items: stretch !important;
+        }
+
+        .ha-big-card {
+          width: 100% !important;
+          max-width: none !important;
+          min-width: 0 !important;
+          min-height: 210px !important;
+          height: 210px !important;
+          margin: 0 !important;
+          padding: 22px !important;
+          overflow: hidden;
+        }
+
+        .overview-combined-card,
+        .controls-card {
+          grid-column: 1 / -1 !important;
+        }
+
+        .overview-combined-card {
+          height: 170px !important;
+          min-height: 170px !important;
+        }
+
+        .controls-card {
+          height: 210px !important;
+          min-height: 210px !important;
+        }
+
+        .overview-two,
+        .control-split {
+          width: 100%;
+          height: 100%;
+          display: grid !important;
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          gap: 28px !important;
+          align-items: center !important;
+        }
+
+        .real-mushroom-card,
+        .real-bubble-card {
+          height: 210px !important;
+          min-height: 210px !important;
+        }
+
+        .real-card-row,
+        .bubble-pill {
+          min-width: 0;
+        }
+
+        @media (max-width: 900px) {
+          .ha-big-preview-cards,
+          .ha-big-preview-cards.compact-overview,
+          .compact-overview {
+            grid-template-columns: 1fr !important;
+          }
+
+          .overview-combined-card,
+          .controls-card {
+            grid-column: 1 / -1 !important;
+            height: auto !important;
+          }
+
+          .overview-two,
+          .control-split {
+            grid-template-columns: 1fr !important;
+          }
+
+          .ha-big-card {
+            height: auto !important;
+          }
+        }
+
         @media (max-width: 900px) {
           .compact-overview,
           .ha-big-preview-cards,
@@ -3884,7 +4023,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
           <div class="header-main">
             <div class="title-row">
-              <h1>Theme Generator <span class="version-pill">v1.12.0</span></h1>
+              <h1>Theme Generator <span class="version-pill">v1.12.1</span></h1>
             </div>
 
             <div class="controls">
