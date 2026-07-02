@@ -3753,6 +3753,8 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 
 
+
+
   render() {
     this.captureEditorState();
 
