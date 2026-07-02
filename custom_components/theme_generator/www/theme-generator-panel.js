@@ -3083,116 +3083,6 @@ class ThemeGeneratorPanel extends HTMLElement {
   }
 
 
-  parsePreviewThemeValues() {
-    const values = {};
-    const lines = String(this.editorContent || "").split(/\r?\n/);
-
-    for (const line of lines) {
-      if (!line.startsWith("  ")) {
-        continue;
-      }
-
-      if (line.startsWith("    ")) {
-        continue;
-      }
-
-      const trimmed = line.trim();
-
-      if (!trimmed || trimmed.startsWith("#")) {
-        continue;
-      }
-
-      const match = trimmed.match(/^([a-zA-Z0-9_-]+):\s*(.*)$/);
-
-      if (!match) {
-        continue;
-      }
-
-      const key = match[1];
-      let value = match[2].trim();
-
-      if (!value || value === "|" || value === ">") {
-        continue;
-      }
-
-      if (
-        (value.startsWith("'") && value.endsWith("'")) ||
-        (value.startsWith('"') && value.endsWith('"'))
-      ) {
-        value = value.slice(1, -1);
-      }
-
-      values[key] = value;
-    }
-
-    return values;
-  }
-
-  isSafeCssThemeValue(value) {
-    const raw = String(value || "").trim();
-
-    if (!raw) {
-      return false;
-    }
-
-    if (raw.includes("<") || raw.includes(">") || raw.includes(";")) {
-      return false;
-    }
-
-    return true;
-  }
-
-  getPreviewThemeCssVarsStyle() {
-    const values = this.parsePreviewThemeValues();
-    const css = [];
-
-    Object.entries(values).forEach(([key, value]) => {
-      if (!/^[a-zA-Z0-9_-]+$/.test(key)) {
-        return;
-      }
-
-      if (!this.isSafeCssThemeValue(value)) {
-        return;
-      }
-
-      css.push(`--${key}: ${value}`);
-    });
-
-    const aliases = {
-      "p-primary": "var(--primary-color, #1a9ce2)",
-      "p-accent": "var(--accent-color, var(--primary-color, #1a9ce2))",
-      "p-success": "var(--success-color, #29AE5B)",
-      "p-warning": "var(--warning-color, #D77736)",
-      "p-error": "var(--error-color, #E53B3C)",
-      "p-info": "var(--info-color, #3272ED)",
-      "p-bg": "var(--primary-background-color, #111827)",
-      "p-secondary-bg": "var(--secondary-background-color, #1f2937)",
-      "p-card": "var(--ha-card-background, var(--card-background-color, #1f2937))",
-      "p-card-solid": "var(--card-background-color, #1f2937)",
-      "p-border": "var(--ha-card-border-color, var(--divider-color, rgba(255,255,255,0.12)))",
-      "p-radius": "var(--ha-card-border-radius, 18px)",
-      "p-shadow": "var(--ha-card-box-shadow, none)",
-      "p-text": "var(--primary-text-color, rgba(255,255,255,0.92))",
-      "p-secondary": "var(--secondary-text-color, rgba(255,255,255,0.70))",
-      "p-disabled": "var(--disabled-text-color, rgba(255,255,255,0.45))",
-      "p-sidebar": "var(--sidebar-background-color, var(--secondary-background-color, #1f2937))",
-      "p-slider": "var(--slider-color, var(--primary-color, #1a9ce2))",
-      "p-slider-track": "var(--slider-track-color, rgba(255,255,255,0.15))",
-      "p-switch-on": "var(--switch-checked-button-color, var(--primary-color, #1a9ce2))",
-      "p-switch-track-on": "var(--switch-checked-track-color, rgba(26,156,226,0.45))",
-      "p-switch-off": "var(--switch-unchecked-button-color, rgba(255,255,255,0.45))",
-      "p-switch-track-off": "var(--switch-unchecked-track-color, rgba(0,0,0,0.25))",
-      "p-mush-card": "var(--mush-card-primary-background, var(--card-background-color, #1f2937))",
-      "p-bubble-card": "var(--bubble-card-background-color, var(--bubble-main-background-color, var(--card-background-color, #1f2937)))"
-    };
-
-    Object.entries(aliases).forEach(([key, value]) => {
-      css.push(`--${key}: ${value}`);
-    });
-
-    return css.join("; ");
-  }
-
   renderPreview() {
     this.normalizePreviewPage();
 
@@ -3499,7 +3389,7 @@ class ThemeGeneratorPanel extends HTMLElement {
           </div>
         </aside>
 
-        <section class="ha-main" style="${previewStyle}">
+        <section class="ha-main">
             <img
               class="preview-fixed-bg"
               src="/theme_generator_static/smartdisplay_background.png"
@@ -5109,7 +4999,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.17.0 - linke Gruppen sauber trennen */
+        /* v1.17.1 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -5195,7 +5085,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.17.0 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.17.1 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -5306,7 +5196,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.17.0 - Alle Settings */
+        /* v1.17.1 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -5322,7 +5212,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.17.0 - Filter fuer Alle Settings */
+        /* v1.17.1 - Filter fuer Alle Settings */
         .settings-filter-row {
           display: flex;
           flex-wrap: wrap;
@@ -5349,7 +5239,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.17.0 - einklappbares linkes Settings-Menü */
+        /* v1.17.1 - einklappbares linkes Settings-Menü */
         .settings-parent {
           display: grid !important;
           grid-template-columns: 26px minmax(0, 1fr) 22px;
@@ -5400,7 +5290,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.17.0 - Menü dezenter + Übersicht aufgeräumt */
+        /* v1.17.1 - Menü dezenter + Übersicht aufgeräumt */
         .settings-submenu .ha-nav-item,
         .settings-submenu .settings-child {
           background: transparent !important;
@@ -5559,7 +5449,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.17.0 - sauberes Kartenraster */
+        /* v1.17.1 - sauberes Kartenraster */
         .ha-content.clean-preview {
           display: flex;
           justify-content: center;
@@ -5700,7 +5590,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.17.0 - Vorschau-Raster repariert */
+        /* v1.17.1 - Vorschau-Raster repariert */
         .ha-content.clean-preview {
           display: flex !important;
           flex-direction: column !important;
@@ -5771,7 +5661,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.17.0 - Farbkarten und Vorschau sauber ausrichten */
+        /* v1.17.1 - Farbkarten und Vorschau sauber ausrichten */
 
         .ha-nav-icon {
           width: 22px !important;
@@ -5992,7 +5882,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.17.0 - finaler Layout-Fix */
+        /* v1.17.1 - finaler Layout-Fix */
         .ha-preview {
           grid-template-columns: 250px minmax(0, 1fr) !important;
           width: 100% !important;
@@ -6125,7 +6015,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.17.0 - Menütext vollständig anzeigen */
+        /* v1.17.1 - Menütext vollständig anzeigen */
         .ha-side {
           width: 280px !important;
           min-width: 280px !important;
@@ -6169,7 +6059,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.17.0 - Mushroom/Bubble/card-mod sauber gruppieren */
+        /* v1.17.1 - Mushroom/Bubble/card-mod sauber gruppieren */
         .preview-section-title {
           grid-column: 1 / -1;
           margin: 12px 0 -4px 0;
@@ -6191,7 +6081,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.17.0 - Farbformat Auswahl und Alpha nur bei Farben */
+        /* v1.17.1 - Farbformat Auswahl und Alpha nur bei Farben */
         .format-row {
           display: flex;
           gap: 8px;
@@ -6230,7 +6120,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.17.0 - Demo Buttons Vorschauseite */
+        /* v1.17.1 - Demo Buttons Vorschauseite */
         .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -6462,7 +6352,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.17.0 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
+        /* v1.17.1 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
         .ha-content .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -6542,7 +6432,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.17.0 - Eigene Demo-Seite mit gespeicherter YAML */
+        /* v1.17.1 - Eigene Demo-Seite mit gespeicherter YAML */
         .demo-page-editor-shell {
           width: min(100%, 1240px);
           margin: 0 auto;
@@ -6663,7 +6553,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.17.0 - Demo Seite als echtes Home-Assistant iframe */
+        /* v1.17.1 - Demo Seite als echtes Home-Assistant iframe */
         .demo-iframe-shell {
           width: min(100%, 1240px);
           margin: 0 auto;
@@ -6747,7 +6637,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.17.0 - iframe Demo Seite ohne Home Assistant Seitenmenü */
+        /* v1.17.1 - iframe Demo Seite ohne Home Assistant Seitenmenü */
         .demo-iframe-frame {
           position: relative;
           height: 720px;
@@ -6774,7 +6664,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.17.0 - Editor links, Live-Vorschau rechts */
+        /* v1.17.1 - Editor links, Live-Vorschau rechts */
         .editor-split-view {
           display: grid;
           grid-template-columns: minmax(420px, 0.95fr) minmax(460px, 1.05fr);
@@ -7078,7 +6968,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
       
 
-        /* v1.17.0 - View Tabs immer nebeneinander */
+        /* v1.17.1 - View Tabs immer nebeneinander */
         .view-switch {
           display: inline-flex;
           flex-direction: row;
@@ -7098,7 +6988,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.17.0 - Template Bibliothek */
+        /* v1.17.1 - Template Bibliothek */
         .templates-page {
           display: grid;
           gap: 18px;
@@ -7237,7 +7127,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 
 
-        /* v1.17.0 - card-mod neue Blöcke */
+        /* v1.17.1 - card-mod neue Blöcke */
         .cardmod-add-actions {
           margin-top: -4px;
           padding-top: 8px;
@@ -7250,7 +7140,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.17.0 - card-mod / CSS Codekarten */
+        /* v1.17.1 - card-mod / CSS Codekarten */
         .code-field-card {
           align-items: stretch;
         }
@@ -7295,7 +7185,7 @@ class ThemeGeneratorPanel extends HTMLElement {
           width: auto;
         }
 
-        /* v1.17.0 - View Tabs immer in einer Zeile */
+        /* v1.17.1 - View Tabs immer in einer Zeile */
         .view-switch {
           display: inline-flex;
           flex-direction: row;
@@ -7316,7 +7206,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 
 
-        /* v1.17.0 - Editor ohne Live-Vorschau */
+        /* v1.17.1 - Editor ohne Live-Vorschau */
         .editor-single-layout {
           display: block;
           width: 100%;
@@ -7361,7 +7251,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 
 
-        /* v1.17.0 - Hintergrund an/aus */
+        /* v1.17.1 - Hintergrund an/aus */
         .background-off {
           background-image: none !important;
           background: var(--primary-background-color, #111827) !important;
@@ -7427,7 +7317,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 
 
-        /* v1.17.0 - Hintergrundbild Schalter + Deckkraft */
+        /* v1.17.1 - Hintergrundbild Schalter + Deckkraft */
         .generator-bg-layer {
           position: fixed;
           inset: 0;
@@ -7527,7 +7417,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 
 
-        /* v1.17.0 - Bild/Deckkraft in HA-Topbar */
+        /* v1.17.1 - Bild/Deckkraft in HA-Topbar */
         .ha-topbar .preview-background-image-controls {
           display: inline-flex;
           align-items: center;
@@ -7610,7 +7500,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 
 
-        /* v1.17.0 - Hintergrund Upload */
+        /* v1.17.1 - Hintergrund Upload */
         .background-upload-button {
           border: 1px solid rgba(255,255,255,0.18);
           background: rgba(255,255,255,0.14);
@@ -7637,7 +7527,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 
 
-        /* v1.17.0 - festes Bild direkt in der Vorschaufläche */
+        /* v1.17.1 - festes Bild direkt in der Vorschaufläche */
         .preview-bg-image-on {
           position: relative;
           overflow: hidden;
@@ -7668,14 +7558,14 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 
 
-        /* v1.17.0 - alter globaler Background-Layer aus */
+        /* v1.17.1 - alter globaler Background-Layer aus */
         .generator-bg-layer {
           display: none !important;
         }
 
 
 
-        /* v1.17.0 - echtes Bild direkt in der HA-Vorschau */
+        /* v1.17.1 - echtes Bild direkt in der HA-Vorschau */
         .ha-main {
           position: relative;
           overflow: hidden;
@@ -7704,14 +7594,14 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 
 
-        /* v1.17.0 - alter Generator Background Layer deaktiviert */
+        /* v1.17.1 - alter Generator Background Layer deaktiviert */
         .generator-bg-layer {
           display: none !important;
         }
 
 
 
-        /* v1.17.0 - Einstellungsseiten bleiben ohne Bild für Schattenprüfung */
+        /* v1.17.1 - Einstellungsseiten bleiben ohne Bild für Schattenprüfung */
         .ha-main .preview-color-editor,
         .ha-main .preview-color-grid,
         .ha-main .editor-single-layout {
@@ -7719,164 +7609,6 @@ class ThemeGeneratorPanel extends HTMLElement {
           z-index: 2;
         }
 
-
-
-        /* v1.17.0 - Vorschau nutzt echte Theme-Werte */
-        .ha-main {
-          color: var(--primary-text-color, var(--p-text));
-          background-color: var(--primary-background-color, var(--p-bg));
-        }
-
-        .ha-main .preview-color-editor,
-        .ha-main .ha-big-card,
-        .ha-main .overview-combined-card,
-        .ha-main .demo-page-card,
-        .ha-main .demo-button-card,
-        .ha-main .preview-card,
-        .ha-main .ha-card,
-        .ha-main article {
-          background: var(--ha-card-background, var(--card-background-color, var(--p-card))) !important;
-          border-color: var(--ha-card-border-color, var(--p-border)) !important;
-          border-radius: var(--ha-card-border-radius, var(--p-radius)) !important;
-          box-shadow: var(--ha-card-box-shadow, var(--p-shadow)) !important;
-          color: var(--primary-text-color, var(--p-text)) !important;
-        }
-
-        .ha-main .preview-color-editor h1,
-        .ha-main .preview-color-editor h2,
-        .ha-main .preview-color-editor h3,
-        .ha-main .ha-big-card h1,
-        .ha-main .ha-big-card h2,
-        .ha-main .ha-big-card h3,
-        .ha-main strong {
-          color: var(--primary-text-color, var(--p-text)) !important;
-        }
-
-        .ha-main .preview-color-editor p,
-        .ha-main .ha-big-card p,
-        .ha-main small,
-        .ha-main .secondary,
-        .ha-main .muted {
-          color: var(--secondary-text-color, var(--p-secondary)) !important;
-        }
-
-        .ha-main .ha-sidebar {
-          background: var(--sidebar-background-color, var(--p-sidebar)) !important;
-          color: var(--sidebar-text-color, var(--p-text)) !important;
-        }
-
-        .ha-main .ha-nav-item.active,
-        .ha-main .settings-child.active,
-        .ha-main .settings-parent.active {
-          background: color-mix(in srgb, var(--primary-color, var(--p-primary)) 18%, transparent) !important;
-          color: var(--sidebar-selected-text-color, var(--primary-color, var(--p-primary))) !important;
-        }
-
-        .ha-main .ha-nav-icon,
-        .ha-main ha-icon {
-          color: var(--paper-item-icon-color, var(--state-icon-color, var(--p-secondary))) !important;
-        }
-
-        .ha-main .ha-nav-item.active ha-icon,
-        .ha-main .ha-top-icon.active,
-        .ha-main .active ha-icon {
-          color: var(--paper-item-icon-active-color, var(--state-icon-active-color, var(--primary-color, var(--p-primary)))) !important;
-        }
-
-        .ha-main input,
-        .ha-main textarea,
-        .ha-main select {
-          background: var(--input-background-color, var(--input-fill-color, rgba(0,0,0,0.18))) !important;
-          color: var(--input-ink-color, var(--primary-text-color, var(--p-text))) !important;
-          border-color: var(--input-idle-line-color, var(--p-border)) !important;
-        }
-
-        .ha-main input[type="range"] {
-          accent-color: var(--slider-color, var(--primary-color, var(--p-primary))) !important;
-        }
-
-        .ha-main .preview-slider-fill,
-        .ha-main .slider-fill,
-        .ha-main .ha-slider-fill {
-          background: var(--slider-color, var(--primary-color, var(--p-primary))) !important;
-        }
-
-        .ha-main .preview-slider-track,
-        .ha-main .slider-track,
-        .ha-main .ha-slider-track {
-          background: var(--slider-track-color, var(--p-slider-track)) !important;
-        }
-
-        .ha-main .switch-on,
-        .ha-main .toggle-on,
-        .ha-main .ha-switch.on {
-          background: var(--switch-checked-track-color, var(--p-switch-track-on)) !important;
-        }
-
-        .ha-main .switch-on::after,
-        .ha-main .toggle-on::after,
-        .ha-main .ha-switch.on::after {
-          background: var(--switch-checked-button-color, var(--p-switch-on)) !important;
-        }
-
-        .ha-main .switch-off,
-        .ha-main .toggle-off,
-        .ha-main .ha-switch.off {
-          background: var(--switch-unchecked-track-color, var(--p-switch-track-off)) !important;
-        }
-
-        .ha-main .switch-off::after,
-        .ha-main .toggle-off::after,
-        .ha-main .ha-switch.off::after {
-          background: var(--switch-unchecked-button-color, var(--p-switch-off)) !important;
-        }
-
-        .ha-main .mushroom-preview-card,
-        .ha-main .mush-preview-card {
-          background: var(--mush-card-primary-background, var(--p-mush-card)) !important;
-          border-radius: var(--mush-card-border-radius, var(--ha-card-border-radius, var(--p-radius))) !important;
-          box-shadow: var(--mush-card-box-shadow, var(--ha-card-box-shadow, var(--p-shadow))) !important;
-          color: var(--mush-primary-text-color, var(--primary-text-color, var(--p-text))) !important;
-        }
-
-        .ha-main .bubble-preview-card,
-        .ha-main .bubble-card-preview {
-          background: var(--bubble-card-background-color, var(--bubble-main-background-color, var(--p-bubble-card))) !important;
-          border-color: var(--bubble-card-border-color, var(--ha-card-border-color, var(--p-border))) !important;
-          border-radius: var(--bubble-card-border-radius, var(--ha-card-border-radius, var(--p-radius))) !important;
-          box-shadow: var(--bubble-card-box-shadow, var(--ha-card-box-shadow, var(--p-shadow))) !important;
-          color: var(--bubble-card-primary-text-color, var(--primary-text-color, var(--p-text))) !important;
-        }
-
-        .ha-main .color-dot.primary,
-        .ha-main .dot-primary {
-          background: var(--primary-color, var(--p-primary)) !important;
-        }
-
-        .ha-main .color-dot.accent,
-        .ha-main .dot-accent {
-          background: var(--accent-color, var(--p-accent)) !important;
-        }
-
-        .ha-main .color-dot.success,
-        .ha-main .dot-success {
-          background: var(--success-color, var(--p-success)) !important;
-        }
-
-        .ha-main .color-dot.warning,
-        .ha-main .dot-warning {
-          background: var(--warning-color, var(--p-warning)) !important;
-        }
-
-        .ha-main .color-dot.error,
-        .ha-main .dot-error {
-          background: var(--error-color, var(--p-error)) !important;
-        }
-
-        .ha-main .color-dot.info,
-        .ha-main .dot-info {
-          background: var(--info-color, var(--p-info)) !important;
-        }
 
 
 </style>
@@ -7901,7 +7633,7 @@ class ThemeGeneratorPanel extends HTMLElement {
             <div class="title-row">
               <h1>Theme Generator 
           
-<span class="version-pill">v1.17.0</span></h1>
+<span class="version-pill">v1.17.1</span></h1>
             </div>
 
             <div class="controls">
