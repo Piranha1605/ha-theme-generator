@@ -1,4 +1,5 @@
 from __future__ import annotations
+import logging
 import json
 import yaml
 from pathlib import Path
@@ -20,6 +21,9 @@ from .const import (
     PANEL_TITLE,
     PANEL_URL_PATH,
 )
+
+_LOGGER = logging.getLogger(__name__)
+
 
 THEMES_DIR = "themes"
 
@@ -65,7 +69,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         config={
             "_panel_custom": {
                 "name": PANEL_TAG,
-                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.15.8",
+                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.15.9",
                 "embed_iframe": False,
                 "trust_external_script": True,
                 "config": {},
