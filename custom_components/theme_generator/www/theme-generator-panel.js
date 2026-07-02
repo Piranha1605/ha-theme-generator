@@ -3396,6 +3396,32 @@ class ThemeGeneratorPanel extends HTMLElement {
             <span class="toggle-dot"></span>
             <span>Hintergrund ${this.backgroundEnabled ? "An" : "Aus"}</span>
           </button>
+            <div class="background-image-controls preview-background-image-controls">
+              <button
+                class="background-image-toggle ${this.backgroundImageEnabled ? "active" : ""}"
+                id="toggle-background-image"
+                title="Hintergrundbild an oder aus"
+                type="button"
+              >
+                <span class="toggle-dot"></span>
+                <span>Bild ${this.backgroundImageEnabled ? "An" : "Aus"}</span>
+              </button>
+
+              <label class="background-opacity-control" title="Deckkraft des Hintergrundbildes">
+                <span>Deckkraft</span>
+                <input
+                  id="background-opacity"
+                  type="range"
+                  min="0"
+                  max="100"
+                  step="10"
+                  value="${this.backgroundOpacity}"
+                  ${this.backgroundImageEnabled ? "" : "disabled"}
+                >
+                <span class="background-opacity-value">${this.backgroundImageEnabled ? this.backgroundOpacity : 0}%</span>
+              </label>
+            </div>
+
 
             <div class="ha-top-left">
               <ha-icon class="ha-top-icon active" icon="mdi:home"></ha-icon>
@@ -4791,7 +4817,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.3 - linke Gruppen sauber trennen */
+        /* v1.16.4 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -4877,7 +4903,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.3 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.16.4 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -4988,7 +5014,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.3 - Alle Settings */
+        /* v1.16.4 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -5004,7 +5030,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.3 - Filter fuer Alle Settings */
+        /* v1.16.4 - Filter fuer Alle Settings */
         .settings-filter-row {
           display: flex;
           flex-wrap: wrap;
@@ -5031,7 +5057,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.3 - einklappbares linkes Settings-Menü */
+        /* v1.16.4 - einklappbares linkes Settings-Menü */
         .settings-parent {
           display: grid !important;
           grid-template-columns: 26px minmax(0, 1fr) 22px;
@@ -5082,7 +5108,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.3 - Menü dezenter + Übersicht aufgeräumt */
+        /* v1.16.4 - Menü dezenter + Übersicht aufgeräumt */
         .settings-submenu .ha-nav-item,
         .settings-submenu .settings-child {
           background: transparent !important;
@@ -5241,7 +5267,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.3 - sauberes Kartenraster */
+        /* v1.16.4 - sauberes Kartenraster */
         .ha-content.clean-preview {
           display: flex;
           justify-content: center;
@@ -5382,7 +5408,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.3 - Vorschau-Raster repariert */
+        /* v1.16.4 - Vorschau-Raster repariert */
         .ha-content.clean-preview {
           display: flex !important;
           flex-direction: column !important;
@@ -5453,7 +5479,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.3 - Farbkarten und Vorschau sauber ausrichten */
+        /* v1.16.4 - Farbkarten und Vorschau sauber ausrichten */
 
         .ha-nav-icon {
           width: 22px !important;
@@ -5674,7 +5700,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.3 - finaler Layout-Fix */
+        /* v1.16.4 - finaler Layout-Fix */
         .ha-preview {
           grid-template-columns: 250px minmax(0, 1fr) !important;
           width: 100% !important;
@@ -5807,7 +5833,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.3 - Menütext vollständig anzeigen */
+        /* v1.16.4 - Menütext vollständig anzeigen */
         .ha-side {
           width: 280px !important;
           min-width: 280px !important;
@@ -5851,7 +5877,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.3 - Mushroom/Bubble/card-mod sauber gruppieren */
+        /* v1.16.4 - Mushroom/Bubble/card-mod sauber gruppieren */
         .preview-section-title {
           grid-column: 1 / -1;
           margin: 12px 0 -4px 0;
@@ -5873,7 +5899,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.3 - Farbformat Auswahl und Alpha nur bei Farben */
+        /* v1.16.4 - Farbformat Auswahl und Alpha nur bei Farben */
         .format-row {
           display: flex;
           gap: 8px;
@@ -5912,7 +5938,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.3 - Demo Buttons Vorschauseite */
+        /* v1.16.4 - Demo Buttons Vorschauseite */
         .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -6144,7 +6170,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.3 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
+        /* v1.16.4 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
         .ha-content .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -6224,7 +6250,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.3 - Eigene Demo-Seite mit gespeicherter YAML */
+        /* v1.16.4 - Eigene Demo-Seite mit gespeicherter YAML */
         .demo-page-editor-shell {
           width: min(100%, 1240px);
           margin: 0 auto;
@@ -6345,7 +6371,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.3 - Demo Seite als echtes Home-Assistant iframe */
+        /* v1.16.4 - Demo Seite als echtes Home-Assistant iframe */
         .demo-iframe-shell {
           width: min(100%, 1240px);
           margin: 0 auto;
@@ -6429,7 +6455,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.3 - iframe Demo Seite ohne Home Assistant Seitenmenü */
+        /* v1.16.4 - iframe Demo Seite ohne Home Assistant Seitenmenü */
         .demo-iframe-frame {
           position: relative;
           height: 720px;
@@ -6456,7 +6482,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.3 - Editor links, Live-Vorschau rechts */
+        /* v1.16.4 - Editor links, Live-Vorschau rechts */
         .editor-split-view {
           display: grid;
           grid-template-columns: minmax(420px, 0.95fr) minmax(460px, 1.05fr);
@@ -6760,7 +6786,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
       
 
-        /* v1.16.3 - View Tabs immer nebeneinander */
+        /* v1.16.4 - View Tabs immer nebeneinander */
         .view-switch {
           display: inline-flex;
           flex-direction: row;
@@ -6780,7 +6806,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.3 - Template Bibliothek */
+        /* v1.16.4 - Template Bibliothek */
         .templates-page {
           display: grid;
           gap: 18px;
@@ -6919,7 +6945,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 
 
-        /* v1.16.3 - card-mod neue Blöcke */
+        /* v1.16.4 - card-mod neue Blöcke */
         .cardmod-add-actions {
           margin-top: -4px;
           padding-top: 8px;
@@ -6932,7 +6958,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.3 - card-mod / CSS Codekarten */
+        /* v1.16.4 - card-mod / CSS Codekarten */
         .code-field-card {
           align-items: stretch;
         }
@@ -6977,7 +7003,7 @@ class ThemeGeneratorPanel extends HTMLElement {
           width: auto;
         }
 
-        /* v1.16.3 - View Tabs immer in einer Zeile */
+        /* v1.16.4 - View Tabs immer in einer Zeile */
         .view-switch {
           display: inline-flex;
           flex-direction: row;
@@ -6998,7 +7024,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 
 
-        /* v1.16.3 - Editor ohne Live-Vorschau */
+        /* v1.16.4 - Editor ohne Live-Vorschau */
         .editor-single-layout {
           display: block;
           width: 100%;
@@ -7043,7 +7069,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 
 
-        /* v1.16.3 - Hintergrund an/aus */
+        /* v1.16.4 - Hintergrund an/aus */
         .background-off {
           background-image: none !important;
           background: var(--primary-background-color, #111827) !important;
@@ -7109,7 +7135,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 
 
-        /* v1.16.3 - Hintergrundbild Schalter + Deckkraft */
+        /* v1.16.4 - Hintergrundbild Schalter + Deckkraft */
         .generator-bg-layer {
           position: fixed;
           inset: 0;
@@ -7208,6 +7234,89 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
+
+        /* v1.16.4 - Bild/Deckkraft in HA-Topbar */
+        .ha-topbar .preview-background-image-controls {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 3px 8px;
+          min-height: 26px;
+          border-radius: 999px;
+          background: rgba(255,255,255,0.14);
+          border: 1px solid rgba(255,255,255,0.18);
+          box-shadow: none;
+          color: white;
+          font-size: 11px;
+          font-weight: 700;
+          white-space: nowrap;
+        }
+
+        .ha-topbar .preview-background-image-controls .background-image-toggle {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          border: 0;
+          background: transparent;
+          color: inherit;
+          font: inherit;
+          cursor: pointer;
+          padding: 0;
+          white-space: nowrap;
+        }
+
+        .ha-topbar .preview-background-image-controls .toggle-dot {
+          width: 24px;
+          height: 14px;
+          border-radius: 999px;
+          background: rgba(255,255,255,0.22);
+          position: relative;
+          box-shadow: inset 0 0 0 1px rgba(255,255,255,0.20);
+          flex: 0 0 auto;
+        }
+
+        .ha-topbar .preview-background-image-controls .toggle-dot::after {
+          content: "";
+          position: absolute;
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+          top: 2px;
+          left: 2px;
+          background: rgba(255,255,255,0.86);
+          transition: transform .18s ease, background .18s ease;
+        }
+
+        .ha-topbar .preview-background-image-controls .background-image-toggle.active .toggle-dot {
+          background: var(--accent-color, #1a9ce2);
+        }
+
+        .ha-topbar .preview-background-image-controls .background-image-toggle.active .toggle-dot::after {
+          transform: translateX(10px);
+          background: white;
+        }
+
+        .ha-topbar .preview-background-image-controls .background-opacity-control {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 11px;
+        }
+
+        .ha-topbar .preview-background-image-controls .background-opacity-control input[type="range"] {
+          width: 90px;
+          height: 18px;
+          accent-color: white;
+        }
+
+        .ha-topbar .preview-background-image-controls .background-opacity-value {
+          min-width: 30px;
+          text-align: right;
+          color: rgba(255,255,255,0.88);
+          font-weight: 800;
+        }
+
+
 </style>
 
       <div class="card">
@@ -7229,32 +7338,8 @@ class ThemeGeneratorPanel extends HTMLElement {
           <div class="header-main">
             <div class="title-row">
               <h1>Theme Generator 
-          <div class="background-image-controls">
-            <button
-              class="background-image-toggle ${this.backgroundImageEnabled ? "active" : ""}"
-              id="toggle-background-image"
-              title="Hintergrundbild an oder aus"
-              type="button"
-            >
-              <span class="toggle-dot"></span>
-              <span>Bild ${this.backgroundImageEnabled ? "An" : "Aus"}</span>
-            </button>
-
-            <label class="background-opacity-control" title="Deckkraft des Hintergrundbildes">
-              <span>Deckkraft</span>
-              <input
-                id="background-opacity"
-                type="range"
-                min="0"
-                max="100"
-                step="10"
-                value="${this.backgroundOpacity}"
-                ${this.backgroundImageEnabled ? "" : "disabled"}
-              >
-              <span class="background-opacity-value">${this.backgroundImageEnabled ? this.backgroundOpacity : 0}%</span>
-            </label>
-          </div>
-<span class="version-pill">v1.16.3</span></h1>
+          
+<span class="version-pill">v1.16.4</span></h1>
             </div>
 
             <div class="controls">
