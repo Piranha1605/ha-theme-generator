@@ -660,6 +660,8 @@ class ThemeGeneratorPanel extends HTMLElement {
   constructor() {
     super();
     this.backgroundImageEnabled = localStorage.getItem("theme-generator-background-image-enabled") !== "false";
+    this.backgroundImageUrl = localStorage.getItem("theme-generator-background-image-url") || "";
+    this.backgroundImageFilename = localStorage.getItem("theme-generator-background-image-filename") || "";
     this.backgroundOpacity = Number(localStorage.getItem("theme-generator-background-opacity") || "50");
     if (!Number.isFinite(this.backgroundOpacity)) {
       this.backgroundOpacity = 50;
@@ -775,6 +777,7 @@ class ThemeGeneratorPanel extends HTMLElement {
   }
 
   connectedCallback() {
+    this.loadBackgroundSettings();
     try {
       this.render();
     } catch (err) {
@@ -3420,6 +3423,32 @@ class ThemeGeneratorPanel extends HTMLElement {
                 >
                 <span class="background-opacity-value">${this.backgroundImageEnabled ? this.backgroundOpacity : 0}%</span>
               </label>
+              <input
+                id="background-upload-input"
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                hidden
+              >
+
+              <button
+                class="background-upload-button"
+                id="upload-background-image"
+                title="Eigenes Hintergrundbild hochladen"
+                type="button"
+              >
+                Hochladen
+              </button>
+
+              <button
+                class="background-upload-button danger"
+                id="delete-background-image"
+                title="Hintergrundbild löschen"
+                type="button"
+                ${this.backgroundImageUrl ? "" : "disabled"}
+              >
+                Löschen
+              </button>
+
             </div>
 
 
@@ -3554,6 +3583,7 @@ class ThemeGeneratorPanel extends HTMLElement {
       "theme-generator-background-image-enabled",
       this.backgroundImageEnabled ? "true" : "false"
     );
+    this.saveBackgroundSettings();
     this.render();
   }
 
@@ -3565,6 +3595,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
     this.backgroundOpacity = nextValue;
     localStorage.setItem("theme-generator-background-opacity", String(nextValue));
+    this.saveBackgroundSettings();
     this.render();
   }
 
@@ -3580,6 +3611,153 @@ class ThemeGeneratorPanel extends HTMLElement {
     }
 
     return Math.max(0, Math.min(100, value)) / 100;
+  }
+
+
+  async loadBackgroundSettings() {
+    try {
+      const result = await this.hass.callWS({
+        type: "theme_generator/get_background_settings",
+      });
+
+      if (!result) {
+        return;
+      }
+
+      this.backgroundImageEnabled = result.enabled !== false;
+      this.backgroundOpacity = Number(result.opacity ?? this.backgroundOpacity ?? 50);
+      this.backgroundImageFilename = result.filename || "";
+      this.backgroundImageUrl = result.url || "";
+
+      localStorage.setItem(
+        "theme-generator-background-image-enabled",
+        this.backgroundImageEnabled ? "true" : "false"
+      );
+      localStorage.setItem("theme-generator-background-opacity", String(this.backgroundOpacity));
+      localStorage.setItem("theme-generator-background-image-filename", this.backgroundImageFilename);
+      localStorage.setItem("theme-generator-background-image-url", this.backgroundImageUrl);
+
+      this.render();
+    } catch (error) {
+      console.warn("Theme Generator: background settings could not be loaded", error);
+    }
+  }
+
+  async saveBackgroundSettings() {
+    try {
+      const result = await this.hass.callWS({
+        type: "theme_generator/save_background_settings",
+        enabled: this.backgroundImageEnabled,
+        opacity: Number(this.backgroundOpacity || 50),
+        filename: this.backgroundImageFilename || "",
+      });
+
+      if (result) {
+        this.backgroundImageEnabled = result.enabled !== false;
+        this.backgroundOpacity = Number(result.opacity ?? this.backgroundOpacity ?? 50);
+        this.backgroundImageFilename = result.filename || "";
+        this.backgroundImageUrl = result.url || "";
+      }
+    } catch (error) {
+      console.warn("Theme Generator: background settings could not be saved", error);
+    }
+  }
+
+  async uploadBackgroundImage(file) {
+    if (!file) {
+      return;
+    }
+
+    const allowedTypes = ["image/png", "image/jpeg", "image/webp"];
+
+    if (!allowedTypes.includes(file.type)) {
+      this.status = "Nur PNG, JPG, JPEG und WEBP sind erlaubt.";
+      this.render();
+      return;
+    }
+
+    if (file.size > 12 * 1024 * 1024) {
+      this.status = "Das Bild ist zu groß. Maximal erlaubt sind 12 MB.";
+      this.render();
+      return;
+    }
+
+    this.loading = true;
+    this.status = "Hintergrundbild wird hochgeladen …";
+    this.render();
+
+    try {
+      const content = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result || ""));
+        reader.onerror = () => reject(reader.error || new Error("Datei konnte nicht gelesen werden."));
+        reader.readAsDataURL(file);
+      });
+
+      const result = await this.hass.callWS({
+        type: "theme_generator/upload_background_image",
+        filename: file.name,
+        content,
+      });
+
+      this.backgroundImageEnabled = true;
+      this.backgroundOpacity = Number(result?.settings?.opacity ?? 50);
+      this.backgroundImageFilename = result?.filename || result?.settings?.filename || "";
+      this.backgroundImageUrl = result?.url || result?.settings?.url || "";
+
+      localStorage.setItem("theme-generator-background-image-enabled", "true");
+      localStorage.setItem("theme-generator-background-opacity", String(this.backgroundOpacity));
+      localStorage.setItem("theme-generator-background-image-filename", this.backgroundImageFilename);
+      localStorage.setItem("theme-generator-background-image-url", this.backgroundImageUrl);
+
+      this.status = `Hintergrundbild geladen: ${this.backgroundImageFilename}`;
+    } catch (error) {
+      this.status = `Upload fehlgeschlagen: ${error?.message || error}`;
+    } finally {
+      this.loading = false;
+      this.render();
+    }
+  }
+
+  async deleteBackgroundImage() {
+    this.loading = true;
+    this.status = "Hintergrundbild wird gelöscht …";
+    this.render();
+
+    try {
+      const result = await this.hass.callWS({
+        type: "theme_generator/delete_background_image",
+        filename: this.backgroundImageFilename || "",
+      });
+
+      this.backgroundImageEnabled = false;
+      this.backgroundImageFilename = "";
+      this.backgroundImageUrl = "";
+
+      if (result?.settings) {
+        this.backgroundOpacity = Number(result.settings.opacity ?? this.backgroundOpacity ?? 50);
+      }
+
+      localStorage.setItem("theme-generator-background-image-enabled", "false");
+      localStorage.setItem("theme-generator-background-image-filename", "");
+      localStorage.setItem("theme-generator-background-image-url", "");
+
+      this.status = "Hintergrundbild gelöscht.";
+    } catch (error) {
+      this.status = `Löschen fehlgeschlagen: ${error?.message || error}`;
+    } finally {
+      this.loading = false;
+      this.render();
+    }
+  }
+
+  getBackgroundImageStyleValue() {
+    if (!this.backgroundImageEnabled || !this.backgroundImageUrl) {
+      return "none";
+    }
+
+    const safeUrl = String(this.backgroundImageUrl).replace(/"/g, "%22");
+    return `url("${safeUrl}")`;
   }
 
   render() {
@@ -4817,7 +4995,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.4 - linke Gruppen sauber trennen */
+        /* v1.16.5 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -4903,7 +5081,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.4 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.16.5 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -5014,7 +5192,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.4 - Alle Settings */
+        /* v1.16.5 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -5030,7 +5208,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.4 - Filter fuer Alle Settings */
+        /* v1.16.5 - Filter fuer Alle Settings */
         .settings-filter-row {
           display: flex;
           flex-wrap: wrap;
@@ -5057,7 +5235,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.4 - einklappbares linkes Settings-Menü */
+        /* v1.16.5 - einklappbares linkes Settings-Menü */
         .settings-parent {
           display: grid !important;
           grid-template-columns: 26px minmax(0, 1fr) 22px;
@@ -5108,7 +5286,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.4 - Menü dezenter + Übersicht aufgeräumt */
+        /* v1.16.5 - Menü dezenter + Übersicht aufgeräumt */
         .settings-submenu .ha-nav-item,
         .settings-submenu .settings-child {
           background: transparent !important;
@@ -5267,7 +5445,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.4 - sauberes Kartenraster */
+        /* v1.16.5 - sauberes Kartenraster */
         .ha-content.clean-preview {
           display: flex;
           justify-content: center;
@@ -5408,7 +5586,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.4 - Vorschau-Raster repariert */
+        /* v1.16.5 - Vorschau-Raster repariert */
         .ha-content.clean-preview {
           display: flex !important;
           flex-direction: column !important;
@@ -5479,7 +5657,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.4 - Farbkarten und Vorschau sauber ausrichten */
+        /* v1.16.5 - Farbkarten und Vorschau sauber ausrichten */
 
         .ha-nav-icon {
           width: 22px !important;
@@ -5700,7 +5878,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.4 - finaler Layout-Fix */
+        /* v1.16.5 - finaler Layout-Fix */
         .ha-preview {
           grid-template-columns: 250px minmax(0, 1fr) !important;
           width: 100% !important;
@@ -5833,7 +6011,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.4 - Menütext vollständig anzeigen */
+        /* v1.16.5 - Menütext vollständig anzeigen */
         .ha-side {
           width: 280px !important;
           min-width: 280px !important;
@@ -5877,7 +6055,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.4 - Mushroom/Bubble/card-mod sauber gruppieren */
+        /* v1.16.5 - Mushroom/Bubble/card-mod sauber gruppieren */
         .preview-section-title {
           grid-column: 1 / -1;
           margin: 12px 0 -4px 0;
@@ -5899,7 +6077,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.4 - Farbformat Auswahl und Alpha nur bei Farben */
+        /* v1.16.5 - Farbformat Auswahl und Alpha nur bei Farben */
         .format-row {
           display: flex;
           gap: 8px;
@@ -5938,7 +6116,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.4 - Demo Buttons Vorschauseite */
+        /* v1.16.5 - Demo Buttons Vorschauseite */
         .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -6170,7 +6348,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.4 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
+        /* v1.16.5 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
         .ha-content .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -6250,7 +6428,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.4 - Eigene Demo-Seite mit gespeicherter YAML */
+        /* v1.16.5 - Eigene Demo-Seite mit gespeicherter YAML */
         .demo-page-editor-shell {
           width: min(100%, 1240px);
           margin: 0 auto;
@@ -6371,7 +6549,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.4 - Demo Seite als echtes Home-Assistant iframe */
+        /* v1.16.5 - Demo Seite als echtes Home-Assistant iframe */
         .demo-iframe-shell {
           width: min(100%, 1240px);
           margin: 0 auto;
@@ -6455,7 +6633,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.4 - iframe Demo Seite ohne Home Assistant Seitenmenü */
+        /* v1.16.5 - iframe Demo Seite ohne Home Assistant Seitenmenü */
         .demo-iframe-frame {
           position: relative;
           height: 720px;
@@ -6482,7 +6660,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.4 - Editor links, Live-Vorschau rechts */
+        /* v1.16.5 - Editor links, Live-Vorschau rechts */
         .editor-split-view {
           display: grid;
           grid-template-columns: minmax(420px, 0.95fr) minmax(460px, 1.05fr);
@@ -6786,7 +6964,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
       
 
-        /* v1.16.4 - View Tabs immer nebeneinander */
+        /* v1.16.5 - View Tabs immer nebeneinander */
         .view-switch {
           display: inline-flex;
           flex-direction: row;
@@ -6806,7 +6984,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.4 - Template Bibliothek */
+        /* v1.16.5 - Template Bibliothek */
         .templates-page {
           display: grid;
           gap: 18px;
@@ -6945,7 +7123,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 
 
-        /* v1.16.4 - card-mod neue Blöcke */
+        /* v1.16.5 - card-mod neue Blöcke */
         .cardmod-add-actions {
           margin-top: -4px;
           padding-top: 8px;
@@ -6958,7 +7136,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.4 - card-mod / CSS Codekarten */
+        /* v1.16.5 - card-mod / CSS Codekarten */
         .code-field-card {
           align-items: stretch;
         }
@@ -7003,7 +7181,7 @@ class ThemeGeneratorPanel extends HTMLElement {
           width: auto;
         }
 
-        /* v1.16.4 - View Tabs immer in einer Zeile */
+        /* v1.16.5 - View Tabs immer in einer Zeile */
         .view-switch {
           display: inline-flex;
           flex-direction: row;
@@ -7024,7 +7202,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 
 
-        /* v1.16.4 - Editor ohne Live-Vorschau */
+        /* v1.16.5 - Editor ohne Live-Vorschau */
         .editor-single-layout {
           display: block;
           width: 100%;
@@ -7069,7 +7247,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 
 
-        /* v1.16.4 - Hintergrund an/aus */
+        /* v1.16.5 - Hintergrund an/aus */
         .background-off {
           background-image: none !important;
           background: var(--primary-background-color, #111827) !important;
@@ -7135,7 +7313,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 
 
-        /* v1.16.4 - Hintergrundbild Schalter + Deckkraft */
+        /* v1.16.5 - Hintergrundbild Schalter + Deckkraft */
         .generator-bg-layer {
           position: fixed;
           inset: 0;
@@ -7235,7 +7413,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 
 
-        /* v1.16.4 - Bild/Deckkraft in HA-Topbar */
+        /* v1.16.5 - Bild/Deckkraft in HA-Topbar */
         .ha-topbar .preview-background-image-controls {
           display: inline-flex;
           align-items: center;
@@ -7317,6 +7495,33 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
+
+        /* v1.16.5 - Hintergrund Upload */
+        .background-upload-button {
+          border: 1px solid rgba(255,255,255,0.18);
+          background: rgba(255,255,255,0.14);
+          color: inherit;
+          border-radius: 999px;
+          padding: 4px 9px;
+          font-size: 11px;
+          font-weight: 800;
+          cursor: pointer;
+        }
+
+        .background-upload-button:hover {
+          background: rgba(255,255,255,0.22);
+        }
+
+        .background-upload-button.danger {
+          background: rgba(185,28,28,0.42);
+        }
+
+        .background-upload-button:disabled {
+          opacity: .45;
+          cursor: not-allowed;
+        }
+
+
 </style>
 
       <div class="card">
@@ -7324,7 +7529,7 @@ class ThemeGeneratorPanel extends HTMLElement {
           class="generator-bg-layer"
           style="
             --theme-generator-background-opacity: ${this.getBackgroundOpacityValue()};
-            --theme-generator-background-image: var(--theme-generator-current-background-image, none);
+            --theme-generator-background-image: ${this.getBackgroundImageStyleValue()};
           "
         ></div>
 
@@ -7339,7 +7544,7 @@ class ThemeGeneratorPanel extends HTMLElement {
             <div class="title-row">
               <h1>Theme Generator 
           
-<span class="version-pill">v1.16.4</span></h1>
+<span class="version-pill">v1.16.5</span></h1>
             </div>
 
             <div class="controls">
@@ -7381,6 +7586,9 @@ class ThemeGeneratorPanel extends HTMLElement {
     `;
 
     this.shadowRoot.getElementById("toggle-background")?.addEventListener("click", () => this.toggleBackgroundEnabled());
+    this.shadowRoot.getElementById("upload-background-image")?.addEventListener("click", () => this.shadowRoot.getElementById("background-upload-input")?.click());
+    this.shadowRoot.getElementById("background-upload-input")?.addEventListener("change", (event) => this.uploadBackgroundImage(event.target.files?.[0]));
+    this.shadowRoot.getElementById("delete-background-image")?.addEventListener("click", () => this.deleteBackgroundImage());
     this.shadowRoot.getElementById("toggle-background-image")?.addEventListener("click", () => this.toggleBackgroundImageEnabled());
     this.shadowRoot.getElementById("background-opacity")?.addEventListener("input", (event) => this.setBackgroundOpacity(event.target.value));
     this.shadowRoot.querySelectorAll("[data-settings-filter]").forEach((item) => {

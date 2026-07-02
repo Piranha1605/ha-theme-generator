@@ -1,5 +1,6 @@
 from __future__ import annotations
 import logging
+import base64
 import json
 import yaml
 from pathlib import Path
@@ -28,6 +29,14 @@ _LOGGER = logging.getLogger(__name__)
 THEMES_DIR = "themes"
 
 
+BACKGROUND_DIR = "theme_generator/backgrounds"
+BACKGROUND_SETTINGS_FILE = "theme_generator/backgrounds/settings.json"
+BACKGROUND_STATIC_URL = "/theme_generator_backgrounds"
+BACKGROUND_ALLOWED_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp"}
+BACKGROUND_MAX_SIZE = 12 * 1024 * 1024
+
+
+
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     return True
 
@@ -46,14 +55,304 @@ async def _reload_themes(hass: HomeAssistant) -> None:
         _LOGGER.exception("Failed to reload frontend themes")
 
 
+
+# ---------------------------------------------------------------------
+# Background Image Upload
+# ---------------------------------------------------------------------
+
+def _background_dir(hass: HomeAssistant) -> Path:
+    path = Path(hass.config.path(BACKGROUND_DIR))
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def _background_settings_path(hass: HomeAssistant) -> Path:
+    return Path(hass.config.path(BACKGROUND_SETTINGS_FILE))
+
+
+def _safe_background_filename(filename: str) -> str:
+    raw = Path(str(filename or "background.png")).name.strip()
+    stem = Path(raw).stem
+    suffix = Path(raw).suffix.lower()
+
+    if suffix not in BACKGROUND_ALLOWED_EXTENSIONS:
+        raise ValueError("Nur PNG, JPG, JPEG und WEBP sind erlaubt.")
+
+    safe_stem = re.sub(r"[^a-zA-Z0-9_-]+", "_", stem).strip("_") or "background"
+
+    return f"{safe_stem}{suffix}"
+
+
+def _background_url(filename: str) -> str:
+    return f"{BACKGROUND_STATIC_URL}/{filename}"
+
+
+def _read_background_settings_sync(hass: HomeAssistant) -> dict:
+    path = _background_settings_path(hass)
+
+    if not path.exists():
+        return {
+            "enabled": True,
+            "opacity": 50,
+            "filename": "",
+            "url": "",
+        }
+
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return {
+            "enabled": True,
+            "opacity": 50,
+            "filename": "",
+            "url": "",
+        }
+
+    filename = str(data.get("filename") or "")
+    opacity = data.get("opacity", 50)
+
+    try:
+        opacity = int(opacity)
+    except Exception:
+        opacity = 50
+
+    opacity = max(0, min(100, round(opacity / 10) * 10))
+
+    return {
+        "enabled": bool(data.get("enabled", True)),
+        "opacity": opacity,
+        "filename": filename,
+        "url": _background_url(filename) if filename else "",
+    }
+
+
+def _write_background_settings_sync(hass: HomeAssistant, data: dict) -> dict:
+    path = _background_settings_path(hass)
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    filename = str(data.get("filename") or "")
+    opacity = data.get("opacity", 50)
+
+    try:
+        opacity = int(opacity)
+    except Exception:
+        opacity = 50
+
+    opacity = max(0, min(100, round(opacity / 10) * 10))
+
+    saved = {
+        "enabled": bool(data.get("enabled", True)),
+        "opacity": opacity,
+        "filename": filename,
+    }
+
+    path.write_text(json.dumps(saved, indent=2, ensure_ascii=False), encoding="utf-8")
+
+    return {
+        **saved,
+        "url": _background_url(filename) if filename else "",
+    }
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "theme_generator/get_background_settings",
+    }
+)
+@websocket_api.async_response
+async def websocket_get_background_settings(hass: HomeAssistant, connection, msg):
+    settings = await hass.async_add_executor_job(_read_background_settings_sync, hass)
+    connection.send_result(msg["id"], settings)
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "theme_generator/save_background_settings",
+        vol.Optional("enabled"): bool,
+        vol.Optional("opacity"): int,
+        vol.Optional("filename"): str,
+    }
+)
+@websocket_api.async_response
+async def websocket_save_background_settings(hass: HomeAssistant, connection, msg):
+    current = await hass.async_add_executor_job(_read_background_settings_sync, hass)
+
+    next_settings = {
+        "enabled": msg.get("enabled", current.get("enabled", True)),
+        "opacity": msg.get("opacity", current.get("opacity", 50)),
+        "filename": msg.get("filename", current.get("filename", "")),
+    }
+
+    saved = await hass.async_add_executor_job(_write_background_settings_sync, hass, next_settings)
+    connection.send_result(msg["id"], saved)
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "theme_generator/list_background_images",
+    }
+)
+@websocket_api.async_response
+async def websocket_list_background_images(hass: HomeAssistant, connection, msg):
+    def _list() -> dict:
+        folder = _background_dir(hass)
+        items = []
+
+        for path in sorted(folder.iterdir()):
+            if not path.is_file():
+                continue
+
+            if path.suffix.lower() not in BACKGROUND_ALLOWED_EXTENSIONS:
+                continue
+
+            items.append(
+                {
+                    "filename": path.name,
+                    "url": _background_url(path.name),
+                    "size": path.stat().st_size,
+                }
+            )
+
+        settings = _read_background_settings_sync(hass)
+
+        return {
+            "items": items,
+            "settings": settings,
+        }
+
+    result = await hass.async_add_executor_job(_list)
+    connection.send_result(msg["id"], result)
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "theme_generator/upload_background_image",
+        vol.Required("filename"): str,
+        vol.Required("content"): str,
+    }
+)
+@websocket_api.async_response
+async def websocket_upload_background_image(hass: HomeAssistant, connection, msg):
+    def _upload() -> dict:
+        filename = _safe_background_filename(msg["filename"])
+        folder = _background_dir(hass)
+
+        raw_content = str(msg["content"] or "")
+
+        if "," in raw_content and raw_content.lower().startswith("data:"):
+            raw_content = raw_content.split(",", 1)[1]
+
+        try:
+            data = base64.b64decode(raw_content, validate=True)
+        except Exception as err:
+            raise ValueError("Bild konnte nicht gelesen werden.") from err
+
+        if len(data) > BACKGROUND_MAX_SIZE:
+            raise ValueError("Das Bild ist zu groß. Maximal erlaubt sind 12 MB.")
+
+        target = folder / filename
+
+        counter = 2
+        while target.exists():
+            stem = Path(filename).stem
+            suffix = Path(filename).suffix
+            filename = f"{stem}_{counter}{suffix}"
+            target = folder / filename
+            counter += 1
+
+        target.write_bytes(data)
+
+        settings = _write_background_settings_sync(
+            hass,
+            {
+                "enabled": True,
+                "opacity": 50,
+                "filename": filename,
+            },
+        )
+
+        return {
+            "filename": filename,
+            "url": _background_url(filename),
+            "settings": settings,
+        }
+
+    try:
+        result = await hass.async_add_executor_job(_upload)
+    except Exception as err:
+        connection.send_error(msg["id"], "background_upload_failed", str(err))
+        return
+
+    connection.send_result(msg["id"], result)
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "theme_generator/delete_background_image",
+        vol.Optional("filename"): str,
+    }
+)
+@websocket_api.async_response
+async def websocket_delete_background_image(hass: HomeAssistant, connection, msg):
+    def _delete() -> dict:
+        filename = str(msg.get("filename") or "")
+        settings = _read_background_settings_sync(hass)
+
+        if not filename:
+            filename = settings.get("filename", "")
+
+        if filename:
+            safe = _safe_background_filename(filename)
+            path = _background_dir(hass) / safe
+
+            if path.exists() and path.is_file():
+                path.unlink()
+
+            if settings.get("filename") == safe:
+                settings = _write_background_settings_sync(
+                    hass,
+                    {
+                        "enabled": False,
+                        "opacity": settings.get("opacity", 50),
+                        "filename": "",
+                    },
+                )
+
+        return {
+            "deleted": filename,
+            "settings": settings,
+        }
+
+    try:
+        result = await hass.async_add_executor_job(_delete)
+    except Exception as err:
+        connection.send_error(msg["id"], "background_delete_failed", str(err))
+        return
+
+    connection.send_result(msg["id"], result)
+
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     static_path = hass.config.path(f"custom_components/{DOMAIN}/www")
+    background_path = hass.config.path(BACKGROUND_DIR)
+    Path(background_path).mkdir(parents=True, exist_ok=True)
+
 
     await hass.http.async_register_static_paths(
         [
             StaticPathConfig(
                 f"/{DOMAIN}_static",
                 static_path,
+                True,
+            )
+        ]
+    )
+
+    await hass.http.async_register_static_paths(
+        [
+            StaticPathConfig(
+                BACKGROUND_STATIC_URL,
+                background_path,
                 True,
             )
         ]
@@ -69,7 +368,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         config={
             "_panel_custom": {
                 "name": PANEL_TAG,
-                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.16.4",
+                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.16.5",
                 "embed_iframe": False,
                 "trust_external_script": True,
                 "config": {},
@@ -89,6 +388,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     websocket_api.async_register_command(hass, websocket_read_last_work_theme)
     websocket_api.async_register_command(hass, websocket_save_work_theme)
     websocket_api.async_register_command(hass, websocket_list_templates)
+
+    websocket_api.async_register_command(hass, websocket_get_background_settings)
+    websocket_api.async_register_command(hass, websocket_save_background_settings)
+    websocket_api.async_register_command(hass, websocket_list_background_images)
+    websocket_api.async_register_command(hass, websocket_upload_background_image)
+    websocket_api.async_register_command(hass, websocket_delete_background_image)
 
     return True
 
