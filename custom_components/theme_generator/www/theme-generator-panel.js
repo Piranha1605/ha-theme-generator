@@ -3394,7 +3394,7 @@ class ThemeGeneratorPanel extends HTMLElement {
               src="/theme_generator_static/smartdisplay_background.png"
               alt=""
               style="
-                display: ${this.backgroundImageEnabled ? "block" : "none"};
+                display: ${this.backgroundImageEnabled && ["overview", "demo_page"].includes(page) ? "block" : "none"};
                 opacity: ${this.getBackgroundOpacityValue()};
               "
             >
@@ -4998,7 +4998,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.8 - linke Gruppen sauber trennen */
+        /* v1.16.9 - linke Gruppen sauber trennen */
         .left-panel,
         .settings-panel,
         .controls-panel,
@@ -5084,7 +5084,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.8 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
+        /* v1.16.9 - Vollbreite Vorschau, Farbfelder im Vorschaufenster */
         .workbench,
         .editor-layout,
         .main-layout,
@@ -5195,7 +5195,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.8 - Alle Settings */
+        /* v1.16.9 - Alle Settings */
         .preview-color-grid {
           grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
         }
@@ -5211,7 +5211,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.8 - Filter fuer Alle Settings */
+        /* v1.16.9 - Filter fuer Alle Settings */
         .settings-filter-row {
           display: flex;
           flex-wrap: wrap;
@@ -5238,7 +5238,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.8 - einklappbares linkes Settings-Menü */
+        /* v1.16.9 - einklappbares linkes Settings-Menü */
         .settings-parent {
           display: grid !important;
           grid-template-columns: 26px minmax(0, 1fr) 22px;
@@ -5289,7 +5289,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.8 - Menü dezenter + Übersicht aufgeräumt */
+        /* v1.16.9 - Menü dezenter + Übersicht aufgeräumt */
         .settings-submenu .ha-nav-item,
         .settings-submenu .settings-child {
           background: transparent !important;
@@ -5448,7 +5448,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.8 - sauberes Kartenraster */
+        /* v1.16.9 - sauberes Kartenraster */
         .ha-content.clean-preview {
           display: flex;
           justify-content: center;
@@ -5589,7 +5589,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.8 - Vorschau-Raster repariert */
+        /* v1.16.9 - Vorschau-Raster repariert */
         .ha-content.clean-preview {
           display: flex !important;
           flex-direction: column !important;
@@ -5660,7 +5660,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.8 - Farbkarten und Vorschau sauber ausrichten */
+        /* v1.16.9 - Farbkarten und Vorschau sauber ausrichten */
 
         .ha-nav-icon {
           width: 22px !important;
@@ -5881,7 +5881,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.8 - finaler Layout-Fix */
+        /* v1.16.9 - finaler Layout-Fix */
         .ha-preview {
           grid-template-columns: 250px minmax(0, 1fr) !important;
           width: 100% !important;
@@ -6014,7 +6014,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.8 - Menütext vollständig anzeigen */
+        /* v1.16.9 - Menütext vollständig anzeigen */
         .ha-side {
           width: 280px !important;
           min-width: 280px !important;
@@ -6058,7 +6058,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.8 - Mushroom/Bubble/card-mod sauber gruppieren */
+        /* v1.16.9 - Mushroom/Bubble/card-mod sauber gruppieren */
         .preview-section-title {
           grid-column: 1 / -1;
           margin: 12px 0 -4px 0;
@@ -6080,7 +6080,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.8 - Farbformat Auswahl und Alpha nur bei Farben */
+        /* v1.16.9 - Farbformat Auswahl und Alpha nur bei Farben */
         .format-row {
           display: flex;
           gap: 8px;
@@ -6119,7 +6119,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.8 - Demo Buttons Vorschauseite */
+        /* v1.16.9 - Demo Buttons Vorschauseite */
         .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -6351,7 +6351,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.8 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
+        /* v1.16.9 - Demo Buttons im HA Vorschaufenster und mit Themefarben */
         .ha-content .demo-preview-page {
           width: min(100%, 1220px);
           margin: 0 auto;
@@ -6431,7 +6431,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.8 - Eigene Demo-Seite mit gespeicherter YAML */
+        /* v1.16.9 - Eigene Demo-Seite mit gespeicherter YAML */
         .demo-page-editor-shell {
           width: min(100%, 1240px);
           margin: 0 auto;
@@ -6552,7 +6552,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.8 - Demo Seite als echtes Home-Assistant iframe */
+        /* v1.16.9 - Demo Seite als echtes Home-Assistant iframe */
         .demo-iframe-shell {
           width: min(100%, 1240px);
           margin: 0 auto;
@@ -6636,7 +6636,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.8 - iframe Demo Seite ohne Home Assistant Seitenmenü */
+        /* v1.16.9 - iframe Demo Seite ohne Home Assistant Seitenmenü */
         .demo-iframe-frame {
           position: relative;
           height: 720px;
@@ -6663,7 +6663,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.8 - Editor links, Live-Vorschau rechts */
+        /* v1.16.9 - Editor links, Live-Vorschau rechts */
         .editor-split-view {
           display: grid;
           grid-template-columns: minmax(420px, 0.95fr) minmax(460px, 1.05fr);
@@ -6967,7 +6967,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
       
 
-        /* v1.16.8 - View Tabs immer nebeneinander */
+        /* v1.16.9 - View Tabs immer nebeneinander */
         .view-switch {
           display: inline-flex;
           flex-direction: row;
@@ -6987,7 +6987,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.8 - Template Bibliothek */
+        /* v1.16.9 - Template Bibliothek */
         .templates-page {
           display: grid;
           gap: 18px;
@@ -7126,7 +7126,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 
 
-        /* v1.16.8 - card-mod neue Blöcke */
+        /* v1.16.9 - card-mod neue Blöcke */
         .cardmod-add-actions {
           margin-top: -4px;
           padding-top: 8px;
@@ -7139,7 +7139,7 @@ class ThemeGeneratorPanel extends HTMLElement {
         }
 
 
-        /* v1.16.8 - card-mod / CSS Codekarten */
+        /* v1.16.9 - card-mod / CSS Codekarten */
         .code-field-card {
           align-items: stretch;
         }
@@ -7184,7 +7184,7 @@ class ThemeGeneratorPanel extends HTMLElement {
           width: auto;
         }
 
-        /* v1.16.8 - View Tabs immer in einer Zeile */
+        /* v1.16.9 - View Tabs immer in einer Zeile */
         .view-switch {
           display: inline-flex;
           flex-direction: row;
@@ -7205,7 +7205,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 
 
-        /* v1.16.8 - Editor ohne Live-Vorschau */
+        /* v1.16.9 - Editor ohne Live-Vorschau */
         .editor-single-layout {
           display: block;
           width: 100%;
@@ -7250,7 +7250,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 
 
-        /* v1.16.8 - Hintergrund an/aus */
+        /* v1.16.9 - Hintergrund an/aus */
         .background-off {
           background-image: none !important;
           background: var(--primary-background-color, #111827) !important;
@@ -7316,7 +7316,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 
 
-        /* v1.16.8 - Hintergrundbild Schalter + Deckkraft */
+        /* v1.16.9 - Hintergrundbild Schalter + Deckkraft */
         .generator-bg-layer {
           position: fixed;
           inset: 0;
@@ -7416,7 +7416,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 
 
-        /* v1.16.8 - Bild/Deckkraft in HA-Topbar */
+        /* v1.16.9 - Bild/Deckkraft in HA-Topbar */
         .ha-topbar .preview-background-image-controls {
           display: inline-flex;
           align-items: center;
@@ -7499,7 +7499,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 
 
-        /* v1.16.8 - Hintergrund Upload */
+        /* v1.16.9 - Hintergrund Upload */
         .background-upload-button {
           border: 1px solid rgba(255,255,255,0.18);
           background: rgba(255,255,255,0.14);
@@ -7526,7 +7526,7 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 
 
-        /* v1.16.8 - festes Bild direkt in der Vorschaufläche */
+        /* v1.16.9 - festes Bild direkt in der Vorschaufläche */
         .preview-bg-image-on {
           position: relative;
           overflow: hidden;
@@ -7557,14 +7557,14 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 
 
-        /* v1.16.8 - alter globaler Background-Layer aus */
+        /* v1.16.9 - alter globaler Background-Layer aus */
         .generator-bg-layer {
           display: none !important;
         }
 
 
 
-        /* v1.16.8 - echtes Bild direkt in der HA-Vorschau */
+        /* v1.16.9 - echtes Bild direkt in der HA-Vorschau */
         .ha-main {
           position: relative;
           overflow: hidden;
@@ -7593,9 +7593,19 @@ class ThemeGeneratorPanel extends HTMLElement {
 
 
 
-        /* v1.16.8 - alter Generator Background Layer deaktiviert */
+        /* v1.16.9 - alter Generator Background Layer deaktiviert */
         .generator-bg-layer {
           display: none !important;
+        }
+
+
+
+        /* v1.16.9 - Einstellungsseiten bleiben ohne Bild für Schattenprüfung */
+        .ha-main .preview-color-editor,
+        .ha-main .preview-color-grid,
+        .ha-main .editor-single-layout {
+          position: relative;
+          z-index: 2;
         }
 
 
@@ -7621,7 +7631,7 @@ class ThemeGeneratorPanel extends HTMLElement {
             <div class="title-row">
               <h1>Theme Generator 
           
-<span class="version-pill">v1.16.8</span></h1>
+<span class="version-pill">v1.16.9</span></h1>
             </div>
 
             <div class="controls">
