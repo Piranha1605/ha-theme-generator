@@ -65,7 +65,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         config={
             "_panel_custom": {
                 "name": PANEL_TAG,
-                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.15.7",
+                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.15.8",
                 "embed_iframe": False,
                 "trust_external_script": True,
                 "config": {},
@@ -969,6 +969,171 @@ async def websocket_parse_demo_page_yaml(hass, connection, msg):
 TEMPLATE_DIR = "theme_generator/templates"
 
 DEFAULT_TEMPLATE_FILES = {
+    "bubble/home_assistant_default.yaml": """name: Bubble Home Assistant Default Styling
+type: bubble-card-module
+target: bubble-card
+category: bubble
+version: "v1.1"
+creator: Clooos
+link: "https://github.com/Clooos/Bubble-Card/discussions/1230"
+description: Dieses Modul übernimmt Home Assistants Standard-Optik für Bubble Card. Ideal als Basis für saubere Bubble-Styles über Theme-Variablen.
+preview: home_assistant_default.svg
+
+variables:
+  accent_color: "rgba(0,170,240,0.6)"
+  icon_size: "22px"
+  icon_box_size: "36px"
+  state_font_size: "12px"
+  name_font_size: "14px"
+
+template: |
+  home-assistant-default:
+    name: Home Assistant default styling
+    version: "v1.1"
+    creator: "Clooos"
+    link: "https://github.com/Clooos/Bubble-Card/discussions/1230"
+    description: This module applies Home Assistant’s default styling to Bubble Card. To set it as the default, move it under <code>default:</code> in your YAML file.
+    code: |
+      :host {
+        --bubble-accent-color: {{ accent_color }};
+        --bubble-main-background-color: var(--ha-card-background, var(--card-background-color, #fff));
+        --bubble-border-radius: var(--ha-card-border-radius, 12px);
+        --bubble-icon-border-radius: 32px;
+        --bubble-button-border-radius: var(--bubble-border-radius);
+        --bubble-climate-button-background-color: var(--bubble-icon-background-color);
+        --bubble-border: var(--ha-card-border-width, 1px) solid var(--ha-card-border-color, var(--divider-color, #e0e0e0));
+        --bubble-secondary-background-color: transparent;
+      }
+
+      .bubble-container {
+        -webkit-backdrop-filter: var(--ha-card-backdrop-filter, none);
+        backdrop-filter: var(--ha-card-backdrop-filter, none);
+        box-shadow: var(--ha-card-box-shadow, none);
+        box-sizing: border-box;
+      }
+
+      .bubble-icon-container,
+      .large .bubble-icon-container {
+        --mdc-icon-size: {{ icon_size }};
+        min-width: {{ icon_box_size }} !important;
+        min-height: {{ icon_box_size }} !important;
+      }
+
+      .large .bubble-cover-card-container > .bubble-buttons {
+        --bubble-cover-main-background-color: none;
+      }
+
+      .bubble-sub-button.background-on::before,
+      .bubble-sub-button.background-off::before,
+      .bubble-temperature-container::before,
+      .bubble-icon-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: var(--control-number-buttons-background-opacity, .2);
+        border-radius: var(--bubble-border-radius);
+        background: var(--control-number-buttons-background-color, var(--disabled-color));
+      }
+
+      .bubble-icon-container::before {
+        background: var(--state-inactive-color);
+        border-radius: var(--bubble-icon-border-radius);
+      }
+
+      .bubble-sub-button {
+        border: 0px solid transparent !important;
+      }
+
+      .no-icon-select-arrow {
+        right: 4px !important;
+      }
+
+      .large .bubble-icon-container {
+        margin-left: 9px;
+      }
+
+      .bubble-state {
+        opacity: 1;
+        font-weight: 400;
+        font-size: {{ state_font_size }};
+        letter-spacing: .4px;
+      }
+
+      :not(.bubble-separator) > .bubble-name {
+        font-weight: 500;
+        font-size: {{ name_font_size }};
+        letter-spacing: 0.1px;
+      }
+
+      .bubble-pop-up-background {
+        filter: brightness(0.96);
+        --bubble-pop-up-border-radius: calc(var(--ha-card-border-radius, 12px) * 1.4);
+      }
+
+      .bubble-header-container {
+        --bubble-secondary-background-color: var(--background-color-2);
+      }
+
+      ha-select {
+        --bubble-list-item-accent-color: none !important;
+        --mdc-theme-surface: var(--card-background-color);
+      }
+
+      mwc-list-item[selected] {
+        color: inherit !important;
+        --mdc-ripple-press-opacity: 0 !important;
+      }
+
+      mwc-list-item[selected]::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--primary-color);
+        opacity: 0.24;
+      }
+""",
+    "bubble/home_assistant_default.svg": """<svg xmlns="http://www.w3.org/2000/svg" width="900" height="420" viewBox="0 0 900 420">
+  <defs>
+    <linearGradient id="card" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#273244"/>
+      <stop offset="1" stop-color="#17202d"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-30%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="18" stdDeviation="20" flood-color="#000" flood-opacity=".35"/>
+    </filter>
+  </defs>
+  <rect width="900" height="420" rx="34" fill="#101722"/>
+  <text x="58" y="70" font-family="Inter,Arial,sans-serif" font-size="34" font-weight="800" fill="#fff" opacity=".92">Bubble Card</text>
+  <text x="58" y="108" font-family="Inter,Arial,sans-serif" font-size="20" fill="#fff" opacity=".58">Home Assistant Default Styling</text>
+
+  <rect x="58" y="150" width="784" height="116" rx="26" fill="url(#card)" filter="url(#shadow)" stroke="#ffffff" stroke-opacity=".12"/>
+  <circle cx="122" cy="208" r="28" fill="#39475b"/>
+  <path d="M112 212c9-19 21-32 37-39-5 16-15 28-29 38 15-4 29-3 42 4-17 8-32 9-50-3z" fill="#dce7f5" opacity=".88"/>
+  <text x="178" y="200" font-family="Inter,Arial,sans-serif" font-size="23" font-weight="700" fill="#fff" opacity=".9">Beleuchtung Küche</text>
+  <text x="178" y="232" font-family="Inter,Arial,sans-serif" font-size="17" fill="#fff" opacity=".56">Aus · Küche</text>
+  <rect x="696" y="180" width="86" height="56" rx="28" fill="#2f3d50" stroke="#ffffff" stroke-opacity=".10"/>
+  <circle cx="728" cy="208" r="22" fill="#00aaf0" opacity=".72"/>
+
+  <rect x="58" y="290" width="235" height="72" rx="22" fill="#202b3b" stroke="#ffffff" stroke-opacity=".10"/>
+  <circle cx="98" cy="326" r="18" fill="#39475b"/>
+  <text x="132" y="333" font-family="Inter,Arial,sans-serif" font-size="18" font-weight="700" fill="#fff" opacity=".82">Sub Button</text>
+
+  <rect x="322" y="290" width="235" height="72" rx="22" fill="#202b3b" stroke="#ffffff" stroke-opacity=".10"/>
+  <circle cx="362" cy="326" r="18" fill="#39475b"/>
+  <text x="396" y="333" font-family="Inter,Arial,sans-serif" font-size="18" font-weight="700" fill="#fff" opacity=".82">Default HA</text>
+
+  <rect x="586" y="290" width="235" height="72" rx="22" fill="#202b3b" stroke="#ffffff" stroke-opacity=".10"/>
+  <circle cx="626" cy="326" r="18" fill="#00aaf0" opacity=".72"/>
+  <text x="660" y="333" font-family="Inter,Arial,sans-serif" font-size="18" font-weight="700" fill="#fff" opacity=".82">Clean Module</text>
+</svg>
+""",
+
     "bubble/bubble_neumorph_button.yaml": """name: Bubble Neumorph Button
 type: bubble-card-style
 target: bubble-button-card
