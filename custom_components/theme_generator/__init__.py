@@ -69,7 +69,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         config={
             "_panel_custom": {
                 "name": PANEL_TAG,
-                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.16.0",
+                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.16.1",
                 "embed_iframe": False,
                 "trust_external_script": True,
                 "config": {},
@@ -191,6 +191,125 @@ def _rename_theme_root(content: str, new_theme_name: str) -> str:
 
     return content
 
+
+
+
+# ---------------------------------------------------------------------
+# Bubble Card card-mod Output
+# ---------------------------------------------------------------------
+
+BUBBLE_CARDMOD_BLOCK = """bubble-card$:
+  :host {
+    --bubble-accent-color: var(--accent-color);
+    --bubble-main-background-color: var(--ha-card-background, var(--card-background-color));
+    --bubble-border-radius: var(--ha-card-border-radius, 18px);
+    --bubble-icon-border-radius: 32px;
+    --bubble-button-border-radius: var(--bubble-border-radius);
+    --bubble-climate-button-background-color: var(--bubble-icon-background-color);
+    --bubble-border: var(--ha-card-border-width, 1px) solid var(--ha-card-border-color, var(--divider-color));
+    --bubble-secondary-background-color: rgba(255,255,255,0.04);
+  }
+
+  .bubble-container {
+    -webkit-backdrop-filter: var(--ha-card-backdrop-filter, blur(16px));
+    backdrop-filter: var(--ha-card-backdrop-filter, blur(16px));
+    box-shadow: var(--ha-card-box-shadow, none);
+    box-sizing: border-box;
+    border: var(--ha-card-border-width, 1px) solid var(--ha-card-border-color, rgba(255,255,255,0.12));
+    background: var(--ha-card-background, var(--card-background-color)) !important;
+  }
+
+  .bubble-icon-container,
+  .large .bubble-icon-container {
+    --mdc-icon-size: 22px;
+    min-width: 36px !important;
+    min-height: 36px !important;
+  }
+
+  .bubble-icon-container::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: var(--control-number-buttons-background-opacity, .2);
+    border-radius: var(--bubble-icon-border-radius);
+    background: var(--state-inactive-color);
+  }
+
+  .bubble-sub-button.background-on::before,
+  .bubble-sub-button.background-off::before,
+  .bubble-temperature-container::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: var(--control-number-buttons-background-opacity, .2);
+    border-radius: var(--bubble-border-radius);
+    background: var(--control-number-buttons-background-color, var(--disabled-color));
+  }
+
+  .bubble-sub-button {
+    border: 0 solid transparent !important;
+  }
+
+  .bubble-state {
+    opacity: 1;
+    font-weight: 400;
+    font-size: 12px;
+    letter-spacing: .4px;
+    color: var(--secondary-text-color);
+  }
+
+  :not(.bubble-separator) > .bubble-name {
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: 0.1px;
+    color: var(--primary-text-color);
+  }
+
+  .bubble-pop-up-background {
+    filter: brightness(0.96);
+    --bubble-pop-up-border-radius: calc(var(--ha-card-border-radius, 18px) * 1.4);
+  }
+
+  .bubble-header-container {
+    --bubble-secondary-background-color: var(--secondary-background-color);
+  }
+
+  ha-select {
+    --bubble-list-item-accent-color: none !important;
+    --mdc-theme-surface: var(--card-background-color);
+  }
+
+  mwc-list-item[selected] {
+    color: inherit !important;
+    --mdc-ripple-press-opacity: 0 !important;
+  }
+
+  mwc-list-item[selected]::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: var(--primary-color);
+    opacity: 0.24;
+  }
+"""
+
+
+def _ensure_bubble_cardmod_block(theme_values: dict) -> dict:
+    if not isinstance(theme_values, dict):
+        return theme_values
+
+    theme_values = dict(theme_values)
+    current = str(theme_values.get("card-mod-card", "") or "").strip()
+
+    if "bubble-card$:" in current:
+        return theme_values
+
+    if current:
+        theme_values["card-mod-card"] = current.rstrip() + "\n\n" + BUBBLE_CARDMOD_BLOCK
+    else:
+        theme_values["card-mod-card"] = BUBBLE_CARDMOD_BLOCK
+
+    return theme_values
 
 
 # ---------------------------------------------------------------------
@@ -601,6 +720,7 @@ def _save_theme_file_version_sync(hass: HomeAssistant, filename: str, content: s
             if isinstance(theme_values, dict):
                 theme_values = dict(theme_values)
                 theme_values["card-mod-theme"] = new_theme_name
+                theme_values = _ensure_bubble_cardmod_block(theme_values)
 
                 new_content = _format_theme_output(new_theme_name, theme_values)
             else:
