@@ -69,7 +69,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         config={
             "_panel_custom": {
                 "name": PANEL_TAG,
-                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.15.9",
+                "module_url": f"/{DOMAIN}_static/{PANEL_FILENAME}?v=1.16.0",
                 "embed_iframe": False,
                 "trust_external_script": True,
                 "config": {},
@@ -445,15 +445,24 @@ def _yaml_scalar_for_theme_output(value):
         if "\n" in value:
             return None
 
+        # PyYAML darf lange CSS-Werte nicht umbrechen.
+        # Sonst entsteht kaputtes YAML, z. B. eine einzelne Zeile "inset".
         dumped = yaml.safe_dump(
             value,
             allow_unicode=True,
             default_flow_style=True,
             sort_keys=False,
+            width=1000000,
         ).strip()
 
         if dumped.endswith("\n..."):
             dumped = dumped[:-4].strip()
+
+        # Absolute Sicherheit: Wenn PyYAML trotzdem einen Umbruch erzeugt,
+        # wird der Wert hart als YAML-String gequotet.
+        if "\n" in dumped:
+            escaped = value.replace("'", "''")
+            return f"'{escaped}'"
 
         return dumped
 
@@ -463,6 +472,7 @@ def _yaml_scalar_for_theme_output(value):
             allow_unicode=True,
             default_flow_style=True,
             sort_keys=False,
+            width=1000000,
         ).strip()
 
         if dumped.endswith("\n..."):
