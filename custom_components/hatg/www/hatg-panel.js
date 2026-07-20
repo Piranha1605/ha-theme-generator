@@ -1,4 +1,4 @@
-const HATG_VERSION = "0.1.4";
+const HATG_VERSION = "0.1.5";
 
 const HATG_MANIFEST = {
   "sections": [
@@ -3006,6 +3006,22 @@ const HATG_SYNC_TRIADS = {
   "secondary-background-color": { bubble: "bubble-secondary-background-color", mush: "mush-control-background-color" },
 };
 
+// v0.1.5: Enrico - "ich habe trotzdem nur 5 felder mit ha mush und bubble
+// icons zum syncen." Antwort/Klaerung: die 3-Icon-Version (HATG_SYNC_TRIADS)
+// zeigt bewusst nur Felder mit einem ECHTEN eigenen Gegenstueck in BEIDEN
+// Frameworks - das sind nur die 5 Grundfarben (Mushroom-Karten erben Radius/
+// Schatten automatisch von ha-card, haben also gar kein eigenes Feld dafuer;
+// bei Rahmenfarbe/-dicke gibt es nur ein Bubble-Gegenstueck, kein Mushroom-
+// Pendant). Enrico wollte dafuer trotzdem ein kleineres Sync-Widget - hier
+// die 2-Icon-Variante (nur HA + Bubble, kein Mushroom-Icon) fuer genau diese
+// Faelle. "kind: color" zeigt einen Farbklecks, "kind: border-width" zeigt
+// stattdessen den reinen Breiten-Text (z. B. "2px"), weil das Bubble-Ziel
+// ("bubble-border") ein Shorthand-String ist, kein eigenstaendiger Farbwert.
+const HATG_SYNC_PAIRS = {
+  "ha-card-border-color": { bubble: "bubble-border-color", kind: "color" },
+  "ha-card-border-width": { bubble: "bubble-border", kind: "border-width" },
+};
+
 const HATG_FONT_PRESETS = [
   { id: "system", label: "Systemstandard", stack: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif" },
   { id: "apple", label: "Apple (SF Pro)", stack: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', sans-serif" },
@@ -3842,9 +3858,13 @@ class HATGPanel extends HTMLElement {
     // Ueberschrift, gefaerbt ueber hatgNavIconGradient(parentId) - damit
     // erben ALLE Kinder einer Gruppe automatisch dieselbe Farbe wie ihr
     // Elternreiter (blau/rot/gruen), egal welches Kind es ist.
+    // v0.1.5: Enrico - "bitte alle menüeinträge auf des selbe design also
+    // farbe größe schriftart wie in dem bubble icon." Die anfangs kleinere
+    // Badge-Variante (nav-icon-badge-sub, 20px) entfaellt - Unterordner
+    // nutzen jetzt exakt dasselbe 26px-Badge wie die Gruppen-Ueberschrift.
     const renderSubItem = (group, parentId) => `
         <button class="nav-item nav-subitem ${group.id === this._activeSection ? "active" : ""}" type="button" data-section="${group.id}">
-          <span class="nav-icon-badge nav-icon-badge-sub" style="background: ${hatgNavIconGradient(parentId)};"><ha-icon icon="${group.icon || "mdi:folder-outline"}"></ha-icon></span>
+          <span class="nav-icon-badge" style="background: ${hatgNavIconGradient(parentId)};"><ha-icon icon="${group.icon || "mdi:folder-outline"}"></ha-icon></span>
           <span>${group.label}</span>
         </button>`;
     const renderPlainHeading = (label) => `<div class="nav-group-heading nav-group-heading-plain">${label}</div>`;
@@ -3910,6 +3930,47 @@ class HATGPanel extends HTMLElement {
           <span class="sync-triad-dot" style="background:${mushHex};"></span>
         </span>
         <button type="button" class="sync-triad-button" data-sync-triad="${key}" title="Bubble Card + Mushroom wieder auf diese Farbe angleichen">
+          <ha-icon icon="mdi:sync"></ha-icon>
+        </button>
+      </span>`;
+  }
+
+  // v0.1.5: Enrico wollte fuer Felder mit nur EINEM echten Gegenstueck
+  // (aktuell: Rahmenfarbe/-dicke, nur Bubble Card hat ein eigenes Feld,
+  // Mushroom nicht) trotzdem eine kompakte Sync-Loesung - siehe
+  // HATG_SYNC_PAIRS/syncPair(). Nur 2 Chips (HA + Bubble) statt 3, kein
+  // Mushroom-Icon. Bei "kind: border-width" gibt es keinen sinnvollen
+  // Farbklecks (Bubble-Ziel ist ein Shorthand-String, keine reine Farbe) -
+  // stattdessen zeigt der Chip den reinen Breiten-Text (z. B. "2px").
+  renderSyncPair(key) {
+    const pair = HATG_SYNC_PAIRS[key];
+    if (!pair) return "";
+    const values = this.currentValues();
+    const toHex = (v) => {
+      if (!v) return "#000000";
+      return hatgIsHex(v) ? hatgNormalizeHex6(v) : hatgParseRgba(v).hex;
+    };
+    let haChip;
+    let bubbleChip;
+    if (pair.kind === "border-width") {
+      const bubbleWidth = hatgParseBorderShorthand(values[pair.bubble]).width;
+      haChip = `<span class="sync-triad-value">${hatgEscape(String(values[key] ?? ""))}</span>`;
+      bubbleChip = `<span class="sync-triad-value">${hatgEscape(bubbleWidth)}</span>`;
+    } else {
+      haChip = `<span class="sync-triad-dot" style="background:${toHex(values[key])};"></span>`;
+      bubbleChip = `<span class="sync-triad-dot" style="background:${toHex(values[pair.bubble])};"></span>`;
+    }
+    return `
+      <span class="sync-triad sync-pair" title="Aktueller Wert je Framework">
+        <span class="sync-triad-chip" title="Home Assistant: ${key}">
+          <ha-icon icon="mdi:home-assistant"></ha-icon>
+          ${haChip}
+        </span>
+        <span class="sync-triad-chip" title="Bubble Card: ${pair.bubble}">
+          <ha-icon icon="mdi:chart-bubble"></ha-icon>
+          ${bubbleChip}
+        </span>
+        <button type="button" class="sync-triad-button" data-sync-pair="${key}" title="Bubble Card wieder auf diesen Wert angleichen">
           <ha-icon icon="mdi:sync"></ha-icon>
         </button>
       </span>`;
@@ -4018,6 +4079,7 @@ class HATGPanel extends HTMLElement {
               <input class="hex-input rgba-raw-input" type="text" spellcheck="false" data-text-field="${key}" value="${hatgEscape(hatgComposeRgba(parsed.hex, parsed.alpha))}" aria-label="${key} rgba-Wert" />
             </span>
             ${this.renderSyncTriad(key)}
+            ${this.renderSyncPair(key)}
             ${copyButton}
           </div>`;
       }
@@ -4034,6 +4096,7 @@ class HATGPanel extends HTMLElement {
             <input class="hex-input" type="text" value="${displayValue}" spellcheck="false" data-hex-input="${key}" data-hex-format="${viewFmt}" aria-label="${key} Farbcode" />
           </span>
           ${this.renderSyncTriad(key)}
+          ${this.renderSyncPair(key)}
           ${copyButton}
         </div>`;
     }
@@ -4068,6 +4131,7 @@ class HATGPanel extends HTMLElement {
           <span class="field-input">
             <input class="text-input" type="text" value="${hatgEscape(value)}" spellcheck="false" data-text-field="${key}" />
           </span>
+          ${this.renderSyncPair(key)}
         </div>`;
   }
 
@@ -4162,16 +4226,27 @@ class HATGPanel extends HTMLElement {
       </div>`;
   }
 
+  // v0.1.5: Enrico - "den button müssen wir noch nach unten verschieben.
+  // am besten als header über accent color. und das auf allen seiten."
+  // Der "Auswählen"-Button sass bisher oben im ".section-toolbar" NEBEN dem
+  // Light/Dark-Umschalter - inhaltlich gehoert er aber zur Feldliste
+  // darunter (er schaltet ja NUR deren Checkboxen ein/aus), nicht zum
+  // Editor-Modus. Jetzt eigene Zeile direkt ÜBER der Feldliste (nach dem
+  // Filterblock, vor dem ersten Feld) - auf allen Seiten, die
+  // renderFieldList() nutzen (Start, User-Sektionen, Profi-Sektionen/
+  // -Gruppen), sowie identisch in renderAlleFelder() nachgezogen.
   renderSectionToolbar(keys) {
     return `
       <div class="section-toolbar">
         ${this.renderModeToggleBar()}
+      </div>
+      ${this.renderFilterBar(keys)}
+      <div class="field-list-header">
         <button class="select-toggle ${this._state.selectMode ? "active" : ""}" type="button" data-toggle-select>
           <ha-icon icon="mdi:checkbox-multiple-marked-outline"></ha-icon>
           <span>Auswählen</span>
         </button>
-      </div>
-      ${this.renderFilterBar(keys)}`;
+      </div>`;
   }
 
   renderBulkBar() {
@@ -4344,10 +4419,6 @@ class HATGPanel extends HTMLElement {
         <div class="editing-surface ${dark ? "editing-surface-dark" : ""}">
           <div class="section-toolbar">
             ${this.renderModeToggleBar()}
-            <button class="select-toggle ${this._state.selectMode ? "active" : ""}" type="button" data-toggle-select>
-              <ha-icon icon="mdi:checkbox-multiple-marked-outline"></ha-icon>
-              <span>Auswählen</span>
-            </button>
           </div>
           <label class="search-field">
             <ha-icon icon="mdi:magnify"></ha-icon>
@@ -4355,6 +4426,12 @@ class HATGPanel extends HTMLElement {
           </label>
           ${this.renderTagFilterBar(tagFiltered)}
           ${this.renderFilterBar(tagFiltered)}
+          <div class="field-list-header">
+            <button class="select-toggle ${this._state.selectMode ? "active" : ""}" type="button" data-toggle-select>
+              <ha-icon icon="mdi:checkbox-multiple-marked-outline"></ha-icon>
+              <span>Auswählen</span>
+            </button>
+          </div>
           <div class="field-list">
             ${shown.length
               ? shown
@@ -4388,26 +4465,40 @@ class HATGPanel extends HTMLElement {
     // Manifest-Sektion bekommt ihre eigene Karte (gleicher Karten-Look wie
     // .field-list auf "Alle Felder": eigener Rahmen/Radius/Hintergrund je
     // Block, statt einer einzigen durchgehenden Box fuer die ganze Seite).
-    // Der Farbpunkt-Kreis (.code-dot) nutzt jetzt denselben weichen
-    // Standard-Schatten (--hatg-click-shadow) wie der native Farbwaehler auf
-    // "Alle Felder", statt eines eigenen, haerteren Schattens. Funktion der
-    // Farbpunkte selbst (Klick oeffnet den nativen Farbwaehler) unveraendert.
+    //
+    // v0.1.5: Enrico - "kannst du den code editor auch noch optisch dem des
+    // card mod anpassen. und genauso bearbeitbar machen." Der bisherige
+    // Quick-Edit-Codeblock war reiner Klartext (heller Hintergrund,
+    // ".code-line"/".code-key"/".code-value") mit nur EINER Bearbeitungs-
+    // moeglichkeit (Farbpunkt -> nativer Farbwaehler) - anders als der
+    // dunkle, syntax-hervorgehobene, frei eintippbare Editor auf der
+    // card-mod-card-yaml-Seite (".code-editor-wrap"/".code-editor-highlight",
+    // gefuellt ueber hatgHighlightCode()). Jetzt nutzt jede Sektionskarte
+    // genau dieselbe Komponente: eine Textarea mit allen "key: "wert""-
+    // Zeilen dieser Sektion, live farbig unterlegt, direkt eintippbar.
+    // Aenderungen werden beim Tippen sofort in die einzelnen Felder
+    // zurückgeschrieben (siehe commitQuickEditBlock()) - ohne bei jedem
+    // Tastendruck neu zu rendern (sonst würde der Cursor mitten im Tippen
+    // verspringen, genau wie beim bestehenden Long-Text-Editor vermieden).
+    // Lange/mehrzeilige Werte (aktuell nur card-mod-card-yaml selbst, siehe
+    // hatgIsLong()) bleiben aussen vor - die haben bereits ihren eigenen
+    // vollwertigen Editor auf der Card-mod-Generator-Seite; sie hier als
+    // riesigen Textblock mit reinzumischen wuerde die kompakte Uebersicht
+    // sprengen. Der bisherige Farbpunkt-Klick-Picker (".code-dot") entfaellt
+    // dadurch bewusst - passend zu "genauso bearbeitbar wie card-mod"
+    // (dort gibt es auch keinen Picker, nur Text).
     const sectionCards = [];
     HATG_MANIFEST.sections.forEach((s) => {
-      const setKeys = s.keys.filter((k) => values[k] !== undefined && values[k] !== "");
+      const setKeys = s.keys.filter((k) => values[k] !== undefined && values[k] !== "" && !hatgIsLong(k, values[k]));
       if (!setKeys.length) return;
-      const lines = setKeys.map((k) => {
-        const v = values[k];
-        if (hatgIsHex(v)) {
-          return `<div class="code-line"><input type="color" class="code-dot" data-code-color="${k}" value="${v}" title="${k}" /><span class="code-key">${k}:</span> <span class="code-value" style="color:${v}">"${v}"</span></div>`;
-        }
-        const shortVal = String(v).includes("\n") ? String(v).split("\n")[0] + " …" : String(v).slice(0, 90);
-        return `<div class="code-line"><span class="code-dot-spacer"></span><span class="code-key">${k}:</span> <span class="code-value">"${hatgEscape(shortVal)}"</span></div>`;
-      });
+      const rawText = setKeys.map((k) => `${k}: ${hatgQuoteYamlValue(values[k])}`).join("\n");
       sectionCards.push(`
         <div class="code-section-card">
           <div class="code-section-title">${hatgEscape(s.label)}</div>
-          <div class="code-section-lines">${lines.join("")}</div>
+          <div class="code-editor-wrap">
+            <pre class="code-editor-highlight" aria-hidden="true"><code>${hatgHighlightCode(rawText)}</code></pre>
+            <textarea class="field-textarea code-editor-input" spellcheck="false" data-quickedit-section="${s.id}" data-code-highlight="quickedit-${s.id}">${hatgEscape(rawText)}</textarea>
+          </div>
         </div>`);
     });
     return `
@@ -4415,11 +4506,31 @@ class HATGPanel extends HTMLElement {
         <div class="section-heading">
           <span class="eyebrow">Quick-Edit</span>
           <h1>Code-Editor</h1>
-          <p>Farbpunkt anklicken, um die Farbe direkt hier zu ändern – ohne durch die Sektionen zu navigieren.</p>
+          <p>Werte direkt hier als Text bearbeiten – ohne durch die Sektionen zu navigieren. Änderungen werden beim Tippen sofort übernommen.</p>
         </div>
         <div class="section-toolbar">${this.renderModeToggleBar()}</div>
         <div class="code-view">${sectionCards.join("")}</div>
       </section>`;
+  }
+
+  // v0.1.5: Gegenstueck zu renderCodeEditor()'s neuen Textareas - parst jede
+  // Zeile im Format 'key: "wert"' zurueck und uebernimmt NUR Felder, deren
+  // Wert sich wirklich geaendert hat. Zeilen, die (noch) nicht parsen -
+  // z. B. mitten im Tippen, oder ein unbekannter Key - werden still
+  // uebersprungen statt abzustuerzen oder Daten zu verwerfen.
+  commitQuickEditBlock(rawText) {
+    const values = this.currentValues();
+    const lineRe = /^([A-Za-z0-9_.-]+):\s*"((?:[^"\\]|\\.)*)"\s*$/;
+    String(rawText ?? "")
+      .split("\n")
+      .forEach((line) => {
+        const m = lineRe.exec(line);
+        if (!m) return;
+        const key = m[1];
+        if (values[key] === undefined) return;
+        const value = m[2].replace(/\\"/g, '"');
+        if (value !== values[key]) this.commitField(key, value);
+      });
   }
 
   renderHaLive() {
@@ -5086,7 +5197,12 @@ class HATGPanel extends HTMLElement {
         .nav-item:hover { color: var(--hatg-text); background: rgba(127, 140, 160, .08); }
         .nav-item.active { color: var(--hatg-text); border-color: rgba(31, 158, 82,.3); background: linear-gradient(135deg, rgba(31, 158, 82,.35), rgba(31, 158, 82,.1)); }
         .nav-item ha-icon { --mdc-icon-size: 16px; color: #fff; }
-        .nav-item span { font-size: 13px; font-weight: 540; }
+        /* v0.1.5: Enrico - "bitte alle menüeinträge auf des selbe design
+           also farbe größe schriftart wie in dem bubble icon." Vorher war
+           die Schrift der FLACHEN Top-Level-Eintraege (Start, Grundfarben &
+           Text, die 4 Tools-Eintraege) mit font-weight 540 duenner als die
+           Gruppen-Ueberschriften (650) - jetzt einheitlich 650 ueberall. */
+        .nav-item span { font-size: 13px; font-weight: 650; }
         .nav-icon-badge { flex: 0 0 26px; width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; box-shadow: 0 2px 5px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.25); }
         /* v0.4.52: Enrico - "die icons in HA bubble und mushromm sind vom
            style her anders. alle haben weise textfarbe und nicht schwarz und
@@ -5113,7 +5229,12 @@ class HATGPanel extends HTMLElement {
         .nav-group-heading[aria-expanded="true"] .nav-group-chevron { transform: rotate(180deg); }
         .nav-group-heading-plain { padding: 12px 12px 4px; margin-top: 10px; border-top: 1px solid var(--hatg-border); font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--hatg-muted); cursor: default; }
         .nav-group-heading-plain:hover { background: transparent; }
-        .nav-subitem { min-height: 34px; padding-left: 20px; }
+        /* v0.1.5: Enrico - "größe" soll auch fuer die Unterordner-Zeile
+           gelten, nicht nur Schrift/Icon-Farbe - vorher 34px (kompakter als
+           Top-Level-Reiter mit 42px), damit das 20px-Badge (siehe unten)
+           reinpasst. Jetzt 42px wie ueberall, passend zum jetzt wieder
+           26px grossen Badge. */
+        .nav-subitem { min-height: 42px; padding-left: 20px; }
         /* v0.1.4: Enrico - "die schrift ... in den untermenüs auf die
            selbe schriftgröße und schriftfarbe wie ha Grundgerüst und
            bubble. das bezieht sich auf alle einträge im menü." Vorher
@@ -5142,12 +5263,13 @@ class HATGPanel extends HTMLElement {
            übernehmen. ha das homeassistant blau bubble rot und mush
            grün." Unterordner-Icons stehen jetzt (wie Hauptreiter/Gruppen-
            Ueberschrift) in einem farbigen ".nav-icon-badge", gespeist aus
-           hatgNavIconGradient(parentId) - dieselbe Klasse, nur kleiner
-           (20px statt 26px), damit sie in die kompaktere 34px-Zeile passt.
-           Das alte reine ".nav-subitem-icon" (Punkt/mdi ohne Hintergrund)
-           entfaellt dadurch. */
-        .nav-icon-badge-sub { flex: 0 0 20px; width: 20px; height: 20px; border-radius: 6px; }
-        .nav-icon-badge-sub ha-icon { --mdc-icon-size: 13px; }
+           hatgNavIconGradient(parentId).
+           v0.1.5: Enrico wollte danach auch die GROESSE exakt wie beim
+           Bubble-Icon ("alle menüeinträge auf des selbe design also
+           farbe größe schriftart wie in dem bubble icon") - die anfangs
+           kleinere 20px-Variante (".nav-icon-badge-sub") entfaellt daher
+           wieder, Unterordner nutzen jetzt genau dasselbe 26px-Badge wie
+           Gruppen-Ueberschrift/Top-Level-Reiter, keine Sondergroesse mehr. */
 
         .workspace { grid-column: 2; grid-row: 2; min-width: 0; padding: 34px 34px 64px; overflow: auto; scrollbar-gutter: stable; }
         .editor-section { width: min(980px, 100%); margin: 0 auto; }
@@ -5163,6 +5285,12 @@ class HATGPanel extends HTMLElement {
         .theme-name-field input { width: 100%; height: 44px; border: 1px solid var(--hatg-border); border-radius: 11px; padding: 0 14px; outline: none; color: var(--hatg-text); background: var(--hatg-field); }
 
         .section-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+        /* v0.1.5: Enrico - "den button müssen wir noch nach unten
+           verschieben. am besten als header über accent color." Eigene
+           Zeile fuer den "Auswählen"-Button direkt ueber der Feldliste
+           (statt oben neben dem Light/Dark-Umschalter), auf allen Seiten
+           mit Feldliste. */
+        .field-list-header { display: flex; justify-content: flex-end; margin-bottom: 10px; }
         .editor-switch { display: grid; grid-template-columns: 1fr 1fr; width: 120px; padding: 3px; border: 1px solid var(--hatg-border); border-radius: 999px; background: rgba(127, 140, 160, .08); }
         .editor-switch button { height: 28px; border: 0; border-radius: 999px; cursor: pointer; color: var(--hatg-muted); background: transparent; font-size: 11px; }
         .editor-switch button.active { color: #fff; background: linear-gradient(135deg, rgba(31,158,82,.75), rgba(31,158,82,.4)); }
@@ -5270,6 +5398,12 @@ class HATGPanel extends HTMLElement {
         .sync-triad-chip ha-icon { --mdc-icon-size: 14px; color: var(--hatg-muted); }
         .sync-triad-dot { width: 11px; height: 11px; border-radius: 999px; border: 1px solid rgba(0,0,0,.15); flex: 0 0 auto; }
         .editing-surface-dark .sync-triad-dot { border-color: rgba(255,255,255,.25); }
+        /* v0.1.5: Enrico wollte fuer Bubble-only-Felder (kein Mushroom-
+           Gegenstueck, z. B. Rahmendicke) auch ein Sync-Widget - siehe
+           renderSyncPair()/HATG_SYNC_PAIRS. Bei nicht-Farbwerten (Breite)
+           gibt es keinen sinnvollen Farbklecks, deshalb hier ein reiner
+           Text-Chip statt des runden Punkts. */
+        .sync-triad-value { font-size: 10.5px; font-weight: 600; color: var(--hatg-text); }
         .sync-triad-button { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border: 0; border-radius: 999px; background: rgba(52,199,89,.14); color: #1fae63; cursor: pointer; padding: 0; }
         .sync-triad-button ha-icon { --mdc-icon-size: 14px; }
         .sync-triad-button:hover { background: rgba(52,199,89,.24); }
@@ -5338,14 +5472,11 @@ class HATGPanel extends HTMLElement {
         .code-view { display: grid; gap: 12px; }
         .code-section-card { border: 1px solid var(--hatg-border); border-radius: 14px; padding: 12px 14px; background: var(--hatg-panel); }
         .code-section-title { font-family: -apple-system, sans-serif; font-size: 10.5px; font-weight: 650; color: #5fbf7a; opacity: .85; text-transform: uppercase; letter-spacing: .02em; margin-bottom: 6px; }
-        .code-section-lines { display: flex; flex-direction: column; gap: 2px; font-family: ui-monospace, monospace; font-size: 11.5px; line-height: 1.9; overflow-x: auto; }
-        .code-line { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
-        .code-dot { width: 13px; height: 13px; flex: 0 0 13px; padding: 0; border: 0; border-radius: 50%; overflow: hidden; cursor: pointer; box-shadow: var(--hatg-click-shadow); }
-        .code-dot::-webkit-color-swatch-wrapper { padding: 0; }
-        .code-dot::-webkit-color-swatch { border: 1px solid rgba(127,140,160,.4); border-radius: 50%; }
-        .code-dot-spacer { width: 13px; flex: 0 0 13px; }
-        .code-key { color: var(--hatg-muted); }
-        .code-value { color: var(--hatg-text-dim); overflow: hidden; text-overflow: ellipsis; }
+        /* v0.1.5: die alten Klartext-Zeilen (".code-line"/".code-key"/
+           ".code-value") und der Farbpunkt-Picker (".code-dot") entfallen -
+           renderCodeEditor() nutzt jetzt dieselbe ".code-editor-wrap"/
+           ".code-editor-highlight"-Komponente wie card-mod-card-yaml
+           (siehe Regeln weiter oben), keine eigenen Regeln mehr noetig. */
 
         .ha-live-toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
         .ha-live-toolbar .modal-btn { display: inline-flex; align-items: center; gap: 6px; }
@@ -5893,10 +6024,17 @@ class HATGPanel extends HTMLElement {
       });
     });
 
-    this.shadowRoot.querySelectorAll("[data-code-color]").forEach((input) => {
-      input.addEventListener("change", () => {
-        this.commitField(input.dataset.codeColor, input.value.toUpperCase());
-        this.render();
+    // v0.1.5: ersetzt den alten "[data-code-color]"-Farbpunkt-Picker - der
+    // Quick-Edit-Codeblock ist jetzt eine frei eintippbare Textarea (siehe
+    // renderCodeEditor()/commitQuickEditBlock()). Wie beim bestehenden
+    // Long-Text-Editor wird bewusst NICHT this.render() aufgerufen, sonst
+    // würde der Cursor beim Tippen aus der Textarea springen - die farbige
+    // Syntax-Ueberlagerung aktualisiert sich unabhaengig davon bereits ueber
+    // den bestehenden generischen "[data-code-highlight]"-Listener.
+    this.shadowRoot.querySelectorAll("[data-quickedit-section]").forEach((textarea) => {
+      textarea.addEventListener("input", () => {
+        this.commitQuickEditBlock(textarea.value);
+        this.applyPreviewTheme();
       });
     });
 
@@ -6049,6 +6187,12 @@ class HATGPanel extends HTMLElement {
     this.shadowRoot.querySelectorAll("[data-sync-triad]").forEach((button) => {
       button.addEventListener("click", () => {
         this.syncTriad(button.dataset.syncTriad);
+      });
+    });
+
+    this.shadowRoot.querySelectorAll("[data-sync-pair]").forEach((button) => {
+      button.addEventListener("click", () => {
+        this.syncPair(button.dataset.syncPair);
       });
     });
 
@@ -6349,6 +6493,37 @@ class HATGPanel extends HTMLElement {
       changedCount > 0
         ? `${changedCount} von ${targets.length} Bubble-/Mushroom-Feldern wieder an ${sourceKey} angeglichen.`
         : `Bubble Card und Mushroom folgten ${sourceKey} bereits automatisch (${targets.length} Felder geprüft).`
+    );
+  }
+
+  // Sync-Button aus renderSyncPair() (2-Icon-Variante fuer Felder mit nur
+  // EINEM echten Bubble-Gegenstueck, kein Mushroom-Pendant - z. B. Rahmen-
+  // farbe/-dicke der Karten). Bewusst NICHT ueber resetFieldToDerived(), weil
+  // "bubble-border" ein Shorthand-Feld mit ZWEI Quellen ist (Breite UND
+  // Farbe) - HATG_DERIVE_REVERSE["bubble-border"] zeigt fix auf die Farb-
+  // Quelle (siehe test_bubble_border_shorthand.js). Ein Reset ueber die
+  // Breiten-Quelle wuerde dadurch faelschlich die Farb-Transform anwenden.
+  // Hier wird deshalb direkt die zu DIESEM sourceKey passende Regel aus
+  // HATG_DERIVE_RULES gesucht und angewendet - unabhaengig von der Reverse-
+  // Zuordnung, genau wie propagateDerivation() es fuer alle Ziele tut, nur
+  // gezielt fuer das eine Bubble-Ziel dieses Paars.
+  syncPair(sourceKey) {
+    const pair = HATG_SYNC_PAIRS[sourceKey];
+    if (!pair) return;
+    const rules = HATG_DERIVE_RULES[sourceKey];
+    if (!rules) return;
+    const rule = rules.find((r) => r.key === pair.bubble);
+    if (!rule) return;
+    const values = this.currentValues();
+    const source = this.currentSource();
+    const wasCustom = source[pair.bubble] === "custom";
+    values[pair.bubble] = hatgApplyTransform(rule.transform, values[sourceKey], values[pair.bubble]);
+    source[pair.bubble] = "derived";
+    this.render();
+    this.showToast(
+      wasCustom
+        ? `Bubble Card wieder an ${sourceKey} angeglichen.`
+        : `Bubble Card folgte ${sourceKey} bereits automatisch.`
     );
   }
 
