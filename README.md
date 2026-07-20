@@ -3,11 +3,14 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/github/v/release/Piranha1605/ha-theme-generator?label=Version&color=2f7bff" alt="Version" />
-  <img src="https://img.shields.io/badge/HACS-Custom%20Repository-2f7bff?logo=home-assistant&logoColor=white" alt="HACS" />
-  <img src="https://img.shields.io/github/stars/Piranha1605/ha-theme-generator?color=2f7bff" alt="Stars" />
-  <img src="https://img.shields.io/github/issues/Piranha1605/ha-theme-generator?color=2f7bff" alt="Issues" />
-  <a href="https://buymeacoffee.com/enricotenif"><img src="https://img.shields.io/badge/☕-Buy%20me%20a%20coffee-ffdd00" alt="Buy me a coffee" /></a>
+  <a href="https://buymeacoffee.com/enricotenif"><img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/bmac-badge.png" alt="Buy me a coffee" /></a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/github/v/release/Piranha1605/ha-theme-generator?label=Version&color=3ddc84" alt="Version" />
+  <img src="https://img.shields.io/badge/HACS-Custom%20Repository-3ddc84?logo=home-assistant&logoColor=white" alt="HACS" />
+  <img src="https://img.shields.io/github/stars/Piranha1605/ha-theme-generator?color=3ddc84" alt="Stars" />
+  <img src="https://img.shields.io/github/issues/Piranha1605/ha-theme-generator?color=3ddc84" alt="Issues" />
 </p>
 
 # HATG — Home Assistant Theme Generator
@@ -18,15 +21,23 @@ Ein Theme, jede Karte im Griff. HATG ist ein eigenes Panel direkt in deiner Home
 
 Moderne Home-Assistant-Themes bestehen aus hunderten einzelnen Stellschrauben — Farben, Radien, Schatten, Schriften, Zustandsfarben für jede Domain, dazu die jeweils eigenen Variablen von Bubble Card und Mushroom. Von Hand gepflegt wird das schnell unübersichtlich, und kleine Namensfehler bleiben unbemerkt, bis eine Karte plötzlich die falsche Farbe zeigt. Jedes Feld in HATG wurde gegen den echten Home-Assistant-, Bubble-Card- und Mushroom-Quellcode geprüft, damit nur real existierende Variablen enthalten sind. HATG bündelt das gesamte Spektrum in einer Oberfläche, die sowohl Einsteiger als auch Profis bedienen können.
 
+Das Ergebnis lässt sich direkt am eigenen Dashboard nachvollziehen — dieselbe Akzentfarbe, derselbe Radius und derselbe Schatten kommen in der HA-eigenen Oberfläche, in Bubble Card und in Mushroom gleichzeitig an:
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/unified-theme-demo.png" alt="Ein Theme angewendet auf HA-Theme, Mushroom-cardmod und Bubble-cardmod nebeneinander" width="100%" />
+</p>
+
 ## Features
 
 **User- und Profi-Modus.** Im User-Modus siehst du nur die Grundlagen — Grundfarben, Status-Farben, Radius/Schatten, Schrift. HATG leitet daraus automatisch passende Werte für Bubble Card, Mushroom und alle Zustandsfarben ab. Im Profi-Modus liegen alle Variablen offen, jede automatisch abgeleitete Farbe ist mit einem Badge markiert und lässt sich gezielt überschreiben oder zurücksetzen.
 
-**461 Variablen in 19 Kategorien.** Start, Grundfarben & Text, Hintergründe & Karten, Header/Sidebar/Navigation, Status/Icons/Entitäten, Schalter & Toggle, Slider & Progress, Buttons & Chips, Eingaben & Auswahlfelder, Material/Paper/MDC, HA 2026 / Web Awesome, Abstände/Rundungen/Schatten/Rahmen, Schrift & Typografie, RGB-Hilfswerte, Graphen & Energie, Bubble Card, Mushroom, Card-mod & Generator sowie Alle Felder — alles einzeln filter- und durchsuchbar.
+**463 Variablen in 18 Kategorien.** Start, Grundfarben & Text, HA-Grundgerüst (Card/Hintergründe/Tabellen/Theme/Header/Toolbar/App Drawer/Sidebar in eigenen Unterordnern), Status/Icons/Entitäten, Schalter & Toggle, Slider & Progress, Buttons & Chips, Eingaben & Auswahlfelder, Material/Paper/MDC, HA 2026 / Web Awesome, Abstände/Rundungen/Schatten/Rahmen, Schrift & Typografie, RGB-Hilfswerte, Graphen & Energie, Bubble Card, Mushroom, Card-mod & Generator sowie Alle Felder — alles einzeln filter- und durchsuchbar.
 
-**Basis-Vorlagen für den Sofort-Start.** Eine Werksvorlage (z. B. „Warmes Neutral" oder eine der Drucker-Grundfarben) laden startet ein komplett neues, sauberes Theme: Themename wird automatisch gesetzt, alle bisherigen Anpassungen werden zurückgesetzt — kein Vermischen alter und neuer Farben mehr.
+**Sync-Widgets zwischen den Frameworks.** Felder, die es in Home Assistant, Bubble Card und Mushroom gleichzeitig gibt, zeigen ein 3er-Icon-Widget zum gegenseitigen Abgleichen; Felder, die nur HA und Bubble Card teilen (z. B. Rahmenfarbe/-dicke), bekommen ein schlankeres 2er-Widget. Ein Klick überträgt den Wert in die jeweils andere Karten-Sprache, ohne dass du die passende Zielvariable erst suchen musst.
 
-**Wortbaustein-Filter (Tag-Matrix).** Auf „Alle Felder" lassen sich beliebige Bausteine wie `color`, `background`, `button` kombinieren, dazu weiter einschränkende Zusatz-Tags (z. B. `bubble`, `climate`, `stack`) — so findest du auch in 461 Variablen sofort die richtige.
+**Basis-Vorlage für den Sofort-Start.** Die Werksvorlage laden startet ein komplett neues, sauberes Theme: Themename wird automatisch gesetzt, alle bisherigen Anpassungen werden zurückgesetzt — kein Vermischen alter und neuer Farben mehr.
+
+**Wortbaustein-Filter (Tag-Matrix).** Auf „Alle Felder" lassen sich beliebige Bausteine wie `color`, `background`, `button` kombinieren, dazu weiter einschränkende Zusatz-Tags (z. B. `bubble`, `climate`, `stack`) — so findest du auch in 463 Variablen sofort die richtige.
 
 **Live-Vorschau, die lebt.** Eine simulierte Handy-Oberfläche zeigt sofort, wie sich Änderungen auswirken — mit 5 durchschaltbaren Räumen (Wohnzimmer, Küche, Keller, Garten, Garage) und passenden Kartentypen: Licht, Klima, Media-Player, Sensor, Rollladen/Garage, Türschloss, Slider und Statusfarben-Karte. Umschaltbar zwischen Hell und Dunkel.
 
@@ -34,7 +45,7 @@ Moderne Home-Assistant-Themes bestehen aus hunderten einzelnen Stellschrauben �
 
 **Farbwähler, wie er sein sollte.** Nativer Farbwähler plus Textfeld, wahlweise als Hex, RGB oder RGBA. Textfelder übernehmen Änderungen automatisch, ohne extra Bestätigungs-Klick.
 
-**Code-Editor mit Klick-Farbpunkten.** Die generierte YAML direkt einsehen, je Sektion in einer eigenen Karte — jede Farbzeile hat einen anklickbaren Farbpunkt für die schnelle Korrektur, ohne durch die Kategorien zu navigieren.
+**Code-Editor im Card-mod-Look.** Die generierte YAML direkt einsehen und bearbeiten, je Sektion in einer eigenen, dunkel syntax-hervorgehobenen Karte — genau dieselbe Editor-Komponente wie beim card-mod-YAML. Werte lassen sich frei eintippen, keine Klick-Farbpunkte mehr nötig.
 
 **Speichern, das wirklich speichert.** Themes werden als echte YAML-Datei nach `config/themes/` geschrieben, inklusive automatischer Konflikt-Erkennung bei doppelten Namen und automatischem Neuladen der Themes in Home Assistant. Zusätzlich: Themes-Ordner direkt laden, laufender Auto-Zwischenspeicher, und Import bestehender Theme-Dateien (auch ältere Exporte werden beim Laden automatisch normalisiert).
 
@@ -42,16 +53,61 @@ Moderne Home-Assistant-Themes bestehen aus hunderten einzelnen Stellschrauben �
 
 ## Screenshots
 
-| | |
-|---|---|
-| ![Start-Seite, hell](https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/start-light.png) | ![Start-Seite, dunkel](https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/start-dark.png) |
-| **Start-Seite (hell)** — Theme-Name, 7 Grundfarben, Live-Vorschau | **Start-Seite (dunkel)** — HATG im eigenen Dunkelmodus |
-| ![HA Live](https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/ha-live.png) | ![Alle Felder, Wortbaustein-Filter](https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/all-fields-filter.png) |
-| **HA Live** — dein echtes Dashboard direkt im Panel | **Alle Felder** — Wortbaustein-Filter als kombinierbare Tag-Matrix |
-| ![Card-mod & Generator](https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/card-mod-generator.png) | ![Schalter & Toggle](https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/switches-toggle.png) |
-| **Card-mod & Generator** — der generierte card-mod-Block, direkt einsehbar | **Schalter & Toggle** — HA als Master, Bubble/Mushroom automatisch abgeleitet |
-| ![Kategorien-Navigation](https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/sidebar-nav.png) | ![Öffnen-Menü](https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/open-menu.png) |
-| **19 Kategorien** in der Seitenleiste, sauber sortiert | **Öffnen-Menü** — Theme importieren, Browser-Entwurf laden, Basis-Vorlage laden |
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/start-light.png" alt="Start-Seite, hell" width="100%" />
+</p>
+
+**Start-Seite (hell)** — Theme-Name, Grundfarben mit Hex/RGB/RGBA-Umschalter, Radius und die Live-Vorschau rechts, alle 463 Variablen sind über die Seitenleiste oder „Alle Felder" erreichbar.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/start-dark.png" alt="Start-Seite, dunkel" width="100%" />
+</p>
+
+**Start-Seite (dunkel)** — HATG im eigenen Dunkelmodus, mit derselben vereinheitlichten Navigation wie im Screenshot darunter.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/sidebar-nav.png" alt="Seitenleiste mit vereinheitlichtem Design" width="55%" />
+</p>
+
+**Seitenleiste.** Alle Menüpunkte — Haupteinträge, Gruppen und Untermenüs — teilen dieselbe Schriftgröße, Schriftstärke und dieselben farbigen Icon-Badges. Bubble Card, Mushroom, HA-Grundgerüst und Tools sind auf einen Blick auseinanderzuhalten.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/sync-widgets.png" alt="Sync-Widget an einem Farbfeld" width="90%" />
+</p>
+
+**Framework-Sync direkt am Feld.** Rechts neben Hex/RGB/RGBA sitzt ein kleines Icon-Widget (hier HA, Bubble Card und Mushroom) — ein Klick übernimmt die Farbe in die jeweils andere Karten-Sprache.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/preview-toggle.png" alt="Umschalter zwischen simulierter Vorschau und echtem HA-Live" width="60%" />
+</p>
+
+**Demo oder echtes Dashboard.** Oben rechts an jeder Vorschau lässt sich zwischen der simulierten Demo-Ansicht und „HA Live" — deinem echten Dashboard — umschalten.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/ha-live-desktop.png" alt="HA Live, Desktop-Ansicht" width="100%" />
+</p>
+
+**HA Live – Desktop.** Dein echtes Dashboard eingebettet im Panel, in voller Breite.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/ha-live-tablet.png" alt="HA Live, Tablet-Ansicht" width="100%" />
+</p>
+
+**HA Live – Tablet.** Dieselbe Live-Ansicht im Tablet-Format, um responsive Anpassungen sofort zu prüfen.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/ha-live-phone.png" alt="HA Live, Handy-Ansicht" width="60%" />
+</p>
+
+**HA Live – Handy.** Und im Handy-Format — alle drei Geräteansichten laden automatisch neu, sobald du speicherst.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/open-menu.png" alt="Öffnen-Menü" width="45%" />
+  &nbsp;&nbsp;
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/save-menu.png" alt="Speichern-Menü" width="45%" />
+</p>
+
+**Öffnen-Menü** (links) — Theme importieren, zuletzt gesicherten Browser-Entwurf laden, oder eine Basis-Vorlage laden. **Speichern-Menü** (rechts) — als Datei nach `config/themes/` schreiben, Zwischenstand sichern oder das Theme vor dem Speichern validieren lassen.
 
 ## Installation
 
