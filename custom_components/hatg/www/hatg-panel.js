@@ -1,4 +1,4 @@
-const HATG_VERSION = "0.4.61";
+const HATG_VERSION = "0.1.2";
 
 const HATG_MANIFEST = {
   "sections": [
