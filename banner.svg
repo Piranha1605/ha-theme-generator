@@ -1,0 +1,133 @@
+<svg viewBox="0 0 1200 360" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a1120"/>
+      <stop offset="55%" stop-color="#070d18"/>
+      <stop offset="100%" stop-color="#050a13"/>
+    </linearGradient>
+    <radialGradient id="glow1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2f7bff" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#2f7bff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#7c4dff" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#7c4dff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="brandText" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7cb8ff"/>
+      <stop offset="55%" stop-color="#4d98ff"/>
+      <stop offset="100%" stop-color="#2f62ff"/>
+    </linearGradient>
+    <linearGradient id="brandMark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3d97ff"/>
+      <stop offset="100%" stop-color="#2f62ff"/>
+    </linearGradient>
+    <linearGradient id="cardFill" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#131d30"/>
+      <stop offset="100%" stop-color="#0e1626"/>
+    </linearGradient>
+    <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="38"/>
+    </filter>
+    <filter id="cardShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#000000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="360" fill="url(#bg)"/>
+  <circle cx="205" cy="70" r="220" fill="url(#glow1)" filter="url(#soft)"/>
+  <circle cx="1040" cy="300" r="260" fill="url(#glow2)" filter="url(#soft)"/>
+
+  <!-- scattered "stars" for a spacey feel -->
+  <g fill="#ffffff">
+    <circle cx="60" cy="40" r="1.4" opacity="0.7"/>
+    <circle cx="130" cy="300" r="1.1" opacity="0.5"/>
+    <circle cx="330" cy="55" r="1.6" opacity="0.6"/>
+    <circle cx="420" cy="270" r="1.1" opacity="0.4"/>
+    <circle cx="20" cy="200" r="1.2" opacity="0.5"/>
+    <circle cx="230" cy="330" r="1.3" opacity="0.5"/>
+    <circle cx="760" cy="40" r="1.2" opacity="0.5"/>
+    <circle cx="1150" cy="120" r="1.3" opacity="0.55"/>
+    <circle cx="980" cy="30" r="1.1" opacity="0.5"/>
+  </g>
+
+  <!-- Brand mark -->
+  <g transform="translate(64,64)">
+    <rect width="56" height="56" rx="16" fill="url(#brandMark)"/>
+    <g transform="translate(14,14)" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 24 C4 12 12 4 24 4 C15 6 9 14 9 24 C9 34 15 42 24 44 C12 44 4 36 4 24 Z" fill="#ffffff" stroke="none" opacity="0.95"/>
+      <circle cx="27" cy="24" r="4.2" fill="#2f62ff" stroke="none"/>
+    </g>
+  </g>
+
+  <text x="136" y="103" font-family="-apple-system, 'Segoe UI', sans-serif" font-size="42" font-weight="700" fill="url(#brandText)" letter-spacing="-1">HATG</text>
+
+  <text x="64" y="160" font-family="-apple-system, 'Segoe UI', sans-serif" font-size="21" font-weight="600" fill="#e8edf6">Home Assistant Theme Generator</text>
+  <text x="64" y="190" font-family="-apple-system, 'Segoe UI', sans-serif" font-size="14.5" fill="#91a0b7">Ein Theme, jede Karte im Griff &#8211; HA, Bubble Card, Mushroom &amp; card-mod aus einer Oberfl&#228;che.</text>
+
+  <!-- feature pills -->
+  <g font-family="-apple-system, 'Segoe UI', sans-serif" font-size="12.5" font-weight="600">
+    <rect x="64" y="216" width="132" height="30" rx="15" fill="#0e1626" style="stroke:#26344a"/>
+    <text x="80" y="235" fill="#bcd4ff">530+ Variablen</text>
+
+    <rect x="208" y="216" width="150" height="30" rx="15" fill="#0e1626" style="stroke:#26344a"/>
+    <text x="224" y="235" fill="#bcd4ff">Live-Vorschau</text>
+
+    <rect x="370" y="216" width="118" height="30" rx="15" fill="#0e1626" style="stroke:#26344a"/>
+    <text x="386" y="235" fill="#bcd4ff">HACS-ready</text>
+  </g>
+
+  <text x="64" y="292" font-family="-apple-system, 'Segoe UI', sans-serif" font-size="12" fill="#5c6b82">github.com/Piranha1605/ha-theme-generator</text>
+
+  <!-- Mockup "screenshot" cards on the right -->
+  <g filter="url(#cardShadow)">
+    <rect x="700" y="60" width="220" height="150" rx="16" fill="url(#cardFill)" stroke="#223049" stroke-width="1" transform="rotate(-6 810 135)"/>
+  </g>
+  <g transform="rotate(-6 810 135)">
+    <g transform="translate(716,76)">
+      <circle cx="10" cy="10" r="9" fill="#ff9300"/>
+      <rect x="30" y="4" width="90" height="8" rx="4" fill="#3a4a63"/>
+      <rect x="30" y="17" width="60" height="6" rx="3" fill="#28344a"/>
+      <circle cx="10" cy="46" r="9" fill="#3a4a63"/>
+      <rect x="30" y="40" width="90" height="8" rx="4" fill="#3a4a63"/>
+      <rect x="30" y="53" width="60" height="6" rx="3" fill="#28344a"/>
+      <circle cx="10" cy="82" r="9" fill="#0a84ff"/>
+      <rect x="30" y="76" width="90" height="8" rx="4" fill="#3a4a63"/>
+      <rect x="30" y="89" width="60" height="6" rx="3" fill="#28344a"/>
+      <rect x="0" y="112" width="188" height="10" rx="5" fill="#182238"/>
+      <rect x="0" y="112" width="120" height="10" rx="5" fill="#2f7bff"/>
+    </g>
+  </g>
+
+  <g filter="url(#cardShadow)">
+    <rect x="860" y="120" width="230" height="160" rx="18" fill="url(#cardFill)" stroke="#223049" stroke-width="1" transform="rotate(5 975 200)"/>
+  </g>
+  <g transform="rotate(5 975 200)">
+    <g transform="translate(880,140)">
+      <rect x="0" y="0" width="200" height="26" rx="8" fill="#182238"/>
+      <circle cx="16" cy="13" r="7" fill="#4d98ff"/>
+      <rect x="32" y="9" width="70" height="8" rx="4" fill="#3a4a63"/>
+      <rect x="0" y="38" width="60" height="60" rx="12" fill="#2f7bff"/>
+      <rect x="70" y="38" width="60" height="60" rx="12" fill="#182238"/>
+      <rect x="140" y="38" width="60" height="60" rx="12" fill="#182238"/>
+      <rect x="0" y="108" width="200" height="14" rx="7" fill="#182238"/>
+      <rect x="0" y="108" width="140" height="14" rx="7" fill="#ff9300"/>
+    </g>
+  </g>
+
+  <g filter="url(#cardShadow)">
+    <rect x="960" y="40" width="176" height="120" rx="26" fill="#111a2c" stroke="#28405f" stroke-width="1.5" transform="rotate(-3 1048 100)"/>
+  </g>
+  <g transform="rotate(-3 1048 100)">
+    <g transform="translate(980,58)">
+      <rect x="0" y="0" width="136" height="16" rx="8" fill="#0e1626"/>
+      <rect x="0" y="24" width="136" height="46" rx="12" fill="#182238"/>
+      <circle cx="18" cy="47" r="10" fill="#2f7bff" opacity="0.35"/>
+      <rect x="36" y="40" width="60" height="7" rx="3.5" fill="#3a4a63"/>
+      <rect x="36" y="52" width="40" height="6" rx="3" fill="#28344a"/>
+      <rect x="98" y="42" width="28" height="14" rx="7" fill="#2f7bff"/>
+      <rect x="0" y="78" width="136" height="10" rx="5" fill="#182238"/>
+      <rect x="0" y="78" width="90" height="10" rx="5" fill="#5fbf7a"/>
+    </g>
+  </g>
+</svg>

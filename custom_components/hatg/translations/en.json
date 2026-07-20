@@ -1,0 +1,10 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "HATG",
+        "description": "Set up HATG."
+      }
+    }
+  }
+}

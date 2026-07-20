@@ -1,0 +1,17 @@
+{
+  "domain": "hatg",
+  "name": "HATG",
+  "codeowners": [],
+  "config_flow": true,
+  "dependencies": [
+    "frontend",
+    "http",
+    "panel_custom",
+    "websocket_api"
+  ],
+  "documentation": "https://github.com/Piranha1605/ha-theme-generator",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/Piranha1605/ha-theme-generator/issues",
+  "requirements": [],
+  "version": "0.1.1"
+}
