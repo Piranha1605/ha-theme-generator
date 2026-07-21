@@ -1,4 +1,4 @@
-const HATG_VERSION = "0.1.7";
+const HATG_VERSION = "0.2.3";
 
 const HATG_MANIFEST = {
   "sections": [
@@ -2855,7 +2855,11 @@ function hatgTokenizeKey(key) {
   return String(key ?? "")
     .toLowerCase()
     .split("-")
-    .filter(Boolean);
+    .filter(Boolean)
+    // Reine Zahlen-Tokens (z.B. die "-10"/"-13" in graph-color-10, color-13)
+    // sind als Filter-Baustein nutzlos - niemand sucht nach "10", sondern
+    // nach "color" oder "graph". Enrico: "filter wie 1,2,3,4 ... können raus".
+    .filter((t) => !/^\d+$/.test(t));
 }
 function hatgKeyMatchesTags(key, tags) {
   if (!tags || tags.length === 0) return true;
@@ -3242,6 +3246,8 @@ class HATGPanel extends HTMLElement {
     this._toastTimer = null;
     this._haLiveIframeEl = null;
     this._selectedPlugins = new Set();
+    this._undoStack = [];
+    this._pendingUndoBatch = null;
     this._state = {
       themeName: "Mein neues Theme",
       mode: "user",
@@ -3267,6 +3273,7 @@ class HATGPanel extends HTMLElement {
       selectedKeys: [],
       sectionFilters: { color: [], type: null, status: null },
       tagFilters: [],
+      tagCloudOpen: false,
       values: {
         light: hatgDeepClone(HATG_MANIFEST.light),
         dark: hatgDeepClone(HATG_MANIFEST.dark),
@@ -3297,6 +3304,18 @@ class HATGPanel extends HTMLElement {
 
   connectedCallback() {
     if (!this._rendered) this.render();
+    if (!this._undoKeydownBound) {
+      this._undoKeydownBound = true;
+      this.shadowRoot.addEventListener("keydown", (event) => {
+        const isUndoCombo = (event.key === "z" || event.key === "Z") && (event.ctrlKey || event.metaKey) && !event.shiftKey;
+        if (!isUndoCombo) return;
+        const active = this.shadowRoot.activeElement;
+        const tag = active && active.tagName ? active.tagName.toLowerCase() : "";
+        if (tag === "input" || tag === "textarea") return;
+        event.preventDefault();
+        this.undoLastChange();
+      });
+    }
   }
 
   disconnectedCallback() {
@@ -3399,6 +3418,7 @@ class HATGPanel extends HTMLElement {
   resetSectionUiState() {
     this._state.sectionFilters = { color: [], type: null, status: null };
     this._state.tagFilters = [];
+    this._state.tagCloudOpen = false;
     this._state.selectMode = false;
     this._state.selectedKeys = [];
   }
@@ -3686,7 +3706,7 @@ class HATGPanel extends HTMLElement {
       </div>`;
   }
 
-  renderFilterBar(keys) {
+  renderFilterBar(keys, tagBarHtml = "") {
     const values = this.currentValues();
     const colorCounts = new Map();
     const typeSet = new Set();
@@ -3716,6 +3736,7 @@ class HATGPanel extends HTMLElement {
     return `
       <div class="filter-bar">
         ${colorChips ? `<div class="filter-row"><span class="filter-label">Farben</span><div class="filter-dots">${colorChips}</div></div>` : ""}
+        ${tagBarHtml}
         <div class="filter-row"><span class="filter-label">Typ</span><div class="filter-chips">${typeChips}</div></div>
         ${statusChips ? `<div class="filter-row"><span class="filter-label">Zustand</span><div class="filter-chips">${statusChips}</div></div>` : ""}
         ${hasActive ? `<button class="filter-clear" type="button" data-filter-clear><ha-icon icon="mdi:filter-off-outline"></ha-icon><span>Filter zurücksetzen</span></button>` : ""}
@@ -3745,11 +3766,19 @@ class HATGPanel extends HTMLElement {
       )
       .join("");
     if (!activeChips && !availableChips) return "";
+    const open = !!this._state.tagCloudOpen;
     return `
-      <div class="tag-filter-bar">
-        ${activeChips ? `<div class="filter-row"><span class="filter-label">Bausteine</span><div class="tag-chip-row">${activeChips}</div></div>` : ""}
-        ${availableChips ? `<div class="filter-row"><span class="filter-label">Weiter einschränken</span><div class="tag-chip-row tag-chip-cloud">${availableChips}</div></div>` : ""}
-      </div>`;
+      ${activeChips ? `<div class="filter-row"><span class="filter-label">Bausteine</span><div class="tag-chip-row">${activeChips}</div></div>` : ""}
+      ${availableChips ? `
+        <div class="filter-row tag-cloud-row">
+          <button type="button" class="tag-cloud-toggle ${open ? "active" : ""}" data-toggle-tag-cloud aria-expanded="${open}">
+            <ha-icon icon="mdi:tag-multiple-outline"></ha-icon>
+            <span>Weiter einschränken</span>
+            <small>${available.length}</small>
+            <ha-icon class="tag-cloud-chevron" icon="mdi:chevron-down"></ha-icon>
+          </button>
+          ${open ? `<div class="tag-chip-row tag-chip-cloud">${availableChips}</div>` : ""}
+        </div>` : ""}`;
   }
 
   renderSectionToolbar(keys) {
@@ -3759,6 +3788,7 @@ class HATGPanel extends HTMLElement {
       </div>
       ${this.renderFilterBar(keys)}
       <div class="field-list-header">
+        ${this.renderBulkBar()}
         <button class="select-toggle ${this._state.selectMode ? "active" : ""}" type="button" data-toggle-select>
           <ha-icon icon="mdi:checkbox-multiple-marked-outline"></ha-icon>
           <span>Auswählen</span>
@@ -3814,7 +3844,6 @@ class HATGPanel extends HTMLElement {
         <div class="field-list">
           ${body}
         </div>
-        ${this.renderBulkBar()}
       </div>`;
   }
 
@@ -3920,9 +3949,9 @@ class HATGPanel extends HTMLElement {
             <ha-icon icon="mdi:magnify"></ha-icon>
             <input type="text" placeholder="Variable suchen…" value="${hatgEscape(this._state.searchQuery)}" data-search-field />
           </label>
-          ${this.renderTagFilterBar(tagFiltered)}
-          ${this.renderFilterBar(tagFiltered)}
+          ${this.renderFilterBar(tagFiltered, this.renderTagFilterBar(tagFiltered))}
           <div class="field-list-header">
+            ${this.renderBulkBar()}
             <button class="select-toggle ${this._state.selectMode ? "active" : ""}" type="button" data-toggle-select>
               <ha-icon icon="mdi:checkbox-multiple-marked-outline"></ha-icon>
               <span>Auswählen</span>
@@ -4095,8 +4124,11 @@ class HATGPanel extends HTMLElement {
         : `<span class="plugin-select-spacer" title="Kann nicht mit anderen Plugins kombiniert werden (eigene Kartenstruktur)"></span>`;
       return `
         <div class="plugin-row ${checked ? "is-selected" : ""}">
-          ${checkboxHtml}
-          <div class="plugin-row-thumb">
+          <div class="plugin-col-heading">
+            ${checkboxHtml}
+            <strong>${hatgEscape(plugin.label)}</strong>
+          </div>
+          <div class="plugin-col-image">
             <img
               src="${plugin.screenshot}"
               alt="${hatgEscape(plugin.label)}"
@@ -4104,22 +4136,21 @@ class HATGPanel extends HTMLElement {
               onerror="this.onerror=null;this.src='${HATG_PLUGIN_SCREENSHOT_DUMMY}';"
             />
           </div>
-          <div class="plugin-row-body">
-            <strong>${hatgEscape(plugin.label)}</strong>
+          <div class="plugin-col-text">
             <p>${hatgEscape(plugin.desc)}</p>
             <p class="plugin-hint">${
               plugin.hint ||
               "Wirkt zuverlässig nur direkt in der Karte (Bubble Cards eigener <code>styles:</code>-Schlüssel) – nicht global übers Theme, da Bubble Card den Slider-Fill selbst mit höherer Priorität überschreibt. Vorlage unten in eine eigene Slider-Karte einfügen und Entity anpassen."
             }</p>
+            <button
+              type="button"
+              class="plugin-toggle-button"
+              data-copy-plugin-template="${plugin.id}"
+            >
+              <ha-icon icon="mdi:content-copy"></ha-icon>
+              <span>Vorlage kopieren</span>
+            </button>
           </div>
-          <button
-            type="button"
-            class="plugin-toggle-button"
-            data-copy-plugin-template="${plugin.id}"
-          >
-            <ha-icon icon="mdi:content-copy"></ha-icon>
-            <span>Vorlage kopieren</span>
-          </button>
         </div>`;
     }).join("");
     return `
@@ -4146,12 +4177,40 @@ class HATGPanel extends HTMLElement {
     const blurPx = Math.max(0, Math.min(40, parseInt(blurRaw, 10) || 0));
     const bgValue = values["card-background-color"] || values["ha-card-background"] || "#1c1c1e";
     const parsed = hatgIsHex(bgValue) ? { hex: hatgNormalizeHex6(bgValue), alpha: 1 } : hatgParseRgba(bgValue);
-    const alphaPercent = Math.round((parsed.alpha ?? 1) * 100);
-    return { blurPx, hex: parsed.hex, alphaPercent };
+    const opacity = parsed.alpha ?? 1;
+    const transparencyPercent = Math.round((1 - opacity) * 100);
+    return { blurPx, hex: parsed.hex, transparencyPercent };
+  }
+
+  generatorApplyCardTransparency(rgba) {
+    // Bewusst NICHT ueber commitField("card-background-color", ...), da dessen
+    // generische Ableitungskette auch "mdc-theme-surface" und
+    // "table-row-alternative-background-color" mitzieht - das sind Material-
+    // Oberflaechen fuer Home-Assistant-Auswahlmenues/Dialoge/Tabellenzeilen,
+    // keine Karten. Waeren die transparent/verwaschen, wuerden Dropdown-Menues
+    // im echten Dashboard unlesbar (siehe Enricos Screenshot: Auswahlmenue-
+    // Hintergrund wurde durchsichtig statt der Karten). Deshalb hier gezielt
+    // nur echte Karten-Hintergrundfelder setzen.
+    const values = this.currentValues();
+    const source = this.currentSource();
+    const cardKeys = [
+      "card-background-color",
+      "ha-card-background",
+      "ha-card-background-color",
+      "bubble-main-buttons-background-color",
+      "bubble-card-background-color",
+      "mush-card-background",
+    ];
+    cardKeys.forEach((key) => {
+      if (values[key] === undefined) return;
+      values[key] = rgba;
+      source[key] = "custom";
+    });
   }
 
   renderGenerators() {
-    const { blurPx, alphaPercent, hex } = this.generatorBlurTransparencyState();
+    const { blurPx, transparencyPercent, hex } = this.generatorBlurTransparencyState();
+    const previewAlpha = (100 - transparencyPercent) / 100;
     return `
       <section class="editor-section">
         <div class="section-heading">
@@ -4164,11 +4223,11 @@ class HATGPanel extends HTMLElement {
             <ha-icon icon="mdi:blur"></ha-icon>
             <div>
               <strong>Blur &amp; Kartentransparenz</strong>
-              <p>Glaseffekt für Karten: Unschärfe wirkt auf Bubble-Card-Kacheln (per card-mod), die Kartentransparenz auf die Kartenfarbe selbst – global für Home Assistant, Bubble Card und Mushroom.</p>
+              <p>Glaseffekt für Karten: Unschärfe wirkt auf Bubble-Card-Kacheln (per card-mod), die Kartentransparenz auf die Kartenhintergründe in Home Assistant, Bubble Card und Mushroom – bewusst nicht auf Auswahlmenüs/Dialoge, damit die bedienbar bleiben. Änderungen wirken sofort hier in der Vorschau; im echten Dashboard erst nach Speichern/Exportieren des Themes.</p>
             </div>
           </div>
           <div class="generator-preview-backdrop">
-            <div class="generator-preview-card" data-generator-preview-card style="background: ${hatgComposeRgba(hex, alphaPercent / 100)}; backdrop-filter: blur(${blurPx}px); border-radius: ${hatgEscape(this.currentValues()["ha-card-border-radius"] || "12px")};">
+            <div class="generator-preview-card" data-generator-preview-card style="background: ${hatgComposeRgba(hex, previewAlpha)}; backdrop-filter: blur(${blurPx}px); border-radius: ${hatgEscape(this.currentValues()["ha-card-border-radius"] || "12px")};">
               <ha-icon icon="mdi:thermometer"></ha-icon>
               <span>21,4&deg;</span>
             </div>
@@ -4179,11 +4238,11 @@ class HATGPanel extends HTMLElement {
               <input type="range" min="0" max="40" step="1" value="${blurPx}" data-generator-blur />
             </div>
             <div class="generator-control">
-              <label>Kartentransparenz <span class="generator-value" data-generator-opacity-value>${alphaPercent} %</span></label>
-              <input type="range" min="0" max="100" step="1" value="${alphaPercent}" data-generator-opacity />
+              <label>Kartentransparenz <span class="generator-value" data-generator-opacity-value>${transparencyPercent} %</span></label>
+              <input type="range" min="0" max="100" step="1" value="${transparencyPercent}" data-generator-opacity />
             </div>
           </div>
-          <p class="generator-footnote">Unschärfe schreibt in <code>card-backdrop-blur</code>, Kartentransparenz in <code>card-background-color</code> / <code>ha-card-background</code> (als RGBA) – beide Felder findest du auch einzeln unter „Alle Felder".</p>
+          <p class="generator-footnote">Unschärfe schreibt in <code>card-backdrop-blur</code>, Kartentransparenz in <code>card-background-color</code> / <code>ha-card-background</code> und die entsprechenden Bubble-/Mushroom-Felder (als RGBA) – alle einzeln auch unter „Alle Felder" zu finden. 0% = normale, blickdichte Karte, 100% = komplett durchsichtig. Auswahlmenüs/Dialoge bleiben bewusst unberührt.</p>
         </div>
       </section>`;
   }
@@ -4367,7 +4426,7 @@ class HATGPanel extends HTMLElement {
     const shellStyle = `background: ${hatgEscape(bg)}; border-radius: ${hatgEscape(borderRadius)}; border: ${hatgEscape(borderWidth)} solid ${hatgEscape(borderColor)}; box-shadow: ${hatgEscape(boxShadow)};`;
 
     return `
-      <div class="preview-color-menu">
+      <div class="preview-color-menu" data-preview-menu="color">
         <button type="button" class="color-menu-header" style="${shellStyle}" data-color-menu-toggle aria-expanded="${open}">
           <span class="color-menu-icon"><ha-icon icon="mdi:palette-outline"></ha-icon></span>
           <span class="color-menu-info">
@@ -4437,7 +4496,7 @@ class HATGPanel extends HTMLElement {
     const shellStyle = `background: ${hatgEscape(bg)}; border-radius: ${hatgEscape(borderRadius)}; border: ${hatgEscape(borderWidth)} solid ${hatgEscape(borderColor)}; box-shadow: ${hatgEscape(boxShadow)};`;
 
     return `
-      <div class="preview-color-menu">
+      <div class="preview-color-menu" data-preview-menu="font">
         <button type="button" class="color-menu-header" style="${shellStyle}" data-font-menu-toggle aria-expanded="${open}">
           <span class="color-menu-icon"><ha-icon icon="mdi:format-font"></ha-icon></span>
           <span class="color-menu-info">
@@ -4845,8 +4904,9 @@ class HATGPanel extends HTMLElement {
         .mode-toggle-group button.active { color: #fff; background: linear-gradient(135deg, rgba(31,158,82,.65), rgba(31,158,82,.32)); }
         .gear-button, .save-button, .topbar-icon-button, .mobile-nav-toggle, .mobile-preview-toggle { width: 38px; height: 38px; border: 1px solid var(--hatg-border); border-radius: 12px; display: grid; place-items: center; cursor: pointer; background: rgba(127, 140, 160, .08); color: var(--hatg-text); }
         .topbar-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
-        .save-button { color: #fff; border-color: transparent; background: linear-gradient(135deg, #38c76c, #1f9e52); }
         .save-button[disabled] { opacity: .65; cursor: wait; }
+        .topbar-icon-button[disabled] { opacity: .35; cursor: not-allowed; }
+        .topbar-icon-button[disabled]:hover { border-color: var(--hatg-border); }
         .mobile-nav-toggle, .mobile-preview-toggle { display: none; flex: 0 0 auto; }
         .mobile-scrim { display: none; position: fixed; inset: 0; background: rgba(10,14,22,.5); z-index: 15; }
         .mobile-scrim.show { display: block; }
@@ -4898,7 +4958,9 @@ class HATGPanel extends HTMLElement {
         .theme-name-field input { width: 100%; height: 44px; border: 1px solid var(--hatg-border); border-radius: 11px; padding: 0 14px; outline: none; color: var(--hatg-text); background: var(--hatg-field); }
 
         .section-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
-        .field-list-header { display: flex; justify-content: flex-end; margin-bottom: 10px; }
+        .field-list-header { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 12px; margin-bottom: 10px; }
+        .field-list-header .bulk-bar { flex: 1 1 260px; margin-bottom: 0; }
+        .field-list-header .select-toggle { flex-shrink: 0; }
         .editor-switch { display: grid; grid-template-columns: 1fr 1fr; width: 120px; padding: 3px; border: 1px solid var(--hatg-border); border-radius: 999px; background: rgba(127, 140, 160, .08); }
         .editor-switch button { height: 28px; border: 0; border-radius: 999px; cursor: pointer; color: var(--hatg-muted); background: transparent; font-size: 11px; }
         .editor-switch button.active { color: #fff; background: linear-gradient(135deg, rgba(31,158,82,.75), rgba(31,158,82,.4)); }
@@ -4924,15 +4986,22 @@ class HATGPanel extends HTMLElement {
         .filter-clear:hover { background: linear-gradient(135deg, #ff6b5e, #ff3d30); }
         .filter-clear ha-icon { --mdc-icon-size: 15px; }
 
-        .tag-filter-bar { display: grid; gap: 8px; padding: 10px 12px; margin-bottom: 12px; border: 1px solid var(--hatg-border); border-radius: 12px; background: rgba(127,140,160,.05); }
+        .tag-cloud-row { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+        .tag-cloud-toggle { display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--hatg-border); background: rgba(127,140,160,.08); color: var(--hatg-text); font-size: 11.5px; font-weight: 600; cursor: pointer; }
+        .tag-cloud-toggle:hover { border-color: rgba(31,158,82,.45); }
+        .tag-cloud-toggle.active { border-color: rgba(31,158,82,.45); background: rgba(31,158,82,.12); }
+        .tag-cloud-toggle ha-icon:first-child { --mdc-icon-size: 16px; color: var(--hatg-muted); }
+        .tag-cloud-toggle small { font-size: 10px; opacity: .7; background: rgba(127,140,160,.18); border-radius: 999px; padding: 1px 6px; }
+        .tag-cloud-chevron { --mdc-icon-size: 18px; color: var(--hatg-muted); transition: transform .15s ease; margin-left: 2px; }
+        .tag-cloud-toggle[aria-expanded="true"] .tag-cloud-chevron { transform: rotate(180deg); }
         .tag-chip-row { display: flex; gap: 6px; flex-wrap: wrap; }
-        .tag-chip-cloud { max-height: 130px; overflow-y: auto; padding-right: 2px; }
+        .tag-chip-cloud { max-height: 160px; overflow-y: auto; padding-right: 2px; width: 100%; box-sizing: border-box; }
         .tag-chip { display: inline-flex; align-items: center; gap: 5px; height: 24px; padding: 0 10px; border-radius: 999px; border: 1px solid var(--hatg-border); background: transparent; color: var(--hatg-muted); font-size: 10.5px; cursor: pointer; }
         .tag-chip small { font-size: 9px; opacity: .65; }
         .tag-chip ha-icon { --mdc-icon-size: 12px; }
         .tag-chip.active { color: #fff; background: linear-gradient(135deg, rgba(31,158,82,.75), rgba(31,158,82,.4)); border-color: transparent; }
         .tag-chip:not(.active):hover { border-color: rgba(31,158,82,.45); color: var(--hatg-text); }
-        .editing-surface-dark .tag-filter-bar { background: #1b1e25; border-color: rgba(255,255,255,.08); }
+        .editing-surface-dark .tag-cloud-toggle { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.12); }
         .editing-surface-dark .tag-chip { color: #9aa4b5; border-color: rgba(255,255,255,.12); }
         .editing-surface-dark .tag-chip:not(.active):hover { color: #FEFFFF; }
 
@@ -5173,19 +5242,24 @@ class HATGPanel extends HTMLElement {
         .plugin-combine-button { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border: 0; border-radius: 10px; background: linear-gradient(135deg, #38c76c, #1f9e52); color: #fff; cursor: pointer; font-size: 12px; font-weight: 600; }
         .plugin-combine-button:disabled { opacity: .4; cursor: not-allowed; background: var(--hatg-border); color: var(--hatg-text-dim); }
         .plugin-list { display: flex; flex-direction: column; gap: 10px; }
-        .plugin-row { display: flex; align-items: center; gap: 14px; padding: 10px 14px; border: 1px solid var(--hatg-border); border-radius: 14px; background: var(--hatg-field); transition: border-color .15s ease, box-shadow .15s ease; }
+        .plugin-row { display: grid; grid-template-columns: 170px 200px 1fr; gap: 18px; align-items: start; padding: 16px; border: 1px solid var(--hatg-border); border-radius: 14px; background: var(--hatg-field); transition: border-color .15s ease, box-shadow .15s ease; }
         .plugin-row.is-selected { border-color: var(--hatg-blue); }
+        .plugin-col-heading { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+        .plugin-col-heading strong { font-size: 14px; line-height: 1.35; }
         .plugin-select-checkbox { flex: 0 0 auto; width: 18px; height: 18px; cursor: pointer; accent-color: var(--hatg-blue); }
         .plugin-select-spacer { flex: 0 0 auto; width: 18px; height: 18px; }
-        .plugin-row-thumb { flex: 0 0 auto; width: 88px; height: 58px; border-radius: 10px; overflow: hidden; background: #14161c; }
-        .plugin-row-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
-        .plugin-row-body { flex: 1; min-width: 0; }
-        .plugin-row-body strong { display: block; font-size: 13.5px; margin-bottom: 3px; }
-        .plugin-row-body p { margin: 0; font-size: 11.5px; color: var(--hatg-muted); line-height: 1.4; }
-        .plugin-row-body p.plugin-hint { margin-top: 4px; color: var(--hatg-text-dim); }
-        .plugin-row-body p.plugin-hint code { font-family: ui-monospace, monospace; font-size: 10.5px; background: rgba(127,140,160,.14); padding: 1px 4px; border-radius: 4px; }
-        .plugin-toggle-button { flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 34px; padding: 0 14px; border: 1px solid var(--hatg-border); border-radius: 10px; background: transparent; color: var(--hatg-text-dim); cursor: pointer; font-size: 12px; font-weight: 600; white-space: nowrap; }
+        .plugin-col-image { width: 100%; height: 140px; border-radius: 10px; overflow: hidden; background: #14161c; display: grid; place-items: center; }
+        .plugin-col-image img { display: block; max-width: 100%; max-height: 100%; width: 100%; height: 100%; object-fit: contain; }
+        .plugin-col-text { min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+        .plugin-col-text p { margin: 0; font-size: 11.5px; color: var(--hatg-muted); line-height: 1.5; }
+        .plugin-col-text p.plugin-hint { color: var(--hatg-text-dim); }
+        .plugin-col-text p.plugin-hint code { font-family: ui-monospace, monospace; font-size: 10.5px; background: rgba(127,140,160,.14); padding: 1px 4px; border-radius: 4px; }
+        .plugin-toggle-button { align-self: flex-start; flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 34px; padding: 0 14px; border: 1px solid var(--hatg-border); border-radius: 10px; background: transparent; color: var(--hatg-text-dim); cursor: pointer; font-size: 12px; font-weight: 600; white-space: nowrap; margin-top: 2px; }
         .plugin-toggle-button:hover { border-color: var(--hatg-blue); color: var(--hatg-blue); }
+        @media (max-width: 820px) {
+          .plugin-row { grid-template-columns: 1fr; }
+          .plugin-col-image { height: 160px; }
+        }
         .import-source-toggle { display: flex; gap: 6px; margin-bottom: 14px; padding: 4px; border-radius: 11px; background: rgba(127,140,160,.08); }
         .import-source-btn { flex: 1; height: 32px; border: 0; border-radius: 8px; cursor: pointer; font-size: 12px; color: var(--hatg-text-dim); background: transparent; }
         .import-source-btn.active { color: #fff; background: linear-gradient(135deg, #38c76c, #1f9e52); }
@@ -5297,6 +5371,9 @@ class HATGPanel extends HTMLElement {
               <ha-icon icon="mdi:cellphone"></ha-icon>
             </button>`}
             <div class="topbar-actions">
+              <button class="topbar-icon-button" type="button" data-undo-last-change ${this.canUndo() ? "" : "disabled"} aria-label="Letzte Änderung rückgängig machen" title="Letzte Änderung rückgängig machen (Strg/Cmd+Z)">
+                <ha-icon icon="mdi:undo-variant"></ha-icon>
+              </button>
               <span class="topbar-menu-wrap">
                 <button class="topbar-icon-button" type="button" data-toggle-open-menu aria-label="Öffnen" title="Öffnen">
                   <ha-icon icon="mdi:folder-open-outline"></ha-icon>
@@ -5419,6 +5496,9 @@ class HATGPanel extends HTMLElement {
       this._state.settingsOpen = !wasOpen;
       this.render();
     });
+    this.shadowRoot.querySelector("[data-undo-last-change]")?.addEventListener("click", () => {
+      this.undoLastChange();
+    });
     this.shadowRoot.querySelector("[data-toggle-open-menu]")?.addEventListener("click", () => {
       const wasOpen = this._state.openMenuOpen;
       this.closeAllTopMenus();
@@ -5538,6 +5618,7 @@ class HATGPanel extends HTMLElement {
     this.shadowRoot.querySelector("[data-filter-clear]")?.addEventListener("click", () => {
       this._state.sectionFilters = { color: [], type: null, status: null };
       this._state.tagFilters = [];
+      this._state.tagCloudOpen = false;
       this.render();
     });
     this.shadowRoot.querySelectorAll("[data-filter-tag]").forEach((btn) => {
@@ -5549,6 +5630,10 @@ class HATGPanel extends HTMLElement {
         else arr.splice(idx, 1);
         this.render();
       });
+    });
+    this.shadowRoot.querySelector("[data-toggle-tag-cloud]")?.addEventListener("click", () => {
+      this._state.tagCloudOpen = !this._state.tagCloudOpen;
+      this.render();
     });
 
     this.shadowRoot.querySelector("[data-toggle-select]")?.addEventListener("click", () => {
@@ -5761,9 +5846,9 @@ class HATGPanel extends HTMLElement {
       const opacityValueLabel = this.shadowRoot.querySelector("[data-generator-opacity-value]");
       const updatePreview = () => {
         if (!previewCard) return;
-        const { blurPx, alphaPercent, hex } = this.generatorBlurTransparencyState();
+        const { blurPx, transparencyPercent, hex } = this.generatorBlurTransparencyState();
         previewCard.style.backdropFilter = `blur(${blurPx}px)`;
-        previewCard.style.background = hatgComposeRgba(hex, alphaPercent / 100);
+        previewCard.style.background = hatgComposeRgba(hex, (100 - transparencyPercent) / 100);
       };
       generatorBlurInput?.addEventListener("input", () => {
         const px = parseInt(generatorBlurInput.value, 10) || 0;
@@ -5775,7 +5860,7 @@ class HATGPanel extends HTMLElement {
         const percent = parseInt(generatorOpacityInput.value, 10) || 0;
         if (opacityValueLabel) opacityValueLabel.textContent = `${percent} %`;
         const { hex } = this.generatorBlurTransparencyState();
-        this.commitField("card-background-color", hatgComposeRgba(hex, percent / 100));
+        this.generatorApplyCardTransparency(hatgComposeRgba(hex, (100 - percent) / 100));
         updatePreview();
       });
     }
@@ -6010,11 +6095,56 @@ class HATGPanel extends HTMLElement {
     const values = this.currentValues();
     const source = this.currentSource();
     if (viaDerivation && source[key] === "custom") return;
+    if (!this._undoStack) this._undoStack = [];
+    const isNewBatch = !viaDerivation && !this._pendingUndoBatch;
+    if (isNewBatch) {
+      this._pendingUndoBatch = { mode: this._state.editorMode, changes: [] };
+    }
+    if (this._pendingUndoBatch && values[key] !== value) {
+      this._pendingUndoBatch.changes.push({ key, previousValue: values[key], previousSource: source[key] });
+    }
     values[key] = value;
     source[key] = viaDerivation ? "derived" : "custom";
     if (!viaDerivation && HATG_DERIVE_RULES[key]) {
       this.propagateDerivation(key);
     }
+    if (isNewBatch) {
+      if (this._pendingUndoBatch.changes.length) {
+        this._undoStack.push(this._pendingUndoBatch);
+        if (this._undoStack.length > 50) this._undoStack.shift();
+      }
+      this._pendingUndoBatch = null;
+    }
+  }
+
+  canUndo() {
+    return !!(this._undoStack && this._undoStack.length > 0);
+  }
+
+  undoLastChange() {
+    if (!this._undoStack || !this._undoStack.length) {
+      this.showToast("Nichts zum Rückgängigmachen.");
+      return;
+    }
+    const batch = this._undoStack.pop();
+    const values = this._state.values[batch.mode];
+    const source = this._state.source[batch.mode];
+    for (let i = batch.changes.length - 1; i >= 0; i--) {
+      const change = batch.changes[i];
+      values[change.key] = change.previousValue;
+      source[change.key] = change.previousSource;
+    }
+    if (batch.mode !== this._state.editorMode) {
+      this._state.editorMode = batch.mode;
+      this._state.appearance = batch.mode;
+      this._state.previewMode = batch.mode;
+    }
+    this.render();
+    this.showToast(
+      batch.changes.length === 1
+        ? `Rückgängig: ${batch.changes[0].key}.`
+        : `Rückgängig: ${batch.changes.length} Felder (inkl. automatischer Ableitungen).`
+    );
   }
 
   propagateDerivation(sourceKey) {
@@ -6080,6 +6210,44 @@ class HATGPanel extends HTMLElement {
     if (panel) {
       panel.style.setProperty("--preview-page-bg", values["primary-background-color"] || "#0b111a");
     }
+    this.refreshPreviewCards();
+  }
+
+  refreshPreviewCards() {
+    // Getippte Werte (z.B. Radius, Farb-Rohtext) laufen ueber commitField() +
+    // applyPreviewTheme() statt einem vollen render() (das wuerde bei jedem
+    // Tastendruck den Cursor/Fokus riskieren). Die 6 Vorschau-Karten und die
+    // beiden Farb-/Font-Menues sind aber statisches HTML, das nur bei einem
+    // vollen render() neu berechnet wird - deshalb hier gezielt nur diese
+    // wenigen Bausteine per outerHTML ersetzen, ohne den Rest des Panels
+    // anzufassen. Enrico (Forum-Feedback): "wenn man Werte von Hand aendert
+    // ... werden die Werte nicht gleich in der Live-Vorschau uebernommen".
+    const root = this.shadowRoot;
+    if (!root) return;
+    const cardMap = [
+      [".preview-tile-card", () => this.renderPreviewTileCard()],
+      [".preview-entities-card", () => this.renderPreviewEntitiesCard()],
+      [".preview-sensor-card", () => this.renderPreviewSensorCard()],
+      [".preview-tile-feature-card", () => this.renderPreviewTileFeatureCard()],
+      [".preview-gauge-card", () => this.renderPreviewGaugeCard()],
+      [".preview-history-card", () => this.renderPreviewHistoryGraphCard()],
+    ];
+    cardMap.forEach(([selector, renderFn]) => {
+      const el = root.querySelector(selector);
+      if (el) el.outerHTML = renderFn().trim();
+    });
+    const colorMenuEl = root.querySelector('[data-preview-menu="color"]');
+    if (colorMenuEl) colorMenuEl.outerHTML = this.renderPreviewColorMenu().trim();
+    const fontMenuEl = root.querySelector('[data-preview-menu="font"]');
+    if (fontMenuEl) fontMenuEl.outerHTML = this.renderPreviewFontMenu().trim();
+    root.querySelector('[data-color-menu-toggle]')?.addEventListener("click", () => {
+      this._state.previewColorMenuOpen = !this._state.previewColorMenuOpen;
+      this.render();
+    });
+    root.querySelector('[data-font-menu-toggle]')?.addEventListener("click", () => {
+      this._state.previewFontMenuOpen = !this._state.previewFontMenuOpen;
+      this.render();
+    });
   }
 
   copyYaml() {
