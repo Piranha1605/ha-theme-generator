@@ -1,4 +1,4 @@
-const HATG_VERSION = "0.1.5";
+const HATG_VERSION = "0.1.7";
 
 const HATG_MANIFEST = {
   "sections": [
@@ -1145,7 +1145,8 @@ const HATG_MANIFEST = {
       "icon": "mdi:code-braces",
       "keys": [
         "card-mod-theme",
-        "card-mod-card-yaml"
+        "card-mod-card-yaml",
+        "card-backdrop-blur"
       ]
     }
   ],
@@ -1488,7 +1489,7 @@ const HATG_MANIFEST = {
     "mush-icon-color": "#3C3C43",
     "mush-icon-active-color": "#007AFF",
     "card-mod-theme": "basis",
-    "card-mod-card-yaml": "\n.: |\n  /* HATG Bubble Card: zentraler card-mod Block */\n  ha-card {\n    /* v0.4.50: Enrico - \"Popup, Heizung und freier Button haben keinen\n       cardmod genau so wie die Menueleiste unten.\" Root Cause (im echten\n       Bubble-Card-Quellcode nachgeschaut): JEDE Bubble-Karte nutzt fuer\n       Hintergrund/Icon/Name/Radius automatisch Fallback-Ketten wie\n       var(--bubble-card-type-main-background-color, var(--bubble-main-background-color, ...)) -\n       diese Variablen haben wir bisher nie gesetzt, nur einzelne Klassen per\n       !important erzwungen (siehe Liste unten). Fuer Kartentypen, die nicht\n       in dieser Liste stehen (z. B. ein reiner \"button\"-Typ ohne Entity wie\n       ein Pop-up-Oeffner, oder die \"sub-buttons\"-Kartenart), griff bisher\n       keine unserer Regeln - Bubble Card fiel auf neutrale Standardwerte\n       zurueck. Jetzt setzen wir die von Bubble Card selbst erwarteten\n       Variablen direkt auf ha-card (genau wie Enricos alter Pro-Karte-\n       card_mod es tat), zeigen aber weiterhin auf unsere eigenen, im Editor\n       bearbeitbaren Felder - das deckt jetzt automatisch auch kuenftige/\n       bisher unbekannte Bubble-Kartentypen ab, ohne dass wir jede einzeln\n       nachtragen muessen. */\n    --bubble-main-background-color: var(--bubble-main-buttons-background-color, var(--card-background-color));\n    --bubble-secondary-background-color: var(--bubble-secondary-background-color, var(--secondary-background-color));\n    --bubble-icon-background-color: var(--bubble-icon-background-color, var(--secondary-background-color));\n    --bubble-icon-color: var(--bubble-icon-color, var(--accent-color));\n    /* v0.4.53: Enrico - vorsorglich \"--bubble-accent-color\" mit aufnehmen,\n       falls kuenftig card_type: calendar mit \"show_progress: true\" genutzt\n       wird. Bubble Card berechnet die Fortschritts-Hervorhebung fuer laufende\n       Termine dann ueber \"var(--bubble-event-accent-color,\n       var(--bubble-accent-color, var(--bubble-default-color)))\" (siehe\n       changes.js im echten Bubble-Card-Quellcode) - ohne eigene Definition\n       blieb diese Hervorhebung bisher farblos, da wir --bubble-accent-color\n       nie gesetzt haben und Bubble Card selbst dafuer keinen eigenen\n       Standardwert bereitstellt. */\n    --bubble-accent-color: var(--bubble-accent-color, var(--accent-color));\n    --bubble-name-color: var(--bubble-name-color, var(--primary-text-color));\n    --bubble-state-color: var(--bubble-state-color, var(--secondary-text-color));\n    --bubble-border-radius: var(--bubble-border-radius, var(--ha-card-border-radius, 18px));\n    /* Bubble Card setzt bei button_type: switch im \"an\"-Zustand selbst\n       eine deckende Akzentfarben-Flutung ueber die ganze Karte\n       (--bubble-button-background-color, per JS/inline gesetzt) -\n       das sieht anders aus als Mushroom/Tile, die nur den Icon-Kreis\n       aufleuchten lassen. Global neutralisiert, damit die Kartenflaeche\n       in JEDEM Zustand dunkel/neutral bleibt und nur noch das Icon\n       (siehe .is-on .bubble-icon-container weiter unten) den\n       \"an\"-Zustand zeigt - alle drei Frameworks sollen so nah wie\n       moeglich gleich aussehen (Enrico: \"keiner soll merken was\n       welche Karte ist\"). */\n    --bubble-button-background-color: transparent !important;\n    border-radius: var(--bubble-border-radius, var(--ha-card-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-box-shadow, var(--ha-card-box-shadow, none)) !important;\n    background: var(--bubble-main-buttons-background-color, var(--ha-card-background, var(--card-background-color))) !important;\n    border: var(--bubble-border, 1px solid var(--bubble-border-color, var(--ha-card-border-color, transparent))) !important;\n    color: var(--bubble-name-color, var(--primary-text-color)) !important;\n    overflow: hidden !important;\n  }\n\n  .bubble-card,\n  .bubble-button-card-container,\n  .bubble-media-player,\n  .bubble-media-player-container,\n  .bubble-cover-card-container,\n  .bubble-climate-card-container,\n  .bubble-horizontal-buttons-stack-card-container,\n  .bubble-pop-up,\n  .bubble-pop-up-container {\n    border-radius: var(--bubble-border-radius, var(--ha-card-border-radius, 18px)) !important;\n    background: var(--bubble-main-buttons-background-color, var(--ha-card-background, var(--card-background-color))) !important;\n    box-shadow: var(--bubble-box-shadow, var(--ha-card-box-shadow, none)) !important;\n    border: var(--bubble-border, 1px solid var(--bubble-border-color, var(--ha-card-border-color, transparent))) !important;\n    color: var(--bubble-name-color, var(--primary-text-color)) !important;\n    overflow: hidden !important;\n  }\n\n  /* Echtes Bubble-Card-Element fuer den Zustands-/Fuellfarben-Hintergrund\n     (bisher faelschlich als \".bubble-button-background\" angesprochen - diese\n     Klasse existiert in Bubble Card gar nicht, der echte Name ist\n     \".bubble-background\"). Nur Radius+Clipping erzwingen (per \"inherit\" vom\n     jeweils schon korrekt gesetzten Elternelement), NICHT die Hintergrundfarbe -\n     die uebernimmt Bubble Card selbst korrekt je nach Zustand/Kartentyp ueber\n     die passenden bubble-*-button-background-color-Felder. Behebt eckige statt\n     runde Kartenecken bei Button-/Zustands-Karten. */\n  .bubble-background {\n    border-radius: inherit !important;\n    overflow: hidden !important;\n  }\n\n  .bubble-icon-container,\n  .bubble-icon-wrapper,\n  .bubble-climate-icon-container,\n  .bubble-cover-icon-container,\n  .bubble-media-player-icon-container {\n    border-radius: var(--bubble-icon-border-radius, var(--bubble-button-border-radius, var(--bubble-border-radius, 18px))) !important;\n    background: var(--bubble-icon-background-color, var(--bubble-secondary-background-color, var(--secondary-background-color))) !important;\n    color: var(--bubble-icon-color, var(--accent-color)) !important;\n  }\n\n  .bubble-icon,\n  .bubble-icon-container ha-icon,\n  .bubble-icon-wrapper ha-icon,\n  .bubble-climate-icon-container ha-icon,\n  .bubble-cover-icon-container ha-icon,\n  .bubble-media-player-icon-container ha-icon {\n    color: var(--bubble-icon-color, var(--accent-color)) !important;\n  }\n\n  .bubble-sub-button,\n  .bubble-sub-button-container,\n  .bubble-sub-button-background,\n  .bubble-climate-button,\n  .bubble-cover-button,\n  .bubble-media-player-button {\n    border-radius: var(--bubble-sub-button-border-radius, var(--bubble-button-border-radius, var(--bubble-border-radius, 18px))) !important;\n    background: var(--bubble-sub-button-background-color, var(--bubble-secondary-background-color, var(--secondary-background-color))) !important;\n    color: var(--bubble-sub-button-text-color, var(--bubble-state-color, var(--secondary-text-color))) !important;\n    /* Enrico: \"warum erhalten die subbutton keinen schatten?\" - vorher hier\n       hart auf none erzwungen, jetzt ueber eigenes Feld steuerbar (Fallback\n       auf den allgemeinen Bubble-Schatten, nicht mehr automatisch aus). */\n    box-shadow: var(--bubble-sub-button-box-shadow, var(--bubble-box-shadow, none)) !important;\n    border: 0 !important;\n  }\n\n  .bubble-sub-button ha-icon,\n  .bubble-sub-button-container ha-icon,\n  .bubble-climate-button ha-icon,\n  .bubble-cover-button ha-icon,\n  .bubble-media-player-button ha-icon,\n  .bubble-horizontal-buttons-stack-card-container .bubble-icon,\n  .bubble-horizontal-buttons-stack-card-container ha-icon {\n    color: var(--bubble-sub-button-icon-color, var(--bubble-icon-color, var(--accent-color))) !important;\n  }\n\n  .bubble-name,\n  .bubble-button-card-container .name,\n  .bubble-media-player .name,\n  .bubble-cover-card-container .name,\n  .bubble-climate-card-container .name {\n    color: var(--bubble-name-color, var(--primary-text-color)) !important;\n    font-size: var(--bubble-name-font-size, 14px) !important;\n    font-weight: var(--bubble-name-font-weight, 500) !important;\n  }\n\n  .bubble-state,\n  .bubble-secondary,\n  .bubble-media-player .state,\n  .bubble-cover-card-container .state,\n  .bubble-climate-card-container .state {\n    color: var(--bubble-state-color, var(--secondary-text-color)) !important;\n    font-size: var(--bubble-state-font-size, 12px) !important;\n  }\n\n  .bubble-range,\n  .bubble-range-slider,\n  .bubble-slider-container,\n  .bubble-slider-background,\n  .bubble-media-player-slider-background,\n  .bubble-cover-slider-background {\n    border-radius: var(--bubble-button-border-radius, var(--bubble-border-radius, 18px)) !important;\n    background: var(--slider-track-color, var(--divider-color)) !important;\n    overflow: hidden !important;\n  }\n\n  .bubble-range-fill,\n  .bubble-slider-fill,\n  .bubble-slider-active,\n  .bubble-media-player-slider-fill,\n  .bubble-cover-slider-fill {\n    background: var(--slider-color, var(--accent-color)) !important;\n  }\n  /* Slider-Hintergrund (Track) nutzt jetzt die echten, editierbaren Felder\n     slider-color/slider-track-color (Sektion \"Slider & Progress\") statt der\n     frueher hier verwendeten bubble-slider-*-Variablen - die gab es in Bubble\n     Card nie wirklich (Altlasten-Bereinigung hat sie deshalb aus dem Manifest\n     entfernt), wodurch diese Regel bisher IMMER auf divider-color/accent-color\n     zurueckgefallen ist, egal was auf \"Slider & Progress\" eingestellt war.\n     Hinweis: \"Slider-Enden abrunden\" und \"Slider-Farbverlauf\" (siehe Plugin-Seite)\n     wirken weiterhin nur direkt in der jeweiligen Bubble-Card ueber deren eigenen\n     \"styles:\"-Schluessel - Bubble Card ueberschreibt CSS am Slider-FUELLBALKEN\n     (.bubble-slider-fill usw.) hier per eigenem, hoeher spezifischem <style>-Tag\n     sonst selbst; der Slider-HINTERGRUND (Track) ist davon nicht betroffen und\n     reagiert jetzt korrekt auf slider-track-color. Fertige Kopiervorlagen fuer\n     Fuellfarbe/Rundung gibt es auf der Plugin-Seite. */\n\n  .bubble-climate-card-container {\n    border-radius: var(--bubble-climate-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-climate-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-climate-main-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  .bubble-cover-card-container {\n    border-radius: var(--bubble-cover-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-cover-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-cover-main-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  .bubble-media-player {\n    border-radius: var(--bubble-media-player-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-media-player-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-media-player-main-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  .bubble-horizontal-buttons-stack-card-container {\n    border-radius: var(--bubble-horizontal-buttons-stack-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-horizontal-buttons-stack-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-horizontal-buttons-stack-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  /* Bubble Card horizontal-buttons-stack: die echten Klassen je Einzelbutton\n     sind \".bubble-button\" (Layout), \".bubble-background-color\" (von Bubble\n     Card hartcodierter weisser Rahmen) und \".bubble-background\" (Fuellfarbe,\n     Standard-Fallback landet NICHT bei --bubble-main-buttons-background-color wie bei\n     den anderen Kartentypen). \".bubble-horizontal-buttons-stack .bubble-button\"\n     (oben, alte Version) existierte in Bubble Card nie und griff nie. Ziel:\n     die drei Buttons sollen optisch genauso aussehen wie die uebrigen\n     Bubble-Karten (gleicher Radius, gleicher Rahmen, gleiche Kartenfarbe\n     statt hartcodiertem weissem Rahmen). */\n  .bubble-horizontal-buttons-stack-card-container .bubble-button,\n  .bubble-horizontal-buttons-stack-card-container .bubble-background-color,\n  .bubble-horizontal-buttons-stack-card-container .bubble-background {\n    border-radius: var(--bubble-horizontal-buttons-stack-border-radius, var(--bubble-border-radius, 18px)) !important;\n  }\n\n  .bubble-horizontal-buttons-stack-card-container .bubble-background-color {\n    border: var(--bubble-border, 1px solid var(--bubble-border-color, var(--ha-card-border-color, transparent))) !important;\n  }\n\n  .bubble-horizontal-buttons-stack-card-container .bubble-background {\n    background-color: var(--bubble-horizontal-buttons-stack-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n    box-shadow: var(--bubble-horizontal-buttons-stack-box-shadow, var(--bubble-box-shadow, none)) !important;\n    opacity: 1 !important;\n  }\n\n  .bubble-pop-up,\n  .bubble-pop-up-background,\n  .bubble-pop-up-container {\n    border-radius: var(--bubble-pop-up-border-radius, var(--bubble-border-radius, 18px)) !important;\n    background: var(--bubble-pop-up-background-color, var(--primary-background-color)) !important;\n    box-shadow: var(--bubble-pop-up-box-shadow, var(--bubble-box-shadow, none)) !important;\n    backdrop-filter: var(--bubble-pop-up-backdrop-filter, blur(16px)) !important;\n  }\n\n  /* --- Icon Leucht-Zustand (an/aus): Bubble Card ---\n     .bubble-icon-container, .is-on/.is-off und ha-icon.bubble-main-icon\n     liegen laut Bubble-Card-Quellcode im selben, von aussen erreichbaren\n     Shadow-Root wie .bubble-container (anders als Sub-Buttons, die\n     weiterhin card_mod: pro Karte brauchen). Live von Enrico getestet. */\n  .bubble-icon-container {\n    transition: box-shadow .3s ease-in-out;\n  }\n  .is-off .bubble-icon-container {\n    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25),\n                0 1px 2px rgba(0, 0, 0, 0.15) !important;\n  }\n  .is-on .bubble-icon-container {\n    box-shadow: 0 0 10px 2px rgba(var(--rgb-accent-color), 0.55),\n                inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;\n  }\n  .is-on ha-icon.bubble-main-icon {\n    color: var(--bubble-icon-color, var(--accent-color)) !important;\n    filter: drop-shadow(0 0 4px rgba(var(--rgb-accent-color), 0.7));\n  }\n\n  /* --- Mushroom: Icon-Farbe/-Hintergrund/-Rundung an Bubble angleichen ---\n     Mushroom liest --icon-color/--shape-color/--icon-border-radius selbst\n     ueber mushroom-shape-icon (eigener Quellcode: shape-icon.ts). Faellt\n     zuerst auf die eigenen mush-*-Felder zurueck, dann auf die Bubble-\n     Felder, damit alle drei Frameworks optisch gleich aussehen. */\n  mushroom-shape-icon {\n    --icon-color: var(--mush-icon-color, var(--bubble-icon-color, var(--accent-color)));\n    --shape-color: var(--mush-icon-background-color, var(--bubble-icon-background-color, var(--secondary-background-color)));\n    --icon-border-radius: var(--bubble-icon-border-radius, 50%);\n  }\n",
+    "card-mod-card-yaml": "\n.: |\n  /* HATG Bubble Card: zentraler card-mod Block */\n  ha-card {\n    /* v0.4.50: Enrico - \"Popup, Heizung und freier Button haben keinen\n       cardmod genau so wie die Menueleiste unten.\" Root Cause (im echten\n       Bubble-Card-Quellcode nachgeschaut): JEDE Bubble-Karte nutzt fuer\n       Hintergrund/Icon/Name/Radius automatisch Fallback-Ketten wie\n       var(--bubble-card-type-main-background-color, var(--bubble-main-background-color, ...)) -\n       diese Variablen haben wir bisher nie gesetzt, nur einzelne Klassen per\n       !important erzwungen (siehe Liste unten). Fuer Kartentypen, die nicht\n       in dieser Liste stehen (z. B. ein reiner \"button\"-Typ ohne Entity wie\n       ein Pop-up-Oeffner, oder die \"sub-buttons\"-Kartenart), griff bisher\n       keine unserer Regeln - Bubble Card fiel auf neutrale Standardwerte\n       zurueck. Jetzt setzen wir die von Bubble Card selbst erwarteten\n       Variablen direkt auf ha-card (genau wie Enricos alter Pro-Karte-\n       card_mod es tat), zeigen aber weiterhin auf unsere eigenen, im Editor\n       bearbeitbaren Felder - das deckt jetzt automatisch auch kuenftige/\n       bisher unbekannte Bubble-Kartentypen ab, ohne dass wir jede einzeln\n       nachtragen muessen. */\n    --bubble-main-background-color: var(--bubble-main-buttons-background-color, var(--card-background-color));\n    --bubble-secondary-background-color: var(--bubble-secondary-background-color, var(--secondary-background-color));\n    --bubble-icon-background-color: var(--bubble-icon-background-color, var(--secondary-background-color));\n    --bubble-icon-color: var(--bubble-icon-color, var(--accent-color));\n    /* v0.4.53: Enrico - vorsorglich \"--bubble-accent-color\" mit aufnehmen,\n       falls kuenftig card_type: calendar mit \"show_progress: true\" genutzt\n       wird. Bubble Card berechnet die Fortschritts-Hervorhebung fuer laufende\n       Termine dann ueber \"var(--bubble-event-accent-color,\n       var(--bubble-accent-color, var(--bubble-default-color)))\" (siehe\n       changes.js im echten Bubble-Card-Quellcode) - ohne eigene Definition\n       blieb diese Hervorhebung bisher farblos, da wir --bubble-accent-color\n       nie gesetzt haben und Bubble Card selbst dafuer keinen eigenen\n       Standardwert bereitstellt. */\n    --bubble-accent-color: var(--bubble-accent-color, var(--accent-color));\n    --bubble-name-color: var(--bubble-name-color, var(--primary-text-color));\n    --bubble-state-color: var(--bubble-state-color, var(--secondary-text-color));\n    --bubble-border-radius: var(--bubble-border-radius, var(--ha-card-border-radius, 18px));\n    /* Bubble Card setzt bei button_type: switch im \"an\"-Zustand selbst\n       eine deckende Akzentfarben-Flutung ueber die ganze Karte\n       (--bubble-button-background-color, per JS/inline gesetzt) -\n       das sieht anders aus als Mushroom/Tile, die nur den Icon-Kreis\n       aufleuchten lassen. Global neutralisiert, damit die Kartenflaeche\n       in JEDEM Zustand dunkel/neutral bleibt und nur noch das Icon\n       (siehe .is-on .bubble-icon-container weiter unten) den\n       \"an\"-Zustand zeigt - alle drei Frameworks sollen so nah wie\n       moeglich gleich aussehen (Enrico: \"keiner soll merken was\n       welche Karte ist\"). */\n    --bubble-button-background-color: transparent !important;\n    border-radius: var(--bubble-border-radius, var(--ha-card-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-box-shadow, var(--ha-card-box-shadow, none)) !important;\n    background: var(--bubble-main-buttons-background-color, var(--ha-card-background, var(--card-background-color))) !important;\n    border: var(--bubble-border, 1px solid var(--bubble-border-color, var(--ha-card-border-color, transparent))) !important;\n    color: var(--bubble-name-color, var(--primary-text-color)) !important;\n    overflow: hidden !important;\n    backdrop-filter: var(--card-backdrop-blur, none) !important;\n  }\n\n  .bubble-card,\n  .bubble-button-card-container,\n  .bubble-media-player,\n  .bubble-media-player-container,\n  .bubble-cover-card-container,\n  .bubble-climate-card-container,\n  .bubble-horizontal-buttons-stack-card-container,\n  .bubble-pop-up,\n  .bubble-pop-up-container {\n    border-radius: var(--bubble-border-radius, var(--ha-card-border-radius, 18px)) !important;\n    background: var(--bubble-main-buttons-background-color, var(--ha-card-background, var(--card-background-color))) !important;\n    box-shadow: var(--bubble-box-shadow, var(--ha-card-box-shadow, none)) !important;\n    border: var(--bubble-border, 1px solid var(--bubble-border-color, var(--ha-card-border-color, transparent))) !important;\n    color: var(--bubble-name-color, var(--primary-text-color)) !important;\n    overflow: hidden !important;\n  }\n\n  /* Echtes Bubble-Card-Element fuer den Zustands-/Fuellfarben-Hintergrund\n     (bisher faelschlich als \".bubble-button-background\" angesprochen - diese\n     Klasse existiert in Bubble Card gar nicht, der echte Name ist\n     \".bubble-background\"). Nur Radius+Clipping erzwingen (per \"inherit\" vom\n     jeweils schon korrekt gesetzten Elternelement), NICHT die Hintergrundfarbe -\n     die uebernimmt Bubble Card selbst korrekt je nach Zustand/Kartentyp ueber\n     die passenden bubble-*-button-background-color-Felder. Behebt eckige statt\n     runde Kartenecken bei Button-/Zustands-Karten. */\n  .bubble-background {\n    border-radius: inherit !important;\n    overflow: hidden !important;\n  }\n\n  .bubble-icon-container,\n  .bubble-icon-wrapper,\n  .bubble-climate-icon-container,\n  .bubble-cover-icon-container,\n  .bubble-media-player-icon-container {\n    border-radius: var(--bubble-icon-border-radius, var(--bubble-button-border-radius, var(--bubble-border-radius, 18px))) !important;\n    background: var(--bubble-icon-background-color, var(--bubble-secondary-background-color, var(--secondary-background-color))) !important;\n    color: var(--bubble-icon-color, var(--accent-color)) !important;\n  }\n\n  .bubble-icon,\n  .bubble-icon-container ha-icon,\n  .bubble-icon-wrapper ha-icon,\n  .bubble-climate-icon-container ha-icon,\n  .bubble-cover-icon-container ha-icon,\n  .bubble-media-player-icon-container ha-icon {\n    color: var(--bubble-icon-color, var(--accent-color)) !important;\n  }\n\n  .bubble-sub-button,\n  .bubble-sub-button-container,\n  .bubble-sub-button-background,\n  .bubble-climate-button,\n  .bubble-cover-button,\n  .bubble-media-player-button {\n    border-radius: var(--bubble-sub-button-border-radius, var(--bubble-button-border-radius, var(--bubble-border-radius, 18px))) !important;\n    background: var(--bubble-sub-button-background-color, var(--bubble-secondary-background-color, var(--secondary-background-color))) !important;\n    color: var(--bubble-sub-button-text-color, var(--bubble-state-color, var(--secondary-text-color))) !important;\n    /* Enrico: \"warum erhalten die subbutton keinen schatten?\" - vorher hier\n       hart auf none erzwungen, jetzt ueber eigenes Feld steuerbar (Fallback\n       auf den allgemeinen Bubble-Schatten, nicht mehr automatisch aus). */\n    box-shadow: var(--bubble-sub-button-box-shadow, var(--bubble-box-shadow, none)) !important;\n    border: 0 !important;\n  }\n\n  .bubble-sub-button ha-icon,\n  .bubble-sub-button-container ha-icon,\n  .bubble-climate-button ha-icon,\n  .bubble-cover-button ha-icon,\n  .bubble-media-player-button ha-icon,\n  .bubble-horizontal-buttons-stack-card-container .bubble-icon,\n  .bubble-horizontal-buttons-stack-card-container ha-icon {\n    color: var(--bubble-sub-button-icon-color, var(--bubble-icon-color, var(--accent-color))) !important;\n  }\n\n  .bubble-name,\n  .bubble-button-card-container .name,\n  .bubble-media-player .name,\n  .bubble-cover-card-container .name,\n  .bubble-climate-card-container .name {\n    color: var(--bubble-name-color, var(--primary-text-color)) !important;\n    font-size: var(--bubble-name-font-size, 14px) !important;\n    font-weight: var(--bubble-name-font-weight, 500) !important;\n  }\n\n  .bubble-state,\n  .bubble-secondary,\n  .bubble-media-player .state,\n  .bubble-cover-card-container .state,\n  .bubble-climate-card-container .state {\n    color: var(--bubble-state-color, var(--secondary-text-color)) !important;\n    font-size: var(--bubble-state-font-size, 12px) !important;\n  }\n\n  .bubble-range,\n  .bubble-range-slider,\n  .bubble-slider-container,\n  .bubble-slider-background,\n  .bubble-media-player-slider-background,\n  .bubble-cover-slider-background {\n    border-radius: var(--bubble-button-border-radius, var(--bubble-border-radius, 18px)) !important;\n    background: var(--slider-track-color, var(--divider-color)) !important;\n    overflow: hidden !important;\n  }\n\n  .bubble-range-fill,\n  .bubble-slider-fill,\n  .bubble-slider-active,\n  .bubble-media-player-slider-fill,\n  .bubble-cover-slider-fill {\n    background: var(--slider-color, var(--accent-color)) !important;\n  }\n  /* Slider-Hintergrund (Track) nutzt jetzt die echten, editierbaren Felder\n     slider-color/slider-track-color (Sektion \"Slider & Progress\") statt der\n     frueher hier verwendeten bubble-slider-*-Variablen - die gab es in Bubble\n     Card nie wirklich (Altlasten-Bereinigung hat sie deshalb aus dem Manifest\n     entfernt), wodurch diese Regel bisher IMMER auf divider-color/accent-color\n     zurueckgefallen ist, egal was auf \"Slider & Progress\" eingestellt war.\n     Hinweis: \"Slider-Enden abrunden\" und \"Slider-Farbverlauf\" (siehe Plugin-Seite)\n     wirken weiterhin nur direkt in der jeweiligen Bubble-Card ueber deren eigenen\n     \"styles:\"-Schluessel - Bubble Card ueberschreibt CSS am Slider-FUELLBALKEN\n     (.bubble-slider-fill usw.) hier per eigenem, hoeher spezifischem <style>-Tag\n     sonst selbst; der Slider-HINTERGRUND (Track) ist davon nicht betroffen und\n     reagiert jetzt korrekt auf slider-track-color. Fertige Kopiervorlagen fuer\n     Fuellfarbe/Rundung gibt es auf der Plugin-Seite. */\n\n  .bubble-climate-card-container {\n    border-radius: var(--bubble-climate-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-climate-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-climate-main-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  .bubble-cover-card-container {\n    border-radius: var(--bubble-cover-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-cover-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-cover-main-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  .bubble-media-player {\n    border-radius: var(--bubble-media-player-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-media-player-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-media-player-main-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  .bubble-horizontal-buttons-stack-card-container {\n    border-radius: var(--bubble-horizontal-buttons-stack-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-horizontal-buttons-stack-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-horizontal-buttons-stack-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  /* Bubble Card horizontal-buttons-stack: die echten Klassen je Einzelbutton\n     sind \".bubble-button\" (Layout), \".bubble-background-color\" (von Bubble\n     Card hartcodierter weisser Rahmen) und \".bubble-background\" (Fuellfarbe,\n     Standard-Fallback landet NICHT bei --bubble-main-buttons-background-color wie bei\n     den anderen Kartentypen). \".bubble-horizontal-buttons-stack .bubble-button\"\n     (oben, alte Version) existierte in Bubble Card nie und griff nie. Ziel:\n     die drei Buttons sollen optisch genauso aussehen wie die uebrigen\n     Bubble-Karten (gleicher Radius, gleicher Rahmen, gleiche Kartenfarbe\n     statt hartcodiertem weissem Rahmen). */\n  .bubble-horizontal-buttons-stack-card-container .bubble-button,\n  .bubble-horizontal-buttons-stack-card-container .bubble-background-color,\n  .bubble-horizontal-buttons-stack-card-container .bubble-background {\n    border-radius: var(--bubble-horizontal-buttons-stack-border-radius, var(--bubble-border-radius, 18px)) !important;\n  }\n\n  .bubble-horizontal-buttons-stack-card-container .bubble-background-color {\n    border: var(--bubble-border, 1px solid var(--bubble-border-color, var(--ha-card-border-color, transparent))) !important;\n  }\n\n  .bubble-horizontal-buttons-stack-card-container .bubble-background {\n    background-color: var(--bubble-horizontal-buttons-stack-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n    box-shadow: var(--bubble-horizontal-buttons-stack-box-shadow, var(--bubble-box-shadow, none)) !important;\n    opacity: 1 !important;\n  }\n\n  .bubble-pop-up,\n  .bubble-pop-up-background,\n  .bubble-pop-up-container {\n    border-radius: var(--bubble-pop-up-border-radius, var(--bubble-border-radius, 18px)) !important;\n    background: var(--bubble-pop-up-background-color, var(--primary-background-color)) !important;\n    box-shadow: var(--bubble-pop-up-box-shadow, var(--bubble-box-shadow, none)) !important;\n    backdrop-filter: var(--bubble-pop-up-backdrop-filter, blur(16px)) !important;\n  }\n\n  /* --- Icon Leucht-Zustand (an/aus): Bubble Card ---\n     .bubble-icon-container, .is-on/.is-off und ha-icon.bubble-main-icon\n     liegen laut Bubble-Card-Quellcode im selben, von aussen erreichbaren\n     Shadow-Root wie .bubble-container (anders als Sub-Buttons, die\n     weiterhin card_mod: pro Karte brauchen). Live von Enrico getestet. */\n  .bubble-icon-container {\n    transition: box-shadow .3s ease-in-out;\n  }\n  .is-off .bubble-icon-container {\n    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25),\n                0 1px 2px rgba(0, 0, 0, 0.15) !important;\n  }\n  .is-on .bubble-icon-container {\n    box-shadow: 0 0 10px 2px rgba(var(--rgb-accent-color), 0.55),\n                inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;\n  }\n  .is-on ha-icon.bubble-main-icon {\n    color: var(--bubble-icon-color, var(--accent-color)) !important;\n    filter: drop-shadow(0 0 4px rgba(var(--rgb-accent-color), 0.7));\n  }\n\n  /* --- Mushroom: Icon-Farbe/-Hintergrund/-Rundung an Bubble angleichen ---\n     Mushroom liest --icon-color/--shape-color/--icon-border-radius selbst\n     ueber mushroom-shape-icon (eigener Quellcode: shape-icon.ts). Faellt\n     zuerst auf die eigenen mush-*-Felder zurueck, dann auf die Bubble-\n     Felder, damit alle drei Frameworks optisch gleich aussehen. */\n  mushroom-shape-icon {\n    --icon-color: var(--mush-icon-color, var(--bubble-icon-color, var(--accent-color)));\n    --shape-color: var(--mush-icon-background-color, var(--bubble-icon-background-color, var(--secondary-background-color)));\n    --icon-border-radius: var(--bubble-icon-border-radius, 50%);\n  }\n",
     "bubble-button-card-background-color": "#FFFFFF",
     "bubble-button-main-background-color": "#FFFFFF",
     "bubble-climate-button-background-color": "#F9F9FB",
@@ -1611,7 +1612,8 @@ const HATG_MANIFEST = {
     "printer-cyan-color": "#00AEEF",
     "printer-magenta-color": "#EC008C",
     "printer-yellow-color": "#FFD400",
-    "bubble-main-buttons-background-color": "#FFFFFF"
+    "bubble-main-buttons-background-color": "#FFFFFF",
+    "card-backdrop-blur": "none"
   },
   "dark": {
     "accent-color": "#ff9300",
@@ -1952,7 +1954,7 @@ const HATG_MANIFEST = {
     "mush-icon-color": "#0A84FF",
     "mush-icon-active-color": "#ff9300",
     "card-mod-theme": "basis",
-    "card-mod-card-yaml": "\n.: |\n  /* HATG Bubble Card: zentraler card-mod Block */\n  ha-card {\n    /* v0.4.50: Enrico - \"Popup, Heizung und freier Button haben keinen\n       cardmod genau so wie die Menueleiste unten.\" Root Cause (im echten\n       Bubble-Card-Quellcode nachgeschaut): JEDE Bubble-Karte nutzt fuer\n       Hintergrund/Icon/Name/Radius automatisch Fallback-Ketten wie\n       var(--bubble-card-type-main-background-color, var(--bubble-main-background-color, ...)) -\n       diese Variablen haben wir bisher nie gesetzt, nur einzelne Klassen per\n       !important erzwungen (siehe Liste unten). Fuer Kartentypen, die nicht\n       in dieser Liste stehen (z. B. ein reiner \"button\"-Typ ohne Entity wie\n       ein Pop-up-Oeffner, oder die \"sub-buttons\"-Kartenart), griff bisher\n       keine unserer Regeln - Bubble Card fiel auf neutrale Standardwerte\n       zurueck. Jetzt setzen wir die von Bubble Card selbst erwarteten\n       Variablen direkt auf ha-card (genau wie Enricos alter Pro-Karte-\n       card_mod es tat), zeigen aber weiterhin auf unsere eigenen, im Editor\n       bearbeitbaren Felder - das deckt jetzt automatisch auch kuenftige/\n       bisher unbekannte Bubble-Kartentypen ab, ohne dass wir jede einzeln\n       nachtragen muessen. */\n    --bubble-main-background-color: var(--bubble-main-buttons-background-color, var(--card-background-color));\n    --bubble-secondary-background-color: var(--bubble-secondary-background-color, var(--secondary-background-color));\n    --bubble-icon-background-color: var(--bubble-icon-background-color, var(--secondary-background-color));\n    --bubble-icon-color: var(--bubble-icon-color, var(--accent-color));\n    /* v0.4.53: Enrico - vorsorglich \"--bubble-accent-color\" mit aufnehmen,\n       falls kuenftig card_type: calendar mit \"show_progress: true\" genutzt\n       wird. Bubble Card berechnet die Fortschritts-Hervorhebung fuer laufende\n       Termine dann ueber \"var(--bubble-event-accent-color,\n       var(--bubble-accent-color, var(--bubble-default-color)))\" (siehe\n       changes.js im echten Bubble-Card-Quellcode) - ohne eigene Definition\n       blieb diese Hervorhebung bisher farblos, da wir --bubble-accent-color\n       nie gesetzt haben und Bubble Card selbst dafuer keinen eigenen\n       Standardwert bereitstellt. */\n    --bubble-accent-color: var(--bubble-accent-color, var(--accent-color));\n    --bubble-name-color: var(--bubble-name-color, var(--primary-text-color));\n    --bubble-state-color: var(--bubble-state-color, var(--secondary-text-color));\n    --bubble-border-radius: var(--bubble-border-radius, var(--ha-card-border-radius, 18px));\n    /* Bubble Card setzt bei button_type: switch im \"an\"-Zustand selbst\n       eine deckende Akzentfarben-Flutung ueber die ganze Karte\n       (--bubble-button-background-color, per JS/inline gesetzt) -\n       das sieht anders aus als Mushroom/Tile, die nur den Icon-Kreis\n       aufleuchten lassen. Global neutralisiert, damit die Kartenflaeche\n       in JEDEM Zustand dunkel/neutral bleibt und nur noch das Icon\n       (siehe .is-on .bubble-icon-container weiter unten) den\n       \"an\"-Zustand zeigt - alle drei Frameworks sollen so nah wie\n       moeglich gleich aussehen (Enrico: \"keiner soll merken was\n       welche Karte ist\"). */\n    --bubble-button-background-color: transparent !important;\n    border-radius: var(--bubble-border-radius, var(--ha-card-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-box-shadow, var(--ha-card-box-shadow, none)) !important;\n    background: var(--bubble-main-buttons-background-color, var(--ha-card-background, var(--card-background-color))) !important;\n    border: var(--bubble-border, 1px solid var(--bubble-border-color, var(--ha-card-border-color, transparent))) !important;\n    color: var(--bubble-name-color, var(--primary-text-color)) !important;\n    overflow: hidden !important;\n  }\n\n  .bubble-card,\n  .bubble-button-card-container,\n  .bubble-media-player,\n  .bubble-media-player-container,\n  .bubble-cover-card-container,\n  .bubble-climate-card-container,\n  .bubble-horizontal-buttons-stack-card-container,\n  .bubble-pop-up,\n  .bubble-pop-up-container {\n    border-radius: var(--bubble-border-radius, var(--ha-card-border-radius, 18px)) !important;\n    background: var(--bubble-main-buttons-background-color, var(--ha-card-background, var(--card-background-color))) !important;\n    box-shadow: var(--bubble-box-shadow, var(--ha-card-box-shadow, none)) !important;\n    border: var(--bubble-border, 1px solid var(--bubble-border-color, var(--ha-card-border-color, transparent))) !important;\n    color: var(--bubble-name-color, var(--primary-text-color)) !important;\n    overflow: hidden !important;\n  }\n\n  /* Echtes Bubble-Card-Element fuer den Zustands-/Fuellfarben-Hintergrund\n     (bisher faelschlich als \".bubble-button-background\" angesprochen - diese\n     Klasse existiert in Bubble Card gar nicht, der echte Name ist\n     \".bubble-background\"). Nur Radius+Clipping erzwingen (per \"inherit\" vom\n     jeweils schon korrekt gesetzten Elternelement), NICHT die Hintergrundfarbe -\n     die uebernimmt Bubble Card selbst korrekt je nach Zustand/Kartentyp ueber\n     die passenden bubble-*-button-background-color-Felder. Behebt eckige statt\n     runde Kartenecken bei Button-/Zustands-Karten. */\n  .bubble-background {\n    border-radius: inherit !important;\n    overflow: hidden !important;\n  }\n\n  .bubble-icon-container,\n  .bubble-icon-wrapper,\n  .bubble-climate-icon-container,\n  .bubble-cover-icon-container,\n  .bubble-media-player-icon-container {\n    border-radius: var(--bubble-icon-border-radius, var(--bubble-button-border-radius, var(--bubble-border-radius, 18px))) !important;\n    background: var(--bubble-icon-background-color, var(--bubble-secondary-background-color, var(--secondary-background-color))) !important;\n    color: var(--bubble-icon-color, var(--accent-color)) !important;\n  }\n\n  .bubble-icon,\n  .bubble-icon-container ha-icon,\n  .bubble-icon-wrapper ha-icon,\n  .bubble-climate-icon-container ha-icon,\n  .bubble-cover-icon-container ha-icon,\n  .bubble-media-player-icon-container ha-icon {\n    color: var(--bubble-icon-color, var(--accent-color)) !important;\n  }\n\n  .bubble-sub-button,\n  .bubble-sub-button-container,\n  .bubble-sub-button-background,\n  .bubble-climate-button,\n  .bubble-cover-button,\n  .bubble-media-player-button {\n    border-radius: var(--bubble-sub-button-border-radius, var(--bubble-button-border-radius, var(--bubble-border-radius, 18px))) !important;\n    background: var(--bubble-sub-button-background-color, var(--bubble-secondary-background-color, var(--secondary-background-color))) !important;\n    color: var(--bubble-sub-button-text-color, var(--bubble-state-color, var(--secondary-text-color))) !important;\n    /* Enrico: \"warum erhalten die subbutton keinen schatten?\" - vorher hier\n       hart auf none erzwungen, jetzt ueber eigenes Feld steuerbar (Fallback\n       auf den allgemeinen Bubble-Schatten, nicht mehr automatisch aus). */\n    box-shadow: var(--bubble-sub-button-box-shadow, var(--bubble-box-shadow, none)) !important;\n    border: 0 !important;\n  }\n\n  .bubble-sub-button ha-icon,\n  .bubble-sub-button-container ha-icon,\n  .bubble-climate-button ha-icon,\n  .bubble-cover-button ha-icon,\n  .bubble-media-player-button ha-icon,\n  .bubble-horizontal-buttons-stack-card-container .bubble-icon,\n  .bubble-horizontal-buttons-stack-card-container ha-icon {\n    color: var(--bubble-sub-button-icon-color, var(--bubble-icon-color, var(--accent-color))) !important;\n  }\n\n  .bubble-name,\n  .bubble-button-card-container .name,\n  .bubble-media-player .name,\n  .bubble-cover-card-container .name,\n  .bubble-climate-card-container .name {\n    color: var(--bubble-name-color, var(--primary-text-color)) !important;\n    font-size: var(--bubble-name-font-size, 14px) !important;\n    font-weight: var(--bubble-name-font-weight, 500) !important;\n  }\n\n  .bubble-state,\n  .bubble-secondary,\n  .bubble-media-player .state,\n  .bubble-cover-card-container .state,\n  .bubble-climate-card-container .state {\n    color: var(--bubble-state-color, var(--secondary-text-color)) !important;\n    font-size: var(--bubble-state-font-size, 12px) !important;\n  }\n\n  .bubble-range,\n  .bubble-range-slider,\n  .bubble-slider-container,\n  .bubble-slider-background,\n  .bubble-media-player-slider-background,\n  .bubble-cover-slider-background {\n    border-radius: var(--bubble-button-border-radius, var(--bubble-border-radius, 18px)) !important;\n    background: var(--slider-track-color, var(--divider-color)) !important;\n    overflow: hidden !important;\n  }\n\n  .bubble-range-fill,\n  .bubble-slider-fill,\n  .bubble-slider-active,\n  .bubble-media-player-slider-fill,\n  .bubble-cover-slider-fill {\n    background: var(--slider-color, var(--accent-color)) !important;\n  }\n  /* Slider-Hintergrund (Track) nutzt jetzt die echten, editierbaren Felder\n     slider-color/slider-track-color (Sektion \"Slider & Progress\") statt der\n     frueher hier verwendeten bubble-slider-*-Variablen - die gab es in Bubble\n     Card nie wirklich (Altlasten-Bereinigung hat sie deshalb aus dem Manifest\n     entfernt), wodurch diese Regel bisher IMMER auf divider-color/accent-color\n     zurueckgefallen ist, egal was auf \"Slider & Progress\" eingestellt war.\n     Hinweis: \"Slider-Enden abrunden\" und \"Slider-Farbverlauf\" (siehe Plugin-Seite)\n     wirken weiterhin nur direkt in der jeweiligen Bubble-Card ueber deren eigenen\n     \"styles:\"-Schluessel - Bubble Card ueberschreibt CSS am Slider-FUELLBALKEN\n     (.bubble-slider-fill usw.) hier per eigenem, hoeher spezifischem <style>-Tag\n     sonst selbst; der Slider-HINTERGRUND (Track) ist davon nicht betroffen und\n     reagiert jetzt korrekt auf slider-track-color. Fertige Kopiervorlagen fuer\n     Fuellfarbe/Rundung gibt es auf der Plugin-Seite. */\n\n  .bubble-climate-card-container {\n    border-radius: var(--bubble-climate-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-climate-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-climate-main-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  .bubble-cover-card-container {\n    border-radius: var(--bubble-cover-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-cover-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-cover-main-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  .bubble-media-player {\n    border-radius: var(--bubble-media-player-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-media-player-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-media-player-main-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  .bubble-horizontal-buttons-stack-card-container {\n    border-radius: var(--bubble-horizontal-buttons-stack-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-horizontal-buttons-stack-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-horizontal-buttons-stack-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  /* Bubble Card horizontal-buttons-stack: die echten Klassen je Einzelbutton\n     sind \".bubble-button\" (Layout), \".bubble-background-color\" (von Bubble\n     Card hartcodierter weisser Rahmen) und \".bubble-background\" (Fuellfarbe,\n     Standard-Fallback landet NICHT bei --bubble-main-buttons-background-color wie bei\n     den anderen Kartentypen). \".bubble-horizontal-buttons-stack .bubble-button\"\n     (oben, alte Version) existierte in Bubble Card nie und griff nie. Ziel:\n     die drei Buttons sollen optisch genauso aussehen wie die uebrigen\n     Bubble-Karten (gleicher Radius, gleicher Rahmen, gleiche Kartenfarbe\n     statt hartcodiertem weissem Rahmen). */\n  .bubble-horizontal-buttons-stack-card-container .bubble-button,\n  .bubble-horizontal-buttons-stack-card-container .bubble-background-color,\n  .bubble-horizontal-buttons-stack-card-container .bubble-background {\n    border-radius: var(--bubble-horizontal-buttons-stack-border-radius, var(--bubble-border-radius, 18px)) !important;\n  }\n\n  .bubble-horizontal-buttons-stack-card-container .bubble-background-color {\n    border: var(--bubble-border, 1px solid var(--bubble-border-color, var(--ha-card-border-color, transparent))) !important;\n  }\n\n  .bubble-horizontal-buttons-stack-card-container .bubble-background {\n    background-color: var(--bubble-horizontal-buttons-stack-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n    box-shadow: var(--bubble-horizontal-buttons-stack-box-shadow, var(--bubble-box-shadow, none)) !important;\n    opacity: 1 !important;\n  }\n\n  .bubble-pop-up,\n  .bubble-pop-up-background,\n  .bubble-pop-up-container {\n    border-radius: var(--bubble-pop-up-border-radius, var(--bubble-border-radius, 18px)) !important;\n    background: var(--bubble-pop-up-background-color, var(--primary-background-color)) !important;\n    box-shadow: var(--bubble-pop-up-box-shadow, var(--bubble-box-shadow, none)) !important;\n    backdrop-filter: var(--bubble-pop-up-backdrop-filter, blur(16px)) !important;\n  }\n\n  /* --- Icon Leucht-Zustand (an/aus): Bubble Card ---\n     .bubble-icon-container, .is-on/.is-off und ha-icon.bubble-main-icon\n     liegen laut Bubble-Card-Quellcode im selben, von aussen erreichbaren\n     Shadow-Root wie .bubble-container (anders als Sub-Buttons, die\n     weiterhin card_mod: pro Karte brauchen). Live von Enrico getestet. */\n  .bubble-icon-container {\n    transition: box-shadow .3s ease-in-out;\n  }\n  .is-off .bubble-icon-container {\n    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25),\n                0 1px 2px rgba(0, 0, 0, 0.15) !important;\n  }\n  .is-on .bubble-icon-container {\n    box-shadow: 0 0 10px 2px rgba(var(--rgb-accent-color), 0.55),\n                inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;\n  }\n  .is-on ha-icon.bubble-main-icon {\n    color: var(--bubble-icon-color, var(--accent-color)) !important;\n    filter: drop-shadow(0 0 4px rgba(var(--rgb-accent-color), 0.7));\n  }\n\n  /* --- Mushroom: Icon-Farbe/-Hintergrund/-Rundung an Bubble angleichen ---\n     Mushroom liest --icon-color/--shape-color/--icon-border-radius selbst\n     ueber mushroom-shape-icon (eigener Quellcode: shape-icon.ts). Faellt\n     zuerst auf die eigenen mush-*-Felder zurueck, dann auf die Bubble-\n     Felder, damit alle drei Frameworks optisch gleich aussehen. */\n  mushroom-shape-icon {\n    --icon-color: var(--mush-icon-color, var(--bubble-icon-color, var(--accent-color)));\n    --shape-color: var(--mush-icon-background-color, var(--bubble-icon-background-color, var(--secondary-background-color)));\n    --icon-border-radius: var(--bubble-icon-border-radius, 50%);\n  }\n",
+    "card-mod-card-yaml": "\n.: |\n  /* HATG Bubble Card: zentraler card-mod Block */\n  ha-card {\n    /* v0.4.50: Enrico - \"Popup, Heizung und freier Button haben keinen\n       cardmod genau so wie die Menueleiste unten.\" Root Cause (im echten\n       Bubble-Card-Quellcode nachgeschaut): JEDE Bubble-Karte nutzt fuer\n       Hintergrund/Icon/Name/Radius automatisch Fallback-Ketten wie\n       var(--bubble-card-type-main-background-color, var(--bubble-main-background-color, ...)) -\n       diese Variablen haben wir bisher nie gesetzt, nur einzelne Klassen per\n       !important erzwungen (siehe Liste unten). Fuer Kartentypen, die nicht\n       in dieser Liste stehen (z. B. ein reiner \"button\"-Typ ohne Entity wie\n       ein Pop-up-Oeffner, oder die \"sub-buttons\"-Kartenart), griff bisher\n       keine unserer Regeln - Bubble Card fiel auf neutrale Standardwerte\n       zurueck. Jetzt setzen wir die von Bubble Card selbst erwarteten\n       Variablen direkt auf ha-card (genau wie Enricos alter Pro-Karte-\n       card_mod es tat), zeigen aber weiterhin auf unsere eigenen, im Editor\n       bearbeitbaren Felder - das deckt jetzt automatisch auch kuenftige/\n       bisher unbekannte Bubble-Kartentypen ab, ohne dass wir jede einzeln\n       nachtragen muessen. */\n    --bubble-main-background-color: var(--bubble-main-buttons-background-color, var(--card-background-color));\n    --bubble-secondary-background-color: var(--bubble-secondary-background-color, var(--secondary-background-color));\n    --bubble-icon-background-color: var(--bubble-icon-background-color, var(--secondary-background-color));\n    --bubble-icon-color: var(--bubble-icon-color, var(--accent-color));\n    /* v0.4.53: Enrico - vorsorglich \"--bubble-accent-color\" mit aufnehmen,\n       falls kuenftig card_type: calendar mit \"show_progress: true\" genutzt\n       wird. Bubble Card berechnet die Fortschritts-Hervorhebung fuer laufende\n       Termine dann ueber \"var(--bubble-event-accent-color,\n       var(--bubble-accent-color, var(--bubble-default-color)))\" (siehe\n       changes.js im echten Bubble-Card-Quellcode) - ohne eigene Definition\n       blieb diese Hervorhebung bisher farblos, da wir --bubble-accent-color\n       nie gesetzt haben und Bubble Card selbst dafuer keinen eigenen\n       Standardwert bereitstellt. */\n    --bubble-accent-color: var(--bubble-accent-color, var(--accent-color));\n    --bubble-name-color: var(--bubble-name-color, var(--primary-text-color));\n    --bubble-state-color: var(--bubble-state-color, var(--secondary-text-color));\n    --bubble-border-radius: var(--bubble-border-radius, var(--ha-card-border-radius, 18px));\n    /* Bubble Card setzt bei button_type: switch im \"an\"-Zustand selbst\n       eine deckende Akzentfarben-Flutung ueber die ganze Karte\n       (--bubble-button-background-color, per JS/inline gesetzt) -\n       das sieht anders aus als Mushroom/Tile, die nur den Icon-Kreis\n       aufleuchten lassen. Global neutralisiert, damit die Kartenflaeche\n       in JEDEM Zustand dunkel/neutral bleibt und nur noch das Icon\n       (siehe .is-on .bubble-icon-container weiter unten) den\n       \"an\"-Zustand zeigt - alle drei Frameworks sollen so nah wie\n       moeglich gleich aussehen (Enrico: \"keiner soll merken was\n       welche Karte ist\"). */\n    --bubble-button-background-color: transparent !important;\n    border-radius: var(--bubble-border-radius, var(--ha-card-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-box-shadow, var(--ha-card-box-shadow, none)) !important;\n    background: var(--bubble-main-buttons-background-color, var(--ha-card-background, var(--card-background-color))) !important;\n    border: var(--bubble-border, 1px solid var(--bubble-border-color, var(--ha-card-border-color, transparent))) !important;\n    color: var(--bubble-name-color, var(--primary-text-color)) !important;\n    overflow: hidden !important;\n    backdrop-filter: var(--card-backdrop-blur, none) !important;\n  }\n\n  .bubble-card,\n  .bubble-button-card-container,\n  .bubble-media-player,\n  .bubble-media-player-container,\n  .bubble-cover-card-container,\n  .bubble-climate-card-container,\n  .bubble-horizontal-buttons-stack-card-container,\n  .bubble-pop-up,\n  .bubble-pop-up-container {\n    border-radius: var(--bubble-border-radius, var(--ha-card-border-radius, 18px)) !important;\n    background: var(--bubble-main-buttons-background-color, var(--ha-card-background, var(--card-background-color))) !important;\n    box-shadow: var(--bubble-box-shadow, var(--ha-card-box-shadow, none)) !important;\n    border: var(--bubble-border, 1px solid var(--bubble-border-color, var(--ha-card-border-color, transparent))) !important;\n    color: var(--bubble-name-color, var(--primary-text-color)) !important;\n    overflow: hidden !important;\n  }\n\n  /* Echtes Bubble-Card-Element fuer den Zustands-/Fuellfarben-Hintergrund\n     (bisher faelschlich als \".bubble-button-background\" angesprochen - diese\n     Klasse existiert in Bubble Card gar nicht, der echte Name ist\n     \".bubble-background\"). Nur Radius+Clipping erzwingen (per \"inherit\" vom\n     jeweils schon korrekt gesetzten Elternelement), NICHT die Hintergrundfarbe -\n     die uebernimmt Bubble Card selbst korrekt je nach Zustand/Kartentyp ueber\n     die passenden bubble-*-button-background-color-Felder. Behebt eckige statt\n     runde Kartenecken bei Button-/Zustands-Karten. */\n  .bubble-background {\n    border-radius: inherit !important;\n    overflow: hidden !important;\n  }\n\n  .bubble-icon-container,\n  .bubble-icon-wrapper,\n  .bubble-climate-icon-container,\n  .bubble-cover-icon-container,\n  .bubble-media-player-icon-container {\n    border-radius: var(--bubble-icon-border-radius, var(--bubble-button-border-radius, var(--bubble-border-radius, 18px))) !important;\n    background: var(--bubble-icon-background-color, var(--bubble-secondary-background-color, var(--secondary-background-color))) !important;\n    color: var(--bubble-icon-color, var(--accent-color)) !important;\n  }\n\n  .bubble-icon,\n  .bubble-icon-container ha-icon,\n  .bubble-icon-wrapper ha-icon,\n  .bubble-climate-icon-container ha-icon,\n  .bubble-cover-icon-container ha-icon,\n  .bubble-media-player-icon-container ha-icon {\n    color: var(--bubble-icon-color, var(--accent-color)) !important;\n  }\n\n  .bubble-sub-button,\n  .bubble-sub-button-container,\n  .bubble-sub-button-background,\n  .bubble-climate-button,\n  .bubble-cover-button,\n  .bubble-media-player-button {\n    border-radius: var(--bubble-sub-button-border-radius, var(--bubble-button-border-radius, var(--bubble-border-radius, 18px))) !important;\n    background: var(--bubble-sub-button-background-color, var(--bubble-secondary-background-color, var(--secondary-background-color))) !important;\n    color: var(--bubble-sub-button-text-color, var(--bubble-state-color, var(--secondary-text-color))) !important;\n    /* Enrico: \"warum erhalten die subbutton keinen schatten?\" - vorher hier\n       hart auf none erzwungen, jetzt ueber eigenes Feld steuerbar (Fallback\n       auf den allgemeinen Bubble-Schatten, nicht mehr automatisch aus). */\n    box-shadow: var(--bubble-sub-button-box-shadow, var(--bubble-box-shadow, none)) !important;\n    border: 0 !important;\n  }\n\n  .bubble-sub-button ha-icon,\n  .bubble-sub-button-container ha-icon,\n  .bubble-climate-button ha-icon,\n  .bubble-cover-button ha-icon,\n  .bubble-media-player-button ha-icon,\n  .bubble-horizontal-buttons-stack-card-container .bubble-icon,\n  .bubble-horizontal-buttons-stack-card-container ha-icon {\n    color: var(--bubble-sub-button-icon-color, var(--bubble-icon-color, var(--accent-color))) !important;\n  }\n\n  .bubble-name,\n  .bubble-button-card-container .name,\n  .bubble-media-player .name,\n  .bubble-cover-card-container .name,\n  .bubble-climate-card-container .name {\n    color: var(--bubble-name-color, var(--primary-text-color)) !important;\n    font-size: var(--bubble-name-font-size, 14px) !important;\n    font-weight: var(--bubble-name-font-weight, 500) !important;\n  }\n\n  .bubble-state,\n  .bubble-secondary,\n  .bubble-media-player .state,\n  .bubble-cover-card-container .state,\n  .bubble-climate-card-container .state {\n    color: var(--bubble-state-color, var(--secondary-text-color)) !important;\n    font-size: var(--bubble-state-font-size, 12px) !important;\n  }\n\n  .bubble-range,\n  .bubble-range-slider,\n  .bubble-slider-container,\n  .bubble-slider-background,\n  .bubble-media-player-slider-background,\n  .bubble-cover-slider-background {\n    border-radius: var(--bubble-button-border-radius, var(--bubble-border-radius, 18px)) !important;\n    background: var(--slider-track-color, var(--divider-color)) !important;\n    overflow: hidden !important;\n  }\n\n  .bubble-range-fill,\n  .bubble-slider-fill,\n  .bubble-slider-active,\n  .bubble-media-player-slider-fill,\n  .bubble-cover-slider-fill {\n    background: var(--slider-color, var(--accent-color)) !important;\n  }\n  /* Slider-Hintergrund (Track) nutzt jetzt die echten, editierbaren Felder\n     slider-color/slider-track-color (Sektion \"Slider & Progress\") statt der\n     frueher hier verwendeten bubble-slider-*-Variablen - die gab es in Bubble\n     Card nie wirklich (Altlasten-Bereinigung hat sie deshalb aus dem Manifest\n     entfernt), wodurch diese Regel bisher IMMER auf divider-color/accent-color\n     zurueckgefallen ist, egal was auf \"Slider & Progress\" eingestellt war.\n     Hinweis: \"Slider-Enden abrunden\" und \"Slider-Farbverlauf\" (siehe Plugin-Seite)\n     wirken weiterhin nur direkt in der jeweiligen Bubble-Card ueber deren eigenen\n     \"styles:\"-Schluessel - Bubble Card ueberschreibt CSS am Slider-FUELLBALKEN\n     (.bubble-slider-fill usw.) hier per eigenem, hoeher spezifischem <style>-Tag\n     sonst selbst; der Slider-HINTERGRUND (Track) ist davon nicht betroffen und\n     reagiert jetzt korrekt auf slider-track-color. Fertige Kopiervorlagen fuer\n     Fuellfarbe/Rundung gibt es auf der Plugin-Seite. */\n\n  .bubble-climate-card-container {\n    border-radius: var(--bubble-climate-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-climate-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-climate-main-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  .bubble-cover-card-container {\n    border-radius: var(--bubble-cover-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-cover-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-cover-main-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  .bubble-media-player {\n    border-radius: var(--bubble-media-player-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-media-player-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-media-player-main-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  .bubble-horizontal-buttons-stack-card-container {\n    border-radius: var(--bubble-horizontal-buttons-stack-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-horizontal-buttons-stack-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-horizontal-buttons-stack-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  /* Bubble Card horizontal-buttons-stack: die echten Klassen je Einzelbutton\n     sind \".bubble-button\" (Layout), \".bubble-background-color\" (von Bubble\n     Card hartcodierter weisser Rahmen) und \".bubble-background\" (Fuellfarbe,\n     Standard-Fallback landet NICHT bei --bubble-main-buttons-background-color wie bei\n     den anderen Kartentypen). \".bubble-horizontal-buttons-stack .bubble-button\"\n     (oben, alte Version) existierte in Bubble Card nie und griff nie. Ziel:\n     die drei Buttons sollen optisch genauso aussehen wie die uebrigen\n     Bubble-Karten (gleicher Radius, gleicher Rahmen, gleiche Kartenfarbe\n     statt hartcodiertem weissem Rahmen). */\n  .bubble-horizontal-buttons-stack-card-container .bubble-button,\n  .bubble-horizontal-buttons-stack-card-container .bubble-background-color,\n  .bubble-horizontal-buttons-stack-card-container .bubble-background {\n    border-radius: var(--bubble-horizontal-buttons-stack-border-radius, var(--bubble-border-radius, 18px)) !important;\n  }\n\n  .bubble-horizontal-buttons-stack-card-container .bubble-background-color {\n    border: var(--bubble-border, 1px solid var(--bubble-border-color, var(--ha-card-border-color, transparent))) !important;\n  }\n\n  .bubble-horizontal-buttons-stack-card-container .bubble-background {\n    background-color: var(--bubble-horizontal-buttons-stack-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n    box-shadow: var(--bubble-horizontal-buttons-stack-box-shadow, var(--bubble-box-shadow, none)) !important;\n    opacity: 1 !important;\n  }\n\n  .bubble-pop-up,\n  .bubble-pop-up-background,\n  .bubble-pop-up-container {\n    border-radius: var(--bubble-pop-up-border-radius, var(--bubble-border-radius, 18px)) !important;\n    background: var(--bubble-pop-up-background-color, var(--primary-background-color)) !important;\n    box-shadow: var(--bubble-pop-up-box-shadow, var(--bubble-box-shadow, none)) !important;\n    backdrop-filter: var(--bubble-pop-up-backdrop-filter, blur(16px)) !important;\n  }\n\n  /* --- Icon Leucht-Zustand (an/aus): Bubble Card ---\n     .bubble-icon-container, .is-on/.is-off und ha-icon.bubble-main-icon\n     liegen laut Bubble-Card-Quellcode im selben, von aussen erreichbaren\n     Shadow-Root wie .bubble-container (anders als Sub-Buttons, die\n     weiterhin card_mod: pro Karte brauchen). Live von Enrico getestet. */\n  .bubble-icon-container {\n    transition: box-shadow .3s ease-in-out;\n  }\n  .is-off .bubble-icon-container {\n    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25),\n                0 1px 2px rgba(0, 0, 0, 0.15) !important;\n  }\n  .is-on .bubble-icon-container {\n    box-shadow: 0 0 10px 2px rgba(var(--rgb-accent-color), 0.55),\n                inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;\n  }\n  .is-on ha-icon.bubble-main-icon {\n    color: var(--bubble-icon-color, var(--accent-color)) !important;\n    filter: drop-shadow(0 0 4px rgba(var(--rgb-accent-color), 0.7));\n  }\n\n  /* --- Mushroom: Icon-Farbe/-Hintergrund/-Rundung an Bubble angleichen ---\n     Mushroom liest --icon-color/--shape-color/--icon-border-radius selbst\n     ueber mushroom-shape-icon (eigener Quellcode: shape-icon.ts). Faellt\n     zuerst auf die eigenen mush-*-Felder zurueck, dann auf die Bubble-\n     Felder, damit alle drei Frameworks optisch gleich aussehen. */\n  mushroom-shape-icon {\n    --icon-color: var(--mush-icon-color, var(--bubble-icon-color, var(--accent-color)));\n    --shape-color: var(--mush-icon-background-color, var(--bubble-icon-background-color, var(--secondary-background-color)));\n    --icon-border-radius: var(--bubble-icon-border-radius, 50%);\n  }\n",
     "bubble-button-card-background-color": "#1C1C1E",
     "bubble-button-main-background-color": "#1C1C1E",
     "bubble-climate-button-background-color": "#2C2C2E",
@@ -2075,20 +2077,12 @@ const HATG_MANIFEST = {
     "printer-cyan-color": "#33C3FF",
     "printer-magenta-color": "#FF3EA8",
     "printer-yellow-color": "#FFE14D",
-    "bubble-main-buttons-background-color": "#1C1C1E"
+    "bubble-main-buttons-background-color": "#1C1C1E",
+    "card-backdrop-blur": "none"
   }
 }
 ;
 
-// HATG-eigene Werksvorlagen ("Basis laden"): definieren nur die zentralen
-// Ableitungs-Quellfarben (primary/accent/Hintergründe/Text) - alle davon
-// abgeleiteten Felder (Bubble Card, Mushroom, Status-Icons usw.) werden
-// automatisch über die bestehende Ableitungslogik mit angepasst, exakt so
-// wie beim manuellen Ändern dieser Felder. Seit dem "komplett clean
-// beginnen"-Feedback setzt applyBasePreset() dabei ALLE Felder (auch zuvor
-// individuell "custom" markierte) auf die Manifest-Werkswerte zurück, bevor
-// diese Kernfarben angewendet werden, und vergibt automatisch einen neuen
-// Themenamen (den Vorlagennamen) - siehe applyBasePreset() weiter unten.
 const HATG_BASE_PRESET_CORE_KEYS = [
   "primary-color",
   "accent-color",
@@ -2105,10 +2099,6 @@ function hatgPickCoreValues(mode, overrides) {
   });
   return base;
 }
-// Enrico: "es gibt nur noch eine HATG basis theme. nimm die blaue und der
-// rest raus." - von den bisherigen 3 Basis-Vorlagen (HATG Standard, Warmes
-// Neutral, Kuehles Blau-Grau) bleibt nur noch die blaue ("Kuehles Blau-Grau")
-// als einzige, zukuenftige HATG-Basis-Vorlage uebrig.
 const HATG_BASE_PRESETS = [
   {
     id: "cool-slate",
@@ -2138,28 +2128,6 @@ const HATG_BASE_PRESETS = [
   },
 ];
 
-// HATG-Plugins: fertige card-mod-CSS-Bausteine fuer Bubble-Card-Slider, als
-// Kopiervorlage fuer EINZELNE Karten (nicht als globale Theme-Einstellung).
-// Fruehere Version injizierte das CSS automatisch in card-mod-card-yaml
-// (globaler card-mod-Theme-Block), per Toggle an-/abschaltbar - das hat sich
-// in der Praxis als unzuverlaessig herausgestellt: Bubble Card setzt fuer
-// den Slider-Fill (.bubble-range-fill) selbst ein eigenes, pro Instanz
-// generiertes <style>-Tag mit mehreren kombinierten Klassen (hoehere
-// Spezifitaet als unsere einfache Klassen-Regel) - das gewinnt die CSS-Kaskade
-// auch gegen !important, egal ob global per Theme oder direkt in der Karte
-// injiziert. Per DevTools-Vergleich mit Enrico bestaetigt: Bubble Cards
-// eigener "styles:"-Schluessel DIREKT in der jeweiligen Karte funktioniert
-// zuverlaessig (dort landet das CSS im Bubble-Card-eigenen Render-Ablauf,
-// nicht als nachtraeglich angeflanschter Theme-Override). Deshalb bieten wir
-// das CSS jetzt als fertige, kopierbare Karten-Vorlage an statt als
-// automatischen Theme-Eingriff.
-// v0.4.53: Enrico hat live entdeckt, dass sich derselbe "styles:"-Trick auch
-// fuer ganz andere Zwecke als Slider eignet (individueller Karten-Hintergrund
-// per .bubble-container) - dafuer passt die feste Slider-Kartenhuelle nicht.
-// Jedes Plugin kann jetzt optional eine eigene "template"-Funktion mitbringen
-// (baut die komplette Beispielkarte selbst); ohne "template" bleibt die
-// bisherige Slider-Kartenhuelle als Standard erhalten (abwaertskompatibel zu
-// den beiden bestehenden Slider-Plugins).
 function hatgPluginCardTemplate(plugin) {
   if (typeof plugin.template === "function") return plugin.template(plugin);
   return `type: custom:bubble-card
@@ -2182,13 +2150,6 @@ styles: |
   ${plugin.css}
 `;
 }
-// v0.4.54: Enrico hat live ein eigenes, zustandsabhaengiges Kartendesign
-// geschickt ("kannst du da was fuer die sammlung gebrauchen") - Bubble Cards
-// styles:-Feld akzeptiert nicht nur statisches CSS, sondern auch echte
-// JS-Template-Literale mit direktem hass.states[...]-Zugriff. Eigene
-// Kartenhuelle mit deutlichem ENTITY_HIER-Platzhalter (statt einer festen
-// Beispiel-Entity), da hier - anders als bei den uebrigen Plugins - der Sinn
-// der Vorlage GERADE die entity-abhaengige Logik im CSS selbst ist.
 function hatgStateReactivePluginTemplate(plugin) {
   return `type: custom:bubble-card
 card_type: button
@@ -2199,18 +2160,6 @@ styles: |
   ${plugin.css}
 `;
 }
-// v0.4.56: Enricos eigener Test-Workflow ("wir erstellen jetzt immer einen
-// cardmod fuer die Karte") hat live per DevTools bewiesen: das globale
-// card-mod-theme (card-mod-card-yaml) erreicht Bubble Cards eigenes,
-// verschachteltes Shadow-DOM gar nicht - im Styles-Panel tauchte selbst die
-// laengst bestehende .bubble-sub-button-Regel dort nicht auf. Ein direkt AUF
-// der Karte gesetzter card_mod:-Schluessel landet dagegen nachweislich im
-// richtigen Shadow-Root (per Filter im Styles-Panel bestaetigt). Anders als
-// die uebrigen Plugins (die Bubble Cards eigenes styles:-Feld nutzen) braucht
-// dieses hier daher zwingend die separate card-mod-Integration UND ::before
-// + echte Zustandsklassen (background-on/background-off), die Bubble Card
-// selbst per JS setzt - deshalb eigene Kartenvorlage mit card_mod: statt
-// styles:.
 function hatgSubButtonGlowPluginTemplate(plugin) {
   return `type: custom:bubble-card
 card_type: sub-buttons
@@ -2242,13 +2191,6 @@ card_mod:
 `;
 }
 
-// v0.4.56: Enrico - "was ist wenn ich eine karte mit zwei oder mehr cardmods
-// aus unserer bibliotek haben moechte" - Mehrfachauswahl auf der Plugin-Seite.
-// Nur Plugins mit combinable !== false (alle ausser dem Sub-Button-Glow, der
-// eine andere Kartenstruktur + card_mod: statt styles: braucht) lassen sich
-// kombinieren. button_type wird automatisch abgeleitet: sobald eines der
-// beiden Slider-Plugins dabei ist, braucht die Karte button_type: slider
-// (sonst gibt es gar kein .bubble-range-fill-Element); sonst reicht switch.
 function hatgIsPluginCombinable(plugin) {
   return plugin.combinable !== false;
 }
@@ -2279,10 +2221,6 @@ ${combinedCss}
 `;
 }
 
-// Dummy-Vorschaubild (neutrales SVG, inline als Data-URI): wird ueber
-// onerror auf dem echten Screenshot-<img> eingeblendet, solange die reale
-// Datei unter www/plugins/<id>.png noch nicht geliefert wurde - so laedt
-// die Plugin-Seite immer ein Bild, nie ein kaputtes Icon.
 const HATG_PLUGIN_SCREENSHOT_DUMMY =
   "data:image/svg+xml," +
   encodeURIComponent(
@@ -2394,23 +2332,9 @@ const HATG_PLUGINS = [
       var(--card-background-color, var(--ha-card-background)) 0%,
       rgba(0, 0, 0, 0.3) 100%
     );
-    /* Enrico hat live schwarze Ecken-Dreiecke gemeldet: bekannter Safari/
-       WebKit-Bug - Bubble Card setzt selbst "-webkit-transform: translateZ(0)"
-       auf .bubble-container (eigener Safari-Fix fuers Slider-Rendering laut
-       Bubble-Card-Quellcode), und genau die Kombination aus transform +
-       overflow:hidden + border-radius auf demselben Element laesst Safari/
-       WebKit (auch die HA-Begleit-App/iOS) die Rundung manchmal nicht mehr
-       sauber beschneiden - der eckige Hintergrund blitzt an den Ecken durch.
-       Die -webkit-mask-image-Maske erzwingt in Safari eine frische
-       Compositing-Ebene, die das Rundungs-Clipping wieder korrekt anwendet. */
     -webkit-mask-image: -webkit-radial-gradient(white, black);
   }
   :host, ha-card {
-    /* Bubble Card setzt diese Variable bei button_type: switch im "an"-
-       Zustand selbst auf die Akzentfarbe (deckend, opacity 1 auf
-       .bubble-background) - das wuerde unseren eigenen Verlauf
-       komplett zudecken. Hier neutralisiert, damit der Verlauf oben
-       unabhaengig vom An/Aus-Zustand sichtbar bleibt. */
     --bubble-button-background-color: transparent !important;
   }`,
   },
@@ -2522,10 +2446,6 @@ const HATG_PLUGINS = [
     } !important;
   }
   :host, ha-card {
-    /* Bubble Card setzt diese Variable bei button_type: switch im "an"-
-       Zustand selbst auf die Akzentfarbe (deckend, opacity 1 auf
-       .bubble-background) - das wuerde unseren eigenen Rot/Gruen-Effekt
-       komplett zudecken. Hier neutralisiert. */
     --bubble-button-background-color: transparent !important;
   }`,
   },
@@ -2535,9 +2455,6 @@ const HATG_PLUGINS = [
     desc: "Sub-Buttons einer Bubble-Card bekommen im 'aus'-Zustand einen dezenten Neumorphic-Schatten statt kreidig-weißer Kanten, im 'an'-Zustand statt einer reinen Volltonfarbe ein sanftes, farbiges Glühen in der Akzentfarbe - der Hintergrund bleibt neutral grau, das Glühen wird zur alleinigen 'an'-Kennung.",
     screenshot: "/hatg_static/plugins/sub-button-state-glow.png",
     template: hatgSubButtonGlowPluginTemplate,
-    // v0.4.56: laesst sich bewusst NICHT mit anderen Plugins kombinieren -
-    // andere Kartenstruktur (sub-buttons statt button) UND nutzt card_mod:
-    // statt Bubble Cards eigenem styles:-Feld (siehe hint oben).
     combinable: false,
     hint: "Braucht die separate card-mod-Integration (nicht Bubble Cards eigenes <code>styles:</code>-Feld): das Glühen reagiert auf Bubble Cards intern per JS gesetzte Zustandsklassen <code>background-on</code>/<code>background-off</code> und nutzt ein <code>::before</code>-Pseudo-Element fürs Glühen. Beides landet nachweislich nur über <code>card_mod:</code> direkt auf der Karte zuverlässig im richtigen Shadow-DOM (per DevTools bestätigt) - die globale Theme-Einstellung card-mod-card-yaml erreicht Bubble Cards eigenes, verschachteltes Shadow-DOM dagegen gar nicht. Vorlage unten in eine eigene Sub-Buttons-Karte einfügen, Entities anpassen.",
     css: `.bubble-sub-button.background-off {
@@ -2572,8 +2489,6 @@ const HATG_PLUGINS = [
   },
 ];
 
-// Apple-Systemfarben (angelehnt an die iOS/macOS HIG-Palette), je als
-// Verlauf von hell nach Basisfarbe fuer die Navigations-Icon-Badges.
 const HATG_APPLE_COLORS = {
   blue: ["#5AC8FA", "#0A84FF"],
   green: ["#6EE7A0", "#30D158"],
@@ -2592,10 +2507,6 @@ const HATG_APPLE_COLORS = {
 const HATG_NAV_ICON_COLOR = {
   overview: "blue",
   "grundfarben-text": "orange",
-  // v0.1.4: Enrico - "ha das homeassistant blau bubble rot und mush gruen."
-  // Die drei Gruppen-Hauptreiter (HA-Grundgerueft, Bubble Card, Mushroom)
-  // bekommen jetzt bewusst die vom Nutzer vorgegebenen Farben statt der
-  // alten zufaelligen Rainbow-Zuordnung (vorher: indigo/pink/brown).
   "hintergruende-karten": "blue",
   "header-sidebar-navigation": "teal",
   "status-icons-entitaeten": "yellow",
@@ -2616,6 +2527,7 @@ const HATG_NAV_ICON_COLOR = {
   "code-editor": "indigo",
   "ha-live": "green",
   plugins: "purple",
+  generatoren: "mint",
   "user-grundfarben": "orange",
   "user-status": "yellow",
   "user-look": "gray",
@@ -2627,87 +2539,43 @@ function hatgNavIconGradient(id) {
   return `linear-gradient(135deg, ${from}, ${to})`;
 }
 
-const HATG_PREVIEW_KEYS = {
-  accent: "accent-color",
-  background: "primary-background-color",
-  cards: "card-background-color",
-  text: "primary-text-color",
-  // Für das neue Statusfarben-Feld auf der Startseite - greift auf die
-  // echten, an anderer Stelle im Editor verwendeten Zustandsfarben zu
-  // (keine eigenen Mockup-Werte), damit die Vorschau die tatsächlich
-  // eingestellten Farben zeigt.
-  statusOn: "success-color",
-  statusOff: "disabled-color",
-  statusWarning: "warning-color",
-  statusError: "error-color",
-  // Toggle und Slider in der Startseiten-Vorschau hingen bisher komplett am
-  // allgemeinen accent-color, unabhaengig davon, was auf "Schalter & Toggle"
-  // bzw. "Slider & Progress" tatsaechlich eingestellt war - Aendern der
-  // Schalterfarbe hatte dadurch sichtbar keinerlei Effekt auf die Vorschau.
-  // Jetzt an die echten Felder gebunden.
-  switchOn: "ha-control-switch-checked-color",
-  sliderFill: "slider-color",
-};
-
-const HATG_PREVIEW_ROOMS = [
-  {
-    id: "wohnzimmer",
-    label: "Wohnzimmer",
-    icon: "mdi:sofa-outline",
-    cards: [
-      { type: "light", name: "Deckenlicht", room: "Wohnzimmer", on: true },
-      { type: "climate", name: "Temperatur", room: "Wohnzimmer", value: "21,5" },
-      { type: "slider", name: "Helligkeit", room: "Wohnzimmer", value: 62 },
-      { type: "status", name: "Status" },
-    ],
-  },
-  {
-    id: "kueche",
-    label: "Küche",
-    icon: "mdi:countertop-outline",
-    cards: [
-      { type: "light", name: "Arbeitsplatte", room: "Küche", on: true },
-      { type: "media", name: "Lautsprecher Küche", room: "Küche", state: "Spielt: Radio Home" },
-    ],
-  },
-  {
-    id: "keller",
-    label: "Keller",
-    icon: "mdi:stairs-down",
-    cards: [
-      { type: "light", name: "Werkstattlicht", room: "Keller", on: false },
-      { type: "sensor", name: "Luftfeuchtigkeit", room: "Keller", value: "58", unit: "%", icon: "mdi:water-percent" },
-    ],
-  },
-  {
-    id: "garten",
-    label: "Garten",
-    icon: "mdi:flower-outline",
-    cards: [
-      { type: "cover", name: "Terrassenmarkise", room: "Garten", position: 40 },
-      { type: "light", name: "Gartenbeleuchtung", room: "Garten", on: true },
-    ],
-  },
-  {
-    id: "garage",
-    label: "Garage",
-    icon: "mdi:garage",
-    cards: [
-      { type: "cover", name: "Garagentor", room: "Garage", position: 0 },
-      { type: "lock", name: "Seitentür", room: "Garage", locked: true },
-    ],
-  },
+const HATG_PREVIEW_BOUND_KEYS = [
+  "card-background-color",
+  "ha-card-background",
+  "ha-card-border-color",
+  "ha-card-border-width",
+  "ha-card-border-radius",
+  "ha-card-box-shadow",
+  "primary-text-color",
+  "secondary-text-color",
+  "primary-color",
+  "accent-color",
+  "state-icon-color",
+  "state-light-on-color",
+  "state-light-active-color",
+  "state-active-color",
+  "state-inactive-color",
+  "divider-color",
+  "disabled-color",
+  "ha-switch-background-color",
+  "ha-switch-border-color",
+  "ha-switch-thumb-background-color",
+  "ha-switch-thumb-border-color",
+  "ha-switch-checked-background-color",
+  "ha-switch-checked-border-color",
+  "ha-switch-checked-thumb-background-color",
+  "ha-switch-checked-thumb-border-color",
+  "success-color",
+  "warning-color",
+  "error-color",
+  "primary-background-color",
 ];
 
-// v0.4.47: "HA Live" ist kein eigener Seitenleisten-Reiter mehr - der
-// Umschalter dafuer sitzt jetzt direkt in der Live-Vorschau (Demo/HA Live),
-// siehe renderPreviewSourceToggle(). Die uebrigen "Tools"-Eintraege
-// (Card-mod & Generator kommt separat aus HATG_MANIFEST.sections) bleiben
-// als eigene Gruppe unter einer nicht-klickbaren "Tools"-Ueberschrift.
 const HATG_TAIL_NAV = [
   { id: "alle-felder", label: "Alle Felder", icon: "mdi:list-search" },
   { id: "code-editor", label: "Code-Editor", icon: "mdi:xml" },
   { id: "plugins", label: "Plugins", icon: "mdi:puzzle-outline" },
+  { id: "generatoren", label: "Generatoren", icon: "mdi:auto-fix" },
 ];
 
 const HATG_USER_SECTIONS = [
@@ -2772,39 +2640,16 @@ const HATG_DERIVE_RULES = {
     { key: "slider-color", transform: "copy" },
     { key: "control-button-icon-color", transform: "copy" },
     { key: "mdc-theme-secondary", transform: "copy" },
-    // Punkt "wieso sind unsere mushroom noch blau" / "alle rgb und rgba
-    // Farben passend zu den Grundfarben verknuepfen": mush-rgb-state-entity
-    // ist Mushrooms generischer Fallback-Farbton fuer aktive Entitaeten ohne
-    // eigene Domaene (kein "state-entity-color"-Hex-Feld existiert dafuer) -
-    // folgt daher wie mush-icon-active-color der Akzentfarbe.
     { key: "mush-rgb-state-entity", transform: "rgb" },
-    // HA 2026/Web-Awesome-Fuellfarben-Token fuer "primary": Alpha bleibt
-    // erhalten (0.08/0.15/0.22/0.25), nur der Farbanteil wechselt.
     { key: "ha-color-fill-primary-normal-resting", transform: "rgba" },
     { key: "ha-color-fill-primary-normal-hover", transform: "rgba" },
     { key: "ha-color-fill-primary-quiet-resting", transform: "rgba" },
     { key: "ha-color-fill-primary-quiet-hover", transform: "rgba" },
-    // Gefunden beim Vergleich von Enricos Screenshots (Bubble-Button/
-    // Mushroom-Chip im "aktiv"-Zustand blieben blau/orange statt gruen):
-    // diese 5 Felder waren bisher an KEINER Ableitungsregel haengend, in
-    // beiden Modi unabhaengig vom "still blue"-Fund aus dem vorigen Punkt.
     { key: "bubble-button-icon-color", transform: "copy" },
     { key: "bubble-button-active-background-color", transform: "copy" },
     { key: "mush-chip-icon-color", transform: "copy" },
     { key: "mush-chip-active-color", transform: "copy" },
     { key: "mush-chip-active-icon-color", transform: "copy" },
-    // Enrico: "toggle schalter und button sync" - Fund beim Durchgehen der
-    // Schalter-Felder: bubble-button-active-color/state-switch-active-color/
-    // state-switch-on-color hatten schon denselben Startwert wie
-    // accent-color, waren aber nie verknuepft. ha-switch-checked-background-
-    // color(-hover) (der Hintergrund HINTER dem Schalter im "An"-Zustand)
-    // stand fest auf einem Pastellblau-Ton, unabhaengig von der Akzentfarbe -
-    // jetzt per "lighten" gekoppelt (gleiches Muster wie light-primary-color),
-    // damit der Hintergrund automatisch ein helles Toenchen der jeweiligen
-    // Akzentfarbe wird statt immer blau zu bleiben. Bewusst NICHT verbunden:
-    // Aus-Zustand-Hintergrund/-Thumb (bleiben neutral grau/weiss) und
-    // bubble-button-active-icon-color/-text-color (bleiben weiss fuer
-    // Kontrast auf dem dann akzentfarbenen Button-Hintergrund).
     { key: "bubble-button-active-color", transform: "copy" },
     { key: "state-switch-active-color", transform: "copy" },
     { key: "state-switch-on-color", transform: "copy" },
@@ -2843,10 +2688,6 @@ const HATG_DERIVE_RULES = {
     { key: "mdc-theme-on-surface", transform: "copy" },
     { key: "rgb-primary-text-color", transform: "rgb" },
     { key: "mush-rgb-primary-text-color", transform: "rgb" },
-    // sidebar-icon-color/label-badge-text-color sind echte RGBA-Felder
-    // (Text-/Icon-Farbe bei reduzierter Deckkraft) - Alpha bleibt erhalten,
-    // nur der Farbanteil folgt jetzt der Textfarbe (genau das Muster, das
-    // HAs eigenes Default-Theme fuer diese beiden Felder verwendet).
     { key: "sidebar-icon-color", transform: "rgba" },
     { key: "label-badge-text-color", transform: "rgba" },
   ],
@@ -2903,17 +2744,6 @@ const HATG_DERIVE_RULES = {
     { key: "mush-rgb-state-media-player", transform: "rgb" },
   ],
   "state-vacuum-color": [{ key: "mush-rgb-state-vacuum", transform: "rgb" }],
-  // Enrico: "was ist mit den karten radien" - beim Nachschauen (analog zum
-  // box-shadow-Fund) fehlten hier bubble-climate-/-cover-/-media-player-/
-  // -horizontal-buttons-stack-/-pop-up-/-select-/-separator-border-radius
-  // KOMPLETT in der Ableitung, obwohl die echten Bubble-Card-CSS-Klassen
-  // dafuer laengst eigene Felder bekommen haben (v0.4.50 "Bubble-Card
-  // CSS-Variablen global setzen"). Bisher zufaellig alle auf demselben
-  // Start-Wert (18px) - haetten sich aber NICHT mitgeaendert, sobald
-  // ha-card-border-radius geaendert wird. Bewusst NICHT dabei:
-  // bubble-icon-border-radius/bubble-sub-button-border-radius - die sind
-  // absichtlich eigenstaendig (14px, runderes Icon/Sub-Button-Aussehen als
-  // die 18px-Hauptkarte), genau wie bubble-sub-button-box-shadow unten.
   "ha-card-border-radius": [
     { key: "bubble-border-radius", transform: "copy" },
     { key: "bubble-card-border-radius", transform: "copy" },
@@ -2928,14 +2758,6 @@ const HATG_DERIVE_RULES = {
     { key: "bubble-select-border-radius", transform: "copy" },
     { key: "bubble-separator-border-radius", transform: "copy" },
   ],
-  // Enrico: "warum tragen wir die dann hier ein wenn sie sich das ueber ha
-  // holen" fuehrte zum Fund: bubble-pop-up-/-horizontal-buttons-stack-/
-  // -climate-/-cover-/-media-player-box-shadow hingen an KEINER
-  // Ableitungsregel, genau wie das lose, komplett unverbundene generische
-  // "box-shadow"-Feld (Sektion "Abstaende/Rundungen/Schatten/Rahmen").
-  // Bewusst NICHT dabei: bubble-sub-button-box-shadow - eigener,
-  // absichtlich flacherer Schatten seit v0.4.53/v0.4.56 ("warum erhalten
-  // die subbutton keinen schatten?" - sollte unabhaengig einstellbar sein).
   "ha-card-box-shadow": [
     { key: "bubble-box-shadow", transform: "copy" },
     { key: "dialog-box-shadow", transform: "copy" },
@@ -2946,20 +2768,6 @@ const HATG_DERIVE_RULES = {
     { key: "bubble-cover-box-shadow", transform: "copy" },
     { key: "bubble-media-player-box-shadow", transform: "copy" },
   ],
-  // Enrico: "jetzt die rahmenfarbe und rahmendicke der karten" - Fund beim
-  // Nachschauen im echten Bubble-Card-CSS: ha-card { border: var(--bubble-
-  // border, 1px solid var(--bubble-border-color, ...)) !important; } - das
-  // Shorthand-Feld "bubble-border" gewinnt IMMER, wenn es gesetzt ist, und
-  // HATG setzt es standardmaessig fest auf "1px solid #C6C6C8" (ein
-  // eigener, von bubble-border-color VOELLIG ENTKOPPELTER Farbwert). Die
-  // bestehende Ableitung ha-card-border-color -> bubble-border-color griff
-  // dadurch bisher rein optisch NIE - Bubble Card zeigte immer #C6C6C8,
-  // egal was man einstellte. Fuer die Rahmendicke gab es bisher gar keine
-  // Verbindung: ha-card-border-width war komplett unverdrahtet (Bubble hat
-  // keine eigene Breiten-Variable, nur das Shorthand-Feld). Beide Faelle
-  // ueber neue border_shorthand_*-Transforms geloest, die nur den
-  // jeweiligen Teil des Shorthand-Strings ersetzen und den Rest
-  // (Stil "solid" + jeweils anderer Teil) aus dem aktuellen Wert erhalten.
   "ha-card-border-width": [{ key: "bubble-border", transform: "border_shorthand_width" }],
   "ha-card-border-color": [
     { key: "bubble-border-color", transform: "copy" },
@@ -2986,18 +2794,6 @@ Object.entries(HATG_DERIVE_RULES).forEach(([source, targets]) => {
   });
 });
 
-// Enrico: "waere cool wenn wir felder die auch in bubble und mushroom die
-// selben farben haben sollen hier gleich mit syncen koennten - 3 spalten mit
-// den icons fuer ha bubble und mushroom und dahinter die farbklekse und eine
-// sync button". Nicht jedes Grundfarben-Feld hat ein echtes Gegenstueck in
-// BEIDEN Frameworks (z. B. primary-color kaskadiert nur auf HA-interne
-// Tokens) - HATG_SYNC_TRIADS listet nur die Quell-Felder, deren
-// HATG_DERIVE_RULES-Ziele mindestens ein "bubble-*"- UND ein "mush-*"-Feld
-// enthalten, mit je einem repraesentativen Zielfeld pro Framework fuer die
-// Farbklekse. Der Sync-Button setzt dann ALLE bubble-*/mush-*-Ziele dieser
-// Quelle zurueck auf "derived" (nicht nur die zwei angezeigten) - macht
-// exakt das, was der einzelne "angepasst"-Reset-Knopf pro Feld auch tut,
-// nur gebuendelt fuer die ganze Bubble/Mushroom-Familie in einem Klick.
 const HATG_SYNC_TRIADS = {
   "accent-color": { bubble: "bubble-icon-color", mush: "mush-icon-active-color" },
   "card-background-color": { bubble: "bubble-card-background-color", mush: "mush-card-background" },
@@ -3006,17 +2802,6 @@ const HATG_SYNC_TRIADS = {
   "secondary-background-color": { bubble: "bubble-secondary-background-color", mush: "mush-control-background-color" },
 };
 
-// v0.1.5: Enrico - "ich habe trotzdem nur 5 felder mit ha mush und bubble
-// icons zum syncen." Antwort/Klaerung: die 3-Icon-Version (HATG_SYNC_TRIADS)
-// zeigt bewusst nur Felder mit einem ECHTEN eigenen Gegenstueck in BEIDEN
-// Frameworks - das sind nur die 5 Grundfarben (Mushroom-Karten erben Radius/
-// Schatten automatisch von ha-card, haben also gar kein eigenes Feld dafuer;
-// bei Rahmenfarbe/-dicke gibt es nur ein Bubble-Gegenstueck, kein Mushroom-
-// Pendant). Enrico wollte dafuer trotzdem ein kleineres Sync-Widget - hier
-// die 2-Icon-Variante (nur HA + Bubble, kein Mushroom-Icon) fuer genau diese
-// Faelle. "kind: color" zeigt einen Farbklecks, "kind: border-width" zeigt
-// stattdessen den reinen Breiten-Text (z. B. "2px"), weil das Bubble-Ziel
-// ("bubble-border") ein Shorthand-String ist, kein eigenstaendiger Farbwert.
 const HATG_SYNC_PAIRS = {
   "ha-card-border-color": { bubble: "bubble-border-color", kind: "color" },
   "ha-card-border-width": { bubble: "bubble-border", kind: "border-width" },
@@ -3044,10 +2829,6 @@ const HATG_FONT_PRESETS = [
   { id: "custom", label: "Eigene Schriftart…", stack: null },
 ];
 
-// Grob nach Zugehörigkeit gruppiert statt ~50 einzelner Rohwörter (war laut
-// Rückmeldung viel zu unübersichtlich) – jeder der 150+ "state-*-color"-Keys
-// fällt in genau eine dieser handvoll Kategorien, "Sonstige" fängt seltene
-// Domänen (Staubsauger, Warmwasser, Medien, Anwesenheit, Batterie usw.) auf.
 const HATG_STATUS_CATEGORY_LABELS = {
   on: "An",
   off: "Aus",
@@ -3067,26 +2848,15 @@ function hatgIsHex(value) {
 }
 function hatgIsLong(key, value) {
   if (key === "card-mod-card-yaml") return true;
-  // Schriftarten-Felder (Font-Stacks wie "-apple-system, BlinkMacSystemFont, ...")
-  // sind oft laenger als 70 Zeichen, sollen aber trotzdem immer als normales
-  // Textfeld bleiben statt als grosse Code-Editor-Box - das war laut
-  // Rueckmeldung verwirrend ("springt auf Code um, sobald man was aendert").
   if (key.includes("font-family")) return false;
   return String(value ?? "").includes("\n") || String(value ?? "").length > 70;
 }
-// Zerlegt einen Feldnamen an "-" in einzelne Wortbausteine, z. B.
-// "bubble-button-slider-background-color" -> ["bubble","button","slider",
-// "background","color"]. Grundlage fuer den Wortbaustein-Filter auf "Alle
-// Felder": Baustein fuer Baustein (mehrfach, UND-verknuepft) auswaehlen statt
-// den vollen Namen tippen zu muessen.
 function hatgTokenizeKey(key) {
   return String(key ?? "")
     .toLowerCase()
     .split("-")
     .filter(Boolean);
 }
-// Prueft, ob ein Feld ALLE ausgewaehlten Wortbausteine enthaelt (UND-Logik -
-// jeder weitere ausgewaehlte Baustein schraenkt die Trefferliste weiter ein).
 function hatgKeyMatchesTags(key, tags) {
   if (!tags || tags.length === 0) return true;
   const tokens = hatgTokenizeKey(key);
@@ -3100,14 +2870,30 @@ function hatgEscape(value) {
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 }
+function hatgReadableTextColor(color) {
+  const str = String(color ?? "").trim();
+  let r, g, b;
+  const hexMatch = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(str);
+  const rgbMatch = /^rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)/i.exec(str);
+  if (hexMatch) {
+    let hex = hexMatch[1];
+    if (hex.length === 3) hex = hex.split("").map((c) => c + c).join("");
+    r = parseInt(hex.slice(0, 2), 16);
+    g = parseInt(hex.slice(2, 4), 16);
+    b = parseInt(hex.slice(4, 6), 16);
+  } else if (rgbMatch) {
+    r = Number(rgbMatch[1]);
+    g = Number(rgbMatch[2]);
+    b = Number(rgbMatch[3]);
+  } else {
+    return "#fff";
+  }
+  const luminosity = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luminosity > 0.5 ? "#000" : "#fff";
+}
 function hatgDeepClone(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
-// Leichter, selbstgebauter Tokenizer fuer YAML/CSS-artigen Code (kein
-// externes Paket, damit alles im Single-File-Web-Component bleibt).
-// Arbeitet auf dem UNESCAPETEN Rohtext und escaped jedes Token einzeln,
-// um Konflikte mit hatgEscape (das Anfuehrungszeichen zu Entities macht)
-// zu vermeiden.
 const HATG_CODE_TOKEN_RE = /(\/\*[\s\S]*?\*\/)|(#[^\n]*)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|(!important\b)|(--[a-zA-Z0-9_-]+)|(\bvar(?=\())|(^[ \t]*[A-Za-z0-9_.-]+(?=:))/gm;
 function hatgHighlightCode(raw) {
   const src = String(raw ?? "");
@@ -3144,13 +2930,6 @@ function hatgQuoteYamlValue(value) {
   }
   return `"${v.replaceAll('"', '\\"')}"`;
 }
-// Wandelt jede gültige Hex-Schreibweise (3/4/6/8-stellig, z. B. "#F00" oder
-// "#FF0000AA") in eine kanonische 6-stellige Form um. Ohne das fielen
-// hatgHexToRgbTriple/hatgComposeRgba/hatgMixHex weiter unten bei kurzen
-// Schreibweisen auf ihr strenges 6-stelliges Regex durch und lieferten
-// stillschweigend Schwarz/Original-String zurück statt der echten Farbe -
-// genau das sorgte für falsch angezeigtes "rgba(0, 0, 0, ...)" bei RGB/RGBA-
-// Ansicht, obwohl der Farbwert selbst gültig war.
 function hatgNormalizeHex6(hex) {
   const v = String(hex ?? "").trim();
   const m3 = /^#([0-9A-Fa-f])([0-9A-Fa-f])([0-9A-Fa-f])[0-9A-Fa-f]?$/.exec(v);
@@ -3188,11 +2967,6 @@ function hatgParseRgba(value) {
   const toHex = (n) => Math.max(0, Math.min(255, Math.round(parseFloat(n)))).toString(16).padStart(2, "0");
   return { hex: `#${toHex(m[1])}${toHex(m[2])}${toHex(m[3])}`.toUpperCase(), alpha: parseFloat(m[4]) };
 }
-// Anzeige-Umschalter Hex/RGB/RGBA fuer einfache Hex-Farbfelder: gespeichert
-// wird IMMER Hex (das Feld bleibt ein reines Hex-Feld), nur die Darstellung
-// im Textfeld wechselt - fuer bequemeres Kopieren in andere Formate. Nutzt
-// dieselben, bereits getesteten Konvertierungsfunktionen wie die RGB-Tripel-
-// und RGBA-Feldtypen weiter oben.
 function hatgFormatColorForView(hex, fmt) {
   if (!hatgIsHex(hex)) return hex;
   if (fmt === "rgb") return `rgb(${hatgHexToRgbTriple(hex)})`;
@@ -3218,18 +2992,9 @@ function hatgParseColorByFormat(text, fmt) {
     if (!/^rgba\(\s*[\d.]+\s*,\s*[\d.]+\s*,\s*[\d.]+\s*,\s*[\d.]+\s*\)$/i.test(wrapped)) return null;
     return hatgParseRgba(wrapped).hex;
   }
-  // Hier bewusst HATG_HEX_RE (akzeptiert 3/4/6/8-stellig) statt der
-  // strengeren hatgIsHex() (nur exakt 6-stellig) - eingegebener Kurz-Hex
-  // wie "#F00" soll beim Tippen erkannt und auf die kanonische 6-stellige
-  // Form normalisiert werden, statt stillschweigend abgelehnt zu werden.
   const v = raw.toUpperCase();
   return HATG_HEX_RE.test(v) ? hatgNormalizeHex6(v) : null;
 }
-// Formatunabhängiges Parsen: erkennt selbst, ob das Getippte/Eingefügte Hex,
-// RGB oder RGBA ist - unabhängig davon, welches Format-Pill gerade aktiv
-// ist. Vorher wurde z. B. eine eingefügte Hex-Farbe stillschweigend
-// verworfen, wenn zufällig gerade "RGBA" ausgewählt war (Eingabe schien
-// "nicht angenommen"). Jetzt wird jede erkennbare Schreibweise akzeptiert.
 function hatgParseColorAnyFormat(text) {
   const raw = String(text ?? "").trim();
   if (/^rgba\s*\(/i.test(raw)) {
@@ -3242,8 +3007,6 @@ function hatgParseColorAnyFormat(text) {
   }
   const hexAttempt = hatgParseColorByFormat(raw, "hex");
   if (hexAttempt) return hexAttempt;
-  // Nackter Zahlen-Dreier ohne rgb(...)-Klammer (z. B. aus einem RGB-Tripel-
-  // Feld herauskopiert)
   return hatgParseColorByFormat(raw, "rgb");
 }
 function hatgMixHex(hex, towards, ratio) {
@@ -3255,33 +3018,6 @@ function hatgMixHex(hex, towards, ratio) {
   const toHex = (c) => c.toString(16).padStart(2, "0");
   return `#${toHex(mix(r))}${toHex(mix(g))}${toHex(mix(b))}`.toUpperCase();
 }
-// currentTargetValue ist optional und wird nur fuer transform "rgba"
-// gebraucht (siehe Punkt "alle rgb/rgba Farben an die Grundfarben
-// anbinden"): der RGB-Anteil kommt neu von der Quelle (z.B. accent-color),
-// der Alpha-Wert bleibt der des Zielfelds erhalten - eine reine
-// Deckkraftangabe wie "0.15" bei ha-color-fill-primary-normal-resting soll
-// sich beim Farbwechsel NICHT aendern, nur die Farbe selbst.
-//
-// Bugfix (Enrico: "bei card bg hab ich den wert geändert und dann zieht er
-// es mit in rgb-card-background-color" -> "1 ungueltiger Wert:
-// rgba(255, 255, 255, 0.51)"): seit dem Hex/RGB/RGBA-Umschalter (Punkt 79)
-// kann JEDES Hex-klassifizierte Feld (auch primary-color/card-background-
-// color/accent-color/state-*-color, alles Quellen von Ableitungsregeln)
-// als echter rgba(...)-String vorliegen, wenn es gerade in der RGBA-Ansicht
-// bearbeitet wurde. Fuer "copy" ist das gewollt (Ziel soll den Wert 1:1
-// uebernehmen, egal in welchem Format). Fuer "rgb"/"darken"/"lighten"/"rgba"
-// wurde der komplette rgba(...)-String bisher UNVERAENDERT ins Zielfeld
-// durchgereicht (weil hatgIsHex() bei einem rgba-String false liefert und
-// die alte Version dann einfach den Rohwert zurueckgab) - das erzeugte
-// genau diesen ungueltigen Tripel-Wert. Jetzt wird fuer diese vier
-// Transforms zuerst der reine Hex-Anteil der Quelle ermittelt (per
-// hatgParseRgba, falls die Quelle kein reines Hex ist), bevor
-// weitergerechnet wird.
-// "bubble-border" ist Bubble Cards eigenes Shorthand-Feld ("1px solid
-// #C6C6C8") - gewinnt in Bubble Cards echtem CSS IMMER, wenn gesetzt,
-// unabhaengig von bubble-border-color. Diese beiden Helfer trennen/
-// kombinieren Breite+Stil+Farbe, damit border_shorthand_width/-color nur
-// jeweils IHREN Teil ersetzen und den Rest aus dem aktuellen Wert erhalten.
 function hatgParseBorderShorthand(value) {
   const m = /^(\S+)\s+(\S+)\s+(.+)$/.exec(String(value ?? "").trim());
   if (!m) return { width: "1px", style: "solid", color: "transparent" };
@@ -3321,14 +3057,6 @@ function hatgInitSource() {
   });
   return obj;
 }
-// Umlaute/ß im Themenamen wurden bisher 1:1 in den YAML-Root-Key uebernommen
-// (z. B. "Kühles Blau-Grau" -> "kühles_blau-grau:") - das exportierte HATG
-// selbst klaglos, der eigene (absichtlich einfache, nicht vollstaendige)
-// YAML-Import-Parser konnte einen solchen Root-Key aber nicht wiedererkennen
-// ("root Fehler" beim erneuten Importieren). Der Import-Parser akzeptiert
-// jetzt zwar auch Umlaute (siehe hatgParseThemeYaml), zusaetzlich werden neu
-// exportierte Themenamen hier aber auf reines ASCII transliteriert, damit
-// Root-Key/Dateiname/card-mod-theme durchgehend unproblematisch bleiben.
 function hatgTransliterateGerman(text) {
   return String(text ?? "")
     .replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue")
@@ -3339,8 +3067,6 @@ function hatgSlugTheme(themeName) {
   const base = hatgTransliterateGerman((themeName || "Mein Theme").trim())
     .replace(/\s+/g, "_")
     .toLowerCase();
-  // Sicherheitsnetz gegen alles, was weder Export-Slug noch YAML-Root-Key
-  // je Probleme bereiten sollte (z. B. sonstige Sonderzeichen/Emojis).
   const cleaned = base.replace(/[^a-z0-9_-]/g, "");
   return cleaned || "hatg_theme";
 }
@@ -3353,18 +3079,6 @@ function hatgSuggestNextVersion(slug) {
   return `${slug}_v2`;
 }
 
-// Minimaler, auf das HATG-Exportformat zugeschnittener YAML-Parser (kein
-// vollständiger YAML-Parser). Erwartet:
-//   <name>:
-//     modes:        (optional)
-//       light:
-//         key: "value"
-//       dark:
-//         key: "value"
-// "modes:" ist optional – flache <name>: light:/dark: Themes (ohne Wrapper)
-// werden genauso erkannt. Werte werden ge-quoted ("...") oder unquoted
-// (z. B. 18px) unterstützt, sowie mehrzeilige Blockskalare (key: |).
-// Unbekannte Keys (nicht im Manifest) werden gezählt, aber verworfen.
 function hatgParseThemeYaml(text, knownKeys) {
   const lines = String(text || "").replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
   let i = 0;
@@ -3376,14 +3090,6 @@ function hatgParseThemeYaml(text, knownKeys) {
       i++;
       continue;
     }
-    // Bugfix ("kann nicht importiert werden - root Fehler" bei Umlauten im
-    // Themenamen, z. B. "kühles_blau-grau"): dieser Regex war bisher rein
-    // ASCII ([A-Za-z0-9_.-]), Umlaute/Sonderzeichen im Root-Key liessen den
-    // Import sofort scheitern - obwohl HATGs eigener Export (hatgSlugTheme())
-    // den Themenamen anstandslos MIT Umlauten in den Root-Key uebernimmt.
-    // Jetzt wird nur noch verlangt: kein Doppelpunkt/Leerzeichen am Anfang,
-    // kein Doppelpunkt im weiteren Verlauf - das erkennt jeden gueltigen
-    // YAML-Skalar-Schluessel, unabhaengig vom Schriftzeichen-Bereich.
     const m = /^([^\s:][^:]*):\s*$/.exec(trimmed);
     if (!m) return { error: "Konnte keinen Theme-Namen (Root-Key) in der ersten Zeile finden." };
     rootName = m[1];
@@ -3466,13 +3172,6 @@ let HATG_KEY_FORMATS = null;
 const HATG_HEX_RE = /^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$/;
 const HATG_RGBA_RE = /^rgba\(\s*[\d.]+\s*,\s*[\d.]+\s*,\s*[\d.]+\s*,\s*[\d.]+\s*\)$/i;
 const HATG_RGB_TRIPLET_RE = /^\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}$/;
-// Punkt "CSS-Gradients als offiziell unterstuetzter Werttyp": erkennt
-// linear-/radial-/conic-gradient(...) (inkl. der repeating-*-Varianten), egal
-// wie viele Farbstopps/Winkel darin stehen - HA und der Browser rendern
-// solche Werte in Hex-klassifizierten Feldern (z. B. card-background-color)
-// problemlos, HATG hat sie bisher aber faelschlich als "ungueltiger Wert"
-// gemeldet. Bewusst nur der Praefix-Check, keine vollstaendige CSS-Grammatik -
-// das reicht, um echte Gradients von Tippfehlern zu unterscheiden.
 const HATG_GRADIENT_RE = /^(repeating-)?(linear|radial|conic)-gradient\(.+\)$/i;
 function hatgIsGradient(value) {
   return HATG_GRADIENT_RE.test(String(value ?? "").trim());
@@ -3492,53 +3191,14 @@ function hatgGetKeyFormats() {
   return map;
 }
 
-// Prüft nur, was auch wirklich sicher prüfbar ist: bekannte Farbformate
-// (hex/rgba/"r, g, b") gegen ihr erwartetes Muster, plus leere Werte in
-// jedem Feld (die beim Export sonst stillschweigend wegfallen). Andere
-// Feldtypen (Radius, Schrift, Schatten, der card-mod-Block) werden nur auf
-// "nicht leer" geprüft, nicht auf ein festes Format.
 function hatgValidateValue(format, value) {
   const v = String(value ?? "").trim();
   if (v === "") return "empty";
-  // Seit dem Hex/RGB/RGBA-Anzeigeumschalter (Punkt 79/v0.4.33) darf ein als
-  // "hex" klassifiziertes Feld auch einen echten rgba(...)-Wert mit Alpha
-  // tragen (Nutzer hat auf "RGBA" umgeschaltet und den Transparenz-Regler
-  // bewegt) - das ist kein Fehler, sondern genau das gewuenschte Verhalten.
-  // Vorher wurde das faelschlich als "ungueltiger Wert" gemeldet, obwohl der
-  // Wert technisch komplett gueltig war (Bug-Report: "4 Probleme gefunden"
-  // bei Feldern, die bewusst auf RGBA umgestellt wurden).
-  // CSS-Gradients (linear-/radial-/conic-gradient, auch repeating-*) sind in
-  // Hex-klassifizierten Feldern seit v0.4.48 ein offiziell unterstuetzter
-  // Werttyp - Enrico hat das bereits live getestet, gerendert hat es immer
-  // funktioniert, nur die Validierung hat faelschlich "ungueltig" gemeldet.
   if (format === "hex" && !HATG_HEX_RE.test(v) && !HATG_RGBA_RE.test(v) && !hatgIsGradient(v)) return "invalid";
-  // Enrico hat live per Mehrfach-Bearbeitung denselben Hex-Wert auch in ein
-  // als "rgba" klassifiziertes Feld (z. B. input-disabled-fill-color)
-  // eingetragen - HATGs Hex/RGB/RGBA-Umschalter erlaubt das Umschalten der
-  // ANZEIGE auch bei rgba-Feldern, aber die Validierung hat einen reinen
-  // Hex-Wert dort bisher faelschlich als "ungueltig" gemeldet, obwohl er
-  // technisch eine vollstaendig gueltige, undurchsichtige Farbe ist (Alpha
-  // implizit 1). Analog zur bereits bestehenden Ausnahme "rgba(...) in
-  // Hex-Feld ist gueltig" (Punkt 79) gilt das jetzt symmetrisch auch
-  // umgekehrt. Ausdruecklich weiterhin ausgeschlossen: Gradients in
-  // rgba-Feldern (siehe test_gradient_validation.js) - die bleiben ungueltig,
-  // da rgba-Felder in echten CSS-Kontexten (z. B. Transparenz-Ueberlagerungen)
-  // stehen, in denen ein Gradient nicht sinnvoll waere.
   if (format === "rgba" && !HATG_RGBA_RE.test(v) && !HATG_HEX_RE.test(v)) return "invalid";
   if (format === "rgb_triplet" && !HATG_RGB_TRIPLET_RE.test(v)) return "invalid";
   return "ok";
 }
-// Seit Punkt 80: einige Felder (siehe HATG_RGBA_FIELDS_SINCE_V0432 weiter
-// oben in Punkt 77) wurden von Hex auf echten RGBA-Feldtyp umgestellt. Eine
-// vor v0.4.32 exportierte Theme-Datei oder ein altes Browser-Autosave hat
-// fuer genau diese Felder noch opake Hex-Werte gespeichert - technisch
-// gueltige Farben, die aber nicht mehr zum jetzt erwarteten rgba(...)-Format
-// passen und faelschlich als "ungueltig" markiert wurden. Wird beim
-// Importieren/Laden eines Theme-Standes aufgerufen und wandelt fuer jedes
-// mittlerweile als "rgba" klassifizierte Feld einen erkannten Hex-Wert
-// automatisch nach rgba(r, g, b, 1) (voll deckend, wie zuvor) um - bereits
-// gueltige rgba(...)-Werte (inkl. bewusst gesetzter Transparenz) bleiben
-// unangetastet.
 function hatgNormalizeRgbaLegacyHex(values) {
   const formats = hatgGetKeyFormats();
   Object.keys(values).forEach((key) => {
@@ -3550,13 +3210,6 @@ function hatgNormalizeRgbaLegacyHex(values) {
 }
 function hatgClassify(key, value) {
   if (hatgIsHex(value) || hatgIsGradient(value)) return "color";
-  // Bugfix (Enrico: "die fontgrößen bitte raus aus radien und rein in
-  // schrift"): ha-font-size-* traegt reine px-Werte (z.B. "22px") wie ein
-  // Radius-Feld - der generische px-Regex weiter unten griff hier zuerst,
-  // BEVOR ueberhaupt geprueft wurde, ob es sich um ein Schrift-Feld handelt.
-  // Alle font-*-Felder (font-family/-size/-weight/-size-scale) muessen daher
-  // VOR der Radius-Erkennung als "font" klassifiziert werden - nicht nur
-  // font-family wie bisher.
   if (key.includes("font")) return "font";
   if (key.includes("shadow")) return "shadow";
   if (key.includes("radius") || /^-?\d+(\.\d+)?px$/.test(String(value ?? "").trim())) return "radius";
@@ -3571,12 +3224,6 @@ function hatgExtractStatusCategory(key) {
   if (middle.includes("light") || middle.includes("switch")) return "light";
   if (middle.includes("cover") || middle.includes("lock")) return "door";
   if (middle.includes("alarm") || middle.includes("armed") || middle.includes("disarm") || middle.includes("triggered") || middle.includes("pending") || middle.includes("binary_sensor")) return "alarm";
-  // "aktiv/an"- bzw. "inaktiv/aus"-artige Felder gehören unabhängig von der
-  // Domäne (state-vacuum-active-color, state-alert-on-color, ...) zu An/Aus/
-  // Nicht verfügbar, nicht in "Sonstige" - vorher wurde nur der reine Wert
-  // ohne Domänen-Vorsilbe erkannt (nur "state-active-color" selbst), dadurch
-  // landeten fast alle domänenspezifischen "*-active"/"*-on"-Felder fälschlich
-  // in "Sonstige".
   if (middle === "active" || middle.endsWith("-active") || middle === "on" || middle.endsWith("-on")) return "on";
   if (middle === "inactive" || middle.endsWith("-inactive") || middle === "off" || middle.endsWith("-off")) return "off";
   if (middle === "unavailable" || middle.endsWith("-unavailable")) return "unavailable";
@@ -3590,21 +3237,10 @@ class HATGPanel extends HTMLElement {
     this._hass = null;
     this._rendered = false;
     this._activeSection = "overview";
-    // v0.4.47: merkt sich, auf welcher Sektion man war, bevor man ueber den
-    // Demo/HA-Live-Umschalter in die Live-Ansicht gewechselt ist - "Demo"
-    // stellt genau diese Sektion wieder her (renderPreviewSourceToggle).
     this._sectionBeforeHaLive = "overview";
-    // v0.4.48: Enrico - "die menüpunke müssen einklappen damit wir platz
-    // sparen." Merkt sich je Gruppen-Sektion (z. B. "hintergruende-karten"),
-    // ob sie manuell aufgeklappt wurde - Default ist eingeklappt, ausser die
-    // gerade aktive Unterseite gehoert dazu (siehe navGroupExpanded()).
     this._navExpanded = {};
     this._toastTimer = null;
     this._haLiveIframeEl = null;
-    // v0.4.56: Enrico - "was ist wenn ich eine karte mit zwei oder mehr
-    // cardmods aus unserer bibliotek haben moechte" - Mehrfachauswahl auf der
-    // Plugin-Seite, merkt sich angehakte Plugin-IDs zwischen Renders (rein
-    // fluechtiger UI-Zustand, daher eigenes Feld statt Teil von this._state).
     this._selectedPlugins = new Set();
     this._state = {
       themeName: "Mein neues Theme",
@@ -3612,7 +3248,6 @@ class HATGPanel extends HTMLElement {
       appearance: "dark",
       editorMode: "light",
       previewMode: "dark",
-      previewRoom: "wohnzimmer",
       previewSidebarOpen: false,
       haLiveDevice: "phone",
       openMenuOpen: false,
@@ -3620,6 +3255,8 @@ class HATGPanel extends HTMLElement {
       basePresetDialog: false,
       mobileSidebarOpen: false,
       mobilePreviewOpen: false,
+      previewColorMenuOpen: false,
+      previewFontMenuOpen: false,
       searchQuery: "",
       settingsOpen: false,
       saveDialog: null,
@@ -3628,14 +3265,7 @@ class HATGPanel extends HTMLElement {
       validation: null,
       selectMode: false,
       selectedKeys: [],
-      // color ist bewusst ein Array (Mehrfachauswahl möglich, z. B. mehrere
-      // Blautöne gleichzeitig filtern) - type/status bleiben Einzelauswahl.
       sectionFilters: { color: [], type: null, status: null },
-      // Wortbaustein-Filter für "Alle Felder": jeder Feldname wird an "-"
-      // zerlegt (z. B. "bubble-button-slider-background-color" -> bubble,
-      // button, slider, background, color). Mehrfachauswahl (UND-verknüpft)
-      // lässt sich so Baustein für Baustein bis zum exakten Feld heranzoomen,
-      // statt den ganzen Namen tippen zu müssen.
       tagFilters: [],
       values: {
         light: hatgDeepClone(HATG_MANIFEST.light),
@@ -3645,9 +3275,6 @@ class HATGPanel extends HTMLElement {
         light: hatgInitSource(),
         dark: hatgInitSource(),
       },
-      // Felder aus einem importierten Theme, die HATG nicht kennt (nicht Teil
-      // des Manifests) - werden nicht stillschweigend verworfen,
-      // sondern hier aufbewahrt und beim Export wieder mit angehängt.
       extraValues: {
         light: {},
         dark: {},
@@ -3658,9 +3285,6 @@ class HATGPanel extends HTMLElement {
     this.syncModeAcrossApp();
   }
 
-  // Seit v0.4.9: ein einziger Light/Dark-Schalter (editorMode) steuert
-  // gleichzeitig HATGs eigenes Erscheinungsbild und die Live-Vorschau, damit
-  // nicht mehr drei getrennte Hell/Dunkel-Schalter durcheinander laufen.
   syncModeAcrossApp() {
     this._state.appearance = this._state.editorMode;
     this._state.previewMode = this._state.editorMode;
@@ -3688,10 +3312,6 @@ class HATGPanel extends HTMLElement {
       if (saved.themeName) this._state.themeName = saved.themeName;
       if (saved.mode) this._state.mode = saved.mode;
       if (saved.editorMode) this._state.editorMode = saved.editorMode;
-      // appearance/previewMode werden seit v0.4.9 nicht mehr separat
-      // gespeichert/wiederhergestellt - sie folgen immer editorMode
-      // (siehe syncModeAcrossApp()), auch bei älteren Autosave-Ständen.
-      if (saved.previewRoom) this._state.previewRoom = saved.previewRoom;
       if (saved.activeSection) this._activeSection = saved.activeSection;
       if (saved.values) {
         this._state.values.light = { ...this._state.values.light, ...(saved.values.light || {}) };
@@ -3728,7 +3348,6 @@ class HATGPanel extends HTMLElement {
           appearance: this._state.appearance,
           editorMode: this._state.editorMode,
           previewMode: this._state.previewMode,
-          previewRoom: this._state.previewRoom,
           activeSection: this._activeSection,
           values: this._state.values,
           source: this._state.source,
@@ -3753,11 +3372,6 @@ class HATGPanel extends HTMLElement {
   userSectionMeta(id) {
     return HATG_USER_SECTIONS.find((s) => s.id === id);
   }
-  // v0.4.47: Sektionen mit "groups" (HA-Grundgerüst, Bubble Card, Mushroom)
-  // sind in der Seitenleiste in eigene Unterordner-Seiten aufgeteilt. Jede
-  // Gruppe hat eine eigene id (Schema "<sectionId>__<gruppen-slug>"), die
-  // wie eine normale Sektion navigierbar ist. groupMeta() findet zu so
-  // einer id die zugehoerige Elternsektion + die konkrete Gruppe.
   groupMeta(id) {
     for (const s of HATG_MANIFEST.sections) {
       if (!s.groups) continue;
@@ -3772,6 +3386,7 @@ class HATGPanel extends HTMLElement {
     if (this._activeSection === "alle-felder") return "Alle Felder";
     if (this._activeSection === "code-editor") return "Code-Editor";
     if (this._activeSection === "plugins") return "Plugins";
+    if (this._activeSection === "generatoren") return "Generatoren";
     const gm = this.groupMeta(this._activeSection);
     if (gm) return `${gm.parent.label} / ${gm.group.label}`;
     return (
@@ -3788,38 +3403,12 @@ class HATGPanel extends HTMLElement {
     this._state.selectedKeys = [];
   }
 
-  // Die drei Kopfzeilen-Dropdowns (Öffnen/Speichern/Einstellungen) sollen
-  // sich gegenseitig ausschließen (nur eins offen) und automatisch
-  // schließen, sobald man darin etwas anklickt/einstellt.
   closeAllTopMenus() {
     this._state.openMenuOpen = false;
     this._state.saveMenuOpen = false;
     this._state.settingsOpen = false;
   }
 
-  // v0.4.47: grosser Menue-Umbau. Sektionen mit "groups" (HA-Grundgerüst,
-  // Bubble Card, Mushroom) werden jetzt als nicht-klickbare Ueberschrift +
-  // eingerueckte Unterordner-Seiten darunter dargestellt, statt einer
-  // einzigen langen Feldliste. "Card-mod & Generator", "Alle Felder",
-  // "Code-Editor" und "Plugins" stehen zusammen unter einer "Tools"-
-  // Ueberschrift (HA Live ist kein eigener Reiter mehr - der Umschalter
-  // dafuer sitzt jetzt in der Live-Vorschau, siehe renderPreviewSourceToggle()).
-  // v0.4.48: Enrico - "die menüpunke müssen einklappen damit wir platz
-  // sparen." Die Unterordner-Gruppen (HA-Grundgerüst, Bubble Card, Mushroom)
-  // sind jetzt standardmaessig eingeklappt und lassen sich per Klick auf die
-  // Ueberschrift auf-/zuklappen (this._navExpanded merkt sich das je Sektion).
-  // Die Gruppe der gerade geoeffneten Unterseite bleibt automatisch offen,
-  // auch wenn sie nicht manuell aufgeklappt wurde.
-  // v0.4.49: Enrico - "bubble card und mushroom klappt nicht richtig ein
-  // erst wenn ich ein anderes feld aufmache kann ich das andere schliessen."
-  // Bug war: solange die aktive Unterseite zur Gruppe gehoert, hat die alte
-  // ODER-Verknuepfung (hasActiveChild || navExpanded) das Zuklappen per Klick
-  // schlicht ignoriert - es schloss sich nur "nebenbei", wenn man in eine
-  // ANDERE Gruppe wechselte (hasActiveChild wurde dann false). Jetzt gilt:
-  // ein expliziter Klick (this._navExpanded[id] === true/false) gewinnt
-  // immer, egal ob gerade eine Unterseite dieser Gruppe aktiv ist. Nur wenn
-  // die Gruppe noch NIE manuell an-/zugeklappt wurde (undefined), oeffnet
-  // sie sich automatisch, sobald man auf einer ihrer Unterseiten landet.
   navGroupExpanded(section) {
     const explicit = this._navExpanded[section.id];
     if (explicit !== undefined) return explicit;
@@ -3842,26 +3431,6 @@ class HATGPanel extends HTMLElement {
           <ha-icon class="nav-group-chevron" icon="mdi:chevron-down"></ha-icon>
         </button>`;
     };
-    // v0.4.49: Enrico - "und bitte in den untermenüs auch icons davor
-    // setzen." Jede Gruppe hat seit diesem Patch ein eigenes "icon" im
-    // Manifest (group.icon) - statt/zusaetzlich zum bisherigen reinen Punkt
-    // zeigen die Unterordner-Buttons jetzt ein passendes mdi-Icon davor.
-    // v0.1.4: Enrico - "jetzt noch die schrift und iconfarbe in den
-    // untermenüs auf die selbe schriftgröße und schriftfarbe wie ha
-    // Grundgerüst und bubble. das bezieht sich auf alle einträge im menü.
-    // die hintergründe der icons vom hauptreiter übernehmen. ha das
-    // homeassistant blau bubble rot und mush grün." Unterordner hatten
-    // bisher (a) ein kleineres/leichteres Schriftbild als die Gruppen-
-    // Ueberschrift (12.5px/500 statt 13px/540/650) und (b) gar kein
-    // farbiges Icon-Badge, nur ein blasses mdi-Icon in currentColor. Fix:
-    // dasselbe ".nav-icon-badge"-Element wie bei Hauptreiter/Gruppen-
-    // Ueberschrift, gefaerbt ueber hatgNavIconGradient(parentId) - damit
-    // erben ALLE Kinder einer Gruppe automatisch dieselbe Farbe wie ihr
-    // Elternreiter (blau/rot/gruen), egal welches Kind es ist.
-    // v0.1.5: Enrico - "bitte alle menüeinträge auf des selbe design also
-    // farbe größe schriftart wie in dem bubble icon." Die anfangs kleinere
-    // Badge-Variante (nav-icon-badge-sub, 20px) entfaellt - Unterordner
-    // nutzen jetzt exakt dasselbe 26px-Badge wie die Gruppen-Ueberschrift.
     const renderSubItem = (group, parentId) => `
         <button class="nav-item nav-subitem ${group.id === this._activeSection ? "active" : ""}" type="button" data-section="${group.id}">
           <span class="nav-icon-badge" style="background: ${hatgNavIconGradient(parentId)};"><ha-icon icon="${group.icon || "mdi:folder-outline"}"></ha-icon></span>
@@ -3875,7 +3444,7 @@ class HATGPanel extends HTMLElement {
     }
     const mid = [];
     HATG_MANIFEST.sections.forEach((s) => {
-      if (s.id === "card-mod-generator") return; // wandert unten in die Tools-Gruppe
+      if (s.id === "card-mod-generator") return;
       if (s.groups && s.groups.length) {
         mid.push(renderGroupHeading(s));
         if (this.navGroupExpanded(s)) {
@@ -3935,13 +3504,6 @@ class HATGPanel extends HTMLElement {
       </span>`;
   }
 
-  // v0.1.5: Enrico wollte fuer Felder mit nur EINEM echten Gegenstueck
-  // (aktuell: Rahmenfarbe/-dicke, nur Bubble Card hat ein eigenes Feld,
-  // Mushroom nicht) trotzdem eine kompakte Sync-Loesung - siehe
-  // HATG_SYNC_PAIRS/syncPair(). Nur 2 Chips (HA + Bubble) statt 3, kein
-  // Mushroom-Icon. Bei "kind: border-width" gibt es keinen sinnvollen
-  // Farbklecks (Bubble-Ziel ist ein Shorthand-String, keine reine Farbe) -
-  // stattdessen zeigt der Chip den reinen Breiten-Text (z. B. "2px").
   renderSyncPair(key) {
     const pair = HATG_SYNC_PAIRS[key];
     if (!pair) return "";
@@ -4008,48 +3570,17 @@ class HATGPanel extends HTMLElement {
   }
 
   renderFieldRow(key) {
-    // Bugfix (Enrico: "hier bitte so einstellen das alle schriften gewählt
-    // werden können"): bisher hatten nur primary-font-family und
-    // ha-font-family-code den Font-Auswahl-Dropdown, alle anderen
-    // font-family-Felder (ha-font-family-body/-heading/-longform,
-    // mdc-typography-font-family) fielen auf ein einfaches Textfeld zurueck.
-    // Jetzt bekommen ALLE font-family-Felder denselben Dropdown -
-    // renderFontField() faellt bei Werten, die zu keiner Vorlage passen,
-    // ohnehin automatisch auf "eigener Font-Stack" (Textfeld) zurueck, das
-    // funktioniert also unveraendert auch fuer diese Felder.
     if (key.includes("font-family")) return this.renderFontField(key);
 
     const values = this.currentValues();
     const value = values[key];
     const badge = this.renderBadge(key);
     const type = hatgClassify(key, value);
-    // Auswahl-Kästchen war früher nur bei Farbfeldern sichtbar (Mehrfachauswahl
-    // funktionierte dadurch z. B. nicht für Schatten-Werte) - jetzt für jeden
-    // Feld-Typ verfügbar, renderBulkBar() wählt passend zum Typ der Auswahl
-    // zwischen Farb-Sync und einfachem Text-Sync.
     const checkbox = this._state.selectMode
       ? `<input type="checkbox" class="select-checkbox" data-select-key="${key}" ${this._state.selectedKeys.includes(key) ? "checked" : ""} />`
       : "";
-    // Statisch anhand des URSPRÜNGLICHEN Manifest-Defaults klassifiziert (nicht
-    // anhand des aktuellen Werts) - so bleibt ein Feld, das gerade im
-    // RGBA-Anzeigemodus einen echten rgba(...)-Wert mit Alpha < 1 trägt,
-    // trotzdem in diesem Zweig (statt in den generischen Text-Fallback zu
-    // fallen, sobald hatgIsHex(value) nicht mehr zutrifft).
     const originalFormat = hatgGetKeyFormats()[key];
 
-    // Bugfix (Enrico: "wenn rgba schon vorhanden ist habe ich keine
-    // moeglichkeit auf hex und rgb zu gehen ... slider entfernen und rgba
-    // als gleiches feld darstellen wie hex und rgb"): echte RGBA-Felder
-    // (originalFormat "rgba", z. B. ha-card-border-color) hatten bisher
-    // WEDER den Hex/RGB/RGBA-Umschalter NOCH ein reines Textfeld fuer den
-    // exakten Wert - nur Farbrad + Transparenz-Schieberegler (0.01-Schritte,
-    // nicht exakt eintippbar). "hex"- und "rgba"-Felder laufen deshalb jetzt
-    // durch denselben Zweig: beide bekommen den Umschalter, und der
-    // Schieberegler faellt komplett weg - Alpha wird nur noch ueber das
-    // direkt eintippbare rgba(...)-Textfeld gesetzt, genau wie Hex/RGB
-    // bereits als reines Textfeld funktionieren. Default-Ansicht bleibt bei
-    // "rgba"-Feldern "rgba" (ihr natuerliches Format), bei "hex"-Feldern
-    // weiterhin "hex".
     if (originalFormat === "hex" || originalFormat === "rgba") {
       const isNativeRgba = originalFormat === "rgba";
       const otherMode = this._state.editorMode === "light" ? "dark" : "light";
@@ -4191,11 +3722,6 @@ class HATGPanel extends HTMLElement {
       </div>`;
   }
 
-  // Zeigt oben die bereits ausgewählten Wortbausteine (klickbar zum Entfernen)
-  // und darunter alle Bausteine, die in der aktuell gefilterten Trefferliste
-  // noch vorkommen (klickbar zum Hinzufügen) - jeder Klick engt weiter ein,
-  // die Liste der "weiteren" Bausteine schrumpft dabei automatisch mit
-  // ("sich heranfiltern" statt den vollen Feldnamen tippen zu müssen).
   renderTagFilterBar(tagFilteredKeys) {
     const tags = this._state.tagFilters;
     const tokenCounts = new Map();
@@ -4226,15 +3752,6 @@ class HATGPanel extends HTMLElement {
       </div>`;
   }
 
-  // v0.1.5: Enrico - "den button müssen wir noch nach unten verschieben.
-  // am besten als header über accent color. und das auf allen seiten."
-  // Der "Auswählen"-Button sass bisher oben im ".section-toolbar" NEBEN dem
-  // Light/Dark-Umschalter - inhaltlich gehoert er aber zur Feldliste
-  // darunter (er schaltet ja NUR deren Checkboxen ein/aus), nicht zum
-  // Editor-Modus. Jetzt eigene Zeile direkt ÜBER der Feldliste (nach dem
-  // Filterblock, vor dem ersten Feld) - auf allen Seiten, die
-  // renderFieldList() nutzen (Start, User-Sektionen, Profi-Sektionen/
-  // -Gruppen), sowie identisch in renderAlleFelder() nachgezogen.
   renderSectionToolbar(keys) {
     return `
       <div class="section-toolbar">
@@ -4251,12 +3768,6 @@ class HATGPanel extends HTMLElement {
 
   renderBulkBar() {
     if (!this._state.selectMode || this._state.selectedKeys.length === 0) return "";
-    // Farb-Sync (Picker + Hex-Feld) nur, wenn WIRKLICH alle ausgewählten
-    // Felder Farbfelder sind - sobald z. B. ein Schatten- oder Radius-Feld
-    // dabei ist, gibt es stattdessen ein einfaches Text-Sync-Feld, das den
-    // eingegebenen Wert 1:1 in alle ausgewählten Felder schreibt (deckt u. a.
-    // "mehrere Schatten auf einmal ändern" ab, was vorher gar nicht ging,
-    // weil das Auswahl-Kästchen bisher nur bei Farbfeldern erschien).
     const values = this.currentValues();
     const types = new Set(this._state.selectedKeys.map((k) => hatgClassify(k, values[k])));
     const allColor = types.size === 1 && types.has("color");
@@ -4276,13 +3787,6 @@ class HATGPanel extends HTMLElement {
       </div>`;
   }
 
-  // groups (optional): [{ label, keys }, ...] - wenn eine Sektion das hat
-  // (aktuell nur "HA-Grundgerüst", v0.4.45/v0.4.46), werden die Felder statt
-  // einer einzigen durchgehenden Liste in benannte Unterordner aufgeteilt
-  // (Card / Hintergründe / Tabellen / Theme / Header / Toolbar / App Drawer /
-  // Sidebar). Suche/Filter/Mehrfachauswahl arbeiten unveraendert auf der
-  // kompletten flachen keys-Liste - ein Unterordner wird nur ausgeblendet,
-  // wenn nach Filterung keines seiner Felder mehr uebrig ist.
   renderFieldList(keys, groups) {
     const shown = this.filteredKeys(keys);
     const dark = this._state.editorMode === "dark";
@@ -4353,10 +3857,6 @@ class HATGPanel extends HTMLElement {
   }
 
   renderSectionPage(id) {
-    // v0.4.47: id kann jetzt auch eine Unterordner-Gruppe sein (z. B.
-    // "hintergruende-karten__card") statt einer kompletten Sektion - dann
-    // wird NUR die Gruppe gerendert, mit einem "Elternname / Gruppenname"-
-    // Titel statt des vollen Sektionsnamens.
     const gm = this.groupMeta(id);
     if (gm) {
       return `
@@ -4384,10 +3884,6 @@ class HATGPanel extends HTMLElement {
 
   renderAlleFelder() {
     const q = this._state.searchQuery.trim().toLowerCase();
-    // v0.4.47: Sektionen mit "groups" (HA-Grundgerüst, Bubble Card,
-    // Mushroom) sind jetzt sehr gross - "Alle Felder" zeigt darum pro Feld
-    // den spezifischeren Unterordner-Namen statt nur des Eltern-Sektionsnamens
-    // (z. B. "Sidebar" statt pauschal "HA-Grundgerüst" für alle 304 Felder).
     const keyToSection = {};
     const allKeys = [];
     HATG_MANIFEST.sections.forEach((s) => {
@@ -4437,11 +3933,6 @@ class HATGPanel extends HTMLElement {
               ? shown
                   .map((k) => {
                     const rowHtml = this.renderFieldRow(k);
-                    // Zustand-Badge zeigt denselben Kategorie-Namen wie die
-                    // Zustand-Filterchips (An/Aus/Wetter/...), damit man ohne
-                    // Filter-Klicken pro Feld sofort sieht, wohin es einsortiert
-                    // wurde - bewusst optisch anders als der Sektions-Tag
-                    // (Pill statt reinem Text), damit man beide unterscheidet.
                     const statusCategory = hatgExtractStatusCategory(k);
                     const statusBadge = statusCategory
                       ? `<small class="field-status-tag">${HATG_STATUS_CATEGORY_LABELS[statusCategory]}</small>`
@@ -4461,32 +3952,6 @@ class HATGPanel extends HTMLElement {
 
   renderCodeEditor() {
     const values = this.currentValues();
-    // Seit Punkt 46 ("optisch an den Rest von HATG angleichen"): jede
-    // Manifest-Sektion bekommt ihre eigene Karte (gleicher Karten-Look wie
-    // .field-list auf "Alle Felder": eigener Rahmen/Radius/Hintergrund je
-    // Block, statt einer einzigen durchgehenden Box fuer die ganze Seite).
-    //
-    // v0.1.5: Enrico - "kannst du den code editor auch noch optisch dem des
-    // card mod anpassen. und genauso bearbeitbar machen." Der bisherige
-    // Quick-Edit-Codeblock war reiner Klartext (heller Hintergrund,
-    // ".code-line"/".code-key"/".code-value") mit nur EINER Bearbeitungs-
-    // moeglichkeit (Farbpunkt -> nativer Farbwaehler) - anders als der
-    // dunkle, syntax-hervorgehobene, frei eintippbare Editor auf der
-    // card-mod-card-yaml-Seite (".code-editor-wrap"/".code-editor-highlight",
-    // gefuellt ueber hatgHighlightCode()). Jetzt nutzt jede Sektionskarte
-    // genau dieselbe Komponente: eine Textarea mit allen "key: "wert""-
-    // Zeilen dieser Sektion, live farbig unterlegt, direkt eintippbar.
-    // Aenderungen werden beim Tippen sofort in die einzelnen Felder
-    // zurückgeschrieben (siehe commitQuickEditBlock()) - ohne bei jedem
-    // Tastendruck neu zu rendern (sonst würde der Cursor mitten im Tippen
-    // verspringen, genau wie beim bestehenden Long-Text-Editor vermieden).
-    // Lange/mehrzeilige Werte (aktuell nur card-mod-card-yaml selbst, siehe
-    // hatgIsLong()) bleiben aussen vor - die haben bereits ihren eigenen
-    // vollwertigen Editor auf der Card-mod-Generator-Seite; sie hier als
-    // riesigen Textblock mit reinzumischen wuerde die kompakte Uebersicht
-    // sprengen. Der bisherige Farbpunkt-Klick-Picker (".code-dot") entfaellt
-    // dadurch bewusst - passend zu "genauso bearbeitbar wie card-mod"
-    // (dort gibt es auch keinen Picker, nur Text).
     const sectionCards = [];
     HATG_MANIFEST.sections.forEach((s) => {
       const setKeys = s.keys.filter((k) => values[k] !== undefined && values[k] !== "" && !hatgIsLong(k, values[k]));
@@ -4513,11 +3978,6 @@ class HATGPanel extends HTMLElement {
       </section>`;
   }
 
-  // v0.1.5: Gegenstueck zu renderCodeEditor()'s neuen Textareas - parst jede
-  // Zeile im Format 'key: "wert"' zurueck und uebernimmt NUR Felder, deren
-  // Wert sich wirklich geaendert hat. Zeilen, die (noch) nicht parsen -
-  // z. B. mitten im Tippen, oder ein unbekannter Key - werden still
-  // uebersprungen statt abzustuerzen oder Daten zu verwerfen.
   commitQuickEditBlock(rawText) {
     const values = this.currentValues();
     const lineRe = /^([A-Za-z0-9_.-]+):\s*"((?:[^"\\]|\\.)*)"\s*$/;
@@ -4572,17 +4032,6 @@ class HATGPanel extends HTMLElement {
       </section>`;
   }
 
-  // Bugfix ("Vorlage kopieren"-Buttons auf der Plugin-Seite taten nichts):
-  // navigator.clipboard.writeText() existiert nur in einem "secure context"
-  // (https oder localhost) UND braucht ggf. eine Clipboard-Permission. Läuft
-  // HA z. B. über reines http im lokalen Netz (kein SSL-Reverse-Proxy), ist
-  // navigator.clipboard komplett undefined - der Aufruf verpuffte dann still
-  // (kein Fehler, kein Toast, kein Kopieren), weil "navigator.clipboard?.
-  // writeText(text).then(...)" bei undefined-Clipboard die GESAMTE Kette
-  // kurzschließt und .then() nie ausgeführt wird. copyTextToClipboard()
-  // faengt genau diesen Fall jetzt ab und weicht auf die alte, universell
-  // funktionierende textarea+execCommand("copy")-Methode aus, die kein
-  // secure context braucht.
   copyTextToClipboard(text) {
     const legacyFallback = () => {
       try {
@@ -4618,10 +4067,6 @@ class HATGPanel extends HTMLElement {
     );
   }
 
-  // v0.4.56: Enrico - "was ist wenn ich eine karte mit zwei oder mehr
-  // cardmods aus unserer bibliotek haben moechte" - kopiert eine EINZELNE
-  // Karte, die die styles: aller aktuell ausgewaehlten (kombinierbaren)
-  // Plugins hintereinander enthaelt.
   copyCombinedPluginTemplate() {
     const plugins = HATG_PLUGINS.filter((p) => this._selectedPlugins.has(p.id));
     if (plugins.length < 2) return;
@@ -4640,12 +4085,6 @@ class HATGPanel extends HTMLElement {
     this.render();
   }
 
-  // v0.4.56: Enrico wollte das Code-Vorschaufenster raus und stattdessen eine
-  // kompakte Listenansicht (Vorschaubild + Erklärung + Kopieren-Knopf pro
-  // Zeile) - die volle Kartenvorlage landet weiterhin unveraendert in der
-  // Zwischenablage, sie wird nur nicht mehr als <pre> auf der Seite gezeigt.
-  // Danach kam die Mehrfachauswahl dazu: Checkbox pro kombinierbarer Zeile +
-  // Sammelknopf "Kombinierte Vorlage kopieren" oben, sobald 2+ ausgewaehlt sind.
   renderPlugins() {
     const selectedCount = this._selectedPlugins.size;
     const rows = HATG_PLUGINS.map((plugin) => {
@@ -4701,14 +4140,54 @@ class HATGPanel extends HTMLElement {
       </section>`;
   }
 
-  // rootNameOverride: normalerweise entspricht der YAML-Root-Key (Theme-Name,
-  // an dem HA/card-mod das Theme erkennt) dem Theme-Namen aus dem Editor. Für
-  // die Work-Datei (hatg-work-<name>.yaml) muss der Root-Key aber zwingend
-  // auf denselben "hatg-work-<name>"-Namen lauten wie der Dateiname – sonst
-  // kollidiert er mit dem gleichnamigen echten, gespeicherten Theme (beide
-  // hätten denselben Root-Key "name", HA könnte nur eines davon anzeigen),
-  // UND card-mod würde den Work-Stand gar nicht erkennen, da card-mod-theme
-  // exakt dem Root-Key entsprechen muss.
+  generatorBlurTransparencyState() {
+    const values = this.currentValues();
+    const blurRaw = String(values["card-backdrop-blur"] ?? "none").trim();
+    const blurPx = Math.max(0, Math.min(40, parseInt(blurRaw, 10) || 0));
+    const bgValue = values["card-background-color"] || values["ha-card-background"] || "#1c1c1e";
+    const parsed = hatgIsHex(bgValue) ? { hex: hatgNormalizeHex6(bgValue), alpha: 1 } : hatgParseRgba(bgValue);
+    const alphaPercent = Math.round((parsed.alpha ?? 1) * 100);
+    return { blurPx, hex: parsed.hex, alphaPercent };
+  }
+
+  renderGenerators() {
+    const { blurPx, alphaPercent, hex } = this.generatorBlurTransparencyState();
+    return `
+      <section class="editor-section">
+        <div class="section-heading">
+          <span class="eyebrow">Werkzeuge</span>
+          <h1>Generatoren</h1>
+          <p>Interaktive Regler, die dir Theme-Werte direkt mit Live-Vorschau erzeugen – statt Werte von Hand einzutippen. Anders als die Plugin-Bibliothek (fertige Kopiervorlagen) wirken Generatoren direkt auf deine Theme-Felder.</p>
+        </div>
+        <div class="generator-card">
+          <div class="generator-card-head">
+            <ha-icon icon="mdi:blur"></ha-icon>
+            <div>
+              <strong>Blur &amp; Kartentransparenz</strong>
+              <p>Glaseffekt für Karten: Unschärfe wirkt auf Bubble-Card-Kacheln (per card-mod), die Kartentransparenz auf die Kartenfarbe selbst – global für Home Assistant, Bubble Card und Mushroom.</p>
+            </div>
+          </div>
+          <div class="generator-preview-backdrop">
+            <div class="generator-preview-card" data-generator-preview-card style="background: ${hatgComposeRgba(hex, alphaPercent / 100)}; backdrop-filter: blur(${blurPx}px); border-radius: ${hatgEscape(this.currentValues()["ha-card-border-radius"] || "12px")};">
+              <ha-icon icon="mdi:thermometer"></ha-icon>
+              <span>21,4&deg;</span>
+            </div>
+          </div>
+          <div class="generator-control-row">
+            <div class="generator-control">
+              <label>Unschärfe <span class="generator-value" data-generator-blur-value>${blurPx} px</span></label>
+              <input type="range" min="0" max="40" step="1" value="${blurPx}" data-generator-blur />
+            </div>
+            <div class="generator-control">
+              <label>Kartentransparenz <span class="generator-value" data-generator-opacity-value>${alphaPercent} %</span></label>
+              <input type="range" min="0" max="100" step="1" value="${alphaPercent}" data-generator-opacity />
+            </div>
+          </div>
+          <p class="generator-footnote">Unschärfe schreibt in <code>card-backdrop-blur</code>, Kartentransparenz in <code>card-background-color</code> / <code>ha-card-background</code> (als RGBA) – beide Felder findest du auch einzeln unter „Alle Felder".</p>
+        </div>
+      </section>`;
+  }
+
   buildYamlText(rootNameOverride) {
     const name = rootNameOverride || hatgSlugTheme(this._state.themeName);
     const modeBlock = (mode) => {
@@ -4717,10 +4196,6 @@ class HATGPanel extends HTMLElement {
         const lines = s.keys
           .filter((k) => values[k] !== undefined && values[k] !== "")
           .map((k) => {
-            // card-mod-theme MUSS exakt dem YAML-Root-Key entsprechen, sonst
-            // aktiviert card-mod den card-mod-card-yaml-Block nie (siehe
-            // card-mod-Dokumentation). Deshalb hier zwangsweise überschrieben,
-            // unabhängig davon, was im Editor-Zustand steht.
             const value = k === "card-mod-theme" ? name : values[k];
             return `      ${k}: ${hatgQuoteYamlValue(value)}`;
           })
@@ -4768,6 +4243,7 @@ class HATGPanel extends HTMLElement {
     if (this._activeSection === "code-editor") return this.renderCodeEditor();
     if (this._activeSection === "ha-live") return this.renderHaLive();
     if (this._activeSection === "plugins") return this.renderPlugins();
+    if (this._activeSection === "generatoren") return this.renderGenerators();
     if (this._activeSection === "overview") return this.renderOverview();
     const userSection = this.userSectionMeta(this._activeSection);
     if (userSection) return this.renderUserSectionPage(userSection);
@@ -4848,153 +4324,402 @@ class HATGPanel extends HTMLElement {
       </div>`;
   }
 
-  renderPreviewCard(card) {
-    if (card.type === "light") {
-      return `
-        <article class="ha-preview-card light-card">
-          <span class="entity-icon"><ha-icon icon="mdi:lightbulb-on-outline"></ha-icon></span>
-          <span class="entity-copy">
-            <strong>${card.name}</strong>
-            <small>${card.room}</small>
-          </span>
-          <span class="ha-toggle ${card.on ? "" : "off"}"><i></i></span>
-        </article>`;
-    }
-    if (card.type === "climate") {
-      return `
-        <article class="ha-preview-card climate-card">
-          <div class="climate-topline">
-            <span class="entity-icon"><ha-icon icon="mdi:thermometer"></ha-icon></span>
-            <span class="entity-copy">
-              <strong>${card.name}</strong>
-              <small>${card.room}</small>
-            </span>
-            <span class="temperature">${card.value}<small> °C</small></span>
-          </div>
-          <svg class="temperature-graph" viewBox="0 0 260 70" preserveAspectRatio="none" aria-hidden="true">
-            <path d="M0,45 C18,68 28,25 48,40 S82,30 102,47 S140,60 158,43 S198,56 220,36 S244,42 260,31" />
-            <circle cx="260" cy="31" r="5" />
-          </svg>
-        </article>`;
-    }
-    if (card.type === "media") {
-      return `
-        <article class="ha-preview-card media-card">
-          <span class="entity-icon"><ha-icon icon="mdi:speaker"></ha-icon></span>
-          <span class="entity-copy">
-            <strong>${card.name}</strong>
-            <small>${card.state}</small>
-          </span>
-          <span class="media-controls">
-            <ha-icon icon="mdi:skip-previous"></ha-icon>
-            <ha-icon icon="mdi:pause"></ha-icon>
-            <ha-icon icon="mdi:skip-next"></ha-icon>
-          </span>
-        </article>`;
-    }
-    if (card.type === "sensor") {
-      return `
-        <article class="ha-preview-card sensor-card">
-          <span class="entity-icon"><ha-icon icon="${card.icon}"></ha-icon></span>
-          <span class="entity-copy">
-            <strong>${card.name}</strong>
-            <small>${card.room}</small>
-          </span>
-          <span class="sensor-value">${card.value}<small>${card.unit}</small></span>
-        </article>`;
-    }
-    if (card.type === "cover") {
-      return `
-        <article class="ha-preview-card cover-card">
-          <div class="climate-topline">
-            <span class="entity-icon"><ha-icon icon="mdi:garage"></ha-icon></span>
-            <span class="entity-copy">
-              <strong>${card.name}</strong>
-              <small>${card.room} &middot; ${card.position}% geöffnet</small>
-            </span>
-          </div>
-          <div class="cover-controls">
-            <span><ha-icon icon="mdi:arrow-up"></ha-icon></span>
-            <span><ha-icon icon="mdi:stop"></ha-icon></span>
-            <span><ha-icon icon="mdi:arrow-down"></ha-icon></span>
-          </div>
-        </article>`;
-    }
-    if (card.type === "lock") {
-      return `
-        <article class="ha-preview-card lock-card">
-          <span class="entity-icon"><ha-icon icon="${card.locked ? "mdi:lock" : "mdi:lock-open-variant"}"></ha-icon></span>
-          <span class="entity-copy">
-            <strong>${card.name}</strong>
-            <small>${card.room}</small>
-          </span>
-          <span class="lock-pill ${card.locked ? "locked" : ""}">${card.locked ? "Verriegelt" : "Offen"}</span>
-        </article>`;
-    }
-    if (card.type === "slider") {
-      const value = Math.max(0, Math.min(100, card.value ?? 50));
-      return `
-        <article class="ha-preview-card slider-card">
-          <div class="climate-topline">
-            <span class="entity-icon"><ha-icon icon="mdi:brightness-percent"></ha-icon></span>
-            <span class="entity-copy">
-              <strong>${card.name}</strong>
-              <small>${card.room}</small>
-            </span>
-            <span class="temperature">${value}<small> %</small></span>
-          </div>
-          <div class="preview-slider-track">
-            <div class="preview-slider-fill" style="width: ${value}%"></div>
-          </div>
-        </article>`;
-    }
-    if (card.type === "status") {
-      // Zeigt die tatsächlich im Editor eingestellten Zustandsfarben
-      // (success/disabled/warning/error-color) statt eigener Mockup-Werte -
-      // damit man auf der Startseite auf einen Blick sieht, wie die
-      // Statusfarben zusammen wirken.
-      const chips = [
-        { label: "An", varName: "--preview-status-on" },
-        { label: "Aus", varName: "--preview-status-off" },
-        { label: "Warnung", varName: "--preview-status-warning" },
-        { label: "Fehler", varName: "--preview-status-error" },
-      ];
-      return `
-        <article class="ha-preview-card status-card">
-          <span class="entity-copy"><strong>${card.name}</strong></span>
-          <div class="status-row">
-            ${chips
-              .map(
-                (c) =>
-                  `<span class="status-chip" style="--chip-color: var(${c.varName})">${c.label}</span>`
-              )
-              .join("")}
-          </div>
-        </article>`;
-    }
-    return "";
-  }
-
-  // v0.4.47: "HA Live" ist kein eigener Seitenleisten-Reiter mehr - Enrico:
-  // "dieser schalter wandert nach rechts wo unsere live vorschau ist".
-  // Dieser kompakte Demo/HA-Live-Umschalter sitzt jetzt direkt im Kopf der
-  // Vorschau (hier UND auf der HA-Live-Vollansicht selbst, damit man von
-  // beiden Seiten aus wechseln kann). "Demo" springt zurueck auf die zuletzt
-  // bearbeitete Sektion (in _sectionBeforeHaLive gemerkt), "HA Live" merkt
-  // sich die aktuelle Sektion und wechselt in die Live-Ansicht.
   renderPreviewSourceToggle() {
     const inLive = this._activeSection === "ha-live";
+    const values = this.currentValues();
+    const accent = values["accent-color"] || "#38c76c";
+    const activeStyle = `background: ${hatgEscape(accent)}; color: ${hatgEscape(hatgReadableTextColor(accent))};`;
     return `
       <div class="preview-source-toggle" role="group" aria-label="Vorschau-Quelle">
-        <button type="button" class="${inLive ? "" : "active"}" data-preview-source="demo">Demo</button>
-        <button type="button" class="${inLive ? "active" : ""}" data-preview-source="ha-live">HA Live</button>
+        <button type="button" class="${inLive ? "" : "active"}" style="${inLive ? "" : activeStyle}" data-preview-source="demo">Demo</button>
+        <button type="button" class="${inLive ? "active" : ""}" style="${inLive ? activeStyle : ""}" data-preview-source="ha-live">HA Live</button>
+      </div>`;
+  }
+
+  renderPreviewColorMenu() {
+    const values = this.currentValues();
+    const formats = hatgGetKeyFormats();
+    const colorKeys = Object.keys(values).filter((k) => {
+      const fmt = formats[k];
+      if (fmt !== "hex" && fmt !== "rgba") return false;
+      const v = String(values[k] ?? "").trim();
+      if (!v || hatgIsGradient(v)) return false;
+      if (!HATG_PREVIEW_BOUND_KEYS.includes(k)) return false;
+      return true;
+    });
+    const open = !!this._state.previewColorMenuOpen;
+    const rows = colorKeys
+      .map((k) => {
+        const v = values[k];
+        return `
+          <div class="color-menu-row">
+            <span class="color-menu-dot" style="background: ${hatgEscape(v)};"></span>
+            <span class="color-menu-code">${hatgEscape(k)}</span>
+          </div>`;
+      })
+      .join("");
+
+    const bg = values["card-background-color"] || values["ha-card-background"] || "#1c1c1e";
+    const borderColor = values["ha-card-border-color"] || "rgba(0,0,0,.12)";
+    const borderWidth = values["ha-card-border-width"] || "1px";
+    const borderRadius = values["ha-card-border-radius"] || "12px";
+    const boxShadow = values["ha-card-box-shadow"] || "none";
+    const shellStyle = `background: ${hatgEscape(bg)}; border-radius: ${hatgEscape(borderRadius)}; border: ${hatgEscape(borderWidth)} solid ${hatgEscape(borderColor)}; box-shadow: ${hatgEscape(boxShadow)};`;
+
+    return `
+      <div class="preview-color-menu">
+        <button type="button" class="color-menu-header" style="${shellStyle}" data-color-menu-toggle aria-expanded="${open}">
+          <span class="color-menu-icon"><ha-icon icon="mdi:palette-outline"></ha-icon></span>
+          <span class="color-menu-info">
+            <span class="color-menu-primary">Alle Farben der Vorschau</span>
+            <span class="color-menu-secondary">${hatgEscape(this._state.themeName || "Unbenannt")}</span>
+          </span>
+          <ha-icon class="color-menu-chevron" icon="mdi:chevron-down"></ha-icon>
+        </button>
+        ${open ? `<div class="color-menu-list" style="${shellStyle}">${rows}</div>` : ""}
+      </div>`;
+  }
+
+  renderPreviewFontMenu() {
+    const values = this.currentValues();
+    const open = !!this._state.previewFontMenuOpen;
+
+    const familyRows = [
+      { key: "primary-font-family", label: "Grundschrift" },
+      { key: "ha-font-family-heading", label: "Überschrift" },
+      { key: "ha-font-family-body", label: "Fließtext" },
+      { key: "ha-font-family-longform", label: "Langtext" },
+      { key: "ha-font-family-code", label: "Code" },
+      { key: "mdc-typography-font-family", label: "Eingabefelder" },
+    ].map((f) => ({ ...f, style: `font-family: ${values[f.key] || "inherit"};` }));
+
+    const baseFamily = values["ha-font-family-body"] || values["primary-font-family"] || "inherit";
+    const sizeRows = [
+      { key: "ha-font-size-scale", label: "Skalierungsfaktor", size: values["ha-font-size-m"] || "14px" },
+      { key: "ha-font-size-2xs", label: "Kleinstschrift" },
+      { key: "ha-font-size-xs", label: "Winzig" },
+      { key: "ha-font-size-s", label: "Klein" },
+      { key: "ha-font-size-m", label: "Standard" },
+      { key: "ha-font-size-l", label: "Groß" },
+      { key: "ha-font-size-xl", label: "Größer" },
+      { key: "ha-font-size-2xl", label: "Überschrift klein" },
+      { key: "ha-font-size-3xl", label: "Überschrift mittel" },
+      { key: "ha-font-size-4xl", label: "Überschrift groß" },
+    ].map((f) => ({ ...f, style: `font-family: ${baseFamily}; font-size: ${f.size || values[f.key] || "14px"};` }));
+
+    const weightRows = [
+      { key: "ha-font-weight-light", label: "Leicht" },
+      { key: "ha-font-weight-normal", label: "Normal" },
+      { key: "ha-font-weight-body", label: "Fließtext-Gewicht" },
+      { key: "ha-font-weight-medium", label: "Mittel" },
+      { key: "ha-font-weight-heading", label: "Überschrift-Gewicht" },
+      { key: "ha-font-weight-action", label: "Buttons & Aktionen" },
+      { key: "ha-font-weight-bold", label: "Fett" },
+    ].map((f) => ({ ...f, style: `font-family: ${baseFamily}; font-weight: ${values[f.key] || "400"};` }));
+
+    const dividerColor = values["divider-color"] || "rgba(127,140,160,.18)";
+    const allRows = [...familyRows, ...sizeRows, ...weightRows];
+    const rows = allRows
+      .map(
+        (f) => `
+          <div class="font-menu-row" style="border-color: ${hatgEscape(dividerColor)};">
+            <span class="font-menu-sample" style="${hatgEscape(f.style)}">${hatgEscape(f.label)}</span>
+            <span class="font-menu-code">${hatgEscape(f.key)}</span>
+          </div>`
+      )
+      .join("");
+
+    const bg = values["card-background-color"] || values["ha-card-background"] || "#1c1c1e";
+    const borderColor = values["ha-card-border-color"] || "rgba(0,0,0,.12)";
+    const borderWidth = values["ha-card-border-width"] || "1px";
+    const borderRadius = values["ha-card-border-radius"] || "12px";
+    const boxShadow = values["ha-card-box-shadow"] || "none";
+    const shellStyle = `background: ${hatgEscape(bg)}; border-radius: ${hatgEscape(borderRadius)}; border: ${hatgEscape(borderWidth)} solid ${hatgEscape(borderColor)}; box-shadow: ${hatgEscape(boxShadow)};`;
+
+    return `
+      <div class="preview-color-menu">
+        <button type="button" class="color-menu-header" style="${shellStyle}" data-font-menu-toggle aria-expanded="${open}">
+          <span class="color-menu-icon"><ha-icon icon="mdi:format-font"></ha-icon></span>
+          <span class="color-menu-info">
+            <span class="color-menu-primary">Schrift &amp; Typografie</span>
+            <span class="color-menu-secondary">${hatgEscape(this._state.themeName || "Unbenannt")}</span>
+          </span>
+          <ha-icon class="color-menu-chevron" icon="mdi:chevron-down"></ha-icon>
+        </button>
+        ${open ? `<div class="color-menu-list font-menu-list" style="${shellStyle}">${rows}</div>` : ""}
+      </div>`;
+  }
+
+  renderPreviewTileCard() {
+    const values = this.currentValues();
+    const bg = values["card-background-color"] || values["ha-card-background"] || "#1c1c1e";
+    const borderColor = values["ha-card-border-color"] || "rgba(0,0,0,.12)";
+    const borderWidth = values["ha-card-border-width"] || "1px";
+    const borderRadius = values["ha-card-border-radius"] || "12px";
+    const boxShadow = values["ha-card-box-shadow"] || "none";
+    const tileColor = values["primary-color"] || "#03a9f4";
+    const textColor = values["primary-text-color"] || "#e6eaf1";
+
+    const shellStyle = `background: ${hatgEscape(bg)}; border-radius: ${hatgEscape(borderRadius)}; border: ${hatgEscape(borderWidth)} solid ${hatgEscape(borderColor)}; box-shadow: ${hatgEscape(boxShadow)};`;
+
+    return `
+      <div class="preview-tile-card">
+        <div class="tile-card-head">
+          <span>HA Tile-Card &mdash; "color: primary"</span>
+        </div>
+        <div class="tile-card-shell" style="${shellStyle}">
+          <div class="tile-card-content">
+            <div class="tile-icon-circle" style="--tile-color: ${hatgEscape(tileColor)};">
+              <ha-icon icon="mdi:check-circle"></ha-icon>
+            </div>
+            <div class="tile-card-info">
+              <span class="tile-card-primary" style="color: ${hatgEscape(textColor)};">An/Aus &mdash; Icon Prim&auml;rfarbe</span>
+              <span class="tile-card-secondary" style="color: ${hatgEscape(textColor)};">An</span>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  renderPreviewSwitchMarkup(values, checked) {
+    const trackBg = checked
+      ? values["ha-switch-checked-background-color"] || values["state-active-color"] || "#03a9f4"
+      : values["ha-switch-background-color"] || "#c7c7cc";
+    const trackBorder = checked
+      ? values["ha-switch-checked-border-color"] || trackBg
+      : values["ha-switch-border-color"] || trackBg;
+    const thumbBg = checked
+      ? values["ha-switch-checked-thumb-background-color"] || "#ffffff"
+      : values["ha-switch-thumb-background-color"] || "#ffffff";
+    const thumbBorder = checked
+      ? values["ha-switch-checked-thumb-border-color"] || thumbBg
+      : values["ha-switch-thumb-border-color"] || thumbBg;
+    const switchVars = `--switch-track: ${hatgEscape(trackBg)}; --switch-track-border: ${hatgEscape(trackBorder)}; --switch-thumb: ${hatgEscape(thumbBg)}; --switch-thumb-border: ${hatgEscape(thumbBorder)};`;
+    return `
+      <span class="preview-ha-switch ${checked ? "checked" : ""}" style="${switchVars}">
+        <span class="switch-track"><span class="switch-thumb"></span></span>
+      </span>`;
+  }
+
+  renderPreviewEntitiesCard() {
+    const values = this.currentValues();
+    const bg = values["card-background-color"] || values["ha-card-background"] || "#1c1c1e";
+    const borderColor = values["ha-card-border-color"] || "rgba(0,0,0,.12)";
+    const borderWidth = values["ha-card-border-width"] || "1px";
+    const borderRadius = values["ha-card-border-radius"] || "12px";
+    const boxShadow = values["ha-card-box-shadow"] || "none";
+    const dividerColor = values["divider-color"] || "rgba(127,140,160,.18)";
+    const textColor = values["primary-text-color"] || "#e6eaf1";
+    const staticIconColor = values["state-icon-color"] || "#8e8e93";
+    const lightOnColor = values["state-light-on-color"] || values["state-light-active-color"] || values["state-active-color"] || "#4cd964";
+    const sliderTrack = values["disabled-color"] || "rgba(127,140,160,.35)";
+    const sliderFill = values["primary-color"] || "#03a9f4";
+
+    const shellStyle = `background: ${hatgEscape(bg)}; border-radius: ${hatgEscape(borderRadius)}; border: ${hatgEscape(borderWidth)} solid ${hatgEscape(borderColor)}; box-shadow: ${hatgEscape(boxShadow)};`;
+    const rowDivider = `border-top: 1px solid ${hatgEscape(dividerColor)};`;
+
+    return `
+      <div class="preview-entities-card">
+        <div class="tile-card-head">
+          <span>HA Entities-Karte &mdash; 3 Zeilen</span>
+        </div>
+        <div class="tile-card-shell" style="${shellStyle}">
+          <div class="toggle-row-content">
+            <span class="toggle-row-icon" style="color: ${hatgEscape(staticIconColor)};">
+              <ha-icon icon="mdi:string-lights-off"></ha-icon>
+            </span>
+            <span class="toggle-row-name" style="color: ${hatgEscape(textColor)};">Gartenlichter</span>
+            ${this.renderPreviewSwitchMarkup(values, false)}
+          </div>
+          <div class="toggle-row-content" style="${rowDivider}">
+            <span class="toggle-row-icon" style="color: ${hatgEscape(lightOnColor)};">
+              <ha-icon icon="mdi:lightbulb"></ha-icon>
+            </span>
+            <span class="toggle-row-name" style="color: ${hatgEscape(textColor)};">Serversteuerung Server LED</span>
+            ${this.renderPreviewSwitchMarkup(values, true)}
+          </div>
+          <div class="toggle-row-content" style="${rowDivider}">
+            <span class="toggle-row-icon" style="color: ${hatgEscape(staticIconColor)};">
+              <ha-icon icon="mdi:dots-grid"></ha-icon>
+            </span>
+            <span class="toggle-row-name" style="color: ${hatgEscape(textColor)};">Transparenz</span>
+            <span class="preview-ha-slider" style="--slider-track: ${hatgEscape(sliderTrack)}; --slider-fill: ${hatgEscape(sliderFill)};">
+              <span class="ha-slider-track"><span class="ha-slider-fill"></span><span class="ha-slider-thumb"></span></span>
+            </span>
+            <span class="toggle-row-value" style="color: ${hatgEscape(textColor)};">65&nbsp;%</span>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  renderPreviewSensorCard() {
+    const values = this.currentValues();
+    const bg = values["card-background-color"] || values["ha-card-background"] || "#1c1c1e";
+    const borderColor = values["ha-card-border-color"] || "rgba(0,0,0,.12)";
+    const borderWidth = values["ha-card-border-width"] || "1px";
+    const borderRadius = values["ha-card-border-radius"] || "12px";
+    const boxShadow = values["ha-card-box-shadow"] || "none";
+    const nameColor = values["secondary-text-color"] || "#a9b0bd";
+    const valueColor = values["primary-text-color"] || "#e6eaf1";
+    const graphColor = values["accent-color"] || "#ff9300";
+
+    const shellStyle = `background: ${hatgEscape(bg)}; border-radius: ${hatgEscape(borderRadius)}; border: ${hatgEscape(borderWidth)} solid ${hatgEscape(borderColor)}; box-shadow: ${hatgEscape(boxShadow)};`;
+    const path = "M0,32 L14,30 L28,26 L42,27 L56,18 L70,20 L84,10 L98,12 L112,6 L126,9 L140,4 L154,7 L168,3 L182,6 L196,9 L210,5 L224,8 L238,4 L252,7 L266,6 L280,9";
+
+    return `
+      <div class="preview-sensor-card">
+        <div class="tile-card-head">
+          <span>HA Sensor-Karte &mdash; Graph-Footer</span>
+        </div>
+        <div class="tile-card-shell sensor-card-shell" style="${shellStyle}">
+          <div class="sensor-card-header">
+            <div class="sensor-card-name" style="color: ${hatgEscape(nameColor)};">Sensor Karte</div>
+            <div class="sensor-card-value" style="color: ${hatgEscape(valueColor)};">45,0<span class="sensor-card-unit" style="color: ${hatgEscape(nameColor)};">&nbsp;&deg;C</span></div>
+          </div>
+          <div class="sensor-card-graph">
+            <svg viewBox="0 0 280 40" preserveAspectRatio="none" aria-hidden="true">
+              <path d="${path} L280,40 L0,40 Z" fill="${hatgEscape(graphColor)}" opacity=".1"></path>
+              <path d="${path}" fill="none" stroke="${hatgEscape(graphColor)}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity=".8"></path>
+            </svg>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  renderPreviewTileFeatureCard() {
+    const values = this.currentValues();
+    const bg = values["card-background-color"] || values["ha-card-background"] || "#1c1c1e";
+    const borderColor = values["ha-card-border-color"] || "rgba(0,0,0,.12)";
+    const borderWidth = values["ha-card-border-width"] || "1px";
+    const borderRadius = values["ha-card-border-radius"] || "12px";
+    const boxShadow = values["ha-card-box-shadow"] || "none";
+    const textColor = values["primary-text-color"] || "#e6eaf1";
+    const tileColor = values["state-light-on-color"] || values["state-light-active-color"] || values["state-active-color"] || "#ff9300";
+
+    const shellStyle = `background: ${hatgEscape(bg)}; border-radius: ${hatgEscape(borderRadius)}; border: ${hatgEscape(borderWidth)} solid ${hatgEscape(borderColor)}; box-shadow: ${hatgEscape(boxShadow)};`;
+
+    return `
+      <div class="preview-tile-feature-card">
+        <div class="tile-card-head">
+          <span>HA Tile-Card &mdash; Feature-Regler</span>
+        </div>
+        <div class="tile-card-shell" style="${shellStyle}">
+          <div class="tile-card-content">
+            <div class="tile-icon-circle" style="--tile-color: ${hatgEscape(tileColor)};">
+              <ha-icon icon="mdi:lightbulb"></ha-icon>
+            </div>
+            <div class="tile-card-info">
+              <span class="tile-card-primary" style="color: ${hatgEscape(textColor)};">Tile Licht</span>
+              <span class="tile-card-secondary" style="color: ${hatgEscape(textColor)};">39&nbsp;%</span>
+            </div>
+          </div>
+          <div class="tile-feature-row" style="--feature-color: ${hatgEscape(tileColor)};">
+            <span class="tile-feature-slider"><span class="tile-feature-fill" style="width: 39%;"></span></span>
+          </div>
+          <div class="tile-feature-row" style="--feature-color: ${hatgEscape(tileColor)};">
+            <span class="tile-feature-gradient"></span>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  renderPreviewGaugeCard() {
+    const values = this.currentValues();
+    const bg = values["card-background-color"] || values["ha-card-background"] || "#1c1c1e";
+    const borderColor = values["ha-card-border-color"] || "rgba(0,0,0,.12)";
+    const borderWidth = values["ha-card-border-width"] || "1px";
+    const borderRadius = values["ha-card-border-radius"] || "12px";
+    const boxShadow = values["ha-card-box-shadow"] || "none";
+    const textColor = values["primary-text-color"] || "#e6eaf1";
+    const baseTrack = values["primary-background-color"] || "#0b111a";
+    const needleStroke = bg;
+    const green = values["success-color"] || "#34c759";
+    const yellow = values["warning-color"] || "#ffcc00";
+    const red = values["error-color"] || "#ff3b30";
+
+    const shellStyle = `background: ${hatgEscape(bg)}; border-radius: ${hatgEscape(borderRadius)}; border: ${hatgEscape(borderWidth)} solid ${hatgEscape(borderColor)}; box-shadow: ${hatgEscape(boxShadow)};`;
+
+    const point = (deg) => {
+      const rad = (deg * Math.PI) / 180;
+      return [-40 * Math.cos(rad), -40 * Math.sin(rad)];
+    };
+    const arcPath = (a, b) => {
+      const [x1, y1] = point(a);
+      const [x2, y2] = point(b);
+      return `M ${x1.toFixed(2)} ${y1.toFixed(2)} A 40 40 0 0 1 ${x2.toFixed(2)} ${y2.toFixed(2)}`;
+    };
+    const value = 65;
+    const needleAngle = (value / 100) * 180;
+
+    return `
+      <div class="preview-gauge-card">
+        <div class="tile-card-head">
+          <span>HA Gauge-Karte</span>
+        </div>
+        <div class="tile-card-shell gauge-card-shell" style="${shellStyle}">
+          <svg class="gauge-svg" viewBox="-50 -50 100 55">
+            <path class="gauge-base" d="M -40 0 A 40 40 0 0 1 40 0" stroke="${hatgEscape(baseTrack)}"></path>
+            <path d="${arcPath(0, 90)}" stroke="${hatgEscape(green)}"></path>
+            <path d="${arcPath(90, 135)}" stroke="${hatgEscape(yellow)}"></path>
+            <path d="${arcPath(135, 180)}" stroke="${hatgEscape(red)}"></path>
+            <path class="gauge-needle" d="M -34,-3 L -40,-1 A 1,1,0,0,0,-40,1 L -34,3 A 2,2,0,0,0,-34,-3 Z" transform="rotate(${needleAngle})" fill="${hatgEscape(textColor)}" stroke="${hatgEscape(needleStroke)}"></path>
+          </svg>
+          <div class="gauge-value" style="color: ${hatgEscape(textColor)};">65&nbsp;%</div>
+          <div class="gauge-title" style="color: ${hatgEscape(textColor)};">Gauge Karte</div>
+        </div>
+      </div>`;
+  }
+
+  renderPreviewHistoryGraphCard() {
+    const values = this.currentValues();
+    const bg = values["card-background-color"] || values["ha-card-background"] || "#1c1c1e";
+    const borderColor = values["ha-card-border-color"] || "rgba(0,0,0,.12)";
+    const borderWidth = values["ha-card-border-width"] || "1px";
+    const borderRadius = values["ha-card-border-radius"] || "12px";
+    const boxShadow = values["ha-card-box-shadow"] || "none";
+    const textColor = values["primary-text-color"] || "#e6eaf1";
+    const mutedColor = values["secondary-text-color"] || "#8e8e93";
+    const onColor = values["state-light-on-color"] || values["state-light-active-color"] || values["state-active-color"] || "#4cd964";
+    const offColor = values["state-inactive-color"] || "#8e8e93";
+    const offLabelColor = hatgReadableTextColor(offColor);
+
+    const shellStyle = `background: ${hatgEscape(bg)}; border-radius: ${hatgEscape(borderRadius)}; border: ${hatgEscape(borderWidth)} solid ${hatgEscape(borderColor)}; box-shadow: ${hatgEscape(boxShadow)};`;
+    const segments = [
+      { pct: 4, on: true },
+      { pct: 42, on: false },
+      { pct: 4, on: true },
+      { pct: 50, on: false },
+    ];
+    const segmentMarkup = segments
+      .map((s) => {
+        const color = s.on ? onColor : offColor;
+        const label = s.on ? "" : `<span style="color: ${hatgEscape(offLabelColor)};">Aus</span>`;
+        return `<span class="history-segment" style="width: ${s.pct}%; background: ${hatgEscape(color)};">${label}</span>`;
+      })
+      .join("");
+
+    return `
+      <div class="preview-history-card">
+        <div class="tile-card-head">
+          <span>HA History-Graph-Karte</span>
+        </div>
+        <div class="tile-card-shell history-card-shell" style="${shellStyle}">
+          <div class="history-card-header" style="color: ${hatgEscape(textColor)};">
+            <span>History Graph</span>
+            <ha-icon icon="mdi:chevron-right"></ha-icon>
+          </div>
+          <div class="history-card-row">
+            <span class="history-card-name" style="color: ${hatgEscape(textColor)};">Kellerlicht</span>
+            <span class="history-card-bar">${segmentMarkup}</span>
+          </div>
+          <div class="history-card-axis" style="color: ${hatgEscape(mutedColor)};">
+            <span>02:00</span><span>04:00</span><span>06:00</span><span>08:00</span><span>10:00</span><span>12:00</span>
+          </div>
+        </div>
       </div>`;
   }
 
   renderPreview() {
-    const darkActive = this._state.previewMode === "dark";
-    const room = HATG_PREVIEW_ROOMS.find((r) => r.id === this._state.previewRoom) || HATG_PREVIEW_ROOMS[0];
-    const sidebarOpen = this._state.previewSidebarOpen;
     return `
       <aside class="preview-panel ${this._state.settingsOpen ? "menu-open" : ""} ${this._state.mobilePreviewOpen ? "mobile-open" : ""}">
         <div class="preview-header">
@@ -5005,58 +4730,14 @@ class HATGPanel extends HTMLElement {
           ${this.renderPreviewSourceToggle()}
         </div>
 
-        <div class="phone-frame" data-phone-preview>
-          <div class="phone-screen">
-            <div class="phone-status">
-              <span>09:41</span>
-              <span class="phone-island"></span>
-              <span class="status-icons">● ◒ ▰</span>
-            </div>
-
-            <div class="phone-appbar">
-              <button type="button" class="phone-icon-btn" data-preview-sidebar-toggle aria-label="Menü">
-                <ha-icon icon="mdi:menu"></ha-icon>
-              </button>
-              <strong>${room.label}</strong>
-              <button type="button" class="phone-icon-btn" data-preview-overflow aria-label="Optionen">
-                <ha-icon icon="mdi:dots-vertical"></ha-icon>
-              </button>
-            </div>
-
-            <div class="preview-cards">
-              ${room.cards.map((card) => this.renderPreviewCard(card)).join("")}
-            </div>
-
-            <nav class="phone-nav">
-              ${HATG_PREVIEW_ROOMS.map(
-                (r) => `
-                <button type="button" class="${r.id === room.id ? "active" : ""}" data-preview-room="${r.id}">
-                  <ha-icon icon="${r.icon}"></ha-icon>
-                  <small>${r.label}</small>
-                </button>`
-              ).join("")}
-            </nav>
-
-            <div class="phone-sidebar ${sidebarOpen ? "open" : ""}">
-              <div class="phone-sidebar-head">
-                <ha-icon icon="mdi:palette-swatch"></ha-icon>
-                <strong>Home Assistant</strong>
-              </div>
-              ${HATG_PREVIEW_ROOMS.map(
-                (r) => `
-                <button type="button" class="phone-sidebar-item ${r.id === room.id ? "active" : ""}" data-preview-room="${r.id}">
-                  <ha-icon icon="${r.icon}"></ha-icon>
-                  <span>${r.label}</span>
-                </button>`
-              ).join("")}
-              <button type="button" class="phone-sidebar-item" data-preview-sidebar-toggle>
-                <ha-icon icon="mdi:cog-outline"></ha-icon>
-                <span>Einstellungen</span>
-              </button>
-            </div>
-            <div class="phone-sidebar-scrim ${sidebarOpen ? "show" : ""}" data-preview-sidebar-toggle></div>
-          </div>
-        </div>
+        ${this.renderPreviewColorMenu()}
+        ${this.renderPreviewFontMenu()}
+        ${this.renderPreviewTileCard()}
+        ${this.renderPreviewEntitiesCard()}
+        ${this.renderPreviewSensorCard()}
+        ${this.renderPreviewTileFeatureCard()}
+        ${this.renderPreviewGaugeCard()}
+        ${this.renderPreviewHistoryGraphCard()}
       </aside>`;
   }
 
@@ -5088,7 +4769,6 @@ class HATGPanel extends HTMLElement {
       try {
         el.setSelectionRange(info.selectionStart, info.selectionEnd);
       } catch (e) {
-        /* not a text-selectable input, ignore */
       }
     }
   }
@@ -5102,11 +4782,6 @@ class HATGPanel extends HTMLElement {
           display: block;
           min-height: 100vh;
           font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
-          /* v0.4.48: Enrico - "das grün ist von der leserlichkeit besser
-             als blau. kannst du alles auf grün umstellen." Der Name der
-             Variable blieb "--hatg-blue" (um nicht jede Referenz umbenennen
-             zu muessen), der Wert selbst ist jetzt gruen, passend zum
-             Demo/HA-Live-Umschalter (#38c76c/#1f9e52). */
           --hatg-blue: #1f9e52;
           --hatg-bg-0: #23262e;
           --hatg-bg-1: #262932;
@@ -5143,9 +4818,6 @@ class HATGPanel extends HTMLElement {
           box-shadow: var(--hatg-click-shadow);
         }
         .app button:hover, .app select:hover { box-shadow: var(--hatg-click-shadow-hover); }
-        .phone-screen button, .phone-screen input, .phone-screen select, .phone-screen textarea {
-          box-shadow: none;
-        }
         button { color: inherit; }
 
         .app {
@@ -5193,33 +4865,12 @@ class HATGPanel extends HTMLElement {
 
         .sidebar { grid-column: 1; grid-row: 2; padding: 14px 10px; border-right: 1px solid var(--hatg-border); background: rgba(127, 140, 160, .04); overflow-y: auto; }
         .nav-list { display: grid; gap: 4px; }
-        .nav-item { min-height: 42px; width: 100%; border: 1px solid transparent; border-radius: 12px; padding: 0 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; color: var(--hatg-muted); background: transparent; text-align: left; }
-        .nav-item:hover { color: var(--hatg-text); background: rgba(127, 140, 160, .08); }
+        .nav-item { min-height: 42px; width: 100%; border: 1px solid transparent; border-radius: 12px; padding: 0 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; color: var(--hatg-text); background: transparent; text-align: left; }
+        .nav-item:hover { background: rgba(127, 140, 160, .08); }
         .nav-item.active { color: var(--hatg-text); border-color: rgba(31, 158, 82,.3); background: linear-gradient(135deg, rgba(31, 158, 82,.35), rgba(31, 158, 82,.1)); }
         .nav-item ha-icon { --mdc-icon-size: 16px; color: #fff; }
-        /* v0.1.5: Enrico - "bitte alle menüeinträge auf des selbe design
-           also farbe größe schriftart wie in dem bubble icon." Vorher war
-           die Schrift der FLACHEN Top-Level-Eintraege (Start, Grundfarben &
-           Text, die 4 Tools-Eintraege) mit font-weight 540 duenner als die
-           Gruppen-Ueberschriften (650) - jetzt einheitlich 650 ueberall. */
         .nav-item span { font-size: 13px; font-weight: 650; }
         .nav-icon-badge { flex: 0 0 26px; width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; box-shadow: 0 2px 5px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.25); }
-        /* v0.4.52: Enrico - "die icons in HA bubble und mushromm sind vom
-           style her anders. alle haben weise textfarbe und nicht schwarz und
-           das was weiß ist ist bei den anderen auch kleiner." Bug: die obige
-           Regel ".nav-item ha-icon { color: #fff; --mdc-icon-size: 16px; }"
-           galt nur fuer <button class="nav-item">-Elemente (Start,
-           Grundfarben & Text, sowie die 4 Tools-Eintraege). Die drei
-           einklappbaren Gruppen-Ueberschriften (HA-Grundgerüst, Bubble Card,
-           Mushroom) nutzen aber <button class="nav-group-heading"> statt
-           "nav-item" (siehe renderGroupHeading()) - obwohl sie densel Element
-           ".nav-icon-badge ha-icon" fuer ihr farbiges Icon-Badge verwenden,
-           griff die Weiss/16px-Regel dort nie. Das Icon fiel dadurch auf
-           die Standardgroesse/-farbe von ha-icon zurueck (dunkler, groesser)
-           statt wie ueberall sonst weiss und klein zu erscheinen. Fix: eine
-           auf ".nav-icon-badge" selbst bezogene Regel (statt auf den
-           Elterntyp "nav-item") deckt jetzt beide Faelle gleichzeitig ab,
-           ohne die bestehende Regel zu entfernen. */
         .nav-icon-badge ha-icon { --mdc-icon-size: 16px; color: #fff; }
         .nav-group-heading { display: flex; align-items: center; width: 100%; gap: 10px; padding: 8px 12px 8px; margin-top: 6px; color: var(--hatg-text); border: 0; background: transparent; cursor: pointer; text-align: left; border-radius: 10px; }
         .nav-group-heading:hover { background: rgba(127, 140, 160, .08); }
@@ -5229,47 +4880,9 @@ class HATGPanel extends HTMLElement {
         .nav-group-heading[aria-expanded="true"] .nav-group-chevron { transform: rotate(180deg); }
         .nav-group-heading-plain { padding: 12px 12px 4px; margin-top: 10px; border-top: 1px solid var(--hatg-border); font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--hatg-muted); cursor: default; }
         .nav-group-heading-plain:hover { background: transparent; }
-        /* v0.1.5: Enrico - "größe" soll auch fuer die Unterordner-Zeile
-           gelten, nicht nur Schrift/Icon-Farbe - vorher 34px (kompakter als
-           Top-Level-Reiter mit 42px), damit das 20px-Badge (siehe unten)
-           reinpasst. Jetzt 42px wie ueberall, passend zum jetzt wieder
-           26px grossen Badge. */
         .nav-subitem { min-height: 42px; padding-left: 20px; }
-        /* v0.1.4: Enrico - "die schrift ... in den untermenüs auf die
-           selbe schriftgröße und schriftfarbe wie ha Grundgerüst und
-           bubble. das bezieht sich auf alle einträge im menü." Vorher
-           12.5px/500 + gedimmte Muted-Farbe (nur Hauptreiter/Gruppen-
-           Ueberschriften waren voll deckend). Jetzt identisch zur Gruppen-
-           Ueberschrift: 13px/650, Farbe immer var(--hatg-text) statt
-           nur bei Hover/Active. */
         .nav-subitem span:last-child { font-size: 13px; font-weight: 650; }
         .nav-subitem { color: var(--hatg-text); }
-        /* v0.4.49: Enrico - "und bitte in den untermenüs auch icons davor
-           setzen." Ersetzt den bisherigen reinen Punkt durch ein kleines
-           mdi-Icon pro Unterordner (group.icon aus dem Manifest); die Farbe
-           folgt weiterhin currentColor, damit hover/active automatisch
-           mitziehen wie zuvor beim Punkt. */
-        /* v0.4.51: Enrico - "die icons in den menü unterpunkten nicht
-           sichtbar." Bug: die generische Regel ".nav-item ha-icon { color:
-           #fff; }" (fuer die farbigen Icon-Badges der Top-Level-Reiter) hat
-           wegen hoeherer CSS-Spezifitaet (1 Klasse + 1 Typ-Selektor) die
-           schwaechere ".nav-subitem-icon { color: currentColor; }" (nur 1
-           Klasse) ueberstimmt - Unterordner-Icons wurden dadurch weiss auf
-           weissem Grund unsichtbar (nur der aktive Zustand hatte mit 3
-           Klassen genug Spezifitaet und blieb sichtbar). Fix: eine
-           zusaetzliche Klasse im Selektor gibt der Farbregel jetzt genug
-           Spezifitaet, um zu gewinnen. */
-        /* v0.1.4: Enrico - "die hintergründe der icons vom hauptreiter
-           übernehmen. ha das homeassistant blau bubble rot und mush
-           grün." Unterordner-Icons stehen jetzt (wie Hauptreiter/Gruppen-
-           Ueberschrift) in einem farbigen ".nav-icon-badge", gespeist aus
-           hatgNavIconGradient(parentId).
-           v0.1.5: Enrico wollte danach auch die GROESSE exakt wie beim
-           Bubble-Icon ("alle menüeinträge auf des selbe design also
-           farbe größe schriftart wie in dem bubble icon") - die anfangs
-           kleinere 20px-Variante (".nav-icon-badge-sub") entfaellt daher
-           wieder, Unterordner nutzen jetzt genau dasselbe 26px-Badge wie
-           Gruppen-Ueberschrift/Top-Level-Reiter, keine Sondergroesse mehr. */
 
         .workspace { grid-column: 2; grid-row: 2; min-width: 0; padding: 34px 34px 64px; overflow: auto; scrollbar-gutter: stable; }
         .editor-section { width: min(980px, 100%); margin: 0 auto; }
@@ -5285,18 +4898,13 @@ class HATGPanel extends HTMLElement {
         .theme-name-field input { width: 100%; height: 44px; border: 1px solid var(--hatg-border); border-radius: 11px; padding: 0 14px; outline: none; color: var(--hatg-text); background: var(--hatg-field); }
 
         .section-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
-        /* v0.1.5: Enrico - "den button müssen wir noch nach unten
-           verschieben. am besten als header über accent color." Eigene
-           Zeile fuer den "Auswählen"-Button direkt ueber der Feldliste
-           (statt oben neben dem Light/Dark-Umschalter), auf allen Seiten
-           mit Feldliste. */
         .field-list-header { display: flex; justify-content: flex-end; margin-bottom: 10px; }
         .editor-switch { display: grid; grid-template-columns: 1fr 1fr; width: 120px; padding: 3px; border: 1px solid var(--hatg-border); border-radius: 999px; background: rgba(127, 140, 160, .08); }
         .editor-switch button { height: 28px; border: 0; border-radius: 999px; cursor: pointer; color: var(--hatg-muted); background: transparent; font-size: 11px; }
         .editor-switch button.active { color: #fff; background: linear-gradient(135deg, rgba(31,158,82,.75), rgba(31,158,82,.4)); }
         .preview-source-toggle { display: grid; grid-template-columns: 1fr 1fr; width: 140px; flex: 0 0 auto; padding: 3px; border: 1px solid var(--hatg-border); border-radius: 999px; background: rgba(127, 140, 160, .08); }
-        .preview-source-toggle button { height: 26px; border: 0; border-radius: 999px; cursor: pointer; color: var(--hatg-muted); background: transparent; font-size: 11px; }
-        .preview-source-toggle button.active { color: #fff; background: linear-gradient(135deg, #38c76c, #1f9e52); }
+        .preview-source-toggle button { height: 26px; border: 0; border-radius: 999px; cursor: pointer; color: var(--hatg-muted); background: transparent; font-size: 11px; transition: background .15s ease, color .15s ease; }
+        .preview-source-toggle button.active { font-weight: 600; }
         .ha-live-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 14px; }
         .select-toggle { display: flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border: 1px solid var(--hatg-border); border-radius: 999px; background: transparent; color: var(--hatg-muted); cursor: pointer; font-size: 11.5px; }
         .select-toggle ha-icon { --mdc-icon-size: 15px; }
@@ -5360,49 +4968,29 @@ class HATGPanel extends HTMLElement {
         .field-row { min-width: 0; display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 9px; }
         .field-row:hover { background: rgba(127,140,160,.07); }
         .field-row-wide { flex-direction: column; align-items: stretch; gap: 6px; }
-        .field-row-actions { display: flex; justify-content: flex-end; }
-        .select-checkbox, .select-checkbox-spacer { width: 16px; height: 16px; flex: 0 0 16px; }
+        .select-checkbox { width: 16px; height: 16px; flex: 0 0 16px; }
         .field-key { flex: 1; min-width: 0; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: var(--hatg-text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: flex; align-items: baseline; gap: 8px; }
-        /* Enrico: "die gruene schrift kraeftiger" - vorher #5fd991 (recht
-           blass/pastellig), jetzt ein saettigeres, kraeftigeres Gruen plus
-           etwas mehr Schriftgewicht fuer besseren Kontrast. */
         .field-section-tag { font-family: -apple-system, sans-serif; color: #1fae63; font-weight: 650; font-size: 10px; white-space: nowrap; }
         .field-status-tag { font-family: -apple-system, sans-serif; color: #9b6bff; font-size: 9.5px; font-weight: 650; white-space: nowrap; padding: 1px 7px; border-radius: 999px; background: rgba(155,107,255,.14); border: 1px solid rgba(155,107,255,.3); }
         .editing-surface-dark .field-status-tag { color: #c3a6ff; background: rgba(155,107,255,.16); border-color: rgba(155,107,255,.35); }
         .format-tag { font-family: -apple-system, sans-serif; color: var(--hatg-muted); font-size: 9px; padding: 1px 6px; border-radius: 999px; border: 1px solid var(--hatg-border); white-space: nowrap; }
         .format-switch { display: inline-flex; flex: 0 0 auto; gap: 2px; padding: 2px; border: 1px solid var(--hatg-border); border-radius: 999px; background: var(--hatg-field); }
-        /* v0.4.48: Enrico - "die schriftfarbe in den hex rgb und rgba pills
-           auf weiß umstellen." Vorher var(--hatg-muted) (blasses Grau,
-           schlecht lesbar) - jetzt var(--hatg-text), das im dunklen
-           App-Aussehen naturgemaess fast weiß ist und im hellen
-           App-Aussehen automatisch auf ein dunkles, lesbares Grau wechselt. */
         .format-switch-btn { border: 0; background: transparent; font-family: -apple-system, sans-serif; font-size: 9.5px; font-weight: 650; padding: 3px 7px; border-radius: 999px; cursor: pointer; color: var(--hatg-text); white-space: nowrap; }
         .format-switch-btn.active { background: var(--hatg-blue); color: #fff; }
         .editing-surface-dark .format-switch { background: #1b1e25; border-color: rgba(255,255,255,.08); }
         .editing-surface-dark .format-switch-btn { color: #FEFFFF; }
         .field-input.rgba-input-wrap { flex: 0 0 340px; }
-        /* Seit Slider-Entfernung nur noch Farbrad + ein Textfeld - dieselbe
-           Zeilenhoehe/Optik wie .color-input-wrap, nur etwas breiter fuer
-           den laengeren "rgba(r, g, b, a)"-Text. */
         .rgba-input-wrap { height: 38px; padding: 0 10px; }
         .rgba-raw-input { width: 100%; height: 30px; padding: 0 9px; border: 1px solid var(--hatg-border); border-radius: 8px; background: var(--hatg-field); text-transform: none; }
         .source-tag { font-family: -apple-system, sans-serif; font-size: 9px; padding: 2px 7px; border-radius: 999px; white-space: nowrap; border: 0; }
         .source-tag.auto { color: #5fbf7a; background: rgba(52,199,89,.12); }
         .source-tag.custom { color: #ffb15c; background: rgba(255,147,0,.14); cursor: pointer; display: inline-flex; align-items: center; gap: 3px; }
         .source-tag.custom ha-icon { --mdc-icon-size: 11px; }
-        /* Enrico: "3 spalten mit den icons fuer ha bubble und mushroom und
-           dahinter die farbklekse und eine sync button" - siehe
-           renderSyncTriad()/HATG_SYNC_TRIADS/syncTriad(). */
         .sync-triad { display: inline-flex; align-items: center; gap: 6px; padding: 0 8px; height: 38px; border: 1px solid var(--hatg-border); border-radius: 9px; background: var(--hatg-field); flex: 0 0 auto; }
         .sync-triad-chip { display: inline-flex; align-items: center; gap: 3px; }
         .sync-triad-chip ha-icon { --mdc-icon-size: 14px; color: var(--hatg-muted); }
         .sync-triad-dot { width: 11px; height: 11px; border-radius: 999px; border: 1px solid rgba(0,0,0,.15); flex: 0 0 auto; }
         .editing-surface-dark .sync-triad-dot { border-color: rgba(255,255,255,.25); }
-        /* v0.1.5: Enrico wollte fuer Bubble-only-Felder (kein Mushroom-
-           Gegenstueck, z. B. Rahmendicke) auch ein Sync-Widget - siehe
-           renderSyncPair()/HATG_SYNC_PAIRS. Bei nicht-Farbwerten (Breite)
-           gibt es keinen sinnvollen Farbklecks, deshalb hier ein reiner
-           Text-Chip statt des runden Punkts. */
         .sync-triad-value { font-size: 10.5px; font-weight: 600; color: var(--hatg-text); }
         .sync-triad-button { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border: 0; border-radius: 999px; background: rgba(52,199,89,.14); color: #1fae63; cursor: pointer; padding: 0; }
         .sync-triad-button ha-icon { --mdc-icon-size: 14px; }
@@ -5411,10 +4999,6 @@ class HATGPanel extends HTMLElement {
         .editing-surface-dark .sync-triad-button:hover { background: rgba(52,199,89,.3); }
         .field-input { flex: 0 0 200px; }
         .color-input-wrap { height: 38px; display: flex; align-items: center; gap: 8px; padding: 0 10px; border: 1px solid var(--hatg-border); border-radius: 9px; background: var(--hatg-field); }
-        /* color: initial, damit .native-color nicht versehentlich die per
-           .editing-surface-dark vererbte Textfarbe (#FEFFFF) uebernimmt -
-           fuer den nativen Farbwaehler selbst irrelevant, aber zur
-           Sicherheit explizit entkoppelt. */
         .native-color { width: 22px; height: 22px; flex: 0 0 22px; padding: 0; border: 0; border-radius: 50%; cursor: pointer; background: transparent; -webkit-appearance: none; appearance: none; box-shadow: var(--hatg-click-shadow); color: initial; }
         .native-color::-webkit-color-swatch-wrapper { padding: 0; border-radius: 50%; overflow: hidden; }
         .native-color::-webkit-color-swatch { border: 1px solid rgba(127,140,160,.4); border-radius: 50%; }
@@ -5437,30 +5021,10 @@ class HATGPanel extends HTMLElement {
         .search-field ha-icon { --mdc-icon-size: 18px; color: var(--hatg-muted); }
         .search-field input { flex: 1; border: 0; outline: 0; background: transparent; color: var(--hatg-text); font-size: 13px; }
 
-        .section-divider { height: 1px; margin: 30px 0; background: var(--hatg-border); }
-        .start-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-        .yaml-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
-        .action-card { min-height: 100px; border: 1px solid var(--hatg-border); border-radius: 14px; padding: 16px; display: grid; grid-template-columns: 42px 1fr auto; align-items: center; gap: 12px; cursor: pointer; text-align: left; background: var(--hatg-panel); }
-        .action-card.wide { grid-column: span 2; }
-        .action-card[disabled] { opacity: .6; cursor: wait; }
-        .action-icon.accent { border-color: rgba(31, 158, 82,.5); background: linear-gradient(135deg, rgba(31,158,82,.28), rgba(31,158,82,.1)); }
-        .action-card.small { min-height: 54px; grid-template-columns: 30px 1fr; }
-        .action-card:hover { border-color: rgba(31, 158, 82,.45); }
-        .action-icon { width: 40px; height: 40px; display: grid; place-items: center; border: 1px solid rgba(31, 158, 82,.25); border-radius: 12px; color: #2fae63; background: rgba(31, 158, 82,.12); }
-        .action-card.small .action-icon { width: 28px; height: 28px; border-radius: 9px; }
-        .action-copy strong { font-size: 13px; }
-        .action-copy small { color: var(--hatg-muted); font-size: 11px; }
-        .action-arrow { --mdc-icon-size: 18px; color: var(--hatg-muted); }
-
-
-        .yaml-output { width: 100%; min-height: 420px; border: 1px solid var(--hatg-border); border-radius: 12px; padding: 14px; color: var(--hatg-text-dim); background: var(--hatg-field); font-family: ui-monospace, monospace; font-size: 11.5px; line-height: 1.55; resize: vertical; }
-
         .code-editor-wrap { position: relative; width: 100%; }
         .code-editor-wrap textarea.code-editor-input { position: relative; z-index: 2; min-height: 340px; background: transparent !important; color: transparent !important; -webkit-text-fill-color: transparent; caret-color: #ffffff; border-color: transparent !important; }
-        .code-editor-wrap textarea.yaml-output.code-editor-input { min-height: 460px; }
         .code-editor-wrap textarea.code-editor-input::selection { background: rgba(97,175,239,.35); }
         .code-editor-highlight { position: absolute; inset: 0; z-index: 1; margin: 0; pointer-events: none; overflow: hidden; box-sizing: border-box; background: #1e2028; border: 1px solid rgba(255,255,255,.08); border-radius: 9px; color: #d3d8e0; white-space: pre-wrap; word-break: normal; overflow-wrap: break-word; padding: 10px; font-family: ui-monospace, monospace; font-size: 11.5px; line-height: 1.5; }
-        .code-editor-wrap-yaml .code-editor-highlight { padding: 14px; line-height: 1.55; }
         .code-editor-highlight code { font-family: inherit; white-space: inherit; }
         .tok-comment { color: #7b8496; font-style: italic; }
         .tok-string { color: #98c379; }
@@ -5472,11 +5036,6 @@ class HATGPanel extends HTMLElement {
         .code-view { display: grid; gap: 12px; }
         .code-section-card { border: 1px solid var(--hatg-border); border-radius: 14px; padding: 12px 14px; background: var(--hatg-panel); }
         .code-section-title { font-family: -apple-system, sans-serif; font-size: 10.5px; font-weight: 650; color: #5fbf7a; opacity: .85; text-transform: uppercase; letter-spacing: .02em; margin-bottom: 6px; }
-        /* v0.1.5: die alten Klartext-Zeilen (".code-line"/".code-key"/
-           ".code-value") und der Farbpunkt-Picker (".code-dot") entfallen -
-           renderCodeEditor() nutzt jetzt dieselbe ".code-editor-wrap"/
-           ".code-editor-highlight"-Komponente wie card-mod-card-yaml
-           (siehe Regeln weiter oben), keine eigenen Regeln mehr noetig. */
 
         .ha-live-toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
         .ha-live-toolbar .modal-btn { display: inline-flex; align-items: center; gap: 6px; }
@@ -5497,73 +5056,93 @@ class HATGPanel extends HTMLElement {
         .ha-live-phone-frame.device-tablet .ha-live-frame { border-radius: 14px; }
         .ha-live-phone-frame.device-desktop .ha-live-frame { border-radius: 8px; }
 
-        .preview-panel { grid-column: 3; grid-row: 2; padding: 26px 20px; border-left: 1px solid var(--hatg-border); background: rgba(127,140,160,.04); overflow: auto; transition: padding-top .18s ease; }
+        .preview-panel { grid-column: 3; grid-row: 2; padding: 26px 20px; border-left: 1px solid var(--hatg-border); background: var(--preview-page-bg, rgba(127,140,160,.04)); overflow: auto; transition: padding-top .18s ease, background .15s ease; }
+        .preview-tile-card { margin-top: 4px; }
+        .tile-card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 10px; font-size: 12.5px; font-weight: 650; color: var(--hatg-text); }
+        .tile-card-head small { font-size: 10.5px; font-weight: 500; color: var(--hatg-muted); }
+        .tile-card-shell { box-sizing: border-box; overflow: hidden; transition: background .15s ease, border-color .15s ease, border-radius .15s ease, box-shadow .15s ease; }
+        .tile-card-content { display: flex; align-items: center; gap: 10px; padding: 10px; min-height: 56px; box-sizing: border-box; }
+        .tile-icon-circle { position: relative; flex: 0 0 auto; width: 36px; height: 36px; border-radius: 999px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .tile-icon-circle::before { content: ""; position: absolute; inset: 0; background: var(--tile-color); opacity: .2; }
+        .tile-icon-circle ha-icon { position: relative; --mdc-icon-size: 24px; color: var(--tile-color); }
+        .tile-card-info { display: flex; flex-direction: column; min-width: 0; gap: 2px; }
+        .tile-card-primary { font-size: 14px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .tile-card-secondary { font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        .preview-entities-card { margin-top: 20px; }
+        .toggle-row-content { display: flex; align-items: center; gap: 12px; padding: 10px 16px; min-height: 56px; box-sizing: border-box; }
+        .toggle-row-icon { flex: 0 0 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
+        .toggle-row-icon ha-icon { --mdc-icon-size: 24px; }
+        .toggle-row-name { flex: 1 1 auto; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .toggle-row-value { flex: 0 0 auto; font-size: 12.5px; min-width: 34px; text-align: right; }
+        .preview-ha-switch { flex: 0 0 auto; display: inline-flex; align-items: center; }
+        .preview-ha-switch .switch-track { position: relative; width: 48px; height: 24px; border-radius: 999px; background: var(--switch-track); border: 1px solid var(--switch-track-border); box-sizing: border-box; transition: background .15s ease, border-color .15s ease; }
+        .preview-ha-switch .switch-thumb { position: absolute; top: 50%; right: 3px; transform: translateY(-50%); width: 18px; height: 18px; border-radius: 50%; background: var(--switch-thumb); border: 1px solid var(--switch-thumb-border); box-shadow: 0 1px 3px rgba(0,0,0,.3); transition: background .15s ease, border-color .15s ease; }
+        .preview-ha-switch:not(.checked) .switch-thumb { right: auto; left: 3px; }
+        .preview-ha-slider { flex: 1 1 auto; display: flex; align-items: center; min-width: 0; margin: 0 8px; }
+        .preview-ha-slider .ha-slider-track { position: relative; width: 100%; height: 4px; border-radius: 999px; background: var(--slider-track); }
+        .preview-ha-slider .ha-slider-fill { position: absolute; top: 0; left: 0; height: 100%; width: 65%; border-radius: 999px; background: var(--slider-fill); }
+        .preview-ha-slider .ha-slider-thumb { position: absolute; top: 50%; left: 65%; transform: translate(-50%, -50%); width: 16px; height: 16px; border-radius: 50%; background: var(--slider-fill); box-shadow: 0 1px 3px rgba(0,0,0,.3); }
+
+        .preview-sensor-card { margin-top: 20px; }
+        .sensor-card-header { padding: 10px 16px 6px; box-sizing: border-box; }
+        .sensor-card-name { font-size: 15px; font-weight: 500; line-height: 32px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .sensor-card-value { font-size: 30px; line-height: 1.1; margin-top: -4px; }
+        .sensor-card-unit { font-size: 15px; }
+        .sensor-card-graph { line-height: 0; }
+        .sensor-card-graph svg { display: block; width: 100%; height: 44px; }
+
+        .preview-tile-feature-card { margin-top: 20px; }
+        .tile-feature-row { padding: 0 12px 10px; box-sizing: border-box; }
+        .tile-feature-row:first-of-type { padding-top: 2px; }
+        .tile-feature-slider { position: relative; display: block; width: 100%; height: 32px; border-radius: 10px; background: var(--feature-color); opacity: .2; overflow: hidden; }
+        .tile-feature-row .tile-feature-fill { position: absolute; top: 0; left: 0; height: 100%; border-radius: 10px; background: var(--feature-color); opacity: 1; }
+        .tile-feature-gradient { display: block; width: 100%; height: 32px; border-radius: 10px; background: linear-gradient(90deg, var(--feature-color), color-mix(in srgb, var(--feature-color) 25%, white)); }
+
+        .preview-gauge-card { margin-top: 20px; }
+        .gauge-card-shell { display: flex; flex-direction: column; align-items: center; padding: 14px 16px; box-sizing: border-box; }
+        .gauge-svg { width: 100%; max-width: 220px; }
+        .gauge-base { fill: none; stroke-width: 12; }
+        .gauge-svg path:not(.gauge-base):not(.gauge-needle) { fill: none; stroke-width: 12; }
+        .gauge-needle { stroke-width: 1; }
+        .gauge-value { font-size: 22px; margin-top: -34px; }
+        .gauge-title { font-size: 13px; margin-top: 6px; text-align: center; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        .preview-history-card { margin-top: 20px; }
+        .history-card-shell { padding: 12px 16px 14px; box-sizing: border-box; }
+        .history-card-header { display: flex; align-items: center; justify-content: space-between; font-size: 17px; font-weight: 500; margin-bottom: 14px; }
+        .history-card-header ha-icon { --mdc-icon-size: 20px; }
+        .history-card-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+        .history-card-name { flex: 0 0 auto; font-size: 12px; max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .history-card-bar { flex: 1 1 auto; display: flex; height: 20px; border-radius: 4px; overflow: hidden; min-width: 0; }
+        .history-segment { display: flex; align-items: center; justify-content: center; font-size: 10.5px; font-weight: 600; overflow: hidden; white-space: nowrap; }
+        .history-card-axis { display: flex; justify-content: space-between; font-size: 10.5px; margin-top: 4px; padding-left: 100px; }
+
+        .preview-color-menu { margin-bottom: 20px; }
+        .color-menu-header { display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 14px; cursor: pointer; text-align: left; box-sizing: border-box; transition: filter .15s ease; }
+        .color-menu-header:hover { filter: brightness(1.08); }
+        .color-menu-icon { flex: 0 0 36px; width: 36px; height: 36px; border-radius: 999px; display: flex; align-items: center; justify-content: center; background: rgba(127,140,160,.16); color: var(--hatg-text); }
+        .color-menu-icon ha-icon { --mdc-icon-size: 20px; }
+        .color-menu-info { flex: 1 1 auto; display: flex; flex-direction: column; min-width: 0; gap: 1px; }
+        .color-menu-primary { font-size: 14px; font-weight: 600; color: var(--hatg-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .color-menu-secondary { font-size: 12px; color: var(--hatg-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .color-menu-chevron { --mdc-icon-size: 20px; color: var(--hatg-muted); transition: transform .15s ease; flex: 0 0 auto; }
+        .color-menu-header[aria-expanded="true"] .color-menu-chevron { transform: rotate(180deg); }
+        .color-menu-list { margin-top: 6px; padding: 6px 4px; box-sizing: border-box; max-height: 260px; overflow-y: auto; }
+        .color-menu-row { display: flex; align-items: center; gap: 10px; padding: 5px 10px; border-radius: 8px; }
+        .color-menu-row:hover { background: rgba(127,140,160,.08); }
+        .color-menu-dot { flex: 0 0 auto; width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(0,0,0,.18); box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+        .color-menu-code { font-size: 12px; font-family: "SFMono-Regular", Menlo, Consolas, monospace; color: var(--hatg-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        .font-menu-list { display: flex; flex-direction: column; }
+        .font-menu-row { display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; border-bottom: 1px solid; }
+        .font-menu-row:last-child { border-bottom: 0; }
+        .font-menu-row:hover { background: rgba(127,140,160,.08); }
+        .font-menu-sample { color: var(--hatg-text); }
+        .font-menu-code { font-size: 11px; font-family: "SFMono-Regular", Menlo, Consolas, monospace; color: var(--hatg-muted); }
         .preview-panel.menu-open { padding-top: 196px; }
         .preview-header { display: flex; align-items: flex-end; justify-content: space-between; gap: 14px; margin-bottom: 20px; }
         .preview-header h2 { font-size: 18px; }
-        .mode-switch { display: grid; grid-template-columns: 1fr 1fr; width: 140px; padding: 3px; border: 1px solid var(--hatg-border); border-radius: 999px; background: rgba(127,140,160,.08); }
-        .mode-switch button { height: 30px; border: 0; border-radius: 999px; cursor: pointer; color: var(--hatg-muted); background: transparent; font-size: 11px; }
-        .mode-switch button.active { color: #fff; background: linear-gradient(135deg, rgba(31,158,82,.65), rgba(31,158,82,.32)); }
-
-        .phone-frame { width: min(300px, 100%); aspect-ratio: 9 / 18.5; margin: 0 auto; padding: 8px; border: 1px solid rgba(127,140,160,.35); border-radius: 40px; background: linear-gradient(145deg, #383b43, #0b0c10 38%, #353841); }
-        .phone-screen { --preview-accent: #2f7bff; --preview-bg: #0b111a; --preview-card: #121826; --preview-text: #e6eaf1; --preview-status-on: #4cd964; --preview-status-off: #8e8e93; --preview-status-warning: #ff9500; --preview-status-error: #ff3b30; --preview-switch-on: #2f7bff; --preview-slider-fill: #2f7bff; position: relative; height: 100%; overflow: hidden; display: flex; flex-direction: column; border-radius: 32px; color: var(--preview-text); background: var(--preview-bg); }
-        .phone-status { height: 30px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 0 15px; font-size: 9px; font-weight: 700; }
-        .phone-island { width: 60px; height: 18px; border-radius: 999px; background: #020306; }
-        .status-icons { justify-self: end; font-size: 7px; letter-spacing: 2px; }
-        .phone-appbar { height: 48px; display: grid; grid-template-columns: 24px 1fr 24px; align-items: center; padding: 0 14px; }
-        .phone-appbar strong { font-size: 13px; }
-        .phone-icon-btn { width: 24px; height: 24px; padding: 0; border: 0; background: transparent; color: inherit; display: grid; place-items: center; cursor: pointer; }
-        .phone-icon-btn ha-icon { --mdc-icon-size: 17px; }
-        .phone-icon-btn:last-child { justify-self: end; }
-        .preview-cards { padding: 4px 12px 70px; display: grid; gap: 11px; overflow: auto; }
-        .ha-preview-card { border: 1px solid color-mix(in srgb, var(--preview-text) 10%, transparent); border-radius: 15px; color: var(--preview-text); background: var(--preview-card); box-shadow: 0 2px 10px rgba(0,0,0,.16); }
-        .light-card, .media-card, .sensor-card, .lock-card { min-height: 82px; padding: 13px; display: grid; grid-template-columns: 38px 1fr auto; align-items: center; gap: 10px; }
-        .entity-icon { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%; color: var(--preview-accent); background: color-mix(in srgb, var(--preview-accent) 16%, transparent); }
-        .entity-icon ha-icon { --mdc-icon-size: 20px; }
-        .entity-copy { min-width: 0; display: grid; gap: 4px; }
-        .entity-copy strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; }
-        .entity-copy small { color: color-mix(in srgb, var(--preview-text) 58%, transparent); font-size: 9px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .ha-toggle { width: 34px; height: 20px; padding: 2px; display: flex; justify-content: flex-end; border-radius: 999px; background: var(--preview-switch-on); transition: background .15s ease; }
-        .ha-toggle.off { justify-content: flex-start; background: color-mix(in srgb, var(--preview-text) 20%, transparent); }
-        .ha-toggle i { width: 16px; height: 16px; border-radius: 50%; background: #fff; }
-        .climate-card, .cover-card { min-height: 140px; padding: 14px 12px 12px; }
-        .climate-topline { display: grid; grid-template-columns: 38px 1fr auto; align-items: center; gap: 10px; }
-        .temperature { font-size: 18px; font-weight: 500; }
-        .temperature small { font-size: 9px; color: color-mix(in srgb, var(--preview-text) 68%, transparent); }
-        .temperature-graph { width: 100%; height: 52px; margin-top: 9px; overflow: visible; }
-        .temperature-graph path { fill: none; stroke: var(--preview-accent); stroke-width: 2.2; }
-        .temperature-graph circle { fill: var(--preview-accent); }
-        .media-controls { display: flex; gap: 6px; color: var(--preview-accent); }
-        .media-controls ha-icon { --mdc-icon-size: 16px; }
-        .sensor-value { font-size: 15px; font-weight: 600; }
-        .sensor-value small { font-size: 9px; margin-left: 1px; color: color-mix(in srgb, var(--preview-text) 68%, transparent); }
-        .cover-controls { display: flex; justify-content: space-around; margin-top: 12px; padding-top: 10px; border-top: 1px solid color-mix(in srgb, var(--preview-text) 10%, transparent); }
-        .cover-controls span { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: color-mix(in srgb, var(--preview-accent) 14%, transparent); color: var(--preview-accent); }
-        .cover-controls ha-icon { --mdc-icon-size: 15px; }
-        .lock-pill { font-size: 9px; padding: 4px 9px; border-radius: 999px; background: color-mix(in srgb, var(--preview-text) 12%, transparent); color: color-mix(in srgb, var(--preview-text) 75%, transparent); white-space: nowrap; }
-        .lock-pill.locked { background: color-mix(in srgb, var(--preview-accent) 16%, transparent); color: var(--preview-accent); }
-        .preview-slider-track { position: relative; margin-top: 14px; height: 6px; border-radius: 999px; background: color-mix(in srgb, var(--preview-text) 14%, transparent); }
-        .preview-slider-fill { position: relative; height: 100%; border-radius: 999px; background: var(--preview-slider-fill); }
-        .preview-slider-fill::after { content: ""; position: absolute; top: 50%; right: -1px; width: 14px; height: 14px; border-radius: 50%; background: var(--preview-slider-fill); border: 2px solid var(--preview-card); transform: translate(50%, -50%); box-shadow: 0 1px 3px rgba(0,0,0,.35); }
-        .status-row { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; }
-        .status-chip { font-size: 9px; padding: 4px 9px; border-radius: 999px; display: inline-flex; align-items: center; gap: 5px; color: var(--chip-color); background: color-mix(in srgb, var(--chip-color) 16%, transparent); white-space: nowrap; }
-        .status-chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--chip-color); }
-        .phone-nav { position: absolute; left: 0; right: 0; bottom: 0; min-height: 58px; padding: 7px 4px 9px; display: grid; grid-template-columns: repeat(5, 1fr); border-top: 1px solid color-mix(in srgb, var(--preview-text) 9%, transparent); background: color-mix(in srgb, var(--preview-bg) 92%, transparent); }
-        .phone-nav button { display: grid; place-items: center; align-content: center; gap: 3px; color: color-mix(in srgb, var(--preview-text) 55%, transparent); background: transparent; border: 0; cursor: pointer; padding: 2px; }
-        .phone-nav button.active { color: var(--preview-accent); }
-        .phone-nav ha-icon { --mdc-icon-size: 15px; }
-        .phone-nav small { font-size: 6.4px; }
-
-        .phone-sidebar { position: absolute; top: 0; left: 0; bottom: 0; width: 72%; max-width: 220px; padding: 20px 14px; display: grid; gap: 4px; align-content: start; background: var(--preview-bg); border-right: 1px solid color-mix(in srgb, var(--preview-text) 10%, transparent); transform: translateX(-105%); transition: transform .22s ease; z-index: 6; }
-        .phone-sidebar.open { transform: translateX(0); }
-        .phone-sidebar-head { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; color: var(--preview-accent); }
-        .phone-sidebar-head strong { font-size: 12px; color: var(--preview-text); }
-        .phone-sidebar-item { display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 8px; border: 0; border-radius: 9px; background: transparent; color: color-mix(in srgb, var(--preview-text) 70%, transparent); cursor: pointer; text-align: left; font-size: 11px; }
-        .phone-sidebar-item.active { background: color-mix(in srgb, var(--preview-accent) 14%, transparent); color: var(--preview-accent); }
-        .phone-sidebar-item ha-icon { --mdc-icon-size: 15px; }
-        .phone-sidebar-scrim { position: absolute; inset: 0; background: rgba(0,0,0,.35); opacity: 0; pointer-events: none; transition: opacity .2s ease; z-index: 5; }
-        .phone-sidebar-scrim.show { opacity: 1; pointer-events: auto; }
-
         .toast { position: fixed; left: 50%; bottom: 20px; z-index: 30; max-width: min(420px, calc(100vw - 32px)); padding: 11px 16px; border: 1px solid rgba(127,140,160,.3); border-radius: 11px; opacity: 0; transform: translate(-50%, 12px); pointer-events: none; color: #fff; background: rgba(22, 28, 39, .94); transition: .2s ease; font-size: 12px; }
         .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
@@ -5624,7 +5203,45 @@ class HATGPanel extends HTMLElement {
         .server-theme-confirm { flex: 0 0 auto; display: flex; gap: 6px; }
         .server-theme-confirm .modal-btn { height: 28px; padding: 0 10px; font-size: 11px; }
 
-        /* Responsive: Tablet - Vorschau wird zum ausklappbaren Panel */
+        .generator-card { border: 1px solid var(--hatg-border); border-radius: 16px; background: var(--hatg-field); padding: 18px; }
+        .generator-card-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
+        .generator-card-head ha-icon { flex: 0 0 auto; --mdc-icon-size: 22px; color: var(--hatg-blue); margin-top: 2px; }
+        .generator-card-head strong { display: block; font-size: 14px; margin-bottom: 4px; }
+        .generator-card-head p { margin: 0; font-size: 12px; color: var(--hatg-muted); line-height: 1.5; }
+        .generator-preview-backdrop {
+          display: grid; place-items: center; height: 150px; margin-bottom: 18px; padding: 20px;
+          border-radius: 14px; background: linear-gradient(135deg, #ff6b6b, #f7c94b 35%, #38c76c 65%, #2f7bff);
+          background-size: 220% 220%;
+        }
+        .generator-preview-card {
+          width: 100%; max-width: 240px; display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+          border: 1px solid rgba(255,255,255,.22); transition: background .12s ease, backdrop-filter .12s ease;
+        }
+        .generator-preview-card ha-icon { --mdc-icon-size: 22px; color: #fff; flex: 0 0 auto; }
+        .generator-preview-card span { font-size: 15px; font-weight: 600; color: #fff; }
+        .generator-control-row { display: grid; gap: 18px; }
+        @media (min-width: 620px) { .generator-control-row { grid-template-columns: 1fr 1fr; } }
+        .generator-control label { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 8px; font-size: 12.5px; color: var(--hatg-text-dim); font-weight: 600; }
+        .generator-control .generator-value { color: var(--hatg-blue); font-weight: 700; }
+        .generator-control input[type="range"] {
+          width: 100%; height: 20px; -webkit-appearance: none; appearance: none; background: transparent; cursor: pointer;
+        }
+        .generator-control input[type="range"]::-webkit-slider-runnable-track {
+          height: 6px; border-radius: 999px; background: var(--hatg-border);
+        }
+        .generator-control input[type="range"]::-webkit-slider-thumb {
+          -webkit-appearance: none; appearance: none; margin-top: -6px; width: 18px; height: 18px; border-radius: 50%;
+          background: linear-gradient(135deg, #38c76c, #1f9e52); border: 2px solid #fff; box-shadow: var(--hatg-click-shadow);
+        }
+        .generator-control input[type="range"]::-moz-range-track {
+          height: 6px; border-radius: 999px; background: var(--hatg-border);
+        }
+        .generator-control input[type="range"]::-moz-range-thumb {
+          width: 18px; height: 18px; border-radius: 50%; background: linear-gradient(135deg, #38c76c, #1f9e52);
+          border: 2px solid #fff; box-shadow: var(--hatg-click-shadow);
+        }
+        .generator-footnote { margin: 16px 0 0; font-size: 11px; color: var(--hatg-muted); line-height: 1.5; }
+
         @media (max-width: 1180px) {
           .app { grid-template-columns: 220px 1fr; }
           .mobile-preview-toggle { display: grid; }
@@ -5640,7 +5257,6 @@ class HATGPanel extends HTMLElement {
           .preview-panel.mobile-open { transform: translateX(0); }
         }
 
-        /* Responsive: Handy - Sidebar wird zum ausklappbaren Panel, 1 Spalte */
         @media (max-width: 760px) {
           .app { grid-template-columns: 1fr; grid-template-rows: 60px 1fr; }
           .brand { display: none; }
@@ -5729,12 +5345,6 @@ class HATGPanel extends HTMLElement {
     this.mountHaLiveIframe();
   }
 
-  // Die "HA Live"-Seite bettet das echte HA-Frontend per iframe ein. Da
-  // render() bei jeder Änderung shadowRoot.innerHTML komplett ersetzt,
-  // würde ein iframe direkt im HTML-Markup bei JEDEM Re-Render neu geladen
-  // (Flackern, unnötige Requests). Deshalb wird das iframe-Element hier
-  // separat verwaltet: einmal erzeugt, dann bei jedem Render nur in den
-  // (neu erzeugten) Platzhalter-Container zurückgehängt, statt neu geladen.
   mountHaLiveIframe() {
     const container = this.shadowRoot.querySelector("[data-ha-live-container]");
     if (!container) return;
@@ -5757,18 +5367,12 @@ class HATGPanel extends HTMLElement {
     try {
       this._haLiveIframeEl.contentWindow.location.reload();
     } catch (error) {
-      // Cross-Origin oder Browser blockiert Zugriff auf contentWindow –
-      // Fallback: iframe über src neu setzen (löst ebenfalls einen Reload aus).
       const src = this._haLiveIframeEl.src;
       this._haLiveIframeEl.src = "about:blank";
       this._haLiveIframeEl.src = src;
     }
   }
 
-  // Nach dem Speichern (Work-Datei oder echtes Theme) braucht HA einen
-  // Moment, um "frontend.reload_themes" zu verarbeiten, bevor die neue
-  // Farbgebung im iframe sichtbar wäre – daher kurze Verzögerung statt
-  // sofortigem Reload.
   scheduleHaLiveRefresh() {
     if (!this._haLiveIframeEl) return;
     if (typeof window === "undefined" || typeof window.setTimeout !== "function") return;
@@ -5854,10 +5458,6 @@ class HATGPanel extends HTMLElement {
       });
     });
 
-    // v0.4.47: Demo/HA-Live-Umschalter in der Vorschau (siehe
-    // renderPreviewSourceToggle) - ersetzt den frueheren eigenen "HA Live"-
-    // Seitenleisten-Reiter. "HA Live" merkt sich die aktuelle Sektion und
-    // wechselt in die Live-Ansicht, "Demo" stellt sie wieder her.
     this.shadowRoot.querySelectorAll("[data-preview-source]").forEach((button) => {
       button.addEventListener("click", () => {
         const target = button.dataset.previewSource;
@@ -5871,17 +5471,9 @@ class HATGPanel extends HTMLElement {
       });
     });
 
-    // v0.4.48: Enrico - "die menüpunke müssen einklappen damit wir platz
-    // sparen." Klick auf eine Gruppen-Ueberschrift (HA-Grundgerüst, Bubble
-    // Card, Mushroom) klappt ihre Unterordner auf/zu (this._navExpanded).
     this.shadowRoot.querySelectorAll("[data-nav-toggle]").forEach((button) => {
       button.addEventListener("click", () => {
         const id = button.dataset.navToggle;
-        // v0.4.49: Bugfix - vorher wurde this._navExpanded[id] blind
-        // umgedreht, was beim erstmaligen Klick auf eine bereits (wegen
-        // aktiver Unterseite) automatisch offene Gruppe nichts sichtbar
-        // veraenderte. Jetzt wird der tatsaechlich GERENDERTE Zustand
-        // (navGroupExpanded) umgedreht, damit ein Klick immer wirkt.
         const section = HATG_MANIFEST.sections.find((s) => s.id === id);
         const currentlyExpanded = section ? this.navGroupExpanded(section) : !!this._navExpanded[id];
         this._navExpanded[id] = !currentlyExpanded;
@@ -5889,13 +5481,20 @@ class HATGPanel extends HTMLElement {
       });
     });
 
-    this.shadowRoot.querySelectorAll("[data-preview-room]").forEach((button) => {
+    this.shadowRoot.querySelectorAll("[data-color-menu-toggle]").forEach((button) => {
       button.addEventListener("click", () => {
-        this._state.previewRoom = button.dataset.previewRoom;
-        this._state.previewSidebarOpen = false;
+        this._state.previewColorMenuOpen = !this._state.previewColorMenuOpen;
         this.render();
       });
     });
+
+    this.shadowRoot.querySelectorAll("[data-font-menu-toggle]").forEach((button) => {
+      button.addEventListener("click", () => {
+        this._state.previewFontMenuOpen = !this._state.previewFontMenuOpen;
+        this.render();
+      });
+    });
+
     this.shadowRoot.querySelectorAll("[data-preview-sidebar-toggle]").forEach((el) => {
       el.addEventListener("click", () => {
         this._state.previewSidebarOpen = !this._state.previewSidebarOpen;
@@ -6024,13 +5623,6 @@ class HATGPanel extends HTMLElement {
       });
     });
 
-    // v0.1.5: ersetzt den alten "[data-code-color]"-Farbpunkt-Picker - der
-    // Quick-Edit-Codeblock ist jetzt eine frei eintippbare Textarea (siehe
-    // renderCodeEditor()/commitQuickEditBlock()). Wie beim bestehenden
-    // Long-Text-Editor wird bewusst NICHT this.render() aufgerufen, sonst
-    // würde der Cursor beim Tippen aus der Textarea springen - die farbige
-    // Syntax-Ueberlagerung aktualisiert sich unabhaengig davon bereits ueber
-    // den bestehenden generischen "[data-code-highlight]"-Listener.
     this.shadowRoot.querySelectorAll("[data-quickedit-section]").forEach((textarea) => {
       textarea.addEventListener("input", () => {
         this.commitQuickEditBlock(textarea.value);
@@ -6045,14 +5637,6 @@ class HATGPanel extends HTMLElement {
       input.addEventListener("input", () => {
         const hex = input.value.toUpperCase();
         if (hexTwin) hexTwin.value = hatgFormatColorForView(hex, fmt);
-        // Schon bei jedem "input" (nicht erst bei "change") fest übernehmen:
-        // "change" bei <input type="color"> feuert nur beim Schliessen des
-        // Farbwählers und war in bestimmten Umgebungen (z. B. eingebettet im
-        // HA-Frontend) nicht immer zuverlaessig zu bekommen - Bug-Report
-        // "Farbknopf/Slider gehen, springt danach aber auf die alte Farbe
-        // zurück". Direktes commitField() ohne render() haelt das Ziehen am
-        // Rad weiterhin ruckelfrei (kein DOM-Rebuild pro Tick), sichert aber
-        // den Wert durchgehend, statt erst am Ende der Geste.
         this.commitField(input.dataset.colorPicker, hex);
         this.applyPreviewTheme();
       });
@@ -6069,9 +5653,6 @@ class HATGPanel extends HTMLElement {
         if (!key || !target) return;
         if (!this._state.colorViewFormat) this._state.colorViewFormat = {};
         this._state.colorViewFormat[key] = target;
-        // Beim Verlassen von RGBA (Hex/RGB gewählt) einen zwischenzeitlich per
-        // Schieberegler gesetzten Alpha-Wert verwerfen - reine Hex-/RGB-Ansicht
-        // kennt keine Transparenz, das Feld fällt bewusst auf opakes Hex zurück.
         if (target !== "rgba") {
           const currentValue = this.currentValues()[key];
           if (!hatgIsHex(currentValue)) {
@@ -6101,12 +5682,6 @@ class HATGPanel extends HTMLElement {
       });
     });
 
-    // Bugfix (Enrico, Slider-Entfernung): der Transparenz-Schieberegler
-    // (data-rgba-alpha) ist komplett weg - Alpha kommt jetzt ausschließlich
-    // aus dem direkt eintippbaren rgba(...)-Textfeld daneben. Das Farbrad
-    // liefert nur noch die RGB-Anteile; beim Ziehen wird die zuletzt bekannte
-    // Alpha (aus State bzw. aus dem, was zuletzt ins Textfeld getippt wurde)
-    // beibehalten, statt sie auf 1 zurückzusetzen.
     this.shadowRoot.querySelectorAll("[data-rgba-picker]").forEach((pickerEl) => {
       const row = pickerEl.closest(".field-row");
       const key = pickerEl.dataset.rgbaPicker;
@@ -6123,12 +5698,6 @@ class HATGPanel extends HTMLElement {
       };
       pickerEl.addEventListener("input", () => apply(pickerEl.value.toUpperCase(), false));
       pickerEl.addEventListener("change", () => apply(pickerEl.value.toUpperCase(), true));
-      // Rohwert bleibt direkt eintippbar/einfügbar ("mach es einfach zum
-      // eingabe feld"). Wird hier getippt, muss knownAlpha in DIESEM Closure
-      // aktualisiert werden - sonst würde ein späteres Ziehen am Farbrad
-      // wieder auf den alten, vor der Texteingabe gültigen Alpha-Wert
-      // zurückfallen. Das eigentliche commitField übernimmt weiterhin der
-      // generische [data-text-field]-Handler.
       if (textTwin) {
         textTwin.addEventListener("input", () => {
           const typed = textTwin.value.trim();
@@ -6142,18 +5711,10 @@ class HATGPanel extends HTMLElement {
       }
     });
 
-    // Auto-Übernehmen: sobald eine gültige Eingabe getippt wird, wird sie
-    // direkt übernommen (commitField) - der Haken-Button musste bisher immer
-    // extra angeklickt werden, das hat beim schnellen Durcharbeiten vieler
-    // Felder ausgebremst. Kein kompletter Re-Render pro Tastendruck (würde
-    // Fokus/Cursor-Position zerstören), stattdessen Farbpunkt/Vorschau direkt
-    // per DOM synchron gehalten, genau wie beim Ziehen am nativen Farbrad.
     this.shadowRoot.querySelectorAll("[data-hex-input]").forEach((el) => {
       el.addEventListener("input", () => {
         const row = el.closest(".field-row");
         const key = el.dataset.hexInput;
-        // Formatunabhängig parsen: greift auch, wenn z. B. eine Hex-Farbe
-        // eingefügt wird, während gerade "RGBA" als Anzeigeformat aktiv ist.
         const parsedHex = hatgParseColorAnyFormat(el.value);
         if (parsedHex) {
           this.commitField(key, parsedHex);
@@ -6161,10 +5722,6 @@ class HATGPanel extends HTMLElement {
           if (swatch) swatch.value = parsedHex;
           this.applyPreviewTheme();
         }
-        // Bei (noch) ungültiger/unvollständiger Eingabe (z. B. mitten im
-        // Tippen) wird bewusst noch nicht übernommen - der Bestätigungs-
-        // Button ist seit dem Auto-Übernehmen (v0.4.29) entfallen, es gibt
-        // daher hier keine visuelle "ungespeichert"-Markierung mehr.
       });
     });
 
@@ -6195,6 +5752,33 @@ class HATGPanel extends HTMLElement {
         this.syncPair(button.dataset.syncPair);
       });
     });
+
+    const generatorBlurInput = this.shadowRoot.querySelector("[data-generator-blur]");
+    const generatorOpacityInput = this.shadowRoot.querySelector("[data-generator-opacity]");
+    if (generatorBlurInput || generatorOpacityInput) {
+      const previewCard = this.shadowRoot.querySelector("[data-generator-preview-card]");
+      const blurValueLabel = this.shadowRoot.querySelector("[data-generator-blur-value]");
+      const opacityValueLabel = this.shadowRoot.querySelector("[data-generator-opacity-value]");
+      const updatePreview = () => {
+        if (!previewCard) return;
+        const { blurPx, alphaPercent, hex } = this.generatorBlurTransparencyState();
+        previewCard.style.backdropFilter = `blur(${blurPx}px)`;
+        previewCard.style.background = hatgComposeRgba(hex, alphaPercent / 100);
+      };
+      generatorBlurInput?.addEventListener("input", () => {
+        const px = parseInt(generatorBlurInput.value, 10) || 0;
+        if (blurValueLabel) blurValueLabel.textContent = `${px} px`;
+        this.commitField("card-backdrop-blur", px === 0 ? "none" : `${px}px`);
+        updatePreview();
+      });
+      generatorOpacityInput?.addEventListener("input", () => {
+        const percent = parseInt(generatorOpacityInput.value, 10) || 0;
+        if (opacityValueLabel) opacityValueLabel.textContent = `${percent} %`;
+        const { hex } = this.generatorBlurTransparencyState();
+        this.commitField("card-background-color", hatgComposeRgba(hex, percent / 100));
+        updatePreview();
+      });
+    }
 
     this.shadowRoot.querySelector("[data-search-field]")?.addEventListener("input", (event) => {
       this._state.searchQuery = event.target.value;
@@ -6414,19 +5998,6 @@ class HATGPanel extends HTMLElement {
     const currentMode = this._state.editorMode;
     const otherMode = currentMode === "light" ? "dark" : "light";
     const value = this._state.values[currentMode][key];
-    // Bugfix ("bei card bg ... zieht er es mit" - verwandter Fund: Enricos
-    // Screenshots von allgreen.yaml zeigten Dark-Ableitungsziele wie
-    // bubble-active-color/mush-toggle-color noch beim urspruenglichen
-    // Orange der Basis-Vorlage, obwohl Dark-accent-color laengst Gruen war).
-    // Root Cause: dieser Button hat den Wert bisher nur ROH in den anderen
-    // Modus geschrieben (values[otherMode][key] = value), OHNE die
-    // Ableitungs-Kaskade fuer diesen Modus anzustossen - kopierte man z.B.
-    // accent-color von Light nach Dark, blieben alle Dark-Geschwisterfelder
-    // unveraendert. commitField()/propagateDerivation() arbeiten intern
-    // ueber currentValues()/currentSource(), die vom aktuell aktiven
-    // editorMode abhaengen - deshalb kurz in den Zielmodus wechseln, ganz
-    // normal committen (loest automatisch die Kaskade in diesem Modus aus)
-    // und danach wieder zurueckwechseln.
     this._state.editorMode = otherMode;
     this.commitField(key, value);
     this._state.editorMode = currentMode;
@@ -6457,15 +6028,6 @@ class HATGPanel extends HTMLElement {
     });
   }
 
-  // Bugfix (entdeckt beim Verknuepfen der rgb/rgba-Felder mit den
-  // Grundfarben): der "Vorschlag uebernehmen"-Knopf (angepasst/restore-Icon,
-  // siehe renderBadge()) wird NUR angezeigt, wenn source[key] === "custom"
-  // ist - er rief bisher aber commitField(key, value, { viaDerivation: true })
-  // auf, dessen allererste Zeile GENAU DANN sofort abbricht, wenn
-  // source[key] === "custom" ist. Der Knopf war dadurch faktisch wirkungslos
-  // (Klick tat nichts). Eigene Methode ohne diesen Schutzmechanismus, der
-  // nur automatische Kaskaden vor versehentlichem Ueberschreiben schuetzen
-  // soll, nicht den bewusst vom Nutzer angeklickten Reset selbst.
   resetFieldToDerived(key) {
     const rule = HATG_DERIVE_REVERSE[key];
     if (!rule) return;
@@ -6476,10 +6038,6 @@ class HATGPanel extends HTMLElement {
     source[key] = "derived";
   }
 
-  // Sync-Button aus renderSyncTriad(): setzt ALLE bubble-*/mush-*-Ziele
-  // dieses Quellfelds zurueck auf "derived" (nicht nur die zwei in den
-  // Farbkleksen angezeigten Vertreter) - macht in einem Klick, was sonst
-  // pro Feld einzeln ueber den "angepasst"-Reset-Knopf noetig waere.
   syncTriad(sourceKey) {
     const rules = HATG_DERIVE_RULES[sourceKey];
     if (!rules) return;
@@ -6496,17 +6054,6 @@ class HATGPanel extends HTMLElement {
     );
   }
 
-  // Sync-Button aus renderSyncPair() (2-Icon-Variante fuer Felder mit nur
-  // EINEM echten Bubble-Gegenstueck, kein Mushroom-Pendant - z. B. Rahmen-
-  // farbe/-dicke der Karten). Bewusst NICHT ueber resetFieldToDerived(), weil
-  // "bubble-border" ein Shorthand-Feld mit ZWEI Quellen ist (Breite UND
-  // Farbe) - HATG_DERIVE_REVERSE["bubble-border"] zeigt fix auf die Farb-
-  // Quelle (siehe test_bubble_border_shorthand.js). Ein Reset ueber die
-  // Breiten-Quelle wuerde dadurch faelschlich die Farb-Transform anwenden.
-  // Hier wird deshalb direkt die zu DIESEM sourceKey passende Regel aus
-  // HATG_DERIVE_RULES gesucht und angewendet - unabhaengig von der Reverse-
-  // Zuordnung, genau wie propagateDerivation() es fuer alle Ziele tut, nur
-  // gezielt fuer das eine Bubble-Ziel dieses Paars.
   syncPair(sourceKey) {
     const pair = HATG_SYNC_PAIRS[sourceKey];
     if (!pair) return;
@@ -6528,19 +6075,11 @@ class HATGPanel extends HTMLElement {
   }
 
   applyPreviewTheme() {
-    const phone = this.shadowRoot.querySelector(".phone-screen");
-    if (!phone) return;
     const values = this._state.values[this._state.previewMode];
-    phone.style.setProperty("--preview-accent", values[HATG_PREVIEW_KEYS.accent] || "#2f7bff");
-    phone.style.setProperty("--preview-bg", values[HATG_PREVIEW_KEYS.background] || "#0b111a");
-    phone.style.setProperty("--preview-card", values[HATG_PREVIEW_KEYS.cards] || "#121826");
-    phone.style.setProperty("--preview-text", values[HATG_PREVIEW_KEYS.text] || "#e6eaf1");
-    phone.style.setProperty("--preview-status-on", values[HATG_PREVIEW_KEYS.statusOn] || "#4cd964");
-    phone.style.setProperty("--preview-status-off", values[HATG_PREVIEW_KEYS.statusOff] || "#8e8e93");
-    phone.style.setProperty("--preview-status-warning", values[HATG_PREVIEW_KEYS.statusWarning] || "#ff9500");
-    phone.style.setProperty("--preview-status-error", values[HATG_PREVIEW_KEYS.statusError] || "#ff3b30");
-    phone.style.setProperty("--preview-switch-on", values[HATG_PREVIEW_KEYS.switchOn] || "#2f7bff");
-    phone.style.setProperty("--preview-slider-fill", values[HATG_PREVIEW_KEYS.sliderFill] || "#2f7bff");
+    const panel = this.shadowRoot.querySelector(".preview-panel");
+    if (panel) {
+      panel.style.setProperty("--preview-page-bg", values["primary-background-color"] || "#0b111a");
+    }
   }
 
   copyYaml() {
@@ -6568,21 +6107,11 @@ class HATGPanel extends HTMLElement {
       return;
     }
 
-    // Zusätzlich zum Browser-Speicher schreiben wir den Arbeitsstand als
-    // echte Datei nach config/themes/ (Präfix hatg-work-), damit er
-    // geräteübergreifend erhalten bleibt und über "Aus Themes-Ordner laden"
-    // wieder auffindbar ist. Best-effort: ohne HA-Verbindung bleibt zumindest
-    // der Browser-Speicher als Fallback bestehen.
     if (!this._hass || typeof this._hass.callWS !== "function") {
       this.showToast("Entwurf wurde im Browser gespeichert (keine HA-Verbindung für Themes-Ordner).");
       return;
     }
     const name = hatgSlugTheme(this._state.themeName) || "unbenannt";
-    // Root-Key der Work-Datei MUSS "hatg-work-<name>" heißen (identisch zum
-    // Dateinamen-Stamm, den das Backend daraus baut) – sonst kollidiert er
-    // mit dem gleichnamigen echten Theme (gleicher Root-Key in zwei Dateien)
-    // und card-mod erkennt den Work-Stand nicht, da card-mod-theme exakt dem
-    // Root-Key entsprechen muss.
     const workRootName = `hatg-work-${name}`;
     const yamlText = this.buildYamlText(workRootName);
     try {
@@ -6683,19 +6212,6 @@ class HATGPanel extends HTMLElement {
   applyBasePreset(presetId) {
     const preset = HATG_BASE_PRESETS.find((p) => p.id === presetId);
     if (!preset) return;
-    // Seit dem Feedback "wenn eine neue Basis geladen wird, soll automatisch
-    // ein neuer Themename erstellt werden und HATG komplett clean beginnen":
-    // eine Basis-Vorlage startet jetzt ein komplett frisches Theme, statt nur
-    // die 7 Kernfarben auf einem sonst unveraenderten Theme zu ueberschreiben.
-    // Alle Felder (inkl. bisheriger individueller "custom"-Markierungen und
-    // importierter Zusatzwerte) werden zuerst auf die reinen Manifest-
-    // Werkswerte zurueckgesetzt - derselbe Reset-Mechanismus wie beim Laden
-    // eines gespeicherten Entwurfs (loadDraft()) - danach werden die
-    // Vorlagenfarben ganz normal per commitField() angewendet, damit die
-    // bestehende Ableitungslogik (Bubble Card/Mushroom/Status-Icons usw.)
-    // wie gewohnt greift. Der Themename wird automatisch auf den
-    // Vorlagennamen gesetzt, damit ein zuvor bearbeitetes Theme nicht
-    // versehentlich unter seinem alten Namen ueberschrieben wird.
     this._state.values.light = hatgDeepClone(HATG_MANIFEST.light);
     this._state.values.dark = hatgDeepClone(HATG_MANIFEST.dark);
     this._state.source.light = hatgInitSource();
