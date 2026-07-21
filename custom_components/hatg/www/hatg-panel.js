@@ -2575,7 +2575,10 @@ const HATG_TAIL_NAV = [
   { id: "alle-felder", label: "Alle Felder", icon: "mdi:list-search" },
   { id: "code-editor", label: "Code-Editor", icon: "mdi:xml" },
   { id: "plugins", label: "Plugins", icon: "mdi:puzzle-outline" },
-  { id: "generatoren", label: "Generatoren", icon: "mdi:auto-fix" },
+  // "generatoren" (Blur & Kartentransparenz) vorerst deaktiviert - Enrico:
+  // "der generator geht nicht.schalte den erst einmal ab" (v0.2.3-Live-Test).
+  // renderGenerators()/Routing bleiben im Code, nur der Nav-Eintrag ist raus,
+  // damit die Seite nicht mehr erreichbar ist, bis die Ursache gefunden ist.
 ];
 
 const HATG_USER_SECTIONS = [
@@ -4833,6 +4836,10 @@ class HATGPanel extends HTMLElement {
   }
 
   render() {
+    // Generatoren-Seite vorerst deaktiviert (siehe HATG_TAIL_NAV) - falls ein
+    // gespeicherter Zustand (localStorage) noch auf "generatoren" zeigt,
+    // hierher zurueckfallen statt eine unerreichbare Seite zu rendern.
+    if (this._activeSection === "generatoren") this._activeSection = "overview";
     const lightAppearance = this._state.appearance === "light";
     const focusInfo = this.captureFocus();
     this.shadowRoot.innerHTML = `
