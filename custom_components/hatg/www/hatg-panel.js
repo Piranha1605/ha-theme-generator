@@ -1,4 +1,4 @@
-const HATG_VERSION = "0.2.11";
+const HATG_VERSION = "0.2.12";
 
 const HATG_MANIFEST = {
   "sections": [
@@ -47,6 +47,57 @@ const HATG_MANIFEST = {
         "printer-cyan-color",
         "printer-magenta-color",
         "printer-yellow-color"
+      ],
+      "exportGroups": [
+        {
+          "label": "Grundfarben",
+          "keys": [
+            "accent-color",
+            "primary-color",
+            "dark-primary-color",
+            "light-primary-color",
+            "disabled-color",
+            "error-color",
+            "warning-color",
+            "success-color",
+            "info-color",
+            "red-color",
+            "green-color",
+            "blue-color",
+            "orange-color",
+            "yellow-color",
+            "purple-color",
+            "pink-color",
+            "cyan-color",
+            "grey-color",
+            "deep-purple-color",
+            "indigo-color",
+            "light-blue-color",
+            "teal-color",
+            "light-green-color",
+            "lime-color",
+            "amber-color",
+            "deep-orange-color",
+            "brown-color",
+            "light-grey-color",
+            "dark-grey-color",
+            "blue-grey-color",
+            "black-color",
+            "white-color",
+            "printer-cyan-color",
+            "printer-magenta-color",
+            "printer-yellow-color"
+          ]
+        },
+        {
+          "label": "Text",
+          "keys": [
+            "primary-text-color",
+            "secondary-text-color",
+            "text-primary-color",
+            "disabled-text-color"
+          ]
+        }
       ]
     },
     {
@@ -4459,26 +4510,39 @@ class HATGPanel extends HTMLElement {
     const name = rootNameOverride || hatgSlugTheme(this._state.themeName);
     const modeBlock = (mode) => {
       const values = this._state.values[mode];
-      const parts = HATG_MANIFEST.sections.map((s) => {
-        const lines = s.keys
-          .filter((k) => values[k] !== undefined && values[k] !== "")
-          .map((k) => {
-            const value = k === "card-mod-theme" ? name : values[k];
-            return `      ${k}: ${hatgQuoteYamlValue(value)}`;
-          })
-          .join("\n");
-        if (!lines) return "";
-        return `      # ${s.label}\n${lines}`;
+      const blocks = [];
+      HATG_MANIFEST.sections.forEach((s) => {
+        // v0.2.12: Export gliedert sich jetzt wie das Seitenmenu selbst in
+        // Untergruppen (ein Kommentar je Gruppe statt nur einer je Sektion),
+        // damit z. B. "HA-Grundgerüst" nicht mehr als ein einziger 306-Felder-
+        // Block dasteht. Nutzt dieselben "groups" wie die Navigation
+        // (hintergruende-karten/bubble-card/mushroom); fuer Sektionen ohne
+        // echte Nav-Gruppen (z. B. grundfarben-text) ein rein export-seitiges
+        // "exportGroups" (aendert NICHT die Seitenleiste).
+        const groupSource = (s.groups && s.groups.length) ? s.groups : (s.exportGroups && s.exportGroups.length ? s.exportGroups : null);
+        const groups = groupSource || [{ label: null, keys: s.keys }];
+        groups.forEach((g) => {
+          const lines = g.keys
+            .filter((k) => values[k] !== undefined && values[k] !== "")
+            .map((k) => {
+              const value = k === "card-mod-theme" ? name : values[k];
+              return `      ${k}: ${hatgQuoteYamlValue(value)}`;
+            })
+            .join("\n");
+          if (!lines) return;
+          const heading = g.label ? `${s.label} / ${g.label}` : s.label;
+          blocks.push(`      # ${heading}\n${lines}`);
+        });
       });
       const extra = this._state.extraValues ? this._state.extraValues[mode] : null;
       if (extra) {
         const extraKeys = Object.keys(extra);
         if (extraKeys.length) {
           const extraLines = extraKeys.map((k) => `      ${k}: ${hatgQuoteYamlValue(extra[k])}`).join("\n");
-          parts.push(`      # Importierte Zusatzwerte (von HATG nicht erkannt)\n${extraLines}`);
+          blocks.push(`      # Importierte Zusatzwerte (von HATG nicht erkannt)\n${extraLines}`);
         }
       }
-      return parts.filter(Boolean).join("\n\n");
+      return blocks.join("\n\n");
     };
     const header = this.buildYamlHeader();
     return `${header}${name}:\n  modes:\n    light:\n${modeBlock("light")}\n\n    dark:\n${modeBlock("dark")}\n`;
