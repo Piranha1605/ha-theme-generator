@@ -1,2087 +1,6 @@
-const HATG_VERSION = "0.2.4";
+const HATG_VERSION = "0.2.7";
 
-const HATG_MANIFEST = {
-  "sections": [
-    {
-      "id": "grundfarben-text",
-      "label": "Grundfarben & Text",
-      "desc": "Zentrale Farben für Text, Akzent, Primärfarbe, Fehler, Erfolg, Warnungen und allgemeine Farbbasis.",
-      "icon": "mdi:palette-outline",
-      "keys": [
-        "accent-color",
-        "primary-color",
-        "dark-primary-color",
-        "light-primary-color",
-        "primary-text-color",
-        "secondary-text-color",
-        "text-primary-color",
-        "disabled-text-color",
-        "disabled-color",
-        "error-color",
-        "warning-color",
-        "success-color",
-        "info-color",
-        "red-color",
-        "green-color",
-        "blue-color",
-        "orange-color",
-        "yellow-color",
-        "purple-color",
-        "pink-color",
-        "cyan-color",
-        "grey-color",
-        "deep-purple-color",
-        "indigo-color",
-        "light-blue-color",
-        "teal-color",
-        "light-green-color",
-        "lime-color",
-        "amber-color",
-        "deep-orange-color",
-        "brown-color",
-        "light-grey-color",
-        "dark-grey-color",
-        "blue-grey-color",
-        "black-color",
-        "white-color",
-        "printer-cyan-color",
-        "printer-magenta-color",
-        "printer-yellow-color"
-      ]
-    },
-    {
-      "id": "hintergruende-karten",
-      "label": "HA-Grundgerüst",
-      "desc": "Die komplette native Home-Assistant-Oberfläche in 16 Unterordnern: Card, Hintergründe, Theme, Header, App Drawer, Sidebar, Status/Icons, Schalter/Toggle/Slider, Buttons & Chips, Eingaben, Material/MDC, HA 2026, Abstände/Schatten, Schrift, RGB-Hilfswerte, Graphen & Energie.",
-      "icon": "mdi:view-dashboard-outline",
-      "keys": [
-        "card-background-color",
-        "ha-card-background",
-        "ha-card-background-color",
-        "wa-color-surface-raised",
-        "ha-card-border-color",
-        "ha-card-border-radius",
-        "ha-card-border-width",
-        "ha-card-box-shadow",
-        "table-row-background-color",
-        "table-row-alternative-background-color",
-        "primary-background-color",
-        "background-color",
-        "lovelace-background",
-        "secondary-background-color",
-        "mdc-theme-background",
-        "mdc-theme-surface",
-        "mdc-theme-on-surface",
-        "app-header-background-color",
-        "app-header-text-color",
-        "app-toolbar-background-color",
-        "toolbar-background-color",
-        "app-toolbar-text-color",
-        "toolbar-text-color",
-        "app-drawer-background-color",
-        "app-drawer-text-color",
-        "app-drawer-icon-color",
-        "sidebar-background-color",
-        "sidebar-selected-background-color",
-        "sidebar-text-color",
-        "sidebar-icon-color",
-        "sidebar-selected-text-color",
-        "sidebar-selected-icon-color",
-        "state-icon-color",
-        "state-icon-active-color",
-        "state-icon-unavailable-color",
-        "state-active-color",
-        "state-inactive-color",
-        "state-unavailable-color",
-        "state-on-color",
-        "state-off-color",
-        "state-light-color",
-        "state-light-active-color",
-        "state-light-on-color",
-        "state-switch-color",
-        "state-switch-active-color",
-        "state-switch-on-color",
-        "state-climate-cool-color",
-        "state-climate-heat-color",
-        "state-climate-auto-color",
-        "state-climate-dry-color",
-        "state-climate-fan_only-color",
-        "state-climate-heat_cool-color",
-        "state-cover-color",
-        "state-cover-active-color",
-        "state-cover-open-color",
-        "state-cover-closed-color",
-        "state-fan-color",
-        "state-fan-active-color",
-        "state-media_player-color",
-        "state-media_player-active-color",
-        "state-vacuum-color",
-        "state-vacuum-active-color",
-        "state-vacuum-error-color",
-        "state-lock-locked-color",
-        "state-lock-locking-color",
-        "state-lock-unlocked-color",
-        "state-lock-unlocking-color",
-        "state-lock-jammed-color",
-        "state-lock-open-color",
-        "state-lock-opening-color",
-        "state-alarm_control_panel-triggered-color",
-        "state-alarm-triggered-color",
-        "state-alarm_control_panel-armed_home-color",
-        "state-alarm_control_panel-armed_away-color",
-        "state-alarm-armed-color",
-        "state-alarm_control_panel-disarmed-color",
-        "state-alarm-disarmed-color",
-        "state-alarm_control_panel-armed_custom_bypass-color",
-        "state-alarm_control_panel-armed_night-color",
-        "state-alarm_control_panel-armed_vacation-color",
-        "state-alarm_control_panel-arming-color",
-        "state-alarm_control_panel-disarming-color",
-        "state-alarm_control_panel-pending-color",
-        "state-alert-off-color",
-        "state-alert-on-color",
-        "state-binary_sensor-active-color",
-        "state-binary_sensor-battery-on-color",
-        "state-binary_sensor-carbon_monoxide-on-color",
-        "state-binary_sensor-gas-on-color",
-        "state-binary_sensor-heat-on-color",
-        "state-binary_sensor-lock-on-color",
-        "state-binary_sensor-moisture-on-color",
-        "state-binary_sensor-problem-on-color",
-        "state-binary_sensor-safety-on-color",
-        "state-binary_sensor-smoke-on-color",
-        "state-binary_sensor-sound-on-color",
-        "state-binary_sensor-tamper-on-color",
-        "state-device_tracker-active-color",
-        "state-device_tracker-home-color",
-        "state-humidifier-on-color",
-        "state-lawn_mower-active-color",
-        "state-lawn_mower-error-color",
-        "state-person-active-color",
-        "state-person-home-color",
-        "state-plant-active-color",
-        "state-siren-active-color",
-        "state-sun-above_horizon-color",
-        "state-sun-below_horizon-color",
-        "state-update-active-color",
-        "state-valve-active-color",
-        "state-water_heater-eco-color",
-        "state-water_heater-electric-color",
-        "state-water_heater-gas-color",
-        "state-water_heater-heat_pump-color",
-        "state-water_heater-high_demand-color",
-        "state-water_heater-performance-color",
-        "state-weather-clear_night-color",
-        "state-weather-cloudy-color",
-        "state-weather-exceptional-color",
-        "state-weather-fog-color",
-        "state-weather-hail-color",
-        "state-weather-lightning_rainy-color",
-        "state-weather-lightning-color",
-        "state-weather-partlycloudy-color",
-        "state-weather-pouring-color",
-        "state-weather-rainy-color",
-        "state-weather-snowy_rainy-color",
-        "state-weather-snowy-color",
-        "state-weather-sunny-color",
-        "state-weather-windy_variant-color",
-        "state-weather-windy-color",
-        "state-battery-low-color",
-        "state-sensor-battery-high-color",
-        "state-sensor-battery-medium-color",
-        "state-sensor-battery-low-color",
-        "label-badge-background-color",
-        "label-badge-text-color",
-        "label-badge-red",
-        "label-badge-blue",
-        "label-badge-green",
-        "label-badge-yellow",
-        "state-battery-alert-color",
-        "ha-control-switch-color",
-        "ha-control-switch-checked-color",
-        "ha-control-switch-unchecked-color",
-        "ha-switch-background-color",
-        "ha-switch-background-color-hover",
-        "ha-switch-border-color",
-        "ha-switch-thumb-background-color",
-        "ha-switch-thumb-background-color-hover",
-        "ha-switch-thumb-border-color",
-        "ha-switch-thumb-border-color-hover",
-        "ha-switch-checked-background-color",
-        "ha-switch-checked-background-color-hover",
-        "ha-switch-checked-border-color",
-        "ha-switch-checked-thumb-background-color",
-        "ha-switch-checked-thumb-background-color-hover",
-        "ha-switch-checked-thumb-border-color",
-        "ha-switch-checked-thumb-border-color-hover",
-        "control-slider-color",
-        "slider-color",
-        "slider-secondary-color",
-        "slider-track-color",
-        "control-button-background-color",
-        "control-button-icon-color",
-        "control-button-border-radius",
-        "input-background-color",
-        "input-fill-color",
-        "input-disabled-fill-color",
-        "input-disabled-ink-color",
-        "input-disabled-label-ink-color",
-        "input-disabled-line-color",
-        "input-dropdown-icon-color",
-        "input-hover-line-color",
-        "input-idle-line-color",
-        "input-ink-color",
-        "input-label-ink-color",
-        "input-outlined-disabled-border-color",
-        "mdc-select-idle-line-color",
-        "mdc-select-dropdown-icon-color",
-        "mdc-select-hover-line-color",
-        "mdc-text-field-idle-line-color",
-        "mdc-text-field-hover-line-color",
-        "ha-color-form-background",
-        "ha-color-form-background-hover",
-        "ha-color-form-background-disabled",
-        "mdc-theme-primary",
-        "mdc-theme-secondary",
-        "mdc-theme-on-primary",
-        "md-sys-color-primary",
-        "md-sys-color-on-primary",
-        "md-sys-color-primary-container",
-        "md-sys-color-on-primary-container",
-        "md-sys-color-on-surface",
-        "ha-on-surface-color",
-        "md-radio-selected-icon-color",
-        "mdc-radio-unchecked-color",
-        "ha-color-fill-primary-normal-resting",
-        "ha-color-fill-primary-normal-hover",
-        "ha-color-fill-primary-quiet-resting",
-        "ha-color-fill-primary-quiet-hover",
-        "ha-color-fill-disabled-normal-resting",
-        "ha-color-on-disabled-normal",
-        "ha-color-fill-disabled-loud-resting",
-        "ha-color-on-disabled-loud",
-        "ha-color-on-disabled-quiet",
-        "ha-color-fill-neutral-quiet-resting",
-        "ha-color-fill-neutral-quiet-hover",
-        "ha-color-fill-neutral-quiet-active",
-        "ha-color-fill-neutral-normal-resting",
-        "ha-color-fill-neutral-normal-hover",
-        "ha-color-fill-neutral-normal-active",
-        "ha-color-fill-danger-normal-resting",
-        "ha-color-fill-danger-normal-hover",
-        "ha-color-fill-danger-normal-active",
-        "ha-color-on-danger-normal",
-        "ha-color-fill-warning-normal-resting",
-        "ha-color-fill-warning-normal-hover",
-        "ha-color-fill-warning-normal-active",
-        "ha-color-on-warning-normal",
-        "ha-tooltip-background-color",
-        "ha-tooltip-text-color",
-        "border-color",
-        "border-radius",
-        "box-shadow",
-        "divider-color",
-        "outline-color",
-        "outline-variant-color",
-        "outline-hover-color",
-        "ha-line-height-condensed",
-        "ha-line-height-expanded",
-        "ha-line-height-normal",
-        "primary-font-family",
-        "ha-font-family-body",
-        "ha-font-family-heading",
-        "ha-font-family-longform",
-        "ha-font-family-code",
-        "mdc-typography-font-family",
-        "ha-font-size-scale",
-        "ha-font-size-2xs",
-        "ha-font-size-xs",
-        "ha-font-size-s",
-        "ha-font-size-m",
-        "ha-font-size-l",
-        "ha-font-size-xl",
-        "ha-font-size-2xl",
-        "ha-font-size-3xl",
-        "ha-font-size-4xl",
-        "ha-font-weight-light",
-        "ha-font-weight-normal",
-        "ha-font-weight-body",
-        "ha-font-weight-medium",
-        "ha-font-weight-heading",
-        "ha-font-weight-action",
-        "ha-font-weight-bold",
-        "rgb-primary-color",
-        "rgb-accent-color",
-        "rgb-primary-text-color",
-        "rgb-secondary-text-color",
-        "rgb-card-background-color",
-        "rgb-primary-background-color",
-        "rgb-blue-color",
-        "rgb-orange-color",
-        "rgb-state-switch-color",
-        "rgb-state-light-color",
-        "rgb-state-cover-color",
-        "rgb-state-fan-color",
-        "rgb-state-media_player-color",
-        "graph-color-1",
-        "graph-color-2",
-        "graph-color-3",
-        "graph-color-4",
-        "graph-color-5",
-        "graph-color-6",
-        "graph-color-7",
-        "graph-color-8",
-        "graph-color-9",
-        "graph-color-10",
-        "graph-color-11",
-        "graph-color-12",
-        "graph-color-13",
-        "graph-color-14",
-        "color-1",
-        "color-2",
-        "color-3",
-        "color-4",
-        "color-5",
-        "color-6",
-        "color-7",
-        "color-8",
-        "color-9",
-        "color-10",
-        "color-11",
-        "color-12",
-        "color-13",
-        "color-14",
-        "energy-grid-consumption-color",
-        "energy-grid-return-color",
-        "energy-solar-color",
-        "energy-non-fossil-color",
-        "energy-battery-out-color",
-        "energy-battery-in-color",
-        "energy-gas-color",
-        "energy-water-color"
-      ],
-      "groups": [
-        {
-          "label": "Card",
-          "keys": [
-            "card-background-color",
-            "ha-card-background",
-            "ha-card-background-color",
-            "wa-color-surface-raised",
-            "ha-card-border-color",
-            "ha-card-border-radius",
-            "ha-card-border-width",
-            "ha-card-box-shadow",
-            "table-row-background-color",
-            "table-row-alternative-background-color"
-          ],
-          "id": "hintergruende-karten__card",
-          "icon": "mdi:card-outline"
-        },
-        {
-          "label": "Hintergründe",
-          "keys": [
-            "primary-background-color",
-            "background-color",
-            "lovelace-background",
-            "secondary-background-color"
-          ],
-          "id": "hintergruende-karten__hintergruende",
-          "icon": "mdi:image-outline"
-        },
-        {
-          "label": "Theme",
-          "keys": [
-            "mdc-theme-background",
-            "mdc-theme-surface",
-            "mdc-theme-on-surface"
-          ],
-          "id": "hintergruende-karten__theme",
-          "icon": "mdi:palette-swatch-outline"
-        },
-        {
-          "label": "Header",
-          "keys": [
-            "app-header-background-color",
-            "app-header-text-color",
-            "app-toolbar-background-color",
-            "toolbar-background-color",
-            "app-toolbar-text-color",
-            "toolbar-text-color"
-          ],
-          "id": "hintergruende-karten__header",
-          "icon": "mdi:page-layout-header"
-        },
-        {
-          "label": "App Drawer",
-          "keys": [
-            "app-drawer-background-color",
-            "app-drawer-text-color",
-            "app-drawer-icon-color"
-          ],
-          "id": "hintergruende-karten__app-drawer",
-          "icon": "mdi:drawer"
-        },
-        {
-          "label": "Sidebar",
-          "keys": [
-            "sidebar-background-color",
-            "sidebar-selected-background-color",
-            "sidebar-text-color",
-            "sidebar-icon-color",
-            "sidebar-selected-text-color",
-            "sidebar-selected-icon-color"
-          ],
-          "id": "hintergruende-karten__sidebar",
-          "icon": "mdi:dock-left"
-        },
-        {
-          "label": "Status, Icons & Entitäten",
-          "keys": [
-            "state-icon-color",
-            "state-icon-active-color",
-            "state-icon-unavailable-color",
-            "state-active-color",
-            "state-inactive-color",
-            "state-unavailable-color",
-            "state-on-color",
-            "state-off-color",
-            "state-light-color",
-            "state-light-active-color",
-            "state-light-on-color",
-            "state-switch-color",
-            "state-switch-active-color",
-            "state-switch-on-color",
-            "state-climate-cool-color",
-            "state-climate-heat-color",
-            "state-climate-auto-color",
-            "state-climate-dry-color",
-            "state-climate-fan_only-color",
-            "state-climate-heat_cool-color",
-            "state-cover-color",
-            "state-cover-active-color",
-            "state-cover-open-color",
-            "state-cover-closed-color",
-            "state-fan-color",
-            "state-fan-active-color",
-            "state-media_player-color",
-            "state-media_player-active-color",
-            "state-vacuum-color",
-            "state-vacuum-active-color",
-            "state-vacuum-error-color",
-            "state-lock-locked-color",
-            "state-lock-locking-color",
-            "state-lock-unlocked-color",
-            "state-lock-unlocking-color",
-            "state-lock-jammed-color",
-            "state-lock-open-color",
-            "state-lock-opening-color",
-            "state-alarm_control_panel-triggered-color",
-            "state-alarm-triggered-color",
-            "state-alarm_control_panel-armed_home-color",
-            "state-alarm_control_panel-armed_away-color",
-            "state-alarm-armed-color",
-            "state-alarm_control_panel-disarmed-color",
-            "state-alarm-disarmed-color",
-            "state-alarm_control_panel-armed_custom_bypass-color",
-            "state-alarm_control_panel-armed_night-color",
-            "state-alarm_control_panel-armed_vacation-color",
-            "state-alarm_control_panel-arming-color",
-            "state-alarm_control_panel-disarming-color",
-            "state-alarm_control_panel-pending-color",
-            "state-alert-off-color",
-            "state-alert-on-color",
-            "state-binary_sensor-active-color",
-            "state-binary_sensor-battery-on-color",
-            "state-binary_sensor-carbon_monoxide-on-color",
-            "state-binary_sensor-gas-on-color",
-            "state-binary_sensor-heat-on-color",
-            "state-binary_sensor-lock-on-color",
-            "state-binary_sensor-moisture-on-color",
-            "state-binary_sensor-problem-on-color",
-            "state-binary_sensor-safety-on-color",
-            "state-binary_sensor-smoke-on-color",
-            "state-binary_sensor-sound-on-color",
-            "state-binary_sensor-tamper-on-color",
-            "state-device_tracker-active-color",
-            "state-device_tracker-home-color",
-            "state-humidifier-on-color",
-            "state-lawn_mower-active-color",
-            "state-lawn_mower-error-color",
-            "state-person-active-color",
-            "state-person-home-color",
-            "state-plant-active-color",
-            "state-siren-active-color",
-            "state-sun-above_horizon-color",
-            "state-sun-below_horizon-color",
-            "state-update-active-color",
-            "state-valve-active-color",
-            "state-water_heater-eco-color",
-            "state-water_heater-electric-color",
-            "state-water_heater-gas-color",
-            "state-water_heater-heat_pump-color",
-            "state-water_heater-high_demand-color",
-            "state-water_heater-performance-color",
-            "state-weather-clear_night-color",
-            "state-weather-cloudy-color",
-            "state-weather-exceptional-color",
-            "state-weather-fog-color",
-            "state-weather-hail-color",
-            "state-weather-lightning_rainy-color",
-            "state-weather-lightning-color",
-            "state-weather-partlycloudy-color",
-            "state-weather-pouring-color",
-            "state-weather-rainy-color",
-            "state-weather-snowy_rainy-color",
-            "state-weather-snowy-color",
-            "state-weather-sunny-color",
-            "state-weather-windy_variant-color",
-            "state-weather-windy-color",
-            "state-battery-low-color",
-            "state-sensor-battery-high-color",
-            "state-sensor-battery-medium-color",
-            "state-sensor-battery-low-color",
-            "label-badge-background-color",
-            "label-badge-text-color",
-            "label-badge-red",
-            "label-badge-blue",
-            "label-badge-green",
-            "label-badge-yellow",
-            "state-battery-alert-color"
-          ],
-          "id": "hintergruende-karten__status-icons-entitaeten",
-          "icon": "mdi:emoticon-outline"
-        },
-        {
-          "label": "Schalter, Toggle & Slider",
-          "keys": [
-            "ha-control-switch-color",
-            "ha-control-switch-checked-color",
-            "ha-control-switch-unchecked-color",
-            "ha-switch-background-color",
-            "ha-switch-background-color-hover",
-            "ha-switch-border-color",
-            "ha-switch-thumb-background-color",
-            "ha-switch-thumb-background-color-hover",
-            "ha-switch-thumb-border-color",
-            "ha-switch-thumb-border-color-hover",
-            "ha-switch-checked-background-color",
-            "ha-switch-checked-background-color-hover",
-            "ha-switch-checked-border-color",
-            "ha-switch-checked-thumb-background-color",
-            "ha-switch-checked-thumb-background-color-hover",
-            "ha-switch-checked-thumb-border-color",
-            "ha-switch-checked-thumb-border-color-hover",
-            "control-slider-color",
-            "slider-color",
-            "slider-secondary-color",
-            "slider-track-color"
-          ],
-          "id": "hintergruende-karten__schalter-toggle-slider",
-          "icon": "mdi:toggle-switch-outline"
-        },
-        {
-          "label": "Buttons & Chips",
-          "keys": [
-            "control-button-background-color",
-            "control-button-icon-color",
-            "control-button-border-radius"
-          ],
-          "id": "hintergruende-karten__buttons-chips",
-          "icon": "mdi:gesture-tap-button"
-        },
-        {
-          "label": "Eingaben & Auswahlfelder",
-          "keys": [
-            "input-background-color",
-            "input-fill-color",
-            "input-disabled-fill-color",
-            "input-disabled-ink-color",
-            "input-disabled-label-ink-color",
-            "input-disabled-line-color",
-            "input-dropdown-icon-color",
-            "input-hover-line-color",
-            "input-idle-line-color",
-            "input-ink-color",
-            "input-label-ink-color",
-            "input-outlined-disabled-border-color",
-            "mdc-select-idle-line-color",
-            "mdc-select-dropdown-icon-color",
-            "mdc-select-hover-line-color",
-            "mdc-text-field-idle-line-color",
-            "mdc-text-field-hover-line-color",
-            "ha-color-form-background",
-            "ha-color-form-background-hover",
-            "ha-color-form-background-disabled"
-          ],
-          "id": "hintergruende-karten__eingaben-auswahlfelder",
-          "icon": "mdi:form-select"
-        },
-        {
-          "label": "Material, Paper & MDC",
-          "keys": [
-            "mdc-theme-primary",
-            "mdc-theme-secondary",
-            "mdc-theme-on-primary",
-            "md-sys-color-primary",
-            "md-sys-color-on-primary",
-            "md-sys-color-primary-container",
-            "md-sys-color-on-primary-container",
-            "md-sys-color-on-surface",
-            "ha-on-surface-color",
-            "md-radio-selected-icon-color",
-            "mdc-radio-unchecked-color"
-          ],
-          "id": "hintergruende-karten__material-paper-mdc",
-          "icon": "mdi:material-design"
-        },
-        {
-          "label": "HA 2026 / Web Awesome",
-          "keys": [
-            "ha-color-fill-primary-normal-resting",
-            "ha-color-fill-primary-normal-hover",
-            "ha-color-fill-primary-quiet-resting",
-            "ha-color-fill-primary-quiet-hover",
-            "ha-color-fill-disabled-normal-resting",
-            "ha-color-on-disabled-normal",
-            "ha-color-fill-disabled-loud-resting",
-            "ha-color-on-disabled-loud",
-            "ha-color-on-disabled-quiet",
-            "ha-color-fill-neutral-quiet-resting",
-            "ha-color-fill-neutral-quiet-hover",
-            "ha-color-fill-neutral-quiet-active",
-            "ha-color-fill-neutral-normal-resting",
-            "ha-color-fill-neutral-normal-hover",
-            "ha-color-fill-neutral-normal-active",
-            "ha-color-fill-danger-normal-resting",
-            "ha-color-fill-danger-normal-hover",
-            "ha-color-fill-danger-normal-active",
-            "ha-color-on-danger-normal",
-            "ha-color-fill-warning-normal-resting",
-            "ha-color-fill-warning-normal-hover",
-            "ha-color-fill-warning-normal-active",
-            "ha-color-on-warning-normal",
-            "ha-tooltip-background-color",
-            "ha-tooltip-text-color"
-          ],
-          "id": "hintergruende-karten__ha-2026-web-awesome",
-          "icon": "mdi:web"
-        },
-        {
-          "label": "Abstände, Rundungen, Schatten & Rahmen",
-          "keys": [
-            "border-color",
-            "border-radius",
-            "box-shadow",
-            "divider-color",
-            "outline-color",
-            "outline-variant-color",
-            "outline-hover-color",
-            "ha-line-height-condensed",
-            "ha-line-height-expanded",
-            "ha-line-height-normal"
-          ],
-          "id": "hintergruende-karten__abstaende-rundungen-schatten-rahmen",
-          "icon": "mdi:square-rounded-outline"
-        },
-        {
-          "label": "Schrift & Typografie",
-          "keys": [
-            "primary-font-family",
-            "ha-font-family-body",
-            "ha-font-family-heading",
-            "ha-font-family-longform",
-            "ha-font-family-code",
-            "mdc-typography-font-family",
-            "ha-font-size-scale",
-            "ha-font-size-2xs",
-            "ha-font-size-xs",
-            "ha-font-size-s",
-            "ha-font-size-m",
-            "ha-font-size-l",
-            "ha-font-size-xl",
-            "ha-font-size-2xl",
-            "ha-font-size-3xl",
-            "ha-font-size-4xl",
-            "ha-font-weight-light",
-            "ha-font-weight-normal",
-            "ha-font-weight-body",
-            "ha-font-weight-medium",
-            "ha-font-weight-heading",
-            "ha-font-weight-action",
-            "ha-font-weight-bold"
-          ],
-          "id": "hintergruende-karten__schrift-typografie",
-          "icon": "mdi:format-font"
-        },
-        {
-          "label": "RGB-Hilfswerte",
-          "keys": [
-            "rgb-primary-color",
-            "rgb-accent-color",
-            "rgb-primary-text-color",
-            "rgb-secondary-text-color",
-            "rgb-card-background-color",
-            "rgb-primary-background-color",
-            "rgb-blue-color",
-            "rgb-orange-color",
-            "rgb-state-switch-color",
-            "rgb-state-light-color",
-            "rgb-state-cover-color",
-            "rgb-state-fan-color",
-            "rgb-state-media_player-color"
-          ],
-          "id": "hintergruende-karten__rgb-hilfswerte",
-          "icon": "mdi:invert-colors"
-        },
-        {
-          "label": "Graphen & Energie",
-          "keys": [
-            "graph-color-1",
-            "graph-color-2",
-            "graph-color-3",
-            "graph-color-4",
-            "graph-color-5",
-            "graph-color-6",
-            "graph-color-7",
-            "graph-color-8",
-            "graph-color-9",
-            "graph-color-10",
-            "graph-color-11",
-            "graph-color-12",
-            "graph-color-13",
-            "graph-color-14",
-            "color-1",
-            "color-2",
-            "color-3",
-            "color-4",
-            "color-5",
-            "color-6",
-            "color-7",
-            "color-8",
-            "color-9",
-            "color-10",
-            "color-11",
-            "color-12",
-            "color-13",
-            "color-14",
-            "energy-grid-consumption-color",
-            "energy-grid-return-color",
-            "energy-solar-color",
-            "energy-non-fossil-color",
-            "energy-battery-out-color",
-            "energy-battery-in-color",
-            "energy-gas-color",
-            "energy-water-color"
-          ],
-          "id": "hintergruende-karten__graphen-energie",
-          "icon": "mdi:chart-line"
-        }
-      ]
-    },
-    {
-      "id": "bubble-card",
-      "label": "Bubble Card",
-      "desc": "Alle Bubble-Card-Werte an einem Ort, in 9 Unterordnern: Karten & Hintergründe, Buttons, Sub-Buttons, Separator, Popup & Dialog, Horizontal Buttons Stack, Climate, Cover, Media Player.",
-      "icon": "mdi:circle-multiple-outline",
-      "keys": [
-        "bubble-card-background-color",
-        "bubble-main-buttons-background-color",
-        "bubble-secondary-background-color",
-        "bubble-icon-background-color",
-        "bubble-icon-color",
-        "bubble-name-color",
-        "bubble-state-color",
-        "bubble-accent-color",
-        "bubble-active-color",
-        "bubble-toggle-color",
-        "bubble-line-background-color",
-        "bubble-border",
-        "bubble-border-color",
-        "bubble-border-radius",
-        "bubble-box-shadow",
-        "bubble-card-border-radius",
-        "bubble-select-border-radius",
-        "bubble-icon-border-radius",
-        "bubble-button-background-color",
-        "bubble-button-active-background-color",
-        "bubble-button-icon-color",
-        "bubble-button-active-icon-color",
-        "bubble-button-text-color",
-        "bubble-button-active-text-color",
-        "bubble-button-border-radius",
-        "bubble-button-card-background-color",
-        "bubble-button-main-background-color",
-        "bubble-button-active-color",
-        "bubble-sub-button-background-color",
-        "bubble-sub-button-active-background-color",
-        "bubble-sub-button-icon-color",
-        "bubble-sub-button-active-icon-color",
-        "bubble-sub-button-text-color",
-        "bubble-sub-button-active-text-color",
-        "bubble-sub-button-border-radius",
-        "bubble-sub-button-box-shadow",
-        "bubble-sub-buttons-main-background-color",
-        "bubble-separator-background-color",
-        "bubble-separator-icon-background-color",
-        "bubble-separator-icon-color",
-        "bubble-separator-line-color",
-        "bubble-separator-name-color",
-        "bubble-separator-text-color",
-        "bubble-separator-border-radius",
-        "bubble-pop-up-background-color",
-        "bubble-pop-up-backdrop-filter",
-        "bubble-pop-up-border-radius",
-        "bubble-pop-up-box-shadow",
-        "dialog-box-shadow",
-        "more-info-header-background",
-        "more-info-header-color",
-        "popup-border-radius",
-        "ha-dialog-scrim-backdrop-filter",
-        "ha-dialog-surface-background",
-        "mdc-dialog-scrim-color",
-        "bubble-horizontal-buttons-stack-background-color",
-        "bubble-horizontal-buttons-stack-button-background-color",
-        "bubble-horizontal-buttons-stack-button-icon-color",
-        "bubble-horizontal-buttons-stack-button-text-color",
-        "bubble-horizontal-buttons-stack-border-radius",
-        "bubble-horizontal-buttons-stack-box-shadow",
-        "bubble-climate-background-color",
-        "bubble-climate-main-background-color",
-        "bubble-climate-button-background-color",
-        "bubble-climate-button-icon-color",
-        "bubble-climate-border-radius",
-        "bubble-climate-box-shadow",
-        "bubble-climate-icon-border-radius",
-        "bubble-cover-background-color",
-        "bubble-cover-main-background-color",
-        "bubble-cover-button-background-color",
-        "bubble-cover-button-icon-color",
-        "bubble-cover-border-radius",
-        "bubble-cover-box-shadow",
-        "bubble-media-player-background-color",
-        "bubble-media-player-main-background-color",
-        "bubble-media-player-button-background-color",
-        "bubble-media-player-button-icon-color",
-        "bubble-media-player-border-radius",
-        "bubble-media-player-box-shadow"
-      ],
-      "groups": [
-        {
-          "label": "Karten & Hintergründe",
-          "keys": [
-            "bubble-card-background-color",
-            "bubble-main-buttons-background-color",
-            "bubble-secondary-background-color",
-            "bubble-icon-background-color",
-            "bubble-icon-color",
-            "bubble-name-color",
-            "bubble-state-color",
-            "bubble-accent-color",
-            "bubble-active-color",
-            "bubble-toggle-color",
-            "bubble-line-background-color",
-            "bubble-border",
-            "bubble-border-color",
-            "bubble-border-radius",
-            "bubble-box-shadow",
-            "bubble-card-border-radius",
-            "bubble-select-border-radius",
-            "bubble-icon-border-radius"
-          ],
-          "id": "bubble-card__karten-hintergruende",
-          "icon": "mdi:card-outline"
-        },
-        {
-          "label": "Buttons",
-          "keys": [
-            "bubble-button-background-color",
-            "bubble-button-active-background-color",
-            "bubble-button-icon-color",
-            "bubble-button-active-icon-color",
-            "bubble-button-text-color",
-            "bubble-button-active-text-color",
-            "bubble-button-border-radius",
-            "bubble-button-card-background-color",
-            "bubble-button-main-background-color",
-            "bubble-button-active-color"
-          ],
-          "id": "bubble-card__buttons",
-          "icon": "mdi:gesture-tap-button"
-        },
-        {
-          "label": "Sub-Buttons",
-          "keys": [
-            "bubble-sub-button-background-color",
-            "bubble-sub-button-active-background-color",
-            "bubble-sub-button-icon-color",
-            "bubble-sub-button-active-icon-color",
-            "bubble-sub-button-text-color",
-            "bubble-sub-button-active-text-color",
-            "bubble-sub-button-border-radius",
-            "bubble-sub-button-box-shadow",
-            "bubble-sub-buttons-main-background-color"
-          ],
-          "id": "bubble-card__sub-buttons",
-          "icon": "mdi:dots-horizontal-circle-outline"
-        },
-        {
-          "label": "Separator",
-          "keys": [
-            "bubble-separator-background-color",
-            "bubble-separator-icon-background-color",
-            "bubble-separator-icon-color",
-            "bubble-separator-line-color",
-            "bubble-separator-name-color",
-            "bubble-separator-text-color",
-            "bubble-separator-border-radius"
-          ],
-          "id": "bubble-card__separator",
-          "icon": "mdi:minus"
-        },
-        {
-          "label": "Popup & Dialog",
-          "keys": [
-            "bubble-pop-up-background-color",
-            "bubble-pop-up-backdrop-filter",
-            "bubble-pop-up-border-radius",
-            "bubble-pop-up-box-shadow",
-            "dialog-box-shadow",
-            "more-info-header-background",
-            "more-info-header-color",
-            "popup-border-radius",
-            "ha-dialog-scrim-backdrop-filter",
-            "ha-dialog-surface-background",
-            "mdc-dialog-scrim-color"
-          ],
-          "id": "bubble-card__popup-dialog",
-          "icon": "mdi:window-maximize"
-        },
-        {
-          "label": "Horizontal Buttons Stack",
-          "keys": [
-            "bubble-horizontal-buttons-stack-background-color",
-            "bubble-horizontal-buttons-stack-button-background-color",
-            "bubble-horizontal-buttons-stack-button-icon-color",
-            "bubble-horizontal-buttons-stack-button-text-color",
-            "bubble-horizontal-buttons-stack-border-radius",
-            "bubble-horizontal-buttons-stack-box-shadow"
-          ],
-          "id": "bubble-card__horizontal-buttons-stack",
-          "icon": "mdi:view-sequential"
-        },
-        {
-          "label": "Climate",
-          "keys": [
-            "bubble-climate-background-color",
-            "bubble-climate-main-background-color",
-            "bubble-climate-button-background-color",
-            "bubble-climate-button-icon-color",
-            "bubble-climate-border-radius",
-            "bubble-climate-box-shadow",
-            "bubble-climate-icon-border-radius"
-          ],
-          "id": "bubble-card__climate",
-          "icon": "mdi:thermostat"
-        },
-        {
-          "label": "Cover",
-          "keys": [
-            "bubble-cover-background-color",
-            "bubble-cover-main-background-color",
-            "bubble-cover-button-background-color",
-            "bubble-cover-button-icon-color",
-            "bubble-cover-border-radius",
-            "bubble-cover-box-shadow"
-          ],
-          "id": "bubble-card__cover",
-          "icon": "mdi:window-shutter"
-        },
-        {
-          "label": "Media Player",
-          "keys": [
-            "bubble-media-player-background-color",
-            "bubble-media-player-main-background-color",
-            "bubble-media-player-button-background-color",
-            "bubble-media-player-button-icon-color",
-            "bubble-media-player-border-radius",
-            "bubble-media-player-box-shadow"
-          ],
-          "id": "bubble-card__media-player",
-          "icon": "mdi:play-circle-outline"
-        }
-      ]
-    },
-    {
-      "id": "mushroom",
-      "label": "Mushroom",
-      "desc": "Alle Mushroom-Werte an einem Ort, in 6 Unterordnern: Karten & Hintergründe, Icons, Toggle, Slider, Chips, RGB-Hilfswerte.",
-      "icon": "mdi:mushroom-outline",
-      "keys": [
-        "mush-card-background",
-        "mush-control-background-color",
-        "mush-card-primary-color",
-        "mush-card-secondary-color",
-        "mush-title-color",
-        "mush-subtitle-color",
-        "mush-icon-background-color",
-        "mush-icon-color",
-        "mush-icon-active-color",
-        "mush-toggle-color",
-        "mush-toggle-background-color",
-        "mush-slider-color",
-        "mush-slider-track-color",
-        "mush-slider-background-color",
-        "mush-chip-background",
-        "mush-chip-active-background",
-        "mush-chip-color",
-        "mush-chip-icon-color",
-        "mush-chip-active-color",
-        "mush-chip-active-icon-color",
-        "mush-chip-border-color",
-        "mush-chip-border-radius",
-        "mush-chip-font-size",
-        "mush-rgb-primary-text-color",
-        "mush-rgb-secondary-text-color",
-        "mush-rgb-state-switch",
-        "mush-rgb-state-light",
-        "mush-rgb-state-cover",
-        "mush-rgb-state-entity",
-        "mush-rgb-state-fan",
-        "mush-rgb-state-media-player",
-        "mush-rgb-state-vacuum",
-        "mush-rgb-success",
-        "mush-rgb-warning",
-        "mush-rgb-danger",
-        "mush-rgb-disabled",
-        "mush-rgb-info"
-      ],
-      "groups": [
-        {
-          "label": "Karten & Hintergründe",
-          "keys": [
-            "mush-card-background",
-            "mush-control-background-color",
-            "mush-card-primary-color",
-            "mush-card-secondary-color",
-            "mush-title-color",
-            "mush-subtitle-color"
-          ],
-          "id": "mushroom__karten-hintergruende",
-          "icon": "mdi:card-outline"
-        },
-        {
-          "label": "Icons",
-          "keys": [
-            "mush-icon-background-color",
-            "mush-icon-color",
-            "mush-icon-active-color"
-          ],
-          "id": "mushroom__icons",
-          "icon": "mdi:shape-outline"
-        },
-        {
-          "label": "Toggle",
-          "keys": [
-            "mush-toggle-color",
-            "mush-toggle-background-color"
-          ],
-          "id": "mushroom__toggle",
-          "icon": "mdi:toggle-switch-outline"
-        },
-        {
-          "label": "Slider",
-          "keys": [
-            "mush-slider-color",
-            "mush-slider-track-color",
-            "mush-slider-background-color"
-          ],
-          "id": "mushroom__slider",
-          "icon": "mdi:tune-variant"
-        },
-        {
-          "label": "Chips",
-          "keys": [
-            "mush-chip-background",
-            "mush-chip-active-background",
-            "mush-chip-color",
-            "mush-chip-icon-color",
-            "mush-chip-active-color",
-            "mush-chip-active-icon-color",
-            "mush-chip-border-color",
-            "mush-chip-border-radius",
-            "mush-chip-font-size"
-          ],
-          "id": "mushroom__chips",
-          "icon": "mdi:label-outline"
-        },
-        {
-          "label": "RGB-Hilfswerte",
-          "keys": [
-            "mush-rgb-primary-text-color",
-            "mush-rgb-secondary-text-color",
-            "mush-rgb-state-switch",
-            "mush-rgb-state-light",
-            "mush-rgb-state-cover",
-            "mush-rgb-state-entity",
-            "mush-rgb-state-fan",
-            "mush-rgb-state-media-player",
-            "mush-rgb-state-vacuum",
-            "mush-rgb-success",
-            "mush-rgb-warning",
-            "mush-rgb-danger",
-            "mush-rgb-disabled",
-            "mush-rgb-info"
-          ],
-          "id": "mushroom__rgb-hilfswerte",
-          "icon": "mdi:invert-colors"
-        }
-      ]
-    },
-    {
-      "id": "card-mod-generator",
-      "label": "Card-mod & Generator",
-      "desc": "Interne Generatorwerte und card-mod-Blöcke.",
-      "icon": "mdi:code-braces",
-      "keys": [
-        "card-mod-theme",
-        "card-mod-card-yaml",
-        "card-backdrop-blur"
-      ]
-    }
-  ],
-  "light": {
-    "accent-color": "#ff9300",
-    "primary-color": "#ff9300",
-    "dark-primary-color": "#F9F9FB",
-    "light-primary-color": "#E5F1FF",
-    "primary-text-color": "#1C1C1E",
-    "secondary-text-color": "#3C3C43",
-    "text-primary-color": "#FFFFFF",
-    "disabled-text-color": "#8E8E93",
-    "error-color": "#FF3B30",
-    "warning-color": "#FFCC00",
-    "success-color": "#34C759",
-    "info-color": "#007AFF",
-    "red-color": "#FF3B30",
-    "green-color": "#34C759",
-    "blue-color": "#007AFF",
-    "orange-color": "#FF9500",
-    "yellow-color": "#FFCC00",
-    "purple-color": "#AF52DE",
-    "pink-color": "#FF2D55",
-    "cyan-color": "#5AC8FA",
-    "grey-color": "#3C3C43",
-    "black-color": "#000000",
-    "white-color": "#FFFFFF",
-    "primary-background-color": "#F2F2F7",
-    "background-color": "#F2F2F7",
-    "lovelace-background": "#F2F2F7",
-    "secondary-background-color": "#F9F9FB",
-    "card-background-color": "#FFFFFF",
-    "ha-card-background": "#FFFFFF",
-    "ha-card-background-color": "#FFFFFF",
-    "table-row-background-color": "#F9F9FB",
-    "table-row-alternative-background-color": "#FFFFFF",
-    "app-header-background-color": "#FFFFFF",
-    "app-toolbar-background-color": "#FFFFFF",
-    "toolbar-background-color": "#FFFFFF",
-    "app-drawer-background-color": "#FFFFFF",
-    "sidebar-background-color": "#FFFFFF",
-    "sidebar-selected-background-color": "#E5F1FF",
-    "mdc-theme-background": "#F2F2F7",
-    "mdc-theme-surface": "#FFFFFF",
-    "mdc-theme-on-surface": "#1C1C1E",
-    "wa-color-surface-raised": "#FFFFFF",
-    "app-header-text-color": "#1C1C1E",
-    "app-toolbar-text-color": "#1C1C1E",
-    "toolbar-text-color": "#1C1C1E",
-    "app-drawer-text-color": "#3C3C43",
-    "app-drawer-icon-color": "#007AFF",
-    "sidebar-text-color": "#3C3C43",
-    "sidebar-icon-color": "rgba(33, 33, 33, 0.6)",
-    "sidebar-selected-text-color": "#1C1C1E",
-    "sidebar-selected-icon-color": "#007AFF",
-    "state-icon-color": "#007AFF",
-    "state-icon-active-color": "#007AFF",
-    "state-icon-unavailable-color": "#FFFFFF",
-    "state-active-color": "#007AFF",
-    "state-inactive-color": "#FFFFFF",
-    "state-unavailable-color": "#FFFFFF",
-    "state-on-color": "#34C759",
-    "state-off-color": "#FFFFFF",
-    "state-light-color": "#007AFF",
-    "state-light-active-color": "#007AFF",
-    "state-light-on-color": "#ff9300",
-    "state-switch-color": "#007AFF",
-    "state-switch-active-color": "#007AFF",
-    "state-switch-on-color": "#007AFF",
-    "state-climate-cool-color": "#007AFF",
-    "state-climate-heat-color": "#ff2600",
-    "state-climate-auto-color": "#007AFF",
-    "state-cover-color": "#007AFF",
-    "state-cover-active-color": "#007AFF",
-    "state-cover-open-color": "#929000",
-    "state-cover-closed-color": "#ff2600",
-    "state-fan-color": "#007AFF",
-    "state-fan-active-color": "#007AFF",
-    "state-media_player-color": "#007AFF",
-    "state-vacuum-color": "#007AFF",
-    "state-vacuum-active-color": "#007AFF",
-    "state-lock-locked-color": "#007AFF",
-    "state-lock-locking-color": "#ff2600",
-    "state-lock-unlocked-color": "#007AFF",
-    "state-lock-unlocking-color": "#929000",
-    "state-alarm_control_panel-triggered-color": "#ff2600",
-    "state-alarm-triggered-color": "#ff2600",
-    "state-alarm_control_panel-armed_home-color": "#ffd478",
-    "state-alarm_control_panel-armed_away-color": "#ffd478",
-    "state-alarm-armed-color": "#ffd478",
-    "state-alarm_control_panel-disarmed-color": "#ff9300",
-    "state-alarm-disarmed-color": "#ff9300",
-    "state-battery-low-color": "#ff2600",
-    "label-badge-background-color": "#FFFFFF",
-    "label-badge-text-color": "rgba(33, 33, 33, 0.8)",
-    "label-badge-red": "#FF3B30",
-    "label-badge-blue": "#007AFF",
-    "label-badge-green": "#34C759",
-    "label-badge-yellow": "#FFCC00",
-    "state-battery-alert-color": "#ff2600",
-    "ha-control-switch-color": "#007AFF",
-    "ha-control-switch-checked-color": "#007AFF",
-    "ha-control-switch-unchecked-color": "#D1D1D6",
-    "mush-toggle-color": "#007AFF",
-    "mush-rgb-state-switch": "0, 122, 255",
-    "bubble-toggle-color": "#007AFF",
-    "rgb-state-switch-color": "0, 122, 255",
-    "control-slider-color": "#007AFF",
-    "slider-color": "#007AFF",
-    "slider-secondary-color": "#E5F1FF",
-    "slider-track-color": "#D1D1D6",
-    "mush-slider-color": "#007AFF",
-    "mush-slider-track-color": "#D1D1D6",
-    "mush-toggle-background-color": "#D1D1D6",
-    "control-button-background-color": "#F9F9FB",
-    "control-button-icon-color": "#007AFF",
-    "control-button-border-radius": "18px",
-    "mush-chip-background": "#FFFFFF",
-    "mush-chip-active-background": "#F9F9FB",
-    "mush-chip-color": "#1C1C1E",
-    "mush-chip-icon-color": "#007AFF",
-    "mush-chip-active-color": "#ff9300",
-    "mush-chip-active-icon-color": "#ff9300",
-    "mush-chip-border-color": "#C6C6C8",
-    "mush-chip-border-radius": "16px",
-    "mush-chip-font-size": "12px",
-    "bubble-button-background-color": "#FFFFFF",
-    "bubble-button-active-background-color": "#007AFF",
-    "bubble-button-icon-color": "#007AFF",
-    "bubble-button-active-icon-color": "#FFFFFF",
-    "bubble-button-text-color": "#1C1C1E",
-    "bubble-button-active-text-color": "#FFFFFF",
-    "bubble-button-border-radius": "18px",
-    "bubble-sub-button-background-color": "#F9F9FB",
-    "bubble-sub-button-active-background-color": "#007AFF",
-    "bubble-sub-button-icon-color": "#007AFF",
-    "bubble-sub-button-active-icon-color": "#FFFFFF",
-    "bubble-sub-button-text-color": "#3C3C43",
-    "bubble-sub-button-active-text-color": "#FFFFFF",
-    "bubble-sub-button-border-radius": "14px",
-    "bubble-sub-button-box-shadow": "0 4px 10px rgba(60,60,67,.16)",
-    "input-background-color": "#F9F9FB",
-    "input-fill-color": "#F9F9FB",
-    "input-disabled-fill-color": "rgba(249, 249, 251, 0.55)",
-    "input-disabled-ink-color": "rgba(0, 0, 0, 0.37)",
-    "input-disabled-label-ink-color": "#8E8E93",
-    "input-disabled-line-color": "rgba(0, 0, 0, 0.06)",
-    "input-dropdown-icon-color": "rgba(0, 0, 0, 0.54)",
-    "input-hover-line-color": "rgba(0, 0, 0, 0.87)",
-    "input-idle-line-color": "rgba(0, 0, 0, 0.42)",
-    "input-ink-color": "rgba(0, 0, 0, 0.87)",
-    "input-label-ink-color": "rgba(0, 0, 0, 0.6)",
-    "input-outlined-disabled-border-color": "rgba(0, 0, 0, 0.06)",
-    "mdc-select-idle-line-color": "#C6C6C8",
-    "mdc-select-dropdown-icon-color": "#3C3C43",
-    "mdc-select-hover-line-color": "#C6C6C8",
-    "mdc-text-field-idle-line-color": "#C6C6C8",
-    "mdc-text-field-hover-line-color": "#C6C6C8",
-    "ha-color-form-background": "#F9F9FB",
-    "ha-color-form-background-hover": "#F9F9FB",
-    "ha-color-form-background-disabled": "rgba(249, 249, 251, 0.55)",
-    "mdc-theme-primary": "#007AFF",
-    "mdc-theme-secondary": "#007AFF",
-    "mdc-theme-on-primary": "#FFFFFF",
-    "md-sys-color-primary": "#ff9300",
-    "md-sys-color-on-primary": "#007AFF",
-    "md-sys-color-primary-container": "#E5F1FF",
-    "md-sys-color-on-primary-container": "#FFFFFF",
-    "md-sys-color-on-surface": "#feffff",
-    "ha-on-surface-color": "#feffff",
-    "md-radio-selected-icon-color": "#007AFF",
-    "mdc-radio-unchecked-color": "#3C3C43",
-    "ha-color-fill-primary-normal-resting": "rgba(0, 122, 255, 0.15)",
-    "ha-color-fill-primary-normal-hover": "rgba(0, 122, 255, 0.25)",
-    "ha-color-fill-primary-quiet-resting": "rgba(0, 122, 255, 0.08)",
-    "ha-color-fill-primary-quiet-hover": "rgba(0, 122, 255, 0.15)",
-    "ha-color-fill-disabled-normal-resting": "rgba(142, 142, 147, 0.12)",
-    "ha-color-on-disabled-normal": "rgba(60, 60, 67, 0.55)",
-    "ha-color-fill-disabled-loud-resting": "rgba(142, 142, 147, 0.22)",
-    "ha-color-on-disabled-loud": "rgba(60, 60, 67, 0.65)",
-    "ha-color-on-disabled-quiet": "rgba(60, 60, 67, 0.50)",
-    "ha-color-fill-neutral-quiet-resting": "#FFFFFF",
-    "ha-color-fill-neutral-quiet-hover": "#F9F9FB",
-    "ha-color-fill-neutral-quiet-active": "#E5F1FF",
-    "ha-color-fill-neutral-normal-resting": "#F9F9FB",
-    "ha-color-fill-neutral-normal-hover": "#FFFFFF",
-    "ha-color-fill-neutral-normal-active": "#E5F1FF",
-    "ha-color-fill-danger-normal-resting": "rgba(255, 59, 48, 0.15)",
-    "ha-color-fill-danger-normal-hover": "rgba(255, 59, 48, 0.22)",
-    "ha-color-fill-danger-normal-active": "rgba(255, 59, 48, 0.28)",
-    "ha-color-on-danger-normal": "#FF3B30",
-    "ha-color-fill-warning-normal-resting": "rgba(255, 204, 0, 0.15)",
-    "ha-color-fill-warning-normal-hover": "rgba(255, 204, 0, 0.22)",
-    "ha-color-fill-warning-normal-active": "rgba(255, 204, 0, 0.28)",
-    "ha-color-on-warning-normal": "#8A5A00",
-    "ha-tooltip-background-color": "#F9F9FB",
-    "ha-tooltip-text-color": "#1C1C1E",
-    "border-color": "rgba(0, 0, 0, 0.12)",
-    "border-radius": "18px",
-    "box-shadow": "0 10px 28px rgba(60,60,67,.14)",
-    "divider-color": "rgba(0, 0, 0, 0.12)",
-    "outline-color": "rgba(0, 0, 0, 0.12)",
-    "outline-variant-color": "#C6C6C8",
-    "ha-card-border-color": "rgba(0, 0, 0, 0.12)",
-    "ha-card-border-radius": "18px",
-    "ha-card-border-width": "1px",
-    "ha-card-box-shadow": "0 10px 28px rgba(60,60,67,.14)",
-    "ha-line-height-condensed": "1.25",
-    "ha-line-height-expanded": "1.35",
-    "ha-line-height-normal": "1.5",
-    "bubble-border": "1px solid #C6C6C8",
-    "bubble-border-color": "rgba(0, 0, 0, 0.12)",
-    "bubble-border-radius": "18px",
-    "bubble-box-shadow": "0 10px 28px rgba(60,60,67,.14)",
-    "bubble-card-border-radius": "18px",
-    "bubble-climate-border-radius": "18px",
-    "bubble-climate-box-shadow": "0 10px 28px rgba(60,60,67,.14)",
-    "bubble-climate-icon-border-radius": "32px",
-    "bubble-cover-border-radius": "18px",
-    "bubble-cover-box-shadow": "0 10px 28px rgba(60,60,67,.14)",
-    "bubble-icon-border-radius": "14px",
-    "bubble-media-player-border-radius": "18px",
-    "bubble-media-player-box-shadow": "0 10px 28px rgba(60,60,67,.14)",
-    "bubble-pop-up-border-radius": "18px",
-    "bubble-pop-up-box-shadow": "0 10px 28px rgba(60,60,67,.14)",
-    "bubble-select-border-radius": "18px",
-    "bubble-separator-border-radius": "18px",
-    "bubble-horizontal-buttons-stack-border-radius": "18px",
-    "bubble-horizontal-buttons-stack-box-shadow": "0 10px 28px rgba(60,60,67,.14)",
-    "primary-font-family": "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif",
-    "ha-font-family-body": "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif",
-    "ha-font-family-heading": "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif",
-    "ha-font-family-longform": "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif",
-    "ha-font-family-code": "'SF Mono', 'Roboto Mono', Consolas, monospace",
-    "mdc-typography-font-family": "'SF Mono', 'Roboto Mono', Consolas, monospace",
-    "ha-font-size-scale": "1",
-    "ha-font-size-2xs": "8px",
-    "ha-font-size-xs": "8px",
-    "ha-font-size-s": "12px",
-    "ha-font-size-m": "14px",
-    "ha-font-size-l": "16px",
-    "ha-font-size-xl": "18px",
-    "ha-font-size-2xl": "20px",
-    "ha-font-size-3xl": "22px",
-    "ha-font-size-4xl": "24px",
-    "ha-font-weight-light": "300",
-    "ha-font-weight-normal": "400",
-    "ha-font-weight-body": "400",
-    "ha-font-weight-medium": "500",
-    "ha-font-weight-heading": "500",
-    "ha-font-weight-action": "500",
-    "ha-font-weight-bold": "700",
-    "rgb-primary-color": "255, 147, 0",
-    "rgb-accent-color": "255, 147, 0",
-    "rgb-primary-text-color": "28, 28, 30",
-    "rgb-secondary-text-color": "60, 60, 67",
-    "rgb-card-background-color": "255, 255, 255",
-    "rgb-primary-background-color": "242, 242, 247",
-    "rgb-blue-color": "0, 122, 255",
-    "rgb-orange-color": "255, 149, 0",
-    "rgb-state-light-color": "0, 122, 255",
-    "rgb-state-cover-color": "0, 122, 255",
-    "rgb-state-fan-color": "0, 122, 255",
-    "rgb-state-media_player-color": "0, 122, 255",
-    "mush-rgb-primary-text-color": "28, 28, 30",
-    "mush-rgb-secondary-text-color": "60, 60, 67",
-    "mush-rgb-state-light": "0, 122, 255",
-    "mush-rgb-state-cover": "0, 122, 255",
-    "mush-rgb-state-entity": "0, 122, 255",
-    "mush-rgb-state-fan": "0, 122, 255",
-    "mush-rgb-state-media-player": "0, 122, 255",
-    "mush-rgb-state-vacuum": "0, 122, 255",
-    "mush-rgb-success": "52, 199, 89",
-    "mush-rgb-warning": "255, 204, 0",
-    "mush-rgb-danger": "255, 59, 48",
-    "mush-rgb-disabled": "142, 142, 147",
-    "mush-rgb-info": "0, 122, 255",
-    "graph-color-1": "#ff9300",
-    "graph-color-2": "#007AFF",
-    "graph-color-3": "#34C759",
-    "graph-color-4": "#AF52DE",
-    "graph-color-5": "#FF3B30",
-    "graph-color-6": "#5AC8FA",
-    "graph-color-7": "#00C7BE",
-    "graph-color-8": "#FF2D55",
-    "graph-color-9": "#FF6B22",
-    "graph-color-10": "#5856D6",
-    "graph-color-11": "#A3D977",
-    "graph-color-12": "#FFCC00",
-    "graph-color-13": "#AF52DE",
-    "graph-color-14": "#8E6E53",
-    "energy-grid-consumption-color": "#007AFF",
-    "energy-grid-return-color": "#AF52DE",
-    "energy-solar-color": "#ff9300",
-    "energy-non-fossil-color": "#34C759",
-    "energy-battery-out-color": "#00C7BE",
-    "energy-battery-in-color": "#AF52DE",
-    "energy-gas-color": "#FF3B30",
-    "energy-water-color": "#5AC8FA",
-    "bubble-card-background-color": "#FFFFFF",
-    "bubble-secondary-background-color": "#F9F9FB",
-    "bubble-icon-background-color": "#F9F9FB",
-    "bubble-icon-color": "#007AFF",
-    "bubble-name-color": "#1C1C1E",
-    "bubble-state-color": "#3C3C43",
-    "bubble-accent-color": "#007AFF",
-    "bubble-active-color": "#007AFF",
-    "bubble-line-background-color": "rgba(0, 0, 0, 0.12)",
-    "bubble-pop-up-background-color": "#F2F2F7",
-    "bubble-pop-up-backdrop-filter": "blur(18px)",
-    "dialog-box-shadow": "0 10px 28px rgba(60,60,67,.14)",
-    "more-info-header-background": "#F9F9FB",
-    "more-info-header-color": "#1C1C1E",
-    "popup-border-radius": "12px",
-    "ha-dialog-scrim-backdrop-filter": "blur(10px)",
-    "ha-dialog-surface-background": "rgba(255, 255, 255, 0.92)",
-    "mdc-dialog-scrim-color": "rgba(0, 0, 0, 0.35)",
-    "bubble-separator-background-color": "#FFFFFF",
-    "bubble-separator-icon-background-color": "#F9F9FB",
-    "bubble-separator-icon-color": "#007AFF",
-    "bubble-separator-line-color": "rgba(0, 0, 0, 0.12)",
-    "bubble-separator-name-color": "#1C1C1E",
-    "bubble-separator-text-color": "#1C1C1E",
-    "bubble-horizontal-buttons-stack-background-color": "#FFFFFF",
-    "bubble-horizontal-buttons-stack-button-background-color": "#F9F9FB",
-    "bubble-sub-buttons-main-background-color": "#FFFFFF",
-    "bubble-climate-background-color": "#FFFFFF",
-    "bubble-climate-main-background-color": "#FFFFFF",
-    "bubble-cover-background-color": "#FFFFFF",
-    "bubble-cover-main-background-color": "#FFFFFF",
-    "bubble-media-player-background-color": "#FFFFFF",
-    "bubble-media-player-main-background-color": "#FFFFFF",
-    "mush-card-background": "#FFFFFF",
-    "mush-control-background-color": "#F9F9FB",
-    "mush-icon-background-color": "#F9F9FB",
-    "mush-card-primary-color": "#1C1C1E",
-    "mush-card-secondary-color": "#3C3C43",
-    "mush-title-color": "#1C1C1E",
-    "mush-subtitle-color": "#3C3C43",
-    "mush-icon-color": "#3C3C43",
-    "mush-icon-active-color": "#007AFF",
-    "card-mod-theme": "basis",
-    "card-mod-card-yaml": "\n.: |\n  /* HATG Bubble Card: zentraler card-mod Block */\n  ha-card {\n    /* v0.4.50: Enrico - \"Popup, Heizung und freier Button haben keinen\n       cardmod genau so wie die Menueleiste unten.\" Root Cause (im echten\n       Bubble-Card-Quellcode nachgeschaut): JEDE Bubble-Karte nutzt fuer\n       Hintergrund/Icon/Name/Radius automatisch Fallback-Ketten wie\n       var(--bubble-card-type-main-background-color, var(--bubble-main-background-color, ...)) -\n       diese Variablen haben wir bisher nie gesetzt, nur einzelne Klassen per\n       !important erzwungen (siehe Liste unten). Fuer Kartentypen, die nicht\n       in dieser Liste stehen (z. B. ein reiner \"button\"-Typ ohne Entity wie\n       ein Pop-up-Oeffner, oder die \"sub-buttons\"-Kartenart), griff bisher\n       keine unserer Regeln - Bubble Card fiel auf neutrale Standardwerte\n       zurueck. Jetzt setzen wir die von Bubble Card selbst erwarteten\n       Variablen direkt auf ha-card (genau wie Enricos alter Pro-Karte-\n       card_mod es tat), zeigen aber weiterhin auf unsere eigenen, im Editor\n       bearbeitbaren Felder - das deckt jetzt automatisch auch kuenftige/\n       bisher unbekannte Bubble-Kartentypen ab, ohne dass wir jede einzeln\n       nachtragen muessen. */\n    --bubble-main-background-color: var(--bubble-main-buttons-background-color, var(--card-background-color));\n    --bubble-secondary-background-color: var(--bubble-secondary-background-color, var(--secondary-background-color));\n    --bubble-icon-background-color: var(--bubble-icon-background-color, var(--secondary-background-color));\n    --bubble-icon-color: var(--bubble-icon-color, var(--accent-color));\n    /* v0.4.53: Enrico - vorsorglich \"--bubble-accent-color\" mit aufnehmen,\n       falls kuenftig card_type: calendar mit \"show_progress: true\" genutzt\n       wird. Bubble Card berechnet die Fortschritts-Hervorhebung fuer laufende\n       Termine dann ueber \"var(--bubble-event-accent-color,\n       var(--bubble-accent-color, var(--bubble-default-color)))\" (siehe\n       changes.js im echten Bubble-Card-Quellcode) - ohne eigene Definition\n       blieb diese Hervorhebung bisher farblos, da wir --bubble-accent-color\n       nie gesetzt haben und Bubble Card selbst dafuer keinen eigenen\n       Standardwert bereitstellt. */\n    --bubble-accent-color: var(--bubble-accent-color, var(--accent-color));\n    --bubble-name-color: var(--bubble-name-color, var(--primary-text-color));\n    --bubble-state-color: var(--bubble-state-color, var(--secondary-text-color));\n    --bubble-border-radius: var(--bubble-border-radius, var(--ha-card-border-radius, 18px));\n    /* Bubble Card setzt bei button_type: switch im \"an\"-Zustand selbst\n       eine deckende Akzentfarben-Flutung ueber die ganze Karte\n       (--bubble-button-background-color, per JS/inline gesetzt) -\n       das sieht anders aus als Mushroom/Tile, die nur den Icon-Kreis\n       aufleuchten lassen. Global neutralisiert, damit die Kartenflaeche\n       in JEDEM Zustand dunkel/neutral bleibt und nur noch das Icon\n       (siehe .is-on .bubble-icon-container weiter unten) den\n       \"an\"-Zustand zeigt - alle drei Frameworks sollen so nah wie\n       moeglich gleich aussehen (Enrico: \"keiner soll merken was\n       welche Karte ist\"). */\n    --bubble-button-background-color: transparent !important;\n    border-radius: var(--bubble-border-radius, var(--ha-card-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-box-shadow, var(--ha-card-box-shadow, none)) !important;\n    background: var(--bubble-main-buttons-background-color, var(--ha-card-background, var(--card-background-color))) !important;\n    border: var(--bubble-border, 1px solid var(--bubble-border-color, var(--ha-card-border-color, transparent))) !important;\n    color: var(--bubble-name-color, var(--primary-text-color)) !important;\n    overflow: hidden !important;\n    backdrop-filter: var(--card-backdrop-blur, none) !important;\n  }\n\n  .bubble-card,\n  .bubble-button-card-container,\n  .bubble-media-player,\n  .bubble-media-player-container,\n  .bubble-cover-card-container,\n  .bubble-climate-card-container,\n  .bubble-horizontal-buttons-stack-card-container,\n  .bubble-pop-up,\n  .bubble-pop-up-container {\n    border-radius: var(--bubble-border-radius, var(--ha-card-border-radius, 18px)) !important;\n    background: var(--bubble-main-buttons-background-color, var(--ha-card-background, var(--card-background-color))) !important;\n    box-shadow: var(--bubble-box-shadow, var(--ha-card-box-shadow, none)) !important;\n    border: var(--bubble-border, 1px solid var(--bubble-border-color, var(--ha-card-border-color, transparent))) !important;\n    color: var(--bubble-name-color, var(--primary-text-color)) !important;\n    overflow: hidden !important;\n  }\n\n  /* Echtes Bubble-Card-Element fuer den Zustands-/Fuellfarben-Hintergrund\n     (bisher faelschlich als \".bubble-button-background\" angesprochen - diese\n     Klasse existiert in Bubble Card gar nicht, der echte Name ist\n     \".bubble-background\"). Nur Radius+Clipping erzwingen (per \"inherit\" vom\n     jeweils schon korrekt gesetzten Elternelement), NICHT die Hintergrundfarbe -\n     die uebernimmt Bubble Card selbst korrekt je nach Zustand/Kartentyp ueber\n     die passenden bubble-*-button-background-color-Felder. Behebt eckige statt\n     runde Kartenecken bei Button-/Zustands-Karten. */\n  .bubble-background {\n    border-radius: inherit !important;\n    overflow: hidden !important;\n  }\n\n  .bubble-icon-container,\n  .bubble-icon-wrapper,\n  .bubble-climate-icon-container,\n  .bubble-cover-icon-container,\n  .bubble-media-player-icon-container {\n    border-radius: var(--bubble-icon-border-radius, var(--bubble-button-border-radius, var(--bubble-border-radius, 18px))) !important;\n    background: var(--bubble-icon-background-color, var(--bubble-secondary-background-color, var(--secondary-background-color))) !important;\n    color: var(--bubble-icon-color, var(--accent-color)) !important;\n  }\n\n  .bubble-icon,\n  .bubble-icon-container ha-icon,\n  .bubble-icon-wrapper ha-icon,\n  .bubble-climate-icon-container ha-icon,\n  .bubble-cover-icon-container ha-icon,\n  .bubble-media-player-icon-container ha-icon {\n    color: var(--bubble-icon-color, var(--accent-color)) !important;\n  }\n\n  .bubble-sub-button,\n  .bubble-sub-button-container,\n  .bubble-sub-button-background,\n  .bubble-climate-button,\n  .bubble-cover-button,\n  .bubble-media-player-button {\n    border-radius: var(--bubble-sub-button-border-radius, var(--bubble-button-border-radius, var(--bubble-border-radius, 18px))) !important;\n    background: var(--bubble-sub-button-background-color, var(--bubble-secondary-background-color, var(--secondary-background-color))) !important;\n    color: var(--bubble-sub-button-text-color, var(--bubble-state-color, var(--secondary-text-color))) !important;\n    /* Enrico: \"warum erhalten die subbutton keinen schatten?\" - vorher hier\n       hart auf none erzwungen, jetzt ueber eigenes Feld steuerbar (Fallback\n       auf den allgemeinen Bubble-Schatten, nicht mehr automatisch aus). */\n    box-shadow: var(--bubble-sub-button-box-shadow, var(--bubble-box-shadow, none)) !important;\n    border: 0 !important;\n  }\n\n  .bubble-sub-button ha-icon,\n  .bubble-sub-button-container ha-icon,\n  .bubble-climate-button ha-icon,\n  .bubble-cover-button ha-icon,\n  .bubble-media-player-button ha-icon,\n  .bubble-horizontal-buttons-stack-card-container .bubble-icon,\n  .bubble-horizontal-buttons-stack-card-container ha-icon {\n    color: var(--bubble-sub-button-icon-color, var(--bubble-icon-color, var(--accent-color))) !important;\n  }\n\n  .bubble-name,\n  .bubble-button-card-container .name,\n  .bubble-media-player .name,\n  .bubble-cover-card-container .name,\n  .bubble-climate-card-container .name {\n    color: var(--bubble-name-color, var(--primary-text-color)) !important;\n    font-size: var(--bubble-name-font-size, 14px) !important;\n    font-weight: var(--bubble-name-font-weight, 500) !important;\n  }\n\n  .bubble-state,\n  .bubble-secondary,\n  .bubble-media-player .state,\n  .bubble-cover-card-container .state,\n  .bubble-climate-card-container .state {\n    color: var(--bubble-state-color, var(--secondary-text-color)) !important;\n    font-size: var(--bubble-state-font-size, 12px) !important;\n  }\n\n  .bubble-range,\n  .bubble-range-slider,\n  .bubble-slider-container,\n  .bubble-slider-background,\n  .bubble-media-player-slider-background,\n  .bubble-cover-slider-background {\n    border-radius: var(--bubble-button-border-radius, var(--bubble-border-radius, 18px)) !important;\n    background: var(--slider-track-color, var(--divider-color)) !important;\n    overflow: hidden !important;\n  }\n\n  .bubble-range-fill,\n  .bubble-slider-fill,\n  .bubble-slider-active,\n  .bubble-media-player-slider-fill,\n  .bubble-cover-slider-fill {\n    background: var(--slider-color, var(--accent-color)) !important;\n  }\n  /* Slider-Hintergrund (Track) nutzt jetzt die echten, editierbaren Felder\n     slider-color/slider-track-color (Sektion \"Slider & Progress\") statt der\n     frueher hier verwendeten bubble-slider-*-Variablen - die gab es in Bubble\n     Card nie wirklich (Altlasten-Bereinigung hat sie deshalb aus dem Manifest\n     entfernt), wodurch diese Regel bisher IMMER auf divider-color/accent-color\n     zurueckgefallen ist, egal was auf \"Slider & Progress\" eingestellt war.\n     Hinweis: \"Slider-Enden abrunden\" und \"Slider-Farbverlauf\" (siehe Plugin-Seite)\n     wirken weiterhin nur direkt in der jeweiligen Bubble-Card ueber deren eigenen\n     \"styles:\"-Schluessel - Bubble Card ueberschreibt CSS am Slider-FUELLBALKEN\n     (.bubble-slider-fill usw.) hier per eigenem, hoeher spezifischem <style>-Tag\n     sonst selbst; der Slider-HINTERGRUND (Track) ist davon nicht betroffen und\n     reagiert jetzt korrekt auf slider-track-color. Fertige Kopiervorlagen fuer\n     Fuellfarbe/Rundung gibt es auf der Plugin-Seite. */\n\n  .bubble-climate-card-container {\n    border-radius: var(--bubble-climate-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-climate-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-climate-main-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  .bubble-cover-card-container {\n    border-radius: var(--bubble-cover-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-cover-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-cover-main-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  .bubble-media-player {\n    border-radius: var(--bubble-media-player-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-media-player-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-media-player-main-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  .bubble-horizontal-buttons-stack-card-container {\n    border-radius: var(--bubble-horizontal-buttons-stack-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-horizontal-buttons-stack-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-horizontal-buttons-stack-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  /* Bubble Card horizontal-buttons-stack: die echten Klassen je Einzelbutton\n     sind \".bubble-button\" (Layout), \".bubble-background-color\" (von Bubble\n     Card hartcodierter weisser Rahmen) und \".bubble-background\" (Fuellfarbe,\n     Standard-Fallback landet NICHT bei --bubble-main-buttons-background-color wie bei\n     den anderen Kartentypen). \".bubble-horizontal-buttons-stack .bubble-button\"\n     (oben, alte Version) existierte in Bubble Card nie und griff nie. Ziel:\n     die drei Buttons sollen optisch genauso aussehen wie die uebrigen\n     Bubble-Karten (gleicher Radius, gleicher Rahmen, gleiche Kartenfarbe\n     statt hartcodiertem weissem Rahmen). */\n  .bubble-horizontal-buttons-stack-card-container .bubble-button,\n  .bubble-horizontal-buttons-stack-card-container .bubble-background-color,\n  .bubble-horizontal-buttons-stack-card-container .bubble-background {\n    border-radius: var(--bubble-horizontal-buttons-stack-border-radius, var(--bubble-border-radius, 18px)) !important;\n  }\n\n  .bubble-horizontal-buttons-stack-card-container .bubble-background-color {\n    border: var(--bubble-border, 1px solid var(--bubble-border-color, var(--ha-card-border-color, transparent))) !important;\n  }\n\n  .bubble-horizontal-buttons-stack-card-container .bubble-background {\n    background-color: var(--bubble-horizontal-buttons-stack-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n    box-shadow: var(--bubble-horizontal-buttons-stack-box-shadow, var(--bubble-box-shadow, none)) !important;\n    opacity: 1 !important;\n  }\n\n  .bubble-pop-up,\n  .bubble-pop-up-background,\n  .bubble-pop-up-container {\n    border-radius: var(--bubble-pop-up-border-radius, var(--bubble-border-radius, 18px)) !important;\n    background: var(--bubble-pop-up-background-color, var(--primary-background-color)) !important;\n    box-shadow: var(--bubble-pop-up-box-shadow, var(--bubble-box-shadow, none)) !important;\n    backdrop-filter: var(--bubble-pop-up-backdrop-filter, blur(16px)) !important;\n  }\n\n  /* --- Icon Leucht-Zustand (an/aus): Bubble Card ---\n     .bubble-icon-container, .is-on/.is-off und ha-icon.bubble-main-icon\n     liegen laut Bubble-Card-Quellcode im selben, von aussen erreichbaren\n     Shadow-Root wie .bubble-container (anders als Sub-Buttons, die\n     weiterhin card_mod: pro Karte brauchen). Live von Enrico getestet. */\n  .bubble-icon-container {\n    transition: box-shadow .3s ease-in-out;\n  }\n  .is-off .bubble-icon-container {\n    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25),\n                0 1px 2px rgba(0, 0, 0, 0.15) !important;\n  }\n  .is-on .bubble-icon-container {\n    box-shadow: 0 0 10px 2px rgba(var(--rgb-accent-color), 0.55),\n                inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;\n  }\n  .is-on ha-icon.bubble-main-icon {\n    color: var(--bubble-icon-color, var(--accent-color)) !important;\n    filter: drop-shadow(0 0 4px rgba(var(--rgb-accent-color), 0.7));\n  }\n\n  /* --- Mushroom: Icon-Farbe/-Hintergrund/-Rundung an Bubble angleichen ---\n     Mushroom liest --icon-color/--shape-color/--icon-border-radius selbst\n     ueber mushroom-shape-icon (eigener Quellcode: shape-icon.ts). Faellt\n     zuerst auf die eigenen mush-*-Felder zurueck, dann auf die Bubble-\n     Felder, damit alle drei Frameworks optisch gleich aussehen. */\n  mushroom-shape-icon {\n    --icon-color: var(--mush-icon-color, var(--bubble-icon-color, var(--accent-color)));\n    --shape-color: var(--mush-icon-background-color, var(--bubble-icon-background-color, var(--secondary-background-color)));\n    --icon-border-radius: var(--bubble-icon-border-radius, 50%);\n  }\n",
-    "bubble-button-card-background-color": "#FFFFFF",
-    "bubble-button-main-background-color": "#FFFFFF",
-    "bubble-climate-button-background-color": "#F9F9FB",
-    "bubble-cover-button-background-color": "#F9F9FB",
-    "bubble-media-player-button-background-color": "#F9F9FB",
-    "mush-slider-background-color": "#F9F9FB",
-    "bubble-button-active-color": "#007AFF",
-    "bubble-climate-button-icon-color": "#3C3C43",
-    "bubble-cover-button-icon-color": "#3C3C43",
-    "bubble-horizontal-buttons-stack-button-icon-color": "#3C3C43",
-    "bubble-horizontal-buttons-stack-button-text-color": "#1C1C1E",
-    "bubble-media-player-button-icon-color": "#3C3C43",
-    "deep-purple-color": "#6E41AB",
-    "indigo-color": "#3F51B5",
-    "light-blue-color": "#03A9F4",
-    "teal-color": "#009688",
-    "light-green-color": "#8BC34A",
-    "lime-color": "#CDDC39",
-    "amber-color": "#FFC107",
-    "deep-orange-color": "#FF6F22",
-    "brown-color": "#795548",
-    "light-grey-color": "#BDBDBD",
-    "dark-grey-color": "#606060",
-    "blue-grey-color": "#607D8B",
-    "disabled-color": "#D1D1D6",
-    "outline-hover-color": "rgba(0, 0, 0, 0.24)",
-    "state-alarm_control_panel-armed_custom_bypass-color": "#34C759",
-    "state-alarm_control_panel-armed_night-color": "#34C759",
-    "state-alarm_control_panel-armed_vacation-color": "#34C759",
-    "state-alarm_control_panel-arming-color": "#007AFF",
-    "state-alarm_control_panel-disarming-color": "#007AFF",
-    "state-alarm_control_panel-pending-color": "#007AFF",
-    "state-alert-off-color": "#007AFF",
-    "state-alert-on-color": "#FF3B30",
-    "state-binary_sensor-active-color": "#FFC107",
-    "state-binary_sensor-battery-on-color": "#FF3B30",
-    "state-binary_sensor-carbon_monoxide-on-color": "#FF3B30",
-    "state-binary_sensor-gas-on-color": "#FF3B30",
-    "state-binary_sensor-heat-on-color": "#FF3B30",
-    "state-binary_sensor-lock-on-color": "#FF3B30",
-    "state-binary_sensor-moisture-on-color": "#FF3B30",
-    "state-binary_sensor-problem-on-color": "#FF3B30",
-    "state-binary_sensor-safety-on-color": "#FF3B30",
-    "state-binary_sensor-smoke-on-color": "#FF3B30",
-    "state-binary_sensor-sound-on-color": "#FF3B30",
-    "state-binary_sensor-tamper-on-color": "#FF3B30",
-    "state-climate-dry-color": "#007AFF",
-    "state-climate-fan_only-color": "#5AC8FA",
-    "state-climate-heat_cool-color": "#FFC107",
-    "state-device_tracker-active-color": "#007AFF",
-    "state-device_tracker-home-color": "#34C759",
-    "state-humidifier-on-color": "#007AFF",
-    "state-lawn_mower-active-color": "#009688",
-    "state-lawn_mower-error-color": "#FF3B30",
-    "state-lock-jammed-color": "#FF3B30",
-    "state-lock-open-color": "#FF3B30",
-    "state-lock-opening-color": "#007AFF",
-    "state-media_player-active-color": "#007AFF",
-    "state-person-active-color": "#007AFF",
-    "state-person-home-color": "#34C759",
-    "state-plant-active-color": "#FF3B30",
-    "state-siren-active-color": "#FF3B30",
-    "state-sun-above_horizon-color": "#FFC107",
-    "state-sun-below_horizon-color": "#3F51B5",
-    "state-update-active-color": "#007AFF",
-    "state-valve-active-color": "#007AFF",
-    "state-vacuum-error-color": "#FF3B30",
-    "state-water_heater-eco-color": "#34C759",
-    "state-water_heater-electric-color": "#007AFF",
-    "state-water_heater-gas-color": "#007AFF",
-    "state-water_heater-heat_pump-color": "#007AFF",
-    "state-water_heater-high_demand-color": "#FF6F22",
-    "state-water_heater-performance-color": "#FF6F22",
-    "state-weather-clear_night-color": "#6E41AB",
-    "state-weather-cloudy-color": "#BDBDBD",
-    "state-weather-exceptional-color": "#FF3B30",
-    "state-weather-fog-color": "#3C3C43",
-    "state-weather-hail-color": "#5AC8FA",
-    "state-weather-lightning_rainy-color": "#CDDC39",
-    "state-weather-lightning-color": "#FFCC00",
-    "state-weather-partlycloudy-color": "#607D8B",
-    "state-weather-pouring-color": "#3F51B5",
-    "state-weather-rainy-color": "#007AFF",
-    "state-weather-snowy_rainy-color": "#03A9F4",
-    "state-weather-snowy-color": "#C0E0FF",
-    "state-weather-sunny-color": "#FFC107",
-    "state-weather-windy_variant-color": "#34C759",
-    "state-weather-windy-color": "#34C759",
-    "state-sensor-battery-high-color": "#34C759",
-    "state-sensor-battery-medium-color": "#007AFF",
-    "state-sensor-battery-low-color": "#FF3B30",
-    "color-1": "#ff9300",
-    "color-2": "#007AFF",
-    "color-3": "#34C759",
-    "color-4": "#AF52DE",
-    "color-5": "#FF3B30",
-    "color-6": "#5AC8FA",
-    "color-7": "#00C7BE",
-    "color-8": "#FF2D55",
-    "color-9": "#FF6B22",
-    "color-10": "#5856D6",
-    "color-11": "#A3D977",
-    "color-12": "#FFCC00",
-    "color-13": "#AF52DE",
-    "color-14": "#8E6E53",
-    "ha-switch-background-color": "#D1D1D6",
-    "ha-switch-background-color-hover": "#D1D1D6",
-    "ha-switch-border-color": "rgba(0,0,0,0)",
-    "ha-switch-thumb-background-color": "#FFFFFF",
-    "ha-switch-thumb-background-color-hover": "#FFFFFF",
-    "ha-switch-thumb-border-color": "rgba(0,0,0,0)",
-    "ha-switch-thumb-border-color-hover": "rgba(0,0,0,0)",
-    "ha-switch-checked-background-color": "#E5F1FF",
-    "ha-switch-checked-background-color-hover": "#E5F1FF",
-    "ha-switch-checked-border-color": "rgba(0,0,0,0)",
-    "ha-switch-checked-thumb-background-color": "#007AFF",
-    "ha-switch-checked-thumb-background-color-hover": "#007AFF",
-    "ha-switch-checked-thumb-border-color": "rgba(0,0,0,0)",
-    "ha-switch-checked-thumb-border-color-hover": "rgba(0,0,0,0)",
-    "printer-cyan-color": "#00AEEF",
-    "printer-magenta-color": "#EC008C",
-    "printer-yellow-color": "#FFD400",
-    "bubble-main-buttons-background-color": "#FFFFFF",
-    "card-backdrop-blur": "none"
-  },
-  "dark": {
-    "accent-color": "#ff9300",
-    "primary-color": "#ff9300",
-    "dark-primary-color": "#2C2C2E",
-    "light-primary-color": "#ff9300",
-    "primary-text-color": "#feffff",
-    "secondary-text-color": "#C7C7CC",
-    "text-primary-color": "#000000",
-    "disabled-text-color": "#636366",
-    "error-color": "#FF453A",
-    "warning-color": "#FFD60A",
-    "success-color": "#30D158",
-    "info-color": "#0A84FF",
-    "red-color": "#FF453A",
-    "green-color": "#30D158",
-    "blue-color": "#0A84FF",
-    "orange-color": "#FF9F0A",
-    "yellow-color": "#FFD60A",
-    "purple-color": "#BF5AF2",
-    "pink-color": "#FF375F",
-    "cyan-color": "#32ADE6",
-    "grey-color": "#C7C7CC",
-    "black-color": "#000000",
-    "white-color": "#FFFFFF",
-    "primary-background-color": "#000000",
-    "background-color": "#000000",
-    "lovelace-background": "#000000",
-    "secondary-background-color": "#2C2C2E",
-    "card-background-color": "#1C1C1E",
-    "ha-card-background": "#1C1C1E",
-    "ha-card-background-color": "#1C1C1E",
-    "table-row-background-color": "#2C2C2E",
-    "table-row-alternative-background-color": "#1C1C1E",
-    "app-header-background-color": "#1C1C1E",
-    "app-toolbar-background-color": "#1C1C1E",
-    "toolbar-background-color": "#1C1C1E",
-    "app-drawer-background-color": "#1C1C1E",
-    "sidebar-background-color": "#1C1C1E",
-    "sidebar-selected-background-color": "#d5d5d5",
-    "mdc-theme-background": "#000000",
-    "mdc-theme-surface": "#1C1C1E",
-    "mdc-theme-on-surface": "#F2F2F7",
-    "wa-color-surface-raised": "#1C1C1E",
-    "app-header-text-color": "#F2F2F7",
-    "app-toolbar-text-color": "#F2F2F7",
-    "toolbar-text-color": "#F2F2F7",
-    "app-drawer-text-color": "#C7C7CC",
-    "app-drawer-icon-color": "#ff9300",
-    "sidebar-text-color": "#C7C7CC",
-    "sidebar-icon-color": "rgba(225, 225, 225, 0.6)",
-    "sidebar-selected-text-color": "#d5d5d5",
-    "sidebar-selected-icon-color": "#d5d5d5",
-    "state-icon-color": "#feffff",
-    "state-icon-active-color": "#ff9300",
-    "state-icon-unavailable-color": "#929292",
-    "state-active-color": "#ff9300",
-    "state-inactive-color": "#929292",
-    "state-unavailable-color": "#929292",
-    "state-on-color": "#30D158",
-    "state-off-color": "#636366",
-    "state-light-color": "#ff9300",
-    "state-light-active-color": "#ff9300",
-    "state-light-on-color": "#ff9300",
-    "state-switch-color": "#0A84FF",
-    "state-switch-active-color": "#ff9300",
-    "state-switch-on-color": "#ff9300",
-    "state-climate-cool-color": "#0A84FF",
-    "state-climate-heat-color": "#ff2600",
-    "state-climate-auto-color": "#ffd478",
-    "state-cover-color": "#0A84FF",
-    "state-cover-active-color": "#929000",
-    "state-cover-open-color": "#929000",
-    "state-cover-closed-color": "#ff2600",
-    "state-fan-color": "#0A84FF",
-    "state-fan-active-color": "#0A84FF",
-    "state-media_player-color": "#0A84FF",
-    "state-vacuum-color": "#0A84FF",
-    "state-vacuum-active-color": "#0A84FF",
-    "state-lock-locked-color": "#ff2600",
-    "state-lock-locking-color": "#ff2600",
-    "state-lock-unlocked-color": "#929000",
-    "state-lock-unlocking-color": "#929000",
-    "state-alarm_control_panel-triggered-color": "#ff2600",
-    "state-alarm-triggered-color": "#ff2600",
-    "state-alarm_control_panel-armed_home-color": "#ffd478",
-    "state-alarm_control_panel-armed_away-color": "#ffd478",
-    "state-alarm-armed-color": "#ffd478",
-    "state-alarm_control_panel-disarmed-color": "#ff9300",
-    "state-alarm-disarmed-color": "#ff9300",
-    "state-battery-low-color": "#ff2600",
-    "label-badge-background-color": "#1C1C1E",
-    "label-badge-text-color": "rgba(225, 225, 225, 0.8)",
-    "label-badge-red": "#FF453A",
-    "label-badge-blue": "#0A84FF",
-    "label-badge-green": "#30D158",
-    "label-badge-yellow": "#FFD60A",
-    "state-battery-alert-color": "#ff2600",
-    "ha-control-switch-color": "#ff9300",
-    "ha-control-switch-checked-color": "#ff9300",
-    "ha-control-switch-unchecked-color": "#3A3A3C",
-    "mush-toggle-color": "#ff9300",
-    "mush-rgb-state-switch": "255, 147, 0",
-    "bubble-toggle-color": "#ff9300",
-    "rgb-state-switch-color": "255, 147, 0",
-    "control-slider-color": "#ff9300",
-    "slider-color": "#ff9300",
-    "slider-secondary-color": "#1F3A5F",
-    "slider-track-color": "#48484A",
-    "mush-slider-color": "#ff9300",
-    "mush-slider-track-color": "#48484A",
-    "mush-toggle-background-color": "#48484A",
-    "control-button-background-color": "#2C2C2E",
-    "control-button-icon-color": "#ff9300",
-    "control-button-border-radius": "18px",
-    "mush-chip-background": "#2C2C2E",
-    "mush-chip-active-background": "#1F3A5F",
-    "mush-chip-color": "#F2F2F7",
-    "mush-chip-icon-color": "#ff9300",
-    "mush-chip-active-color": "#0A84FF",
-    "mush-chip-active-icon-color": "#0A84FF",
-    "mush-chip-border-color": "#38383A",
-    "mush-chip-border-radius": "16px",
-    "mush-chip-font-size": "12px",
-    "bubble-button-background-color": "#1C1C1E",
-    "bubble-button-active-background-color": "#0A84FF",
-    "bubble-button-icon-color": "#ff9300",
-    "bubble-button-active-icon-color": "#000000",
-    "bubble-button-text-color": "#feffff",
-    "bubble-button-active-text-color": "#000000",
-    "bubble-button-border-radius": "18px",
-    "bubble-sub-button-background-color": "#2C2C2E",
-    "bubble-sub-button-active-background-color": "#0A84FF",
-    "bubble-sub-button-icon-color": "#ff9300",
-    "bubble-sub-button-active-icon-color": "#000000",
-    "bubble-sub-button-text-color": "#C7C7CC",
-    "bubble-sub-button-active-text-color": "#000000",
-    "bubble-sub-button-border-radius": "14px",
-    "bubble-sub-button-box-shadow": "0 4px 11px rgba(0,0,0,.45)",
-    "input-background-color": "#2C2C2E",
-    "input-fill-color": "#2C2C2E",
-    "input-disabled-fill-color": "rgba(44, 44, 46, 0.50)",
-    "input-disabled-ink-color": "rgba(255, 255, 255, 0.37)",
-    "input-disabled-label-ink-color": "#636366",
-    "input-disabled-line-color": "rgba(255, 255, 255, 0.06)",
-    "input-dropdown-icon-color": "rgba(255, 255, 255, 0.54)",
-    "input-hover-line-color": "rgba(255, 255, 255, 0.87)",
-    "input-idle-line-color": "rgba(255, 255, 255, 0.42)",
-    "input-ink-color": "rgba(255, 255, 255, 0.87)",
-    "input-label-ink-color": "rgba(255, 255, 255, 0.6)",
-    "input-outlined-disabled-border-color": "rgba(255, 255, 255, 0.06)",
-    "mdc-select-idle-line-color": "#38383A",
-    "mdc-select-dropdown-icon-color": "#C7C7CC",
-    "mdc-select-hover-line-color": "#38383A",
-    "mdc-text-field-idle-line-color": "#38383A",
-    "mdc-text-field-hover-line-color": "#38383A",
-    "ha-color-form-background": "#2C2C2E",
-    "ha-color-form-background-hover": "#2C2C2E",
-    "ha-color-form-background-disabled": "rgba(44, 44, 46, 0.50)",
-    "mdc-theme-primary": "#0A84FF",
-    "mdc-theme-secondary": "#0A84FF",
-    "mdc-theme-on-primary": "#000000",
-    "md-sys-color-primary": "#ff9300",
-    "md-sys-color-on-primary": "#0A84FF",
-    "md-sys-color-primary-container": "#1F3A5F",
-    "md-sys-color-on-primary-container": "#000000",
-    "md-sys-color-on-surface": "#feffff",
-    "ha-on-surface-color": "#feffff",
-    "md-radio-selected-icon-color": "#0A84FF",
-    "mdc-radio-unchecked-color": "#C7C7CC",
-    "ha-color-fill-primary-normal-resting": "rgba(255, 147, 0, 0.15)",
-    "ha-color-fill-primary-normal-hover": "rgba(255, 147, 0, 0.25)",
-    "ha-color-fill-primary-quiet-resting": "rgba(255, 147, 0, 0.08)",
-    "ha-color-fill-primary-quiet-hover": "rgba(255, 147, 0, 0.15)",
-    "ha-color-fill-disabled-normal-resting": "rgba(99, 99, 102, 0.08)",
-    "ha-color-on-disabled-normal": "rgba(199, 199, 204, 0.50)",
-    "ha-color-fill-disabled-loud-resting": "rgba(99, 99, 102, 0.22)",
-    "ha-color-on-disabled-loud": "rgba(199, 199, 204, 0.55)",
-    "ha-color-on-disabled-quiet": "rgba(199, 199, 204, 0.50)",
-    "ha-color-fill-neutral-quiet-resting": "#1C1C1E",
-    "ha-color-fill-neutral-quiet-hover": "#2C2C2E",
-    "ha-color-fill-neutral-quiet-active": "#1C1C1E",
-    "ha-color-fill-neutral-normal-resting": "#2C2C2E",
-    "ha-color-fill-neutral-normal-hover": "#1C1C1E",
-    "ha-color-fill-neutral-normal-active": "#2C2C2E",
-    "ha-color-fill-danger-normal-resting": "rgba(255, 69, 58, 0.15)",
-    "ha-color-fill-danger-normal-hover": "rgba(255, 69, 58, 0.22)",
-    "ha-color-fill-danger-normal-active": "rgba(255, 69, 58, 0.28)",
-    "ha-color-on-danger-normal": "#F2F2F7",
-    "ha-color-fill-warning-normal-resting": "rgba(255, 214, 10, 0.15)",
-    "ha-color-fill-warning-normal-hover": "rgba(255, 214, 10, 0.22)",
-    "ha-color-fill-warning-normal-active": "rgba(255, 214, 10, 0.28)",
-    "ha-color-on-warning-normal": "#F2F2F7",
-    "ha-tooltip-background-color": "#2C2C2E",
-    "ha-tooltip-text-color": "#F2F2F7",
-    "border-color": "rgba(225, 225, 225, 0.12)",
-    "border-radius": "18px",
-    "box-shadow": "0 10px 30px rgba(0,0,0,.50)",
-    "divider-color": "rgba(225, 225, 225, 0.12)",
-    "outline-color": "rgba(225, 225, 225, 0.12)",
-    "outline-variant-color": "#38383A",
-    "ha-card-border-color": "rgba(225, 225, 225, 0.12)",
-    "ha-card-border-radius": "18px",
-    "ha-card-border-width": "1px",
-    "ha-card-box-shadow": "0 10px 30px rgba(0,0,0,.50)",
-    "ha-line-height-condensed": "1.25",
-    "ha-line-height-expanded": "1.35",
-    "ha-line-height-normal": "1.5",
-    "bubble-border": "1px solid #38383A",
-    "bubble-border-color": "rgba(225, 225, 225, 0.12)",
-    "bubble-border-radius": "18px",
-    "bubble-box-shadow": "0 10px 30px rgba(0,0,0,.50)",
-    "bubble-card-border-radius": "18px",
-    "bubble-climate-border-radius": "18px",
-    "bubble-climate-box-shadow": "0 10px 30px rgba(0,0,0,.50)",
-    "bubble-climate-icon-border-radius": "32px",
-    "bubble-cover-border-radius": "18px",
-    "bubble-cover-box-shadow": "0 10px 30px rgba(0,0,0,.50)",
-    "bubble-icon-border-radius": "14px",
-    "bubble-media-player-border-radius": "18px",
-    "bubble-media-player-box-shadow": "0 10px 30px rgba(0,0,0,.50)",
-    "bubble-pop-up-border-radius": "18px",
-    "bubble-pop-up-box-shadow": "0 10px 30px rgba(0,0,0,.50)",
-    "bubble-select-border-radius": "18px",
-    "bubble-separator-border-radius": "18px",
-    "bubble-horizontal-buttons-stack-border-radius": "18px",
-    "bubble-horizontal-buttons-stack-box-shadow": "0 10px 30px rgba(0,0,0,.50)",
-    "primary-font-family": "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif",
-    "ha-font-family-body": "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif",
-    "ha-font-family-heading": "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif",
-    "ha-font-family-longform": "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif",
-    "ha-font-family-code": "'SF Mono', 'Roboto Mono', Consolas, monospace",
-    "mdc-typography-font-family": "'SF Mono', 'Roboto Mono', Consolas, monospace",
-    "ha-font-size-scale": "1",
-    "ha-font-size-2xs": "8px",
-    "ha-font-size-xs": "8px",
-    "ha-font-size-s": "12px",
-    "ha-font-size-m": "14px",
-    "ha-font-size-l": "16px",
-    "ha-font-size-xl": "18px",
-    "ha-font-size-2xl": "20px",
-    "ha-font-size-3xl": "22px",
-    "ha-font-size-4xl": "24px",
-    "ha-font-weight-light": "300",
-    "ha-font-weight-normal": "400",
-    "ha-font-weight-body": "400",
-    "ha-font-weight-medium": "500",
-    "ha-font-weight-heading": "500",
-    "ha-font-weight-action": "500",
-    "ha-font-weight-bold": "700",
-    "rgb-primary-color": "255, 147, 0",
-    "rgb-accent-color": "255, 147, 0",
-    "rgb-primary-text-color": "254, 255, 255",
-    "rgb-secondary-text-color": "199, 199, 204",
-    "rgb-card-background-color": "28, 28, 30",
-    "rgb-primary-background-color": "0, 0, 0",
-    "rgb-blue-color": "10, 132, 255",
-    "rgb-orange-color": "255, 159, 10",
-    "rgb-state-light-color": "10, 132, 255",
-    "rgb-state-cover-color": "10, 132, 255",
-    "rgb-state-fan-color": "10, 132, 255",
-    "rgb-state-media_player-color": "10, 132, 255",
-    "mush-rgb-primary-text-color": "242, 242, 247",
-    "mush-rgb-secondary-text-color": "199, 199, 204",
-    "mush-rgb-state-light": "10, 132, 255",
-    "mush-rgb-state-cover": "10, 132, 255",
-    "mush-rgb-state-entity": "10, 132, 255",
-    "mush-rgb-state-fan": "10, 132, 255",
-    "mush-rgb-state-media-player": "10, 132, 255",
-    "mush-rgb-state-vacuum": "10, 132, 255",
-    "mush-rgb-success": "48, 209, 88",
-    "mush-rgb-warning": "255, 214, 10",
-    "mush-rgb-danger": "255, 69, 58",
-    "mush-rgb-disabled": "99, 99, 102",
-    "mush-rgb-info": "10, 132, 255",
-    "graph-color-1": "#0A84FF",
-    "graph-color-2": "#64D2FF",
-    "graph-color-3": "#30D158",
-    "graph-color-4": "#BF5AF2",
-    "graph-color-5": "#FF453A",
-    "graph-color-6": "#32ADE6",
-    "graph-color-7": "#64D2FF",
-    "graph-color-8": "#FF375F",
-    "graph-color-9": "#FF9F0A",
-    "graph-color-10": "#5E5CE6",
-    "graph-color-11": "#A3D977",
-    "graph-color-12": "#FFD60A",
-    "graph-color-13": "#BF5AF2",
-    "graph-color-14": "#A2845E",
-    "energy-grid-consumption-color": "#0A84FF",
-    "energy-grid-return-color": "#BF5AF2",
-    "energy-solar-color": "#FF9F0A",
-    "energy-non-fossil-color": "#30D158",
-    "energy-battery-out-color": "#64D2FF",
-    "energy-battery-in-color": "#BF5AF2",
-    "energy-gas-color": "#FF453A",
-    "energy-water-color": "#32ADE6",
-    "bubble-card-background-color": "#1C1C1E",
-    "bubble-secondary-background-color": "#2C2C2E",
-    "bubble-icon-background-color": "#2C2C2E",
-    "bubble-icon-color": "#ff9300",
-    "bubble-name-color": "#feffff",
-    "bubble-state-color": "#C7C7CC",
-    "bubble-accent-color": "#ff9300",
-    "bubble-active-color": "#ff9300",
-    "bubble-line-background-color": "rgba(225, 225, 225, 0.12)",
-    "bubble-pop-up-background-color": "#000000",
-    "bubble-pop-up-backdrop-filter": "blur(18px)",
-    "dialog-box-shadow": "0 10px 30px rgba(0,0,0,.50)",
-    "more-info-header-background": "#2C2C2E",
-    "more-info-header-color": "#F2F2F7",
-    "popup-border-radius": "12px",
-    "ha-dialog-scrim-backdrop-filter": "blur(10px)",
-    "ha-dialog-surface-background": "rgba(28, 28, 30, 0.92)",
-    "mdc-dialog-scrim-color": "rgba(0, 0, 0, 0.60)",
-    "bubble-separator-background-color": "#1C1C1E",
-    "bubble-separator-icon-background-color": "#2C2C2E",
-    "bubble-separator-icon-color": "#0A84FF",
-    "bubble-separator-line-color": "rgba(225, 225, 225, 0.12)",
-    "bubble-separator-name-color": "#feffff",
-    "bubble-separator-text-color": "#feffff",
-    "bubble-horizontal-buttons-stack-background-color": "#1C1C1E",
-    "bubble-horizontal-buttons-stack-button-background-color": "#2C2C2E",
-    "bubble-sub-buttons-main-background-color": "#1C1C1E",
-    "bubble-climate-background-color": "#1C1C1E",
-    "bubble-climate-main-background-color": "#1C1C1E",
-    "bubble-cover-background-color": "#1C1C1E",
-    "bubble-cover-main-background-color": "#1C1C1E",
-    "bubble-media-player-background-color": "#1C1C1E",
-    "bubble-media-player-main-background-color": "#1C1C1E",
-    "mush-card-background": "#1C1C1E",
-    "mush-control-background-color": "#2C2C2E",
-    "mush-icon-background-color": "#2C2C2E",
-    "mush-card-primary-color": "#feffff",
-    "mush-card-secondary-color": "#C7C7CC",
-    "mush-title-color": "#feffff",
-    "mush-subtitle-color": "#C7C7CC",
-    "mush-icon-color": "#0A84FF",
-    "mush-icon-active-color": "#ff9300",
-    "card-mod-theme": "basis",
-    "card-mod-card-yaml": "\n.: |\n  /* HATG Bubble Card: zentraler card-mod Block */\n  ha-card {\n    /* v0.4.50: Enrico - \"Popup, Heizung und freier Button haben keinen\n       cardmod genau so wie die Menueleiste unten.\" Root Cause (im echten\n       Bubble-Card-Quellcode nachgeschaut): JEDE Bubble-Karte nutzt fuer\n       Hintergrund/Icon/Name/Radius automatisch Fallback-Ketten wie\n       var(--bubble-card-type-main-background-color, var(--bubble-main-background-color, ...)) -\n       diese Variablen haben wir bisher nie gesetzt, nur einzelne Klassen per\n       !important erzwungen (siehe Liste unten). Fuer Kartentypen, die nicht\n       in dieser Liste stehen (z. B. ein reiner \"button\"-Typ ohne Entity wie\n       ein Pop-up-Oeffner, oder die \"sub-buttons\"-Kartenart), griff bisher\n       keine unserer Regeln - Bubble Card fiel auf neutrale Standardwerte\n       zurueck. Jetzt setzen wir die von Bubble Card selbst erwarteten\n       Variablen direkt auf ha-card (genau wie Enricos alter Pro-Karte-\n       card_mod es tat), zeigen aber weiterhin auf unsere eigenen, im Editor\n       bearbeitbaren Felder - das deckt jetzt automatisch auch kuenftige/\n       bisher unbekannte Bubble-Kartentypen ab, ohne dass wir jede einzeln\n       nachtragen muessen. */\n    --bubble-main-background-color: var(--bubble-main-buttons-background-color, var(--card-background-color));\n    --bubble-secondary-background-color: var(--bubble-secondary-background-color, var(--secondary-background-color));\n    --bubble-icon-background-color: var(--bubble-icon-background-color, var(--secondary-background-color));\n    --bubble-icon-color: var(--bubble-icon-color, var(--accent-color));\n    /* v0.4.53: Enrico - vorsorglich \"--bubble-accent-color\" mit aufnehmen,\n       falls kuenftig card_type: calendar mit \"show_progress: true\" genutzt\n       wird. Bubble Card berechnet die Fortschritts-Hervorhebung fuer laufende\n       Termine dann ueber \"var(--bubble-event-accent-color,\n       var(--bubble-accent-color, var(--bubble-default-color)))\" (siehe\n       changes.js im echten Bubble-Card-Quellcode) - ohne eigene Definition\n       blieb diese Hervorhebung bisher farblos, da wir --bubble-accent-color\n       nie gesetzt haben und Bubble Card selbst dafuer keinen eigenen\n       Standardwert bereitstellt. */\n    --bubble-accent-color: var(--bubble-accent-color, var(--accent-color));\n    --bubble-name-color: var(--bubble-name-color, var(--primary-text-color));\n    --bubble-state-color: var(--bubble-state-color, var(--secondary-text-color));\n    --bubble-border-radius: var(--bubble-border-radius, var(--ha-card-border-radius, 18px));\n    /* Bubble Card setzt bei button_type: switch im \"an\"-Zustand selbst\n       eine deckende Akzentfarben-Flutung ueber die ganze Karte\n       (--bubble-button-background-color, per JS/inline gesetzt) -\n       das sieht anders aus als Mushroom/Tile, die nur den Icon-Kreis\n       aufleuchten lassen. Global neutralisiert, damit die Kartenflaeche\n       in JEDEM Zustand dunkel/neutral bleibt und nur noch das Icon\n       (siehe .is-on .bubble-icon-container weiter unten) den\n       \"an\"-Zustand zeigt - alle drei Frameworks sollen so nah wie\n       moeglich gleich aussehen (Enrico: \"keiner soll merken was\n       welche Karte ist\"). */\n    --bubble-button-background-color: transparent !important;\n    border-radius: var(--bubble-border-radius, var(--ha-card-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-box-shadow, var(--ha-card-box-shadow, none)) !important;\n    background: var(--bubble-main-buttons-background-color, var(--ha-card-background, var(--card-background-color))) !important;\n    border: var(--bubble-border, 1px solid var(--bubble-border-color, var(--ha-card-border-color, transparent))) !important;\n    color: var(--bubble-name-color, var(--primary-text-color)) !important;\n    overflow: hidden !important;\n    backdrop-filter: var(--card-backdrop-blur, none) !important;\n  }\n\n  .bubble-card,\n  .bubble-button-card-container,\n  .bubble-media-player,\n  .bubble-media-player-container,\n  .bubble-cover-card-container,\n  .bubble-climate-card-container,\n  .bubble-horizontal-buttons-stack-card-container,\n  .bubble-pop-up,\n  .bubble-pop-up-container {\n    border-radius: var(--bubble-border-radius, var(--ha-card-border-radius, 18px)) !important;\n    background: var(--bubble-main-buttons-background-color, var(--ha-card-background, var(--card-background-color))) !important;\n    box-shadow: var(--bubble-box-shadow, var(--ha-card-box-shadow, none)) !important;\n    border: var(--bubble-border, 1px solid var(--bubble-border-color, var(--ha-card-border-color, transparent))) !important;\n    color: var(--bubble-name-color, var(--primary-text-color)) !important;\n    overflow: hidden !important;\n  }\n\n  /* Echtes Bubble-Card-Element fuer den Zustands-/Fuellfarben-Hintergrund\n     (bisher faelschlich als \".bubble-button-background\" angesprochen - diese\n     Klasse existiert in Bubble Card gar nicht, der echte Name ist\n     \".bubble-background\"). Nur Radius+Clipping erzwingen (per \"inherit\" vom\n     jeweils schon korrekt gesetzten Elternelement), NICHT die Hintergrundfarbe -\n     die uebernimmt Bubble Card selbst korrekt je nach Zustand/Kartentyp ueber\n     die passenden bubble-*-button-background-color-Felder. Behebt eckige statt\n     runde Kartenecken bei Button-/Zustands-Karten. */\n  .bubble-background {\n    border-radius: inherit !important;\n    overflow: hidden !important;\n  }\n\n  .bubble-icon-container,\n  .bubble-icon-wrapper,\n  .bubble-climate-icon-container,\n  .bubble-cover-icon-container,\n  .bubble-media-player-icon-container {\n    border-radius: var(--bubble-icon-border-radius, var(--bubble-button-border-radius, var(--bubble-border-radius, 18px))) !important;\n    background: var(--bubble-icon-background-color, var(--bubble-secondary-background-color, var(--secondary-background-color))) !important;\n    color: var(--bubble-icon-color, var(--accent-color)) !important;\n  }\n\n  .bubble-icon,\n  .bubble-icon-container ha-icon,\n  .bubble-icon-wrapper ha-icon,\n  .bubble-climate-icon-container ha-icon,\n  .bubble-cover-icon-container ha-icon,\n  .bubble-media-player-icon-container ha-icon {\n    color: var(--bubble-icon-color, var(--accent-color)) !important;\n  }\n\n  .bubble-sub-button,\n  .bubble-sub-button-container,\n  .bubble-sub-button-background,\n  .bubble-climate-button,\n  .bubble-cover-button,\n  .bubble-media-player-button {\n    border-radius: var(--bubble-sub-button-border-radius, var(--bubble-button-border-radius, var(--bubble-border-radius, 18px))) !important;\n    background: var(--bubble-sub-button-background-color, var(--bubble-secondary-background-color, var(--secondary-background-color))) !important;\n    color: var(--bubble-sub-button-text-color, var(--bubble-state-color, var(--secondary-text-color))) !important;\n    /* Enrico: \"warum erhalten die subbutton keinen schatten?\" - vorher hier\n       hart auf none erzwungen, jetzt ueber eigenes Feld steuerbar (Fallback\n       auf den allgemeinen Bubble-Schatten, nicht mehr automatisch aus). */\n    box-shadow: var(--bubble-sub-button-box-shadow, var(--bubble-box-shadow, none)) !important;\n    border: 0 !important;\n  }\n\n  .bubble-sub-button ha-icon,\n  .bubble-sub-button-container ha-icon,\n  .bubble-climate-button ha-icon,\n  .bubble-cover-button ha-icon,\n  .bubble-media-player-button ha-icon,\n  .bubble-horizontal-buttons-stack-card-container .bubble-icon,\n  .bubble-horizontal-buttons-stack-card-container ha-icon {\n    color: var(--bubble-sub-button-icon-color, var(--bubble-icon-color, var(--accent-color))) !important;\n  }\n\n  .bubble-name,\n  .bubble-button-card-container .name,\n  .bubble-media-player .name,\n  .bubble-cover-card-container .name,\n  .bubble-climate-card-container .name {\n    color: var(--bubble-name-color, var(--primary-text-color)) !important;\n    font-size: var(--bubble-name-font-size, 14px) !important;\n    font-weight: var(--bubble-name-font-weight, 500) !important;\n  }\n\n  .bubble-state,\n  .bubble-secondary,\n  .bubble-media-player .state,\n  .bubble-cover-card-container .state,\n  .bubble-climate-card-container .state {\n    color: var(--bubble-state-color, var(--secondary-text-color)) !important;\n    font-size: var(--bubble-state-font-size, 12px) !important;\n  }\n\n  .bubble-range,\n  .bubble-range-slider,\n  .bubble-slider-container,\n  .bubble-slider-background,\n  .bubble-media-player-slider-background,\n  .bubble-cover-slider-background {\n    border-radius: var(--bubble-button-border-radius, var(--bubble-border-radius, 18px)) !important;\n    background: var(--slider-track-color, var(--divider-color)) !important;\n    overflow: hidden !important;\n  }\n\n  .bubble-range-fill,\n  .bubble-slider-fill,\n  .bubble-slider-active,\n  .bubble-media-player-slider-fill,\n  .bubble-cover-slider-fill {\n    background: var(--slider-color, var(--accent-color)) !important;\n  }\n  /* Slider-Hintergrund (Track) nutzt jetzt die echten, editierbaren Felder\n     slider-color/slider-track-color (Sektion \"Slider & Progress\") statt der\n     frueher hier verwendeten bubble-slider-*-Variablen - die gab es in Bubble\n     Card nie wirklich (Altlasten-Bereinigung hat sie deshalb aus dem Manifest\n     entfernt), wodurch diese Regel bisher IMMER auf divider-color/accent-color\n     zurueckgefallen ist, egal was auf \"Slider & Progress\" eingestellt war.\n     Hinweis: \"Slider-Enden abrunden\" und \"Slider-Farbverlauf\" (siehe Plugin-Seite)\n     wirken weiterhin nur direkt in der jeweiligen Bubble-Card ueber deren eigenen\n     \"styles:\"-Schluessel - Bubble Card ueberschreibt CSS am Slider-FUELLBALKEN\n     (.bubble-slider-fill usw.) hier per eigenem, hoeher spezifischem <style>-Tag\n     sonst selbst; der Slider-HINTERGRUND (Track) ist davon nicht betroffen und\n     reagiert jetzt korrekt auf slider-track-color. Fertige Kopiervorlagen fuer\n     Fuellfarbe/Rundung gibt es auf der Plugin-Seite. */\n\n  .bubble-climate-card-container {\n    border-radius: var(--bubble-climate-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-climate-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-climate-main-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  .bubble-cover-card-container {\n    border-radius: var(--bubble-cover-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-cover-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-cover-main-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  .bubble-media-player {\n    border-radius: var(--bubble-media-player-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-media-player-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-media-player-main-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  .bubble-horizontal-buttons-stack-card-container {\n    border-radius: var(--bubble-horizontal-buttons-stack-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-horizontal-buttons-stack-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-horizontal-buttons-stack-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  /* Bubble Card horizontal-buttons-stack: die echten Klassen je Einzelbutton\n     sind \".bubble-button\" (Layout), \".bubble-background-color\" (von Bubble\n     Card hartcodierter weisser Rahmen) und \".bubble-background\" (Fuellfarbe,\n     Standard-Fallback landet NICHT bei --bubble-main-buttons-background-color wie bei\n     den anderen Kartentypen). \".bubble-horizontal-buttons-stack .bubble-button\"\n     (oben, alte Version) existierte in Bubble Card nie und griff nie. Ziel:\n     die drei Buttons sollen optisch genauso aussehen wie die uebrigen\n     Bubble-Karten (gleicher Radius, gleicher Rahmen, gleiche Kartenfarbe\n     statt hartcodiertem weissem Rahmen). */\n  .bubble-horizontal-buttons-stack-card-container .bubble-button,\n  .bubble-horizontal-buttons-stack-card-container .bubble-background-color,\n  .bubble-horizontal-buttons-stack-card-container .bubble-background {\n    border-radius: var(--bubble-horizontal-buttons-stack-border-radius, var(--bubble-border-radius, 18px)) !important;\n  }\n\n  .bubble-horizontal-buttons-stack-card-container .bubble-background-color {\n    border: var(--bubble-border, 1px solid var(--bubble-border-color, var(--ha-card-border-color, transparent))) !important;\n  }\n\n  .bubble-horizontal-buttons-stack-card-container .bubble-background {\n    background-color: var(--bubble-horizontal-buttons-stack-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n    box-shadow: var(--bubble-horizontal-buttons-stack-box-shadow, var(--bubble-box-shadow, none)) !important;\n    opacity: 1 !important;\n  }\n\n  .bubble-pop-up,\n  .bubble-pop-up-background,\n  .bubble-pop-up-container {\n    border-radius: var(--bubble-pop-up-border-radius, var(--bubble-border-radius, 18px)) !important;\n    background: var(--bubble-pop-up-background-color, var(--primary-background-color)) !important;\n    box-shadow: var(--bubble-pop-up-box-shadow, var(--bubble-box-shadow, none)) !important;\n    backdrop-filter: var(--bubble-pop-up-backdrop-filter, blur(16px)) !important;\n  }\n\n  /* --- Icon Leucht-Zustand (an/aus): Bubble Card ---\n     .bubble-icon-container, .is-on/.is-off und ha-icon.bubble-main-icon\n     liegen laut Bubble-Card-Quellcode im selben, von aussen erreichbaren\n     Shadow-Root wie .bubble-container (anders als Sub-Buttons, die\n     weiterhin card_mod: pro Karte brauchen). Live von Enrico getestet. */\n  .bubble-icon-container {\n    transition: box-shadow .3s ease-in-out;\n  }\n  .is-off .bubble-icon-container {\n    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25),\n                0 1px 2px rgba(0, 0, 0, 0.15) !important;\n  }\n  .is-on .bubble-icon-container {\n    box-shadow: 0 0 10px 2px rgba(var(--rgb-accent-color), 0.55),\n                inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;\n  }\n  .is-on ha-icon.bubble-main-icon {\n    color: var(--bubble-icon-color, var(--accent-color)) !important;\n    filter: drop-shadow(0 0 4px rgba(var(--rgb-accent-color), 0.7));\n  }\n\n  /* --- Mushroom: Icon-Farbe/-Hintergrund/-Rundung an Bubble angleichen ---\n     Mushroom liest --icon-color/--shape-color/--icon-border-radius selbst\n     ueber mushroom-shape-icon (eigener Quellcode: shape-icon.ts). Faellt\n     zuerst auf die eigenen mush-*-Felder zurueck, dann auf die Bubble-\n     Felder, damit alle drei Frameworks optisch gleich aussehen. */\n  mushroom-shape-icon {\n    --icon-color: var(--mush-icon-color, var(--bubble-icon-color, var(--accent-color)));\n    --shape-color: var(--mush-icon-background-color, var(--bubble-icon-background-color, var(--secondary-background-color)));\n    --icon-border-radius: var(--bubble-icon-border-radius, 50%);\n  }\n",
-    "bubble-button-card-background-color": "#1C1C1E",
-    "bubble-button-main-background-color": "#1C1C1E",
-    "bubble-climate-button-background-color": "#2C2C2E",
-    "bubble-cover-button-background-color": "#2C2C2E",
-    "bubble-media-player-button-background-color": "#2C2C2E",
-    "mush-slider-background-color": "#2C2C2E",
-    "bubble-button-active-color": "#0A84FF",
-    "bubble-climate-button-icon-color": "#C7C7CC",
-    "bubble-cover-button-icon-color": "#C7C7CC",
-    "bubble-horizontal-buttons-stack-button-icon-color": "#C7C7CC",
-    "bubble-horizontal-buttons-stack-button-text-color": "#F2F2F7",
-    "bubble-media-player-button-icon-color": "#C7C7CC",
-    "deep-purple-color": "#6E41AB",
-    "indigo-color": "#3F51B5",
-    "light-blue-color": "#03A9F4",
-    "teal-color": "#009688",
-    "light-green-color": "#8BC34A",
-    "lime-color": "#CDDC39",
-    "amber-color": "#FFC107",
-    "deep-orange-color": "#FF6F22",
-    "brown-color": "#795548",
-    "light-grey-color": "#BDBDBD",
-    "dark-grey-color": "#606060",
-    "blue-grey-color": "#607D8B",
-    "disabled-color": "#464646",
-    "outline-hover-color": "rgba(225, 225, 225, 0.24)",
-    "state-alarm_control_panel-armed_custom_bypass-color": "#30D158",
-    "state-alarm_control_panel-armed_night-color": "#30D158",
-    "state-alarm_control_panel-armed_vacation-color": "#30D158",
-    "state-alarm_control_panel-arming-color": "#0A84FF",
-    "state-alarm_control_panel-disarming-color": "#0A84FF",
-    "state-alarm_control_panel-pending-color": "#0A84FF",
-    "state-alert-off-color": "#0A84FF",
-    "state-alert-on-color": "#FF453A",
-    "state-binary_sensor-active-color": "#FFC107",
-    "state-binary_sensor-battery-on-color": "#FF453A",
-    "state-binary_sensor-carbon_monoxide-on-color": "#FF453A",
-    "state-binary_sensor-gas-on-color": "#FF453A",
-    "state-binary_sensor-heat-on-color": "#FF453A",
-    "state-binary_sensor-lock-on-color": "#FF453A",
-    "state-binary_sensor-moisture-on-color": "#FF453A",
-    "state-binary_sensor-problem-on-color": "#FF453A",
-    "state-binary_sensor-safety-on-color": "#FF453A",
-    "state-binary_sensor-smoke-on-color": "#FF453A",
-    "state-binary_sensor-sound-on-color": "#FF453A",
-    "state-binary_sensor-tamper-on-color": "#FF453A",
-    "state-climate-dry-color": "#0A84FF",
-    "state-climate-fan_only-color": "#32ADE6",
-    "state-climate-heat_cool-color": "#FFC107",
-    "state-device_tracker-active-color": "#0A84FF",
-    "state-device_tracker-home-color": "#30D158",
-    "state-humidifier-on-color": "#0A84FF",
-    "state-lawn_mower-active-color": "#009688",
-    "state-lawn_mower-error-color": "#FF453A",
-    "state-lock-jammed-color": "#FF453A",
-    "state-lock-open-color": "#FF453A",
-    "state-lock-opening-color": "#0A84FF",
-    "state-media_player-active-color": "#0A84FF",
-    "state-person-active-color": "#0A84FF",
-    "state-person-home-color": "#30D158",
-    "state-plant-active-color": "#FF453A",
-    "state-siren-active-color": "#FF453A",
-    "state-sun-above_horizon-color": "#FFC107",
-    "state-sun-below_horizon-color": "#3F51B5",
-    "state-update-active-color": "#0A84FF",
-    "state-valve-active-color": "#0A84FF",
-    "state-vacuum-error-color": "#FF453A",
-    "state-water_heater-eco-color": "#30D158",
-    "state-water_heater-electric-color": "#0A84FF",
-    "state-water_heater-gas-color": "#0A84FF",
-    "state-water_heater-heat_pump-color": "#0A84FF",
-    "state-water_heater-high_demand-color": "#FF6F22",
-    "state-water_heater-performance-color": "#FF6F22",
-    "state-weather-clear_night-color": "#6E41AB",
-    "state-weather-cloudy-color": "#BDBDBD",
-    "state-weather-exceptional-color": "#FF453A",
-    "state-weather-fog-color": "#C7C7CC",
-    "state-weather-hail-color": "#32ADE6",
-    "state-weather-lightning_rainy-color": "#CDDC39",
-    "state-weather-lightning-color": "#FFD60A",
-    "state-weather-partlycloudy-color": "#607D8B",
-    "state-weather-pouring-color": "#3F51B5",
-    "state-weather-rainy-color": "#0A84FF",
-    "state-weather-snowy_rainy-color": "#03A9F4",
-    "state-weather-snowy-color": "#C0E0FF",
-    "state-weather-sunny-color": "#FFC107",
-    "state-weather-windy_variant-color": "#30D158",
-    "state-weather-windy-color": "#30D158",
-    "state-sensor-battery-high-color": "#30D158",
-    "state-sensor-battery-medium-color": "#0A84FF",
-    "state-sensor-battery-low-color": "#FF453A",
-    "color-1": "#0A84FF",
-    "color-2": "#64D2FF",
-    "color-3": "#30D158",
-    "color-4": "#BF5AF2",
-    "color-5": "#FF453A",
-    "color-6": "#32ADE6",
-    "color-7": "#64D2FF",
-    "color-8": "#FF375F",
-    "color-9": "#FF9F0A",
-    "color-10": "#5E5CE6",
-    "color-11": "#A3D977",
-    "color-12": "#FFD60A",
-    "color-13": "#BF5AF2",
-    "color-14": "#A2845E",
-    "ha-switch-background-color": "#3A3A3C",
-    "ha-switch-background-color-hover": "#3A3A3C",
-    "ha-switch-border-color": "rgba(0,0,0,0)",
-    "ha-switch-thumb-background-color": "#636366",
-    "ha-switch-thumb-background-color-hover": "#636366",
-    "ha-switch-thumb-border-color": "rgba(0,0,0,0)",
-    "ha-switch-thumb-border-color-hover": "rgba(0,0,0,0)",
-    "ha-switch-checked-background-color": "#1F3A5F",
-    "ha-switch-checked-background-color-hover": "#1F3A5F",
-    "ha-switch-checked-border-color": "rgba(0,0,0,0)",
-    "ha-switch-checked-thumb-background-color": "#0A84FF",
-    "ha-switch-checked-thumb-background-color-hover": "#0A84FF",
-    "ha-switch-checked-thumb-border-color": "rgba(0,0,0,0)",
-    "ha-switch-checked-thumb-border-color-hover": "rgba(0,0,0,0)",
-    "printer-cyan-color": "#33C3FF",
-    "printer-magenta-color": "#FF3EA8",
-    "printer-yellow-color": "#FFE14D",
-    "bubble-main-buttons-background-color": "#1C1C1E",
-    "card-backdrop-blur": "none"
-  }
-}
-;
+const HATG_MANIFEST = {"sections": [{"id": "grundfarben-text", "label": "Grundfarben & Text", "desc": "Zentrale Farben für Text, Akzent, Primärfarbe, Fehler, Erfolg, Warnungen und allgemeine Farbbasis.", "icon": "mdi:palette-outline", "keys": ["accent-color", "primary-color", "dark-primary-color", "light-primary-color", "primary-text-color", "secondary-text-color", "text-primary-color", "disabled-text-color", "disabled-color", "error-color", "warning-color", "success-color", "info-color", "red-color", "green-color", "blue-color", "orange-color", "yellow-color", "purple-color", "pink-color", "cyan-color", "grey-color", "deep-purple-color", "indigo-color", "light-blue-color", "teal-color", "light-green-color", "lime-color", "amber-color", "deep-orange-color", "brown-color", "light-grey-color", "dark-grey-color", "blue-grey-color", "black-color", "white-color", "printer-cyan-color", "printer-magenta-color", "printer-yellow-color"]}, {"id": "hintergruende-karten", "label": "HA-Grundgerüst", "desc": "Die komplette native Home-Assistant-Oberfläche in 16 Unterordnern: Card, Hintergründe, Theme, Header, App Drawer, Sidebar, Status/Icons, Schalter/Toggle/Slider, Buttons & Chips, Eingaben, Material/MDC, HA 2026, Abstände/Schatten, Schrift, RGB-Hilfswerte, Graphen & Energie.", "icon": "mdi:view-dashboard-outline", "keys": ["card-background-color", "ha-card-background", "ha-card-background-color", "wa-color-surface-raised", "ha-card-border-color", "ha-card-border-radius", "ha-card-border-width", "ha-card-box-shadow", "table-row-background-color", "table-row-alternative-background-color", "primary-background-color", "background-color", "lovelace-background", "secondary-background-color", "mdc-theme-background", "mdc-theme-surface", "mdc-theme-on-surface", "app-header-background-color", "app-header-text-color", "app-toolbar-background-color", "toolbar-background-color", "app-toolbar-text-color", "toolbar-text-color", "app-drawer-background-color", "app-drawer-text-color", "app-drawer-icon-color", "sidebar-background-color", "sidebar-selected-background-color", "sidebar-text-color", "sidebar-icon-color", "sidebar-selected-text-color", "sidebar-selected-icon-color", "state-icon-color", "state-icon-active-color", "state-icon-unavailable-color", "state-active-color", "state-inactive-color", "state-unavailable-color", "state-on-color", "state-off-color", "state-light-color", "state-light-active-color", "state-light-on-color", "state-switch-color", "state-switch-active-color", "state-switch-on-color", "state-climate-cool-color", "state-climate-heat-color", "state-climate-auto-color", "state-climate-dry-color", "state-climate-fan_only-color", "state-climate-heat_cool-color", "state-cover-color", "state-cover-active-color", "state-cover-open-color", "state-cover-closed-color", "state-fan-color", "state-fan-active-color", "state-media_player-color", "state-media_player-active-color", "state-vacuum-color", "state-vacuum-active-color", "state-vacuum-error-color", "state-lock-locked-color", "state-lock-locking-color", "state-lock-unlocked-color", "state-lock-unlocking-color", "state-lock-jammed-color", "state-lock-open-color", "state-lock-opening-color", "state-alarm_control_panel-triggered-color", "state-alarm-triggered-color", "state-alarm_control_panel-armed_home-color", "state-alarm_control_panel-armed_away-color", "state-alarm-armed-color", "state-alarm_control_panel-disarmed-color", "state-alarm-disarmed-color", "state-alarm_control_panel-armed_custom_bypass-color", "state-alarm_control_panel-armed_night-color", "state-alarm_control_panel-armed_vacation-color", "state-alarm_control_panel-arming-color", "state-alarm_control_panel-disarming-color", "state-alarm_control_panel-pending-color", "state-alert-off-color", "state-alert-on-color", "state-binary_sensor-active-color", "state-binary_sensor-battery-on-color", "state-binary_sensor-carbon_monoxide-on-color", "state-binary_sensor-gas-on-color", "state-binary_sensor-heat-on-color", "state-binary_sensor-lock-on-color", "state-binary_sensor-moisture-on-color", "state-binary_sensor-problem-on-color", "state-binary_sensor-safety-on-color", "state-binary_sensor-smoke-on-color", "state-binary_sensor-sound-on-color", "state-binary_sensor-tamper-on-color", "state-device_tracker-active-color", "state-device_tracker-home-color", "state-humidifier-on-color", "state-lawn_mower-active-color", "state-lawn_mower-error-color", "state-person-active-color", "state-person-home-color", "state-plant-active-color", "state-siren-active-color", "state-sun-above_horizon-color", "state-sun-below_horizon-color", "state-update-active-color", "state-valve-active-color", "state-water_heater-eco-color", "state-water_heater-electric-color", "state-water_heater-gas-color", "state-water_heater-heat_pump-color", "state-water_heater-high_demand-color", "state-water_heater-performance-color", "state-weather-clear_night-color", "state-weather-cloudy-color", "state-weather-exceptional-color", "state-weather-fog-color", "state-weather-hail-color", "state-weather-lightning_rainy-color", "state-weather-lightning-color", "state-weather-partlycloudy-color", "state-weather-pouring-color", "state-weather-rainy-color", "state-weather-snowy_rainy-color", "state-weather-snowy-color", "state-weather-sunny-color", "state-weather-windy_variant-color", "state-weather-windy-color", "state-battery-low-color", "state-sensor-battery-high-color", "state-sensor-battery-medium-color", "state-sensor-battery-low-color", "label-badge-background-color", "label-badge-text-color", "label-badge-red", "label-badge-blue", "label-badge-green", "label-badge-yellow", "state-battery-alert-color", "ha-control-switch-color", "ha-control-switch-checked-color", "ha-control-switch-unchecked-color", "ha-switch-background-color", "ha-switch-background-color-hover", "ha-switch-border-color", "ha-switch-thumb-background-color", "ha-switch-thumb-background-color-hover", "ha-switch-thumb-border-color", "ha-switch-thumb-border-color-hover", "ha-switch-checked-background-color", "ha-switch-checked-background-color-hover", "ha-switch-checked-border-color", "ha-switch-checked-thumb-background-color", "ha-switch-checked-thumb-background-color-hover", "ha-switch-checked-thumb-border-color", "ha-switch-checked-thumb-border-color-hover", "control-slider-color", "slider-color", "slider-secondary-color", "slider-track-color", "control-button-background-color", "control-button-icon-color", "control-button-border-radius", "input-background-color", "input-fill-color", "input-disabled-fill-color", "input-disabled-ink-color", "input-disabled-label-ink-color", "input-disabled-line-color", "input-dropdown-icon-color", "input-hover-line-color", "input-idle-line-color", "input-ink-color", "input-label-ink-color", "input-outlined-disabled-border-color", "mdc-select-idle-line-color", "mdc-select-dropdown-icon-color", "mdc-select-hover-line-color", "mdc-text-field-idle-line-color", "mdc-text-field-hover-line-color", "ha-color-form-background", "ha-color-form-background-hover", "ha-color-form-background-disabled", "mdc-theme-primary", "mdc-theme-secondary", "mdc-theme-on-primary", "md-sys-color-primary", "md-sys-color-on-primary", "md-sys-color-primary-container", "md-sys-color-on-primary-container", "md-sys-color-on-surface", "ha-on-surface-color", "md-radio-selected-icon-color", "mdc-radio-unchecked-color", "ha-color-fill-primary-normal-resting", "ha-color-fill-primary-normal-hover", "ha-color-fill-primary-quiet-resting", "ha-color-fill-primary-quiet-hover", "ha-color-fill-disabled-normal-resting", "ha-color-on-disabled-normal", "ha-color-fill-disabled-loud-resting", "ha-color-on-disabled-loud", "ha-color-on-disabled-quiet", "ha-color-fill-neutral-quiet-resting", "ha-color-fill-neutral-quiet-hover", "ha-color-fill-neutral-quiet-active", "ha-color-fill-neutral-normal-resting", "ha-color-fill-neutral-normal-hover", "ha-color-fill-neutral-normal-active", "ha-color-fill-danger-normal-resting", "ha-color-fill-danger-normal-hover", "ha-color-fill-danger-normal-active", "ha-color-on-danger-normal", "ha-color-fill-warning-normal-resting", "ha-color-fill-warning-normal-hover", "ha-color-fill-warning-normal-active", "ha-color-on-warning-normal", "ha-tooltip-background-color", "ha-tooltip-text-color", "border-color", "border-radius", "box-shadow", "divider-color", "outline-color", "outline-variant-color", "outline-hover-color", "ha-line-height-condensed", "ha-line-height-expanded", "ha-line-height-normal", "primary-font-family", "ha-font-family-body", "ha-font-family-heading", "ha-font-family-longform", "ha-font-family-code", "mdc-typography-font-family", "ha-font-size-scale", "ha-font-size-2xs", "ha-font-size-xs", "ha-font-size-s", "ha-font-size-m", "ha-font-size-l", "ha-font-size-xl", "ha-font-size-2xl", "ha-font-size-3xl", "ha-font-size-4xl", "ha-font-weight-light", "ha-font-weight-normal", "ha-font-weight-body", "ha-font-weight-medium", "ha-font-weight-heading", "ha-font-weight-action", "ha-font-weight-bold", "rgb-primary-color", "rgb-accent-color", "rgb-primary-text-color", "rgb-secondary-text-color", "rgb-card-background-color", "rgb-primary-background-color", "rgb-blue-color", "rgb-orange-color", "rgb-state-switch-color", "rgb-state-light-color", "rgb-state-cover-color", "rgb-state-fan-color", "rgb-state-media_player-color", "graph-color-1", "graph-color-2", "graph-color-3", "graph-color-4", "graph-color-5", "graph-color-6", "graph-color-7", "graph-color-8", "graph-color-9", "graph-color-10", "graph-color-11", "graph-color-12", "graph-color-13", "graph-color-14", "color-1", "color-2", "color-3", "color-4", "color-5", "color-6", "color-7", "color-8", "color-9", "color-10", "color-11", "color-12", "color-13", "color-14", "energy-grid-consumption-color", "energy-grid-return-color", "energy-solar-color", "energy-non-fossil-color", "energy-battery-out-color", "energy-battery-in-color", "energy-gas-color", "energy-water-color", "glass-effect-style", "background-style"], "groups": [{"label": "Card", "keys": ["card-background-color", "ha-card-background", "ha-card-background-color", "wa-color-surface-raised", "ha-card-border-color", "ha-card-border-radius", "ha-card-border-width", "ha-card-box-shadow", "table-row-background-color", "table-row-alternative-background-color"], "id": "hintergruende-karten__card", "icon": "mdi:card-outline"}, {"label": "Hintergründe", "keys": ["primary-background-color", "background-color", "lovelace-background", "secondary-background-color", "glass-effect-style", "background-style"], "id": "hintergruende-karten__hintergruende", "icon": "mdi:image-outline"}, {"label": "Theme", "keys": ["mdc-theme-background", "mdc-theme-surface", "mdc-theme-on-surface"], "id": "hintergruende-karten__theme", "icon": "mdi:palette-swatch-outline"}, {"label": "Header", "keys": ["app-header-background-color", "app-header-text-color", "app-toolbar-background-color", "toolbar-background-color", "app-toolbar-text-color", "toolbar-text-color"], "id": "hintergruende-karten__header", "icon": "mdi:page-layout-header"}, {"label": "App Drawer", "keys": ["app-drawer-background-color", "app-drawer-text-color", "app-drawer-icon-color"], "id": "hintergruende-karten__app-drawer", "icon": "mdi:drawer"}, {"label": "Sidebar", "keys": ["sidebar-background-color", "sidebar-selected-background-color", "sidebar-text-color", "sidebar-icon-color", "sidebar-selected-text-color", "sidebar-selected-icon-color"], "id": "hintergruende-karten__sidebar", "icon": "mdi:dock-left"}, {"label": "Status, Icons & Entitäten", "keys": ["state-icon-color", "state-icon-active-color", "state-icon-unavailable-color", "state-active-color", "state-inactive-color", "state-unavailable-color", "state-on-color", "state-off-color", "state-light-color", "state-light-active-color", "state-light-on-color", "state-switch-color", "state-switch-active-color", "state-switch-on-color", "state-climate-cool-color", "state-climate-heat-color", "state-climate-auto-color", "state-climate-dry-color", "state-climate-fan_only-color", "state-climate-heat_cool-color", "state-cover-color", "state-cover-active-color", "state-cover-open-color", "state-cover-closed-color", "state-fan-color", "state-fan-active-color", "state-media_player-color", "state-media_player-active-color", "state-vacuum-color", "state-vacuum-active-color", "state-vacuum-error-color", "state-lock-locked-color", "state-lock-locking-color", "state-lock-unlocked-color", "state-lock-unlocking-color", "state-lock-jammed-color", "state-lock-open-color", "state-lock-opening-color", "state-alarm_control_panel-triggered-color", "state-alarm-triggered-color", "state-alarm_control_panel-armed_home-color", "state-alarm_control_panel-armed_away-color", "state-alarm-armed-color", "state-alarm_control_panel-disarmed-color", "state-alarm-disarmed-color", "state-alarm_control_panel-armed_custom_bypass-color", "state-alarm_control_panel-armed_night-color", "state-alarm_control_panel-armed_vacation-color", "state-alarm_control_panel-arming-color", "state-alarm_control_panel-disarming-color", "state-alarm_control_panel-pending-color", "state-alert-off-color", "state-alert-on-color", "state-binary_sensor-active-color", "state-binary_sensor-battery-on-color", "state-binary_sensor-carbon_monoxide-on-color", "state-binary_sensor-gas-on-color", "state-binary_sensor-heat-on-color", "state-binary_sensor-lock-on-color", "state-binary_sensor-moisture-on-color", "state-binary_sensor-problem-on-color", "state-binary_sensor-safety-on-color", "state-binary_sensor-smoke-on-color", "state-binary_sensor-sound-on-color", "state-binary_sensor-tamper-on-color", "state-device_tracker-active-color", "state-device_tracker-home-color", "state-humidifier-on-color", "state-lawn_mower-active-color", "state-lawn_mower-error-color", "state-person-active-color", "state-person-home-color", "state-plant-active-color", "state-siren-active-color", "state-sun-above_horizon-color", "state-sun-below_horizon-color", "state-update-active-color", "state-valve-active-color", "state-water_heater-eco-color", "state-water_heater-electric-color", "state-water_heater-gas-color", "state-water_heater-heat_pump-color", "state-water_heater-high_demand-color", "state-water_heater-performance-color", "state-weather-clear_night-color", "state-weather-cloudy-color", "state-weather-exceptional-color", "state-weather-fog-color", "state-weather-hail-color", "state-weather-lightning_rainy-color", "state-weather-lightning-color", "state-weather-partlycloudy-color", "state-weather-pouring-color", "state-weather-rainy-color", "state-weather-snowy_rainy-color", "state-weather-snowy-color", "state-weather-sunny-color", "state-weather-windy_variant-color", "state-weather-windy-color", "state-battery-low-color", "state-sensor-battery-high-color", "state-sensor-battery-medium-color", "state-sensor-battery-low-color", "label-badge-background-color", "label-badge-text-color", "label-badge-red", "label-badge-blue", "label-badge-green", "label-badge-yellow", "state-battery-alert-color"], "id": "hintergruende-karten__status-icons-entitaeten", "icon": "mdi:emoticon-outline"}, {"label": "Schalter, Toggle & Slider", "keys": ["ha-control-switch-color", "ha-control-switch-checked-color", "ha-control-switch-unchecked-color", "ha-switch-background-color", "ha-switch-background-color-hover", "ha-switch-border-color", "ha-switch-thumb-background-color", "ha-switch-thumb-background-color-hover", "ha-switch-thumb-border-color", "ha-switch-thumb-border-color-hover", "ha-switch-checked-background-color", "ha-switch-checked-background-color-hover", "ha-switch-checked-border-color", "ha-switch-checked-thumb-background-color", "ha-switch-checked-thumb-background-color-hover", "ha-switch-checked-thumb-border-color", "ha-switch-checked-thumb-border-color-hover", "control-slider-color", "slider-color", "slider-secondary-color", "slider-track-color"], "id": "hintergruende-karten__schalter-toggle-slider", "icon": "mdi:toggle-switch-outline"}, {"label": "Buttons & Chips", "keys": ["control-button-background-color", "control-button-icon-color", "control-button-border-radius"], "id": "hintergruende-karten__buttons-chips", "icon": "mdi:gesture-tap-button"}, {"label": "Eingaben & Auswahlfelder", "keys": ["input-background-color", "input-fill-color", "input-disabled-fill-color", "input-disabled-ink-color", "input-disabled-label-ink-color", "input-disabled-line-color", "input-dropdown-icon-color", "input-hover-line-color", "input-idle-line-color", "input-ink-color", "input-label-ink-color", "input-outlined-disabled-border-color", "mdc-select-idle-line-color", "mdc-select-dropdown-icon-color", "mdc-select-hover-line-color", "mdc-text-field-idle-line-color", "mdc-text-field-hover-line-color", "ha-color-form-background", "ha-color-form-background-hover", "ha-color-form-background-disabled"], "id": "hintergruende-karten__eingaben-auswahlfelder", "icon": "mdi:form-select"}, {"label": "Material, Paper & MDC", "keys": ["mdc-theme-primary", "mdc-theme-secondary", "mdc-theme-on-primary", "md-sys-color-primary", "md-sys-color-on-primary", "md-sys-color-primary-container", "md-sys-color-on-primary-container", "md-sys-color-on-surface", "ha-on-surface-color", "md-radio-selected-icon-color", "mdc-radio-unchecked-color"], "id": "hintergruende-karten__material-paper-mdc", "icon": "mdi:material-design"}, {"label": "HA 2026 / Web Awesome", "keys": ["ha-color-fill-primary-normal-resting", "ha-color-fill-primary-normal-hover", "ha-color-fill-primary-quiet-resting", "ha-color-fill-primary-quiet-hover", "ha-color-fill-disabled-normal-resting", "ha-color-on-disabled-normal", "ha-color-fill-disabled-loud-resting", "ha-color-on-disabled-loud", "ha-color-on-disabled-quiet", "ha-color-fill-neutral-quiet-resting", "ha-color-fill-neutral-quiet-hover", "ha-color-fill-neutral-quiet-active", "ha-color-fill-neutral-normal-resting", "ha-color-fill-neutral-normal-hover", "ha-color-fill-neutral-normal-active", "ha-color-fill-danger-normal-resting", "ha-color-fill-danger-normal-hover", "ha-color-fill-danger-normal-active", "ha-color-on-danger-normal", "ha-color-fill-warning-normal-resting", "ha-color-fill-warning-normal-hover", "ha-color-fill-warning-normal-active", "ha-color-on-warning-normal", "ha-tooltip-background-color", "ha-tooltip-text-color"], "id": "hintergruende-karten__ha-2026-web-awesome", "icon": "mdi:web"}, {"label": "Abstände, Rundungen, Schatten & Rahmen", "keys": ["border-color", "border-radius", "box-shadow", "divider-color", "outline-color", "outline-variant-color", "outline-hover-color", "ha-line-height-condensed", "ha-line-height-expanded", "ha-line-height-normal"], "id": "hintergruende-karten__abstaende-rundungen-schatten-rahmen", "icon": "mdi:square-rounded-outline"}, {"label": "Schrift & Typografie", "keys": ["primary-font-family", "ha-font-family-body", "ha-font-family-heading", "ha-font-family-longform", "ha-font-family-code", "mdc-typography-font-family", "ha-font-size-scale", "ha-font-size-2xs", "ha-font-size-xs", "ha-font-size-s", "ha-font-size-m", "ha-font-size-l", "ha-font-size-xl", "ha-font-size-2xl", "ha-font-size-3xl", "ha-font-size-4xl", "ha-font-weight-light", "ha-font-weight-normal", "ha-font-weight-body", "ha-font-weight-medium", "ha-font-weight-heading", "ha-font-weight-action", "ha-font-weight-bold"], "id": "hintergruende-karten__schrift-typografie", "icon": "mdi:format-font"}, {"label": "RGB-Hilfswerte", "keys": ["rgb-primary-color", "rgb-accent-color", "rgb-primary-text-color", "rgb-secondary-text-color", "rgb-card-background-color", "rgb-primary-background-color", "rgb-blue-color", "rgb-orange-color", "rgb-state-switch-color", "rgb-state-light-color", "rgb-state-cover-color", "rgb-state-fan-color", "rgb-state-media_player-color"], "id": "hintergruende-karten__rgb-hilfswerte", "icon": "mdi:invert-colors"}, {"label": "Graphen & Energie", "keys": ["graph-color-1", "graph-color-2", "graph-color-3", "graph-color-4", "graph-color-5", "graph-color-6", "graph-color-7", "graph-color-8", "graph-color-9", "graph-color-10", "graph-color-11", "graph-color-12", "graph-color-13", "graph-color-14", "color-1", "color-2", "color-3", "color-4", "color-5", "color-6", "color-7", "color-8", "color-9", "color-10", "color-11", "color-12", "color-13", "color-14", "energy-grid-consumption-color", "energy-grid-return-color", "energy-solar-color", "energy-non-fossil-color", "energy-battery-out-color", "energy-battery-in-color", "energy-gas-color", "energy-water-color"], "id": "hintergruende-karten__graphen-energie", "icon": "mdi:chart-line"}]}, {"id": "bubble-card", "label": "Bubble Card", "desc": "Alle Bubble-Card-Werte an einem Ort, in 9 Unterordnern: Karten & Hintergründe, Buttons, Sub-Buttons, Separator, Popup & Dialog, Horizontal Buttons Stack, Climate, Cover, Media Player.", "icon": "mdi:circle-multiple-outline", "keys": ["bubble-card-background-color", "bubble-main-buttons-background-color", "bubble-secondary-background-color", "bubble-icon-background-color", "bubble-icon-color", "bubble-name-color", "bubble-state-color", "bubble-accent-color", "bubble-active-color", "bubble-toggle-color", "bubble-line-background-color", "bubble-border", "bubble-border-color", "bubble-border-radius", "bubble-box-shadow", "bubble-card-border-radius", "bubble-select-border-radius", "bubble-icon-border-radius", "bubble-button-background-color", "bubble-button-active-background-color", "bubble-button-icon-color", "bubble-button-active-icon-color", "bubble-button-text-color", "bubble-button-active-text-color", "bubble-button-border-radius", "bubble-button-card-background-color", "bubble-button-main-background-color", "bubble-button-active-color", "bubble-sub-button-background-color", "bubble-sub-button-active-background-color", "bubble-sub-button-icon-color", "bubble-sub-button-active-icon-color", "bubble-sub-button-text-color", "bubble-sub-button-active-text-color", "bubble-sub-button-border-radius", "bubble-sub-button-box-shadow", "bubble-sub-buttons-main-background-color", "bubble-separator-background-color", "bubble-separator-icon-background-color", "bubble-separator-icon-color", "bubble-separator-line-color", "bubble-separator-name-color", "bubble-separator-text-color", "bubble-separator-border-radius", "bubble-pop-up-background-color", "bubble-pop-up-backdrop-filter", "bubble-pop-up-border-radius", "bubble-pop-up-box-shadow", "dialog-box-shadow", "more-info-header-background", "more-info-header-color", "popup-border-radius", "ha-dialog-scrim-backdrop-filter", "ha-dialog-surface-background", "mdc-dialog-scrim-color", "bubble-horizontal-buttons-stack-background-color", "bubble-horizontal-buttons-stack-button-background-color", "bubble-horizontal-buttons-stack-button-icon-color", "bubble-horizontal-buttons-stack-button-text-color", "bubble-horizontal-buttons-stack-border-radius", "bubble-horizontal-buttons-stack-box-shadow", "bubble-climate-background-color", "bubble-climate-main-background-color", "bubble-climate-button-background-color", "bubble-climate-button-icon-color", "bubble-climate-border-radius", "bubble-climate-box-shadow", "bubble-climate-icon-border-radius", "bubble-cover-background-color", "bubble-cover-main-background-color", "bubble-cover-button-background-color", "bubble-cover-button-icon-color", "bubble-cover-border-radius", "bubble-cover-box-shadow", "bubble-media-player-background-color", "bubble-media-player-main-background-color", "bubble-media-player-button-background-color", "bubble-media-player-button-icon-color", "bubble-media-player-border-radius", "bubble-media-player-box-shadow"], "groups": [{"label": "Karten & Hintergründe", "keys": ["bubble-card-background-color", "bubble-main-buttons-background-color", "bubble-secondary-background-color", "bubble-icon-background-color", "bubble-icon-color", "bubble-name-color", "bubble-state-color", "bubble-accent-color", "bubble-active-color", "bubble-toggle-color", "bubble-line-background-color", "bubble-border", "bubble-border-color", "bubble-border-radius", "bubble-box-shadow", "bubble-card-border-radius", "bubble-select-border-radius", "bubble-icon-border-radius"], "id": "bubble-card__karten-hintergruende", "icon": "mdi:card-outline"}, {"label": "Buttons", "keys": ["bubble-button-background-color", "bubble-button-active-background-color", "bubble-button-icon-color", "bubble-button-active-icon-color", "bubble-button-text-color", "bubble-button-active-text-color", "bubble-button-border-radius", "bubble-button-card-background-color", "bubble-button-main-background-color", "bubble-button-active-color"], "id": "bubble-card__buttons", "icon": "mdi:gesture-tap-button"}, {"label": "Sub-Buttons", "keys": ["bubble-sub-button-background-color", "bubble-sub-button-active-background-color", "bubble-sub-button-icon-color", "bubble-sub-button-active-icon-color", "bubble-sub-button-text-color", "bubble-sub-button-active-text-color", "bubble-sub-button-border-radius", "bubble-sub-button-box-shadow", "bubble-sub-buttons-main-background-color"], "id": "bubble-card__sub-buttons", "icon": "mdi:dots-horizontal-circle-outline"}, {"label": "Separator", "keys": ["bubble-separator-background-color", "bubble-separator-icon-background-color", "bubble-separator-icon-color", "bubble-separator-line-color", "bubble-separator-name-color", "bubble-separator-text-color", "bubble-separator-border-radius"], "id": "bubble-card__separator", "icon": "mdi:minus"}, {"label": "Popup & Dialog", "keys": ["bubble-pop-up-background-color", "bubble-pop-up-backdrop-filter", "bubble-pop-up-border-radius", "bubble-pop-up-box-shadow", "dialog-box-shadow", "more-info-header-background", "more-info-header-color", "popup-border-radius", "ha-dialog-scrim-backdrop-filter", "ha-dialog-surface-background", "mdc-dialog-scrim-color"], "id": "bubble-card__popup-dialog", "icon": "mdi:window-maximize"}, {"label": "Horizontal Buttons Stack", "keys": ["bubble-horizontal-buttons-stack-background-color", "bubble-horizontal-buttons-stack-button-background-color", "bubble-horizontal-buttons-stack-button-icon-color", "bubble-horizontal-buttons-stack-button-text-color", "bubble-horizontal-buttons-stack-border-radius", "bubble-horizontal-buttons-stack-box-shadow"], "id": "bubble-card__horizontal-buttons-stack", "icon": "mdi:view-sequential"}, {"label": "Climate", "keys": ["bubble-climate-background-color", "bubble-climate-main-background-color", "bubble-climate-button-background-color", "bubble-climate-button-icon-color", "bubble-climate-border-radius", "bubble-climate-box-shadow", "bubble-climate-icon-border-radius"], "id": "bubble-card__climate", "icon": "mdi:thermostat"}, {"label": "Cover", "keys": ["bubble-cover-background-color", "bubble-cover-main-background-color", "bubble-cover-button-background-color", "bubble-cover-button-icon-color", "bubble-cover-border-radius", "bubble-cover-box-shadow"], "id": "bubble-card__cover", "icon": "mdi:window-shutter"}, {"label": "Media Player", "keys": ["bubble-media-player-background-color", "bubble-media-player-main-background-color", "bubble-media-player-button-background-color", "bubble-media-player-button-icon-color", "bubble-media-player-border-radius", "bubble-media-player-box-shadow"], "id": "bubble-card__media-player", "icon": "mdi:play-circle-outline"}]}, {"id": "mushroom", "label": "Mushroom", "desc": "Alle Mushroom-Werte an einem Ort, in 6 Unterordnern: Karten & Hintergründe, Icons, Toggle, Slider, Chips, RGB-Hilfswerte.", "icon": "mdi:mushroom-outline", "keys": ["mush-card-background", "mush-control-background-color", "mush-card-primary-color", "mush-card-secondary-color", "mush-title-color", "mush-subtitle-color", "mush-icon-background-color", "mush-icon-color", "mush-icon-active-color", "mush-toggle-color", "mush-toggle-background-color", "mush-slider-color", "mush-slider-track-color", "mush-slider-background-color", "mush-chip-background", "mush-chip-active-background", "mush-chip-color", "mush-chip-icon-color", "mush-chip-active-color", "mush-chip-active-icon-color", "mush-chip-border-color", "mush-chip-border-radius", "mush-chip-font-size", "mush-rgb-primary-text-color", "mush-rgb-secondary-text-color", "mush-rgb-state-switch", "mush-rgb-state-light", "mush-rgb-state-cover", "mush-rgb-state-entity", "mush-rgb-state-fan", "mush-rgb-state-media-player", "mush-rgb-state-vacuum", "mush-rgb-success", "mush-rgb-warning", "mush-rgb-danger", "mush-rgb-disabled", "mush-rgb-info"], "groups": [{"label": "Karten & Hintergründe", "keys": ["mush-card-background", "mush-control-background-color", "mush-card-primary-color", "mush-card-secondary-color", "mush-title-color", "mush-subtitle-color"], "id": "mushroom__karten-hintergruende", "icon": "mdi:card-outline"}, {"label": "Icons", "keys": ["mush-icon-background-color", "mush-icon-color", "mush-icon-active-color"], "id": "mushroom__icons", "icon": "mdi:shape-outline"}, {"label": "Toggle", "keys": ["mush-toggle-color", "mush-toggle-background-color"], "id": "mushroom__toggle", "icon": "mdi:toggle-switch-outline"}, {"label": "Slider", "keys": ["mush-slider-color", "mush-slider-track-color", "mush-slider-background-color"], "id": "mushroom__slider", "icon": "mdi:tune-variant"}, {"label": "Chips", "keys": ["mush-chip-background", "mush-chip-active-background", "mush-chip-color", "mush-chip-icon-color", "mush-chip-active-color", "mush-chip-active-icon-color", "mush-chip-border-color", "mush-chip-border-radius", "mush-chip-font-size"], "id": "mushroom__chips", "icon": "mdi:label-outline"}, {"label": "RGB-Hilfswerte", "keys": ["mush-rgb-primary-text-color", "mush-rgb-secondary-text-color", "mush-rgb-state-switch", "mush-rgb-state-light", "mush-rgb-state-cover", "mush-rgb-state-entity", "mush-rgb-state-fan", "mush-rgb-state-media-player", "mush-rgb-state-vacuum", "mush-rgb-success", "mush-rgb-warning", "mush-rgb-danger", "mush-rgb-disabled", "mush-rgb-info"], "id": "mushroom__rgb-hilfswerte", "icon": "mdi:invert-colors"}]}, {"id": "card-mod-generator", "label": "Card-mod & Generator", "desc": "Interne Generatorwerte und card-mod-Blöcke.", "icon": "mdi:code-braces", "keys": ["card-mod-theme", "card-mod-card-yaml", "card-backdrop-blur"]}], "light": {"accent-color": "#ff9300", "primary-color": "#ff9300", "dark-primary-color": "#F9F9FB", "light-primary-color": "#E5F1FF", "primary-text-color": "#1C1C1E", "secondary-text-color": "#3C3C43", "text-primary-color": "#FFFFFF", "disabled-text-color": "#8E8E93", "error-color": "#FF3B30", "warning-color": "#FFCC00", "success-color": "#34C759", "info-color": "#007AFF", "red-color": "#FF3B30", "green-color": "#34C759", "blue-color": "#007AFF", "orange-color": "#FF9500", "yellow-color": "#FFCC00", "purple-color": "#AF52DE", "pink-color": "#FF2D55", "cyan-color": "#5AC8FA", "grey-color": "#3C3C43", "black-color": "#000000", "white-color": "#FFFFFF", "primary-background-color": "#F2F2F7", "background-color": "#F2F2F7", "lovelace-background": "#F2F2F7", "secondary-background-color": "#F9F9FB", "card-background-color": "#FFFFFF", "ha-card-background": "#FFFFFF", "ha-card-background-color": "#FFFFFF", "table-row-background-color": "#F9F9FB", "table-row-alternative-background-color": "#FFFFFF", "app-header-background-color": "#FFFFFF", "app-toolbar-background-color": "#FFFFFF", "toolbar-background-color": "#FFFFFF", "app-drawer-background-color": "#FFFFFF", "sidebar-background-color": "#FFFFFF", "sidebar-selected-background-color": "#E5F1FF", "mdc-theme-background": "#F2F2F7", "mdc-theme-surface": "#FFFFFF", "mdc-theme-on-surface": "#1C1C1E", "wa-color-surface-raised": "#FFFFFF", "app-header-text-color": "#1C1C1E", "app-toolbar-text-color": "#1C1C1E", "toolbar-text-color": "#1C1C1E", "app-drawer-text-color": "#3C3C43", "app-drawer-icon-color": "#007AFF", "sidebar-text-color": "#3C3C43", "sidebar-icon-color": "rgba(33, 33, 33, 0.6)", "sidebar-selected-text-color": "#1C1C1E", "sidebar-selected-icon-color": "#007AFF", "state-icon-color": "#007AFF", "state-icon-active-color": "#007AFF", "state-icon-unavailable-color": "#FFFFFF", "state-active-color": "#007AFF", "state-inactive-color": "#FFFFFF", "state-unavailable-color": "#FFFFFF", "state-on-color": "#34C759", "state-off-color": "#FFFFFF", "state-light-color": "#007AFF", "state-light-active-color": "#007AFF", "state-light-on-color": "#ff9300", "state-switch-color": "#007AFF", "state-switch-active-color": "#007AFF", "state-switch-on-color": "#007AFF", "state-climate-cool-color": "#007AFF", "state-climate-heat-color": "#ff2600", "state-climate-auto-color": "#007AFF", "state-cover-color": "#007AFF", "state-cover-active-color": "#007AFF", "state-cover-open-color": "#929000", "state-cover-closed-color": "#ff2600", "state-fan-color": "#007AFF", "state-fan-active-color": "#007AFF", "state-media_player-color": "#007AFF", "state-vacuum-color": "#007AFF", "state-vacuum-active-color": "#007AFF", "state-lock-locked-color": "#007AFF", "state-lock-locking-color": "#ff2600", "state-lock-unlocked-color": "#007AFF", "state-lock-unlocking-color": "#929000", "state-alarm_control_panel-triggered-color": "#ff2600", "state-alarm-triggered-color": "#ff2600", "state-alarm_control_panel-armed_home-color": "#ffd478", "state-alarm_control_panel-armed_away-color": "#ffd478", "state-alarm-armed-color": "#ffd478", "state-alarm_control_panel-disarmed-color": "#ff9300", "state-alarm-disarmed-color": "#ff9300", "state-battery-low-color": "#ff2600", "label-badge-background-color": "#FFFFFF", "label-badge-text-color": "rgba(33, 33, 33, 0.8)", "label-badge-red": "#FF3B30", "label-badge-blue": "#007AFF", "label-badge-green": "#34C759", "label-badge-yellow": "#FFCC00", "state-battery-alert-color": "#ff2600", "ha-control-switch-color": "#007AFF", "ha-control-switch-checked-color": "#007AFF", "ha-control-switch-unchecked-color": "#D1D1D6", "mush-toggle-color": "#007AFF", "mush-rgb-state-switch": "0, 122, 255", "bubble-toggle-color": "#007AFF", "rgb-state-switch-color": "0, 122, 255", "control-slider-color": "#007AFF", "slider-color": "#007AFF", "slider-secondary-color": "#E5F1FF", "slider-track-color": "#D1D1D6", "mush-slider-color": "#007AFF", "mush-slider-track-color": "#D1D1D6", "mush-toggle-background-color": "#D1D1D6", "control-button-background-color": "#F9F9FB", "control-button-icon-color": "#007AFF", "control-button-border-radius": "18px", "mush-chip-background": "#FFFFFF", "mush-chip-active-background": "#F9F9FB", "mush-chip-color": "#1C1C1E", "mush-chip-icon-color": "#007AFF", "mush-chip-active-color": "#ff9300", "mush-chip-active-icon-color": "#ff9300", "mush-chip-border-color": "#C6C6C8", "mush-chip-border-radius": "16px", "mush-chip-font-size": "12px", "bubble-button-background-color": "#FFFFFF", "bubble-button-active-background-color": "#007AFF", "bubble-button-icon-color": "#007AFF", "bubble-button-active-icon-color": "#FFFFFF", "bubble-button-text-color": "#1C1C1E", "bubble-button-active-text-color": "#FFFFFF", "bubble-button-border-radius": "18px", "bubble-sub-button-background-color": "#F9F9FB", "bubble-sub-button-active-background-color": "#007AFF", "bubble-sub-button-icon-color": "#007AFF", "bubble-sub-button-active-icon-color": "#FFFFFF", "bubble-sub-button-text-color": "#3C3C43", "bubble-sub-button-active-text-color": "#FFFFFF", "bubble-sub-button-border-radius": "14px", "bubble-sub-button-box-shadow": "0 4px 10px rgba(60,60,67,.16)", "input-background-color": "#F9F9FB", "input-fill-color": "#F9F9FB", "input-disabled-fill-color": "rgba(249, 249, 251, 0.55)", "input-disabled-ink-color": "rgba(0, 0, 0, 0.37)", "input-disabled-label-ink-color": "#8E8E93", "input-disabled-line-color": "rgba(0, 0, 0, 0.06)", "input-dropdown-icon-color": "rgba(0, 0, 0, 0.54)", "input-hover-line-color": "rgba(0, 0, 0, 0.87)", "input-idle-line-color": "rgba(0, 0, 0, 0.42)", "input-ink-color": "rgba(0, 0, 0, 0.87)", "input-label-ink-color": "rgba(0, 0, 0, 0.6)", "input-outlined-disabled-border-color": "rgba(0, 0, 0, 0.06)", "mdc-select-idle-line-color": "#C6C6C8", "mdc-select-dropdown-icon-color": "#3C3C43", "mdc-select-hover-line-color": "#C6C6C8", "mdc-text-field-idle-line-color": "#C6C6C8", "mdc-text-field-hover-line-color": "#C6C6C8", "ha-color-form-background": "#F9F9FB", "ha-color-form-background-hover": "#F9F9FB", "ha-color-form-background-disabled": "rgba(249, 249, 251, 0.55)", "mdc-theme-primary": "#007AFF", "mdc-theme-secondary": "#007AFF", "mdc-theme-on-primary": "#FFFFFF", "md-sys-color-primary": "#ff9300", "md-sys-color-on-primary": "#007AFF", "md-sys-color-primary-container": "#E5F1FF", "md-sys-color-on-primary-container": "#FFFFFF", "md-sys-color-on-surface": "#feffff", "ha-on-surface-color": "#feffff", "md-radio-selected-icon-color": "#007AFF", "mdc-radio-unchecked-color": "#3C3C43", "ha-color-fill-primary-normal-resting": "rgba(0, 122, 255, 0.15)", "ha-color-fill-primary-normal-hover": "rgba(0, 122, 255, 0.25)", "ha-color-fill-primary-quiet-resting": "rgba(0, 122, 255, 0.08)", "ha-color-fill-primary-quiet-hover": "rgba(0, 122, 255, 0.15)", "ha-color-fill-disabled-normal-resting": "rgba(142, 142, 147, 0.12)", "ha-color-on-disabled-normal": "rgba(60, 60, 67, 0.55)", "ha-color-fill-disabled-loud-resting": "rgba(142, 142, 147, 0.22)", "ha-color-on-disabled-loud": "rgba(60, 60, 67, 0.65)", "ha-color-on-disabled-quiet": "rgba(60, 60, 67, 0.50)", "ha-color-fill-neutral-quiet-resting": "#FFFFFF", "ha-color-fill-neutral-quiet-hover": "#F9F9FB", "ha-color-fill-neutral-quiet-active": "#E5F1FF", "ha-color-fill-neutral-normal-resting": "#F9F9FB", "ha-color-fill-neutral-normal-hover": "#FFFFFF", "ha-color-fill-neutral-normal-active": "#E5F1FF", "ha-color-fill-danger-normal-resting": "rgba(255, 59, 48, 0.15)", "ha-color-fill-danger-normal-hover": "rgba(255, 59, 48, 0.22)", "ha-color-fill-danger-normal-active": "rgba(255, 59, 48, 0.28)", "ha-color-on-danger-normal": "#FF3B30", "ha-color-fill-warning-normal-resting": "rgba(255, 204, 0, 0.15)", "ha-color-fill-warning-normal-hover": "rgba(255, 204, 0, 0.22)", "ha-color-fill-warning-normal-active": "rgba(255, 204, 0, 0.28)", "ha-color-on-warning-normal": "#8A5A00", "ha-tooltip-background-color": "#F9F9FB", "ha-tooltip-text-color": "#1C1C1E", "border-color": "rgba(0, 0, 0, 0.12)", "border-radius": "18px", "box-shadow": "0 10px 28px rgba(60,60,67,.14)", "divider-color": "rgba(0, 0, 0, 0.12)", "outline-color": "rgba(0, 0, 0, 0.12)", "outline-variant-color": "#C6C6C8", "ha-card-border-color": "rgba(0, 0, 0, 0.12)", "ha-card-border-radius": "18px", "ha-card-border-width": "1px", "ha-card-box-shadow": "0 10px 28px rgba(60,60,67,.14)", "ha-line-height-condensed": "1.25", "ha-line-height-expanded": "1.35", "ha-line-height-normal": "1.5", "bubble-border": "1px solid #C6C6C8", "bubble-border-color": "rgba(0, 0, 0, 0.12)", "bubble-border-radius": "18px", "bubble-box-shadow": "0 10px 28px rgba(60,60,67,.14)", "bubble-card-border-radius": "18px", "bubble-climate-border-radius": "18px", "bubble-climate-box-shadow": "0 10px 28px rgba(60,60,67,.14)", "bubble-climate-icon-border-radius": "32px", "bubble-cover-border-radius": "18px", "bubble-cover-box-shadow": "0 10px 28px rgba(60,60,67,.14)", "bubble-icon-border-radius": "14px", "bubble-media-player-border-radius": "18px", "bubble-media-player-box-shadow": "0 10px 28px rgba(60,60,67,.14)", "bubble-pop-up-border-radius": "18px", "bubble-pop-up-box-shadow": "0 10px 28px rgba(60,60,67,.14)", "bubble-select-border-radius": "18px", "bubble-separator-border-radius": "18px", "bubble-horizontal-buttons-stack-border-radius": "18px", "bubble-horizontal-buttons-stack-box-shadow": "0 10px 28px rgba(60,60,67,.14)", "primary-font-family": "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif", "ha-font-family-body": "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif", "ha-font-family-heading": "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif", "ha-font-family-longform": "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif", "ha-font-family-code": "'SF Mono', 'Roboto Mono', Consolas, monospace", "mdc-typography-font-family": "'SF Mono', 'Roboto Mono', Consolas, monospace", "ha-font-size-scale": "1", "ha-font-size-2xs": "8px", "ha-font-size-xs": "8px", "ha-font-size-s": "12px", "ha-font-size-m": "14px", "ha-font-size-l": "16px", "ha-font-size-xl": "18px", "ha-font-size-2xl": "20px", "ha-font-size-3xl": "22px", "ha-font-size-4xl": "24px", "ha-font-weight-light": "300", "ha-font-weight-normal": "400", "ha-font-weight-body": "400", "ha-font-weight-medium": "500", "ha-font-weight-heading": "500", "ha-font-weight-action": "500", "ha-font-weight-bold": "700", "rgb-primary-color": "255, 147, 0", "rgb-accent-color": "255, 147, 0", "rgb-primary-text-color": "28, 28, 30", "rgb-secondary-text-color": "60, 60, 67", "rgb-card-background-color": "255, 255, 255", "rgb-primary-background-color": "242, 242, 247", "rgb-blue-color": "0, 122, 255", "rgb-orange-color": "255, 149, 0", "rgb-state-light-color": "0, 122, 255", "rgb-state-cover-color": "0, 122, 255", "rgb-state-fan-color": "0, 122, 255", "rgb-state-media_player-color": "0, 122, 255", "mush-rgb-primary-text-color": "28, 28, 30", "mush-rgb-secondary-text-color": "60, 60, 67", "mush-rgb-state-light": "0, 122, 255", "mush-rgb-state-cover": "0, 122, 255", "mush-rgb-state-entity": "0, 122, 255", "mush-rgb-state-fan": "0, 122, 255", "mush-rgb-state-media-player": "0, 122, 255", "mush-rgb-state-vacuum": "0, 122, 255", "mush-rgb-success": "52, 199, 89", "mush-rgb-warning": "255, 204, 0", "mush-rgb-danger": "255, 59, 48", "mush-rgb-disabled": "142, 142, 147", "mush-rgb-info": "0, 122, 255", "graph-color-1": "#ff9300", "graph-color-2": "#007AFF", "graph-color-3": "#34C759", "graph-color-4": "#AF52DE", "graph-color-5": "#FF3B30", "graph-color-6": "#5AC8FA", "graph-color-7": "#00C7BE", "graph-color-8": "#FF2D55", "graph-color-9": "#FF6B22", "graph-color-10": "#5856D6", "graph-color-11": "#A3D977", "graph-color-12": "#FFCC00", "graph-color-13": "#AF52DE", "graph-color-14": "#8E6E53", "energy-grid-consumption-color": "#007AFF", "energy-grid-return-color": "#AF52DE", "energy-solar-color": "#ff9300", "energy-non-fossil-color": "#34C759", "energy-battery-out-color": "#00C7BE", "energy-battery-in-color": "#AF52DE", "energy-gas-color": "#FF3B30", "energy-water-color": "#5AC8FA", "bubble-card-background-color": "#FFFFFF", "bubble-secondary-background-color": "#F9F9FB", "bubble-icon-background-color": "#F9F9FB", "bubble-icon-color": "#007AFF", "bubble-name-color": "#1C1C1E", "bubble-state-color": "#3C3C43", "bubble-accent-color": "#007AFF", "bubble-active-color": "#007AFF", "bubble-line-background-color": "rgba(0, 0, 0, 0.12)", "bubble-pop-up-background-color": "#F2F2F7", "bubble-pop-up-backdrop-filter": "blur(18px)", "dialog-box-shadow": "0 10px 28px rgba(60,60,67,.14)", "more-info-header-background": "#F9F9FB", "more-info-header-color": "#1C1C1E", "popup-border-radius": "12px", "ha-dialog-scrim-backdrop-filter": "blur(10px)", "ha-dialog-surface-background": "rgba(255, 255, 255, 0.92)", "mdc-dialog-scrim-color": "rgba(0, 0, 0, 0.35)", "bubble-separator-background-color": "#FFFFFF", "bubble-separator-icon-background-color": "#F9F9FB", "bubble-separator-icon-color": "#007AFF", "bubble-separator-line-color": "rgba(0, 0, 0, 0.12)", "bubble-separator-name-color": "#1C1C1E", "bubble-separator-text-color": "#1C1C1E", "bubble-horizontal-buttons-stack-background-color": "#FFFFFF", "bubble-horizontal-buttons-stack-button-background-color": "#F9F9FB", "bubble-sub-buttons-main-background-color": "#FFFFFF", "bubble-climate-background-color": "#FFFFFF", "bubble-climate-main-background-color": "#FFFFFF", "bubble-cover-background-color": "#FFFFFF", "bubble-cover-main-background-color": "#FFFFFF", "bubble-media-player-background-color": "#FFFFFF", "bubble-media-player-main-background-color": "#FFFFFF", "mush-card-background": "#FFFFFF", "mush-control-background-color": "#F9F9FB", "mush-icon-background-color": "#F9F9FB", "mush-card-primary-color": "#1C1C1E", "mush-card-secondary-color": "#3C3C43", "mush-title-color": "#1C1C1E", "mush-subtitle-color": "#3C3C43", "mush-icon-color": "#3C3C43", "mush-icon-active-color": "#007AFF", "card-mod-theme": "basis", "card-mod-card-yaml": "\n.: |\n  /* HATG Bubble Card: zentraler card-mod Block */\n  ha-card {\n    /* v0.4.50: Enrico - \"Popup, Heizung und freier Button haben keinen\n       cardmod genau so wie die Menueleiste unten.\" Root Cause (im echten\n       Bubble-Card-Quellcode nachgeschaut): JEDE Bubble-Karte nutzt fuer\n       Hintergrund/Icon/Name/Radius automatisch Fallback-Ketten wie\n       var(--bubble-card-type-main-background-color, var(--bubble-main-background-color, ...)) -\n       diese Variablen haben wir bisher nie gesetzt, nur einzelne Klassen per\n       !important erzwungen (siehe Liste unten). Fuer Kartentypen, die nicht\n       in dieser Liste stehen (z. B. ein reiner \"button\"-Typ ohne Entity wie\n       ein Pop-up-Oeffner, oder die \"sub-buttons\"-Kartenart), griff bisher\n       keine unserer Regeln - Bubble Card fiel auf neutrale Standardwerte\n       zurueck. Jetzt setzen wir die von Bubble Card selbst erwarteten\n       Variablen direkt auf ha-card (genau wie Enricos alter Pro-Karte-\n       card_mod es tat), zeigen aber weiterhin auf unsere eigenen, im Editor\n       bearbeitbaren Felder - das deckt jetzt automatisch auch kuenftige/\n       bisher unbekannte Bubble-Kartentypen ab, ohne dass wir jede einzeln\n       nachtragen muessen. */\n    --bubble-main-background-color: var(--bubble-main-buttons-background-color, var(--card-background-color));\n    --bubble-secondary-background-color: var(--bubble-secondary-background-color, var(--secondary-background-color));\n    --bubble-icon-background-color: var(--bubble-icon-background-color, var(--secondary-background-color));\n    --bubble-icon-color: var(--bubble-icon-color, var(--accent-color));\n    /* v0.4.53: Enrico - vorsorglich \"--bubble-accent-color\" mit aufnehmen,\n       falls kuenftig card_type: calendar mit \"show_progress: true\" genutzt\n       wird. Bubble Card berechnet die Fortschritts-Hervorhebung fuer laufende\n       Termine dann ueber \"var(--bubble-event-accent-color,\n       var(--bubble-accent-color, var(--bubble-default-color)))\" (siehe\n       changes.js im echten Bubble-Card-Quellcode) - ohne eigene Definition\n       blieb diese Hervorhebung bisher farblos, da wir --bubble-accent-color\n       nie gesetzt haben und Bubble Card selbst dafuer keinen eigenen\n       Standardwert bereitstellt. */\n    --bubble-accent-color: var(--bubble-accent-color, var(--accent-color));\n    --bubble-name-color: var(--bubble-name-color, var(--primary-text-color));\n    --bubble-state-color: var(--bubble-state-color, var(--secondary-text-color));\n    --bubble-border-radius: var(--bubble-border-radius, var(--ha-card-border-radius, 18px));\n    /* Bubble Card setzt bei button_type: switch im \"an\"-Zustand selbst\n       eine deckende Akzentfarben-Flutung ueber die ganze Karte\n       (--bubble-button-background-color, per JS/inline gesetzt) -\n       das sieht anders aus als Mushroom/Tile, die nur den Icon-Kreis\n       aufleuchten lassen. Global neutralisiert, damit die Kartenflaeche\n       in JEDEM Zustand dunkel/neutral bleibt und nur noch das Icon\n       (siehe .is-on .bubble-icon-container weiter unten) den\n       \"an\"-Zustand zeigt - alle drei Frameworks sollen so nah wie\n       moeglich gleich aussehen (Enrico: \"keiner soll merken was\n       welche Karte ist\"). */\n    --bubble-button-background-color: transparent !important;\n    border-radius: var(--bubble-border-radius, var(--ha-card-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-box-shadow, var(--ha-card-box-shadow, none)) !important;\n    background: var(--bubble-main-buttons-background-color, var(--ha-card-background, var(--card-background-color))) !important;\n    border: var(--bubble-border, 1px solid var(--bubble-border-color, var(--ha-card-border-color, transparent))) !important;\n    color: var(--bubble-name-color, var(--primary-text-color)) !important;\n    overflow: hidden !important;\n    backdrop-filter: var(--card-backdrop-blur, none) !important;\n  }\n\n  .bubble-card,\n  .bubble-button-card-container,\n  .bubble-media-player,\n  .bubble-media-player-container,\n  .bubble-cover-card-container,\n  .bubble-climate-card-container,\n  .bubble-horizontal-buttons-stack-card-container,\n  .bubble-pop-up,\n  .bubble-pop-up-container {\n    border-radius: var(--bubble-border-radius, var(--ha-card-border-radius, 18px)) !important;\n    background: var(--bubble-main-buttons-background-color, var(--ha-card-background, var(--card-background-color))) !important;\n    /* v0.2.6: Enrico - \"Der Cardmod fuer Bubble passt noch nicht.\" Ursache:\n       backdrop-filter stand bisher NUR auf der blanken ha-card-Regel weiter\n       oben - Bubble Card rendert aber kein <ha-card>, sondern eigene\n       Container-Klassen (siehe diese Selektorliste), die zwar schon den\n       richtigen, halbtransparenten Hintergrund bekamen (ueber\n       --bubble-main-buttons-background-color), aber nie geblurrt wurden.\n       Deshalb sahen Bubble-Karten trotz Glaseffekt-Auswahl flach/undurchsichtig\n       aus, waehrend HA-eigene Tile-Karten (die echtes <ha-card> nutzen)\n       korrekt milchig/verschwommen wirkten. Jetzt denselben Blur-Wert wie\n       ha-card auch hier anwenden. */\n    backdrop-filter: var(--card-backdrop-blur, none) !important;\n    box-shadow: var(--bubble-box-shadow, var(--ha-card-box-shadow, none)) !important;\n    border: var(--bubble-border, 1px solid var(--bubble-border-color, var(--ha-card-border-color, transparent))) !important;\n    color: var(--bubble-name-color, var(--primary-text-color)) !important;\n    overflow: hidden !important;\n  }\n\n  /* Echtes Bubble-Card-Element fuer den Zustands-/Fuellfarben-Hintergrund\n     (bisher faelschlich als \".bubble-button-background\" angesprochen - diese\n     Klasse existiert in Bubble Card gar nicht, der echte Name ist\n     \".bubble-background\"). Nur Radius+Clipping erzwingen (per \"inherit\" vom\n     jeweils schon korrekt gesetzten Elternelement), NICHT die Hintergrundfarbe -\n     die uebernimmt Bubble Card selbst korrekt je nach Zustand/Kartentyp ueber\n     die passenden bubble-*-button-background-color-Felder. Behebt eckige statt\n     runde Kartenecken bei Button-/Zustands-Karten. */\n  .bubble-background {\n    border-radius: inherit !important;\n    overflow: hidden !important;\n  }\n\n  .bubble-icon-container,\n  .bubble-icon-wrapper,\n  .bubble-climate-icon-container,\n  .bubble-cover-icon-container,\n  .bubble-media-player-icon-container {\n    border-radius: var(--bubble-icon-border-radius, var(--bubble-button-border-radius, var(--bubble-border-radius, 18px))) !important;\n    background: var(--bubble-icon-background-color, var(--bubble-secondary-background-color, var(--secondary-background-color))) !important;\n    color: var(--bubble-icon-color, var(--accent-color)) !important;\n  }\n\n  .bubble-icon,\n  .bubble-icon-container ha-icon,\n  .bubble-icon-wrapper ha-icon,\n  .bubble-climate-icon-container ha-icon,\n  .bubble-cover-icon-container ha-icon,\n  .bubble-media-player-icon-container ha-icon {\n    color: var(--bubble-icon-color, var(--accent-color)) !important;\n  }\n\n  .bubble-sub-button,\n  .bubble-sub-button-container,\n  .bubble-sub-button-background,\n  .bubble-climate-button,\n  .bubble-cover-button,\n  .bubble-media-player-button {\n    border-radius: var(--bubble-sub-button-border-radius, var(--bubble-button-border-radius, var(--bubble-border-radius, 18px))) !important;\n    background: var(--bubble-sub-button-background-color, var(--bubble-secondary-background-color, var(--secondary-background-color))) !important;\n    color: var(--bubble-sub-button-text-color, var(--bubble-state-color, var(--secondary-text-color))) !important;\n    /* Enrico: \"warum erhalten die subbutton keinen schatten?\" - vorher hier\n       hart auf none erzwungen, jetzt ueber eigenes Feld steuerbar (Fallback\n       auf den allgemeinen Bubble-Schatten, nicht mehr automatisch aus). */\n    box-shadow: var(--bubble-sub-button-box-shadow, var(--bubble-box-shadow, none)) !important;\n    border: 0 !important;\n  }\n\n  .bubble-sub-button ha-icon,\n  .bubble-sub-button-container ha-icon,\n  .bubble-climate-button ha-icon,\n  .bubble-cover-button ha-icon,\n  .bubble-media-player-button ha-icon,\n  .bubble-horizontal-buttons-stack-card-container .bubble-icon,\n  .bubble-horizontal-buttons-stack-card-container ha-icon {\n    color: var(--bubble-sub-button-icon-color, var(--bubble-icon-color, var(--accent-color))) !important;\n  }\n\n  .bubble-name,\n  .bubble-button-card-container .name,\n  .bubble-media-player .name,\n  .bubble-cover-card-container .name,\n  .bubble-climate-card-container .name {\n    color: var(--bubble-name-color, var(--primary-text-color)) !important;\n    font-size: var(--bubble-name-font-size, 14px) !important;\n    font-weight: var(--bubble-name-font-weight, 500) !important;\n  }\n\n  .bubble-state,\n  .bubble-secondary,\n  .bubble-media-player .state,\n  .bubble-cover-card-container .state,\n  .bubble-climate-card-container .state {\n    color: var(--bubble-state-color, var(--secondary-text-color)) !important;\n    font-size: var(--bubble-state-font-size, 12px) !important;\n  }\n\n  .bubble-range,\n  .bubble-range-slider,\n  .bubble-slider-container,\n  .bubble-slider-background,\n  .bubble-media-player-slider-background,\n  .bubble-cover-slider-background {\n    border-radius: var(--bubble-button-border-radius, var(--bubble-border-radius, 18px)) !important;\n    background: var(--slider-track-color, var(--divider-color)) !important;\n    overflow: hidden !important;\n  }\n\n  .bubble-range-fill,\n  .bubble-slider-fill,\n  .bubble-slider-active,\n  .bubble-media-player-slider-fill,\n  .bubble-cover-slider-fill {\n    background: var(--slider-color, var(--accent-color)) !important;\n  }\n  /* Slider-Hintergrund (Track) nutzt jetzt die echten, editierbaren Felder\n     slider-color/slider-track-color (Sektion \"Slider & Progress\") statt der\n     frueher hier verwendeten bubble-slider-*-Variablen - die gab es in Bubble\n     Card nie wirklich (Altlasten-Bereinigung hat sie deshalb aus dem Manifest\n     entfernt), wodurch diese Regel bisher IMMER auf divider-color/accent-color\n     zurueckgefallen ist, egal was auf \"Slider & Progress\" eingestellt war.\n     Hinweis: \"Slider-Enden abrunden\" und \"Slider-Farbverlauf\" (siehe Plugin-Seite)\n     wirken weiterhin nur direkt in der jeweiligen Bubble-Card ueber deren eigenen\n     \"styles:\"-Schluessel - Bubble Card ueberschreibt CSS am Slider-FUELLBALKEN\n     (.bubble-slider-fill usw.) hier per eigenem, hoeher spezifischem <style>-Tag\n     sonst selbst; der Slider-HINTERGRUND (Track) ist davon nicht betroffen und\n     reagiert jetzt korrekt auf slider-track-color. Fertige Kopiervorlagen fuer\n     Fuellfarbe/Rundung gibt es auf der Plugin-Seite. */\n\n  .bubble-climate-card-container {\n    border-radius: var(--bubble-climate-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-climate-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-climate-main-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  .bubble-cover-card-container {\n    border-radius: var(--bubble-cover-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-cover-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-cover-main-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  .bubble-media-player {\n    border-radius: var(--bubble-media-player-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-media-player-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-media-player-main-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  .bubble-horizontal-buttons-stack-card-container {\n    border-radius: var(--bubble-horizontal-buttons-stack-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-horizontal-buttons-stack-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-horizontal-buttons-stack-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  /* Bubble Card horizontal-buttons-stack: die echten Klassen je Einzelbutton\n     sind \".bubble-button\" (Layout), \".bubble-background-color\" (von Bubble\n     Card hartcodierter weisser Rahmen) und \".bubble-background\" (Fuellfarbe,\n     Standard-Fallback landet NICHT bei --bubble-main-buttons-background-color wie bei\n     den anderen Kartentypen). \".bubble-horizontal-buttons-stack .bubble-button\"\n     (oben, alte Version) existierte in Bubble Card nie und griff nie. Ziel:\n     die drei Buttons sollen optisch genauso aussehen wie die uebrigen\n     Bubble-Karten (gleicher Radius, gleicher Rahmen, gleiche Kartenfarbe\n     statt hartcodiertem weissem Rahmen). */\n  .bubble-horizontal-buttons-stack-card-container .bubble-button,\n  .bubble-horizontal-buttons-stack-card-container .bubble-background-color,\n  .bubble-horizontal-buttons-stack-card-container .bubble-background {\n    border-radius: var(--bubble-horizontal-buttons-stack-border-radius, var(--bubble-border-radius, 18px)) !important;\n  }\n\n  .bubble-horizontal-buttons-stack-card-container .bubble-background-color {\n    border: var(--bubble-border, 1px solid var(--bubble-border-color, var(--ha-card-border-color, transparent))) !important;\n  }\n\n  .bubble-horizontal-buttons-stack-card-container .bubble-background {\n    background-color: var(--bubble-horizontal-buttons-stack-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n    box-shadow: var(--bubble-horizontal-buttons-stack-box-shadow, var(--bubble-box-shadow, none)) !important;\n    opacity: 1 !important;\n  }\n\n  .bubble-pop-up,\n  .bubble-pop-up-background,\n  .bubble-pop-up-container {\n    border-radius: var(--bubble-pop-up-border-radius, var(--bubble-border-radius, 18px)) !important;\n    background: var(--bubble-pop-up-background-color, var(--primary-background-color)) !important;\n    box-shadow: var(--bubble-pop-up-box-shadow, var(--bubble-box-shadow, none)) !important;\n    backdrop-filter: var(--bubble-pop-up-backdrop-filter, blur(16px)) !important;\n  }\n\n  /* --- Icon Leucht-Zustand (an/aus): Bubble Card ---\n     .bubble-icon-container, .is-on/.is-off und ha-icon.bubble-main-icon\n     liegen laut Bubble-Card-Quellcode im selben, von aussen erreichbaren\n     Shadow-Root wie .bubble-container (anders als Sub-Buttons, die\n     weiterhin card_mod: pro Karte brauchen). Live von Enrico getestet. */\n  .bubble-icon-container {\n    transition: box-shadow .3s ease-in-out;\n  }\n  .is-off .bubble-icon-container {\n    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25),\n                0 1px 2px rgba(0, 0, 0, 0.15) !important;\n  }\n  .is-on .bubble-icon-container {\n    box-shadow: 0 0 10px 2px rgba(var(--rgb-accent-color), 0.55),\n                inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;\n  }\n  .is-on ha-icon.bubble-main-icon {\n    color: var(--bubble-icon-color, var(--accent-color)) !important;\n    filter: drop-shadow(0 0 4px rgba(var(--rgb-accent-color), 0.7));\n  }\n\n  /* --- Mushroom: Icon-Farbe/-Hintergrund/-Rundung an Bubble angleichen ---\n     Mushroom liest --icon-color/--shape-color/--icon-border-radius selbst\n     ueber mushroom-shape-icon (eigener Quellcode: shape-icon.ts). Faellt\n     zuerst auf die eigenen mush-*-Felder zurueck, dann auf die Bubble-\n     Felder, damit alle drei Frameworks optisch gleich aussehen. */\n  mushroom-shape-icon {\n    --icon-color: var(--mush-icon-color, var(--bubble-icon-color, var(--accent-color)));\n    --shape-color: var(--mush-icon-background-color, var(--bubble-icon-background-color, var(--secondary-background-color)));\n    --icon-border-radius: var(--bubble-icon-border-radius, 50%);\n  }\n", "bubble-button-card-background-color": "#FFFFFF", "bubble-button-main-background-color": "#FFFFFF", "bubble-climate-button-background-color": "#F9F9FB", "bubble-cover-button-background-color": "#F9F9FB", "bubble-media-player-button-background-color": "#F9F9FB", "mush-slider-background-color": "#F9F9FB", "bubble-button-active-color": "#007AFF", "bubble-climate-button-icon-color": "#3C3C43", "bubble-cover-button-icon-color": "#3C3C43", "bubble-horizontal-buttons-stack-button-icon-color": "#3C3C43", "bubble-horizontal-buttons-stack-button-text-color": "#1C1C1E", "bubble-media-player-button-icon-color": "#3C3C43", "deep-purple-color": "#6E41AB", "indigo-color": "#3F51B5", "light-blue-color": "#03A9F4", "teal-color": "#009688", "light-green-color": "#8BC34A", "lime-color": "#CDDC39", "amber-color": "#FFC107", "deep-orange-color": "#FF6F22", "brown-color": "#795548", "light-grey-color": "#BDBDBD", "dark-grey-color": "#606060", "blue-grey-color": "#607D8B", "disabled-color": "#D1D1D6", "outline-hover-color": "rgba(0, 0, 0, 0.24)", "state-alarm_control_panel-armed_custom_bypass-color": "#34C759", "state-alarm_control_panel-armed_night-color": "#34C759", "state-alarm_control_panel-armed_vacation-color": "#34C759", "state-alarm_control_panel-arming-color": "#007AFF", "state-alarm_control_panel-disarming-color": "#007AFF", "state-alarm_control_panel-pending-color": "#007AFF", "state-alert-off-color": "#007AFF", "state-alert-on-color": "#FF3B30", "state-binary_sensor-active-color": "#FFC107", "state-binary_sensor-battery-on-color": "#FF3B30", "state-binary_sensor-carbon_monoxide-on-color": "#FF3B30", "state-binary_sensor-gas-on-color": "#FF3B30", "state-binary_sensor-heat-on-color": "#FF3B30", "state-binary_sensor-lock-on-color": "#FF3B30", "state-binary_sensor-moisture-on-color": "#FF3B30", "state-binary_sensor-problem-on-color": "#FF3B30", "state-binary_sensor-safety-on-color": "#FF3B30", "state-binary_sensor-smoke-on-color": "#FF3B30", "state-binary_sensor-sound-on-color": "#FF3B30", "state-binary_sensor-tamper-on-color": "#FF3B30", "state-climate-dry-color": "#007AFF", "state-climate-fan_only-color": "#5AC8FA", "state-climate-heat_cool-color": "#FFC107", "state-device_tracker-active-color": "#007AFF", "state-device_tracker-home-color": "#34C759", "state-humidifier-on-color": "#007AFF", "state-lawn_mower-active-color": "#009688", "state-lawn_mower-error-color": "#FF3B30", "state-lock-jammed-color": "#FF3B30", "state-lock-open-color": "#FF3B30", "state-lock-opening-color": "#007AFF", "state-media_player-active-color": "#007AFF", "state-person-active-color": "#007AFF", "state-person-home-color": "#34C759", "state-plant-active-color": "#FF3B30", "state-siren-active-color": "#FF3B30", "state-sun-above_horizon-color": "#FFC107", "state-sun-below_horizon-color": "#3F51B5", "state-update-active-color": "#007AFF", "state-valve-active-color": "#007AFF", "state-vacuum-error-color": "#FF3B30", "state-water_heater-eco-color": "#34C759", "state-water_heater-electric-color": "#007AFF", "state-water_heater-gas-color": "#007AFF", "state-water_heater-heat_pump-color": "#007AFF", "state-water_heater-high_demand-color": "#FF6F22", "state-water_heater-performance-color": "#FF6F22", "state-weather-clear_night-color": "#6E41AB", "state-weather-cloudy-color": "#BDBDBD", "state-weather-exceptional-color": "#FF3B30", "state-weather-fog-color": "#3C3C43", "state-weather-hail-color": "#5AC8FA", "state-weather-lightning_rainy-color": "#CDDC39", "state-weather-lightning-color": "#FFCC00", "state-weather-partlycloudy-color": "#607D8B", "state-weather-pouring-color": "#3F51B5", "state-weather-rainy-color": "#007AFF", "state-weather-snowy_rainy-color": "#03A9F4", "state-weather-snowy-color": "#C0E0FF", "state-weather-sunny-color": "#FFC107", "state-weather-windy_variant-color": "#34C759", "state-weather-windy-color": "#34C759", "state-sensor-battery-high-color": "#34C759", "state-sensor-battery-medium-color": "#007AFF", "state-sensor-battery-low-color": "#FF3B30", "color-1": "#ff9300", "color-2": "#007AFF", "color-3": "#34C759", "color-4": "#AF52DE", "color-5": "#FF3B30", "color-6": "#5AC8FA", "color-7": "#00C7BE", "color-8": "#FF2D55", "color-9": "#FF6B22", "color-10": "#5856D6", "color-11": "#A3D977", "color-12": "#FFCC00", "color-13": "#AF52DE", "color-14": "#8E6E53", "ha-switch-background-color": "#D1D1D6", "ha-switch-background-color-hover": "#D1D1D6", "ha-switch-border-color": "rgba(0,0,0,0)", "ha-switch-thumb-background-color": "#FFFFFF", "ha-switch-thumb-background-color-hover": "#FFFFFF", "ha-switch-thumb-border-color": "rgba(0,0,0,0)", "ha-switch-thumb-border-color-hover": "rgba(0,0,0,0)", "ha-switch-checked-background-color": "#E5F1FF", "ha-switch-checked-background-color-hover": "#E5F1FF", "ha-switch-checked-border-color": "rgba(0,0,0,0)", "ha-switch-checked-thumb-background-color": "#007AFF", "ha-switch-checked-thumb-background-color-hover": "#007AFF", "ha-switch-checked-thumb-border-color": "rgba(0,0,0,0)", "ha-switch-checked-thumb-border-color-hover": "rgba(0,0,0,0)", "printer-cyan-color": "#00AEEF", "printer-magenta-color": "#EC008C", "printer-yellow-color": "#FFD400", "bubble-main-buttons-background-color": "#FFFFFF", "card-backdrop-blur": "none", "glass-effect-style": "off", "background-style": "off"}, "dark": {"accent-color": "#ff9300", "primary-color": "#ff9300", "dark-primary-color": "#2C2C2E", "light-primary-color": "#ff9300", "primary-text-color": "#feffff", "secondary-text-color": "#C7C7CC", "text-primary-color": "#000000", "disabled-text-color": "#636366", "error-color": "#FF453A", "warning-color": "#FFD60A", "success-color": "#30D158", "info-color": "#0A84FF", "red-color": "#FF453A", "green-color": "#30D158", "blue-color": "#0A84FF", "orange-color": "#FF9F0A", "yellow-color": "#FFD60A", "purple-color": "#BF5AF2", "pink-color": "#FF375F", "cyan-color": "#32ADE6", "grey-color": "#C7C7CC", "black-color": "#000000", "white-color": "#FFFFFF", "primary-background-color": "#000000", "background-color": "#000000", "lovelace-background": "#000000", "secondary-background-color": "#2C2C2E", "card-background-color": "#1C1C1E", "ha-card-background": "#1C1C1E", "ha-card-background-color": "#1C1C1E", "table-row-background-color": "#2C2C2E", "table-row-alternative-background-color": "#1C1C1E", "app-header-background-color": "#1C1C1E", "app-toolbar-background-color": "#1C1C1E", "toolbar-background-color": "#1C1C1E", "app-drawer-background-color": "#1C1C1E", "sidebar-background-color": "#1C1C1E", "sidebar-selected-background-color": "#d5d5d5", "mdc-theme-background": "#000000", "mdc-theme-surface": "#1C1C1E", "mdc-theme-on-surface": "#F2F2F7", "wa-color-surface-raised": "#1C1C1E", "app-header-text-color": "#F2F2F7", "app-toolbar-text-color": "#F2F2F7", "toolbar-text-color": "#F2F2F7", "app-drawer-text-color": "#C7C7CC", "app-drawer-icon-color": "#ff9300", "sidebar-text-color": "#C7C7CC", "sidebar-icon-color": "rgba(225, 225, 225, 0.6)", "sidebar-selected-text-color": "#d5d5d5", "sidebar-selected-icon-color": "#d5d5d5", "state-icon-color": "#feffff", "state-icon-active-color": "#ff9300", "state-icon-unavailable-color": "#929292", "state-active-color": "#ff9300", "state-inactive-color": "#929292", "state-unavailable-color": "#929292", "state-on-color": "#30D158", "state-off-color": "#636366", "state-light-color": "#ff9300", "state-light-active-color": "#ff9300", "state-light-on-color": "#ff9300", "state-switch-color": "#0A84FF", "state-switch-active-color": "#ff9300", "state-switch-on-color": "#ff9300", "state-climate-cool-color": "#0A84FF", "state-climate-heat-color": "#ff2600", "state-climate-auto-color": "#ffd478", "state-cover-color": "#0A84FF", "state-cover-active-color": "#929000", "state-cover-open-color": "#929000", "state-cover-closed-color": "#ff2600", "state-fan-color": "#0A84FF", "state-fan-active-color": "#0A84FF", "state-media_player-color": "#0A84FF", "state-vacuum-color": "#0A84FF", "state-vacuum-active-color": "#0A84FF", "state-lock-locked-color": "#ff2600", "state-lock-locking-color": "#ff2600", "state-lock-unlocked-color": "#929000", "state-lock-unlocking-color": "#929000", "state-alarm_control_panel-triggered-color": "#ff2600", "state-alarm-triggered-color": "#ff2600", "state-alarm_control_panel-armed_home-color": "#ffd478", "state-alarm_control_panel-armed_away-color": "#ffd478", "state-alarm-armed-color": "#ffd478", "state-alarm_control_panel-disarmed-color": "#ff9300", "state-alarm-disarmed-color": "#ff9300", "state-battery-low-color": "#ff2600", "label-badge-background-color": "#1C1C1E", "label-badge-text-color": "rgba(225, 225, 225, 0.8)", "label-badge-red": "#FF453A", "label-badge-blue": "#0A84FF", "label-badge-green": "#30D158", "label-badge-yellow": "#FFD60A", "state-battery-alert-color": "#ff2600", "ha-control-switch-color": "#ff9300", "ha-control-switch-checked-color": "#ff9300", "ha-control-switch-unchecked-color": "#3A3A3C", "mush-toggle-color": "#ff9300", "mush-rgb-state-switch": "255, 147, 0", "bubble-toggle-color": "#ff9300", "rgb-state-switch-color": "255, 147, 0", "control-slider-color": "#ff9300", "slider-color": "#ff9300", "slider-secondary-color": "#1F3A5F", "slider-track-color": "#48484A", "mush-slider-color": "#ff9300", "mush-slider-track-color": "#48484A", "mush-toggle-background-color": "#48484A", "control-button-background-color": "#2C2C2E", "control-button-icon-color": "#ff9300", "control-button-border-radius": "18px", "mush-chip-background": "#2C2C2E", "mush-chip-active-background": "#1F3A5F", "mush-chip-color": "#F2F2F7", "mush-chip-icon-color": "#ff9300", "mush-chip-active-color": "#0A84FF", "mush-chip-active-icon-color": "#0A84FF", "mush-chip-border-color": "#38383A", "mush-chip-border-radius": "16px", "mush-chip-font-size": "12px", "bubble-button-background-color": "#1C1C1E", "bubble-button-active-background-color": "#0A84FF", "bubble-button-icon-color": "#ff9300", "bubble-button-active-icon-color": "#000000", "bubble-button-text-color": "#feffff", "bubble-button-active-text-color": "#000000", "bubble-button-border-radius": "18px", "bubble-sub-button-background-color": "#2C2C2E", "bubble-sub-button-active-background-color": "#0A84FF", "bubble-sub-button-icon-color": "#ff9300", "bubble-sub-button-active-icon-color": "#000000", "bubble-sub-button-text-color": "#C7C7CC", "bubble-sub-button-active-text-color": "#000000", "bubble-sub-button-border-radius": "14px", "bubble-sub-button-box-shadow": "0 4px 11px rgba(0,0,0,.45)", "input-background-color": "#2C2C2E", "input-fill-color": "#2C2C2E", "input-disabled-fill-color": "rgba(44, 44, 46, 0.50)", "input-disabled-ink-color": "rgba(255, 255, 255, 0.37)", "input-disabled-label-ink-color": "#636366", "input-disabled-line-color": "rgba(255, 255, 255, 0.06)", "input-dropdown-icon-color": "rgba(255, 255, 255, 0.54)", "input-hover-line-color": "rgba(255, 255, 255, 0.87)", "input-idle-line-color": "rgba(255, 255, 255, 0.42)", "input-ink-color": "rgba(255, 255, 255, 0.87)", "input-label-ink-color": "rgba(255, 255, 255, 0.6)", "input-outlined-disabled-border-color": "rgba(255, 255, 255, 0.06)", "mdc-select-idle-line-color": "#38383A", "mdc-select-dropdown-icon-color": "#C7C7CC", "mdc-select-hover-line-color": "#38383A", "mdc-text-field-idle-line-color": "#38383A", "mdc-text-field-hover-line-color": "#38383A", "ha-color-form-background": "#2C2C2E", "ha-color-form-background-hover": "#2C2C2E", "ha-color-form-background-disabled": "rgba(44, 44, 46, 0.50)", "mdc-theme-primary": "#0A84FF", "mdc-theme-secondary": "#0A84FF", "mdc-theme-on-primary": "#000000", "md-sys-color-primary": "#ff9300", "md-sys-color-on-primary": "#0A84FF", "md-sys-color-primary-container": "#1F3A5F", "md-sys-color-on-primary-container": "#000000", "md-sys-color-on-surface": "#feffff", "ha-on-surface-color": "#feffff", "md-radio-selected-icon-color": "#0A84FF", "mdc-radio-unchecked-color": "#C7C7CC", "ha-color-fill-primary-normal-resting": "rgba(255, 147, 0, 0.15)", "ha-color-fill-primary-normal-hover": "rgba(255, 147, 0, 0.25)", "ha-color-fill-primary-quiet-resting": "rgba(255, 147, 0, 0.08)", "ha-color-fill-primary-quiet-hover": "rgba(255, 147, 0, 0.15)", "ha-color-fill-disabled-normal-resting": "rgba(99, 99, 102, 0.08)", "ha-color-on-disabled-normal": "rgba(199, 199, 204, 0.50)", "ha-color-fill-disabled-loud-resting": "rgba(99, 99, 102, 0.22)", "ha-color-on-disabled-loud": "rgba(199, 199, 204, 0.55)", "ha-color-on-disabled-quiet": "rgba(199, 199, 204, 0.50)", "ha-color-fill-neutral-quiet-resting": "#1C1C1E", "ha-color-fill-neutral-quiet-hover": "#2C2C2E", "ha-color-fill-neutral-quiet-active": "#1C1C1E", "ha-color-fill-neutral-normal-resting": "#2C2C2E", "ha-color-fill-neutral-normal-hover": "#1C1C1E", "ha-color-fill-neutral-normal-active": "#2C2C2E", "ha-color-fill-danger-normal-resting": "rgba(255, 69, 58, 0.15)", "ha-color-fill-danger-normal-hover": "rgba(255, 69, 58, 0.22)", "ha-color-fill-danger-normal-active": "rgba(255, 69, 58, 0.28)", "ha-color-on-danger-normal": "#F2F2F7", "ha-color-fill-warning-normal-resting": "rgba(255, 214, 10, 0.15)", "ha-color-fill-warning-normal-hover": "rgba(255, 214, 10, 0.22)", "ha-color-fill-warning-normal-active": "rgba(255, 214, 10, 0.28)", "ha-color-on-warning-normal": "#F2F2F7", "ha-tooltip-background-color": "#2C2C2E", "ha-tooltip-text-color": "#F2F2F7", "border-color": "rgba(225, 225, 225, 0.12)", "border-radius": "18px", "box-shadow": "0 10px 30px rgba(0,0,0,.50)", "divider-color": "rgba(225, 225, 225, 0.12)", "outline-color": "rgba(225, 225, 225, 0.12)", "outline-variant-color": "#38383A", "ha-card-border-color": "rgba(225, 225, 225, 0.12)", "ha-card-border-radius": "18px", "ha-card-border-width": "1px", "ha-card-box-shadow": "0 10px 30px rgba(0,0,0,.50)", "ha-line-height-condensed": "1.25", "ha-line-height-expanded": "1.35", "ha-line-height-normal": "1.5", "bubble-border": "1px solid #38383A", "bubble-border-color": "rgba(225, 225, 225, 0.12)", "bubble-border-radius": "18px", "bubble-box-shadow": "0 10px 30px rgba(0,0,0,.50)", "bubble-card-border-radius": "18px", "bubble-climate-border-radius": "18px", "bubble-climate-box-shadow": "0 10px 30px rgba(0,0,0,.50)", "bubble-climate-icon-border-radius": "32px", "bubble-cover-border-radius": "18px", "bubble-cover-box-shadow": "0 10px 30px rgba(0,0,0,.50)", "bubble-icon-border-radius": "14px", "bubble-media-player-border-radius": "18px", "bubble-media-player-box-shadow": "0 10px 30px rgba(0,0,0,.50)", "bubble-pop-up-border-radius": "18px", "bubble-pop-up-box-shadow": "0 10px 30px rgba(0,0,0,.50)", "bubble-select-border-radius": "18px", "bubble-separator-border-radius": "18px", "bubble-horizontal-buttons-stack-border-radius": "18px", "bubble-horizontal-buttons-stack-box-shadow": "0 10px 30px rgba(0,0,0,.50)", "primary-font-family": "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif", "ha-font-family-body": "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif", "ha-font-family-heading": "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif", "ha-font-family-longform": "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif", "ha-font-family-code": "'SF Mono', 'Roboto Mono', Consolas, monospace", "mdc-typography-font-family": "'SF Mono', 'Roboto Mono', Consolas, monospace", "ha-font-size-scale": "1", "ha-font-size-2xs": "8px", "ha-font-size-xs": "8px", "ha-font-size-s": "12px", "ha-font-size-m": "14px", "ha-font-size-l": "16px", "ha-font-size-xl": "18px", "ha-font-size-2xl": "20px", "ha-font-size-3xl": "22px", "ha-font-size-4xl": "24px", "ha-font-weight-light": "300", "ha-font-weight-normal": "400", "ha-font-weight-body": "400", "ha-font-weight-medium": "500", "ha-font-weight-heading": "500", "ha-font-weight-action": "500", "ha-font-weight-bold": "700", "rgb-primary-color": "255, 147, 0", "rgb-accent-color": "255, 147, 0", "rgb-primary-text-color": "254, 255, 255", "rgb-secondary-text-color": "199, 199, 204", "rgb-card-background-color": "28, 28, 30", "rgb-primary-background-color": "0, 0, 0", "rgb-blue-color": "10, 132, 255", "rgb-orange-color": "255, 159, 10", "rgb-state-light-color": "10, 132, 255", "rgb-state-cover-color": "10, 132, 255", "rgb-state-fan-color": "10, 132, 255", "rgb-state-media_player-color": "10, 132, 255", "mush-rgb-primary-text-color": "242, 242, 247", "mush-rgb-secondary-text-color": "199, 199, 204", "mush-rgb-state-light": "10, 132, 255", "mush-rgb-state-cover": "10, 132, 255", "mush-rgb-state-entity": "10, 132, 255", "mush-rgb-state-fan": "10, 132, 255", "mush-rgb-state-media-player": "10, 132, 255", "mush-rgb-state-vacuum": "10, 132, 255", "mush-rgb-success": "48, 209, 88", "mush-rgb-warning": "255, 214, 10", "mush-rgb-danger": "255, 69, 58", "mush-rgb-disabled": "99, 99, 102", "mush-rgb-info": "10, 132, 255", "graph-color-1": "#0A84FF", "graph-color-2": "#64D2FF", "graph-color-3": "#30D158", "graph-color-4": "#BF5AF2", "graph-color-5": "#FF453A", "graph-color-6": "#32ADE6", "graph-color-7": "#64D2FF", "graph-color-8": "#FF375F", "graph-color-9": "#FF9F0A", "graph-color-10": "#5E5CE6", "graph-color-11": "#A3D977", "graph-color-12": "#FFD60A", "graph-color-13": "#BF5AF2", "graph-color-14": "#A2845E", "energy-grid-consumption-color": "#0A84FF", "energy-grid-return-color": "#BF5AF2", "energy-solar-color": "#FF9F0A", "energy-non-fossil-color": "#30D158", "energy-battery-out-color": "#64D2FF", "energy-battery-in-color": "#BF5AF2", "energy-gas-color": "#FF453A", "energy-water-color": "#32ADE6", "bubble-card-background-color": "#1C1C1E", "bubble-secondary-background-color": "#2C2C2E", "bubble-icon-background-color": "#2C2C2E", "bubble-icon-color": "#ff9300", "bubble-name-color": "#feffff", "bubble-state-color": "#C7C7CC", "bubble-accent-color": "#ff9300", "bubble-active-color": "#ff9300", "bubble-line-background-color": "rgba(225, 225, 225, 0.12)", "bubble-pop-up-background-color": "#000000", "bubble-pop-up-backdrop-filter": "blur(18px)", "dialog-box-shadow": "0 10px 30px rgba(0,0,0,.50)", "more-info-header-background": "#2C2C2E", "more-info-header-color": "#F2F2F7", "popup-border-radius": "12px", "ha-dialog-scrim-backdrop-filter": "blur(10px)", "ha-dialog-surface-background": "rgba(28, 28, 30, 0.92)", "mdc-dialog-scrim-color": "rgba(0, 0, 0, 0.60)", "bubble-separator-background-color": "#1C1C1E", "bubble-separator-icon-background-color": "#2C2C2E", "bubble-separator-icon-color": "#0A84FF", "bubble-separator-line-color": "rgba(225, 225, 225, 0.12)", "bubble-separator-name-color": "#feffff", "bubble-separator-text-color": "#feffff", "bubble-horizontal-buttons-stack-background-color": "#1C1C1E", "bubble-horizontal-buttons-stack-button-background-color": "#2C2C2E", "bubble-sub-buttons-main-background-color": "#1C1C1E", "bubble-climate-background-color": "#1C1C1E", "bubble-climate-main-background-color": "#1C1C1E", "bubble-cover-background-color": "#1C1C1E", "bubble-cover-main-background-color": "#1C1C1E", "bubble-media-player-background-color": "#1C1C1E", "bubble-media-player-main-background-color": "#1C1C1E", "mush-card-background": "#1C1C1E", "mush-control-background-color": "#2C2C2E", "mush-icon-background-color": "#2C2C2E", "mush-card-primary-color": "#feffff", "mush-card-secondary-color": "#C7C7CC", "mush-title-color": "#feffff", "mush-subtitle-color": "#C7C7CC", "mush-icon-color": "#0A84FF", "mush-icon-active-color": "#ff9300", "card-mod-theme": "basis", "card-mod-card-yaml": "\n.: |\n  /* HATG Bubble Card: zentraler card-mod Block */\n  ha-card {\n    /* v0.4.50: Enrico - \"Popup, Heizung und freier Button haben keinen\n       cardmod genau so wie die Menueleiste unten.\" Root Cause (im echten\n       Bubble-Card-Quellcode nachgeschaut): JEDE Bubble-Karte nutzt fuer\n       Hintergrund/Icon/Name/Radius automatisch Fallback-Ketten wie\n       var(--bubble-card-type-main-background-color, var(--bubble-main-background-color, ...)) -\n       diese Variablen haben wir bisher nie gesetzt, nur einzelne Klassen per\n       !important erzwungen (siehe Liste unten). Fuer Kartentypen, die nicht\n       in dieser Liste stehen (z. B. ein reiner \"button\"-Typ ohne Entity wie\n       ein Pop-up-Oeffner, oder die \"sub-buttons\"-Kartenart), griff bisher\n       keine unserer Regeln - Bubble Card fiel auf neutrale Standardwerte\n       zurueck. Jetzt setzen wir die von Bubble Card selbst erwarteten\n       Variablen direkt auf ha-card (genau wie Enricos alter Pro-Karte-\n       card_mod es tat), zeigen aber weiterhin auf unsere eigenen, im Editor\n       bearbeitbaren Felder - das deckt jetzt automatisch auch kuenftige/\n       bisher unbekannte Bubble-Kartentypen ab, ohne dass wir jede einzeln\n       nachtragen muessen. */\n    --bubble-main-background-color: var(--bubble-main-buttons-background-color, var(--card-background-color));\n    --bubble-secondary-background-color: var(--bubble-secondary-background-color, var(--secondary-background-color));\n    --bubble-icon-background-color: var(--bubble-icon-background-color, var(--secondary-background-color));\n    --bubble-icon-color: var(--bubble-icon-color, var(--accent-color));\n    /* v0.4.53: Enrico - vorsorglich \"--bubble-accent-color\" mit aufnehmen,\n       falls kuenftig card_type: calendar mit \"show_progress: true\" genutzt\n       wird. Bubble Card berechnet die Fortschritts-Hervorhebung fuer laufende\n       Termine dann ueber \"var(--bubble-event-accent-color,\n       var(--bubble-accent-color, var(--bubble-default-color)))\" (siehe\n       changes.js im echten Bubble-Card-Quellcode) - ohne eigene Definition\n       blieb diese Hervorhebung bisher farblos, da wir --bubble-accent-color\n       nie gesetzt haben und Bubble Card selbst dafuer keinen eigenen\n       Standardwert bereitstellt. */\n    --bubble-accent-color: var(--bubble-accent-color, var(--accent-color));\n    --bubble-name-color: var(--bubble-name-color, var(--primary-text-color));\n    --bubble-state-color: var(--bubble-state-color, var(--secondary-text-color));\n    --bubble-border-radius: var(--bubble-border-radius, var(--ha-card-border-radius, 18px));\n    /* Bubble Card setzt bei button_type: switch im \"an\"-Zustand selbst\n       eine deckende Akzentfarben-Flutung ueber die ganze Karte\n       (--bubble-button-background-color, per JS/inline gesetzt) -\n       das sieht anders aus als Mushroom/Tile, die nur den Icon-Kreis\n       aufleuchten lassen. Global neutralisiert, damit die Kartenflaeche\n       in JEDEM Zustand dunkel/neutral bleibt und nur noch das Icon\n       (siehe .is-on .bubble-icon-container weiter unten) den\n       \"an\"-Zustand zeigt - alle drei Frameworks sollen so nah wie\n       moeglich gleich aussehen (Enrico: \"keiner soll merken was\n       welche Karte ist\"). */\n    --bubble-button-background-color: transparent !important;\n    border-radius: var(--bubble-border-radius, var(--ha-card-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-box-shadow, var(--ha-card-box-shadow, none)) !important;\n    background: var(--bubble-main-buttons-background-color, var(--ha-card-background, var(--card-background-color))) !important;\n    border: var(--bubble-border, 1px solid var(--bubble-border-color, var(--ha-card-border-color, transparent))) !important;\n    color: var(--bubble-name-color, var(--primary-text-color)) !important;\n    overflow: hidden !important;\n    backdrop-filter: var(--card-backdrop-blur, none) !important;\n  }\n\n  .bubble-card,\n  .bubble-button-card-container,\n  .bubble-media-player,\n  .bubble-media-player-container,\n  .bubble-cover-card-container,\n  .bubble-climate-card-container,\n  .bubble-horizontal-buttons-stack-card-container,\n  .bubble-pop-up,\n  .bubble-pop-up-container {\n    border-radius: var(--bubble-border-radius, var(--ha-card-border-radius, 18px)) !important;\n    background: var(--bubble-main-buttons-background-color, var(--ha-card-background, var(--card-background-color))) !important;\n    /* v0.2.6: Enrico - \"Der Cardmod fuer Bubble passt noch nicht.\" Ursache:\n       backdrop-filter stand bisher NUR auf der blanken ha-card-Regel weiter\n       oben - Bubble Card rendert aber kein <ha-card>, sondern eigene\n       Container-Klassen (siehe diese Selektorliste), die zwar schon den\n       richtigen, halbtransparenten Hintergrund bekamen (ueber\n       --bubble-main-buttons-background-color), aber nie geblurrt wurden.\n       Deshalb sahen Bubble-Karten trotz Glaseffekt-Auswahl flach/undurchsichtig\n       aus, waehrend HA-eigene Tile-Karten (die echtes <ha-card> nutzen)\n       korrekt milchig/verschwommen wirkten. Jetzt denselben Blur-Wert wie\n       ha-card auch hier anwenden. */\n    backdrop-filter: var(--card-backdrop-blur, none) !important;\n    box-shadow: var(--bubble-box-shadow, var(--ha-card-box-shadow, none)) !important;\n    border: var(--bubble-border, 1px solid var(--bubble-border-color, var(--ha-card-border-color, transparent))) !important;\n    color: var(--bubble-name-color, var(--primary-text-color)) !important;\n    overflow: hidden !important;\n  }\n\n  /* Echtes Bubble-Card-Element fuer den Zustands-/Fuellfarben-Hintergrund\n     (bisher faelschlich als \".bubble-button-background\" angesprochen - diese\n     Klasse existiert in Bubble Card gar nicht, der echte Name ist\n     \".bubble-background\"). Nur Radius+Clipping erzwingen (per \"inherit\" vom\n     jeweils schon korrekt gesetzten Elternelement), NICHT die Hintergrundfarbe -\n     die uebernimmt Bubble Card selbst korrekt je nach Zustand/Kartentyp ueber\n     die passenden bubble-*-button-background-color-Felder. Behebt eckige statt\n     runde Kartenecken bei Button-/Zustands-Karten. */\n  .bubble-background {\n    border-radius: inherit !important;\n    overflow: hidden !important;\n  }\n\n  .bubble-icon-container,\n  .bubble-icon-wrapper,\n  .bubble-climate-icon-container,\n  .bubble-cover-icon-container,\n  .bubble-media-player-icon-container {\n    border-radius: var(--bubble-icon-border-radius, var(--bubble-button-border-radius, var(--bubble-border-radius, 18px))) !important;\n    background: var(--bubble-icon-background-color, var(--bubble-secondary-background-color, var(--secondary-background-color))) !important;\n    color: var(--bubble-icon-color, var(--accent-color)) !important;\n  }\n\n  .bubble-icon,\n  .bubble-icon-container ha-icon,\n  .bubble-icon-wrapper ha-icon,\n  .bubble-climate-icon-container ha-icon,\n  .bubble-cover-icon-container ha-icon,\n  .bubble-media-player-icon-container ha-icon {\n    color: var(--bubble-icon-color, var(--accent-color)) !important;\n  }\n\n  .bubble-sub-button,\n  .bubble-sub-button-container,\n  .bubble-sub-button-background,\n  .bubble-climate-button,\n  .bubble-cover-button,\n  .bubble-media-player-button {\n    border-radius: var(--bubble-sub-button-border-radius, var(--bubble-button-border-radius, var(--bubble-border-radius, 18px))) !important;\n    background: var(--bubble-sub-button-background-color, var(--bubble-secondary-background-color, var(--secondary-background-color))) !important;\n    color: var(--bubble-sub-button-text-color, var(--bubble-state-color, var(--secondary-text-color))) !important;\n    /* Enrico: \"warum erhalten die subbutton keinen schatten?\" - vorher hier\n       hart auf none erzwungen, jetzt ueber eigenes Feld steuerbar (Fallback\n       auf den allgemeinen Bubble-Schatten, nicht mehr automatisch aus). */\n    box-shadow: var(--bubble-sub-button-box-shadow, var(--bubble-box-shadow, none)) !important;\n    border: 0 !important;\n  }\n\n  .bubble-sub-button ha-icon,\n  .bubble-sub-button-container ha-icon,\n  .bubble-climate-button ha-icon,\n  .bubble-cover-button ha-icon,\n  .bubble-media-player-button ha-icon,\n  .bubble-horizontal-buttons-stack-card-container .bubble-icon,\n  .bubble-horizontal-buttons-stack-card-container ha-icon {\n    color: var(--bubble-sub-button-icon-color, var(--bubble-icon-color, var(--accent-color))) !important;\n  }\n\n  .bubble-name,\n  .bubble-button-card-container .name,\n  .bubble-media-player .name,\n  .bubble-cover-card-container .name,\n  .bubble-climate-card-container .name {\n    color: var(--bubble-name-color, var(--primary-text-color)) !important;\n    font-size: var(--bubble-name-font-size, 14px) !important;\n    font-weight: var(--bubble-name-font-weight, 500) !important;\n  }\n\n  .bubble-state,\n  .bubble-secondary,\n  .bubble-media-player .state,\n  .bubble-cover-card-container .state,\n  .bubble-climate-card-container .state {\n    color: var(--bubble-state-color, var(--secondary-text-color)) !important;\n    font-size: var(--bubble-state-font-size, 12px) !important;\n  }\n\n  .bubble-range,\n  .bubble-range-slider,\n  .bubble-slider-container,\n  .bubble-slider-background,\n  .bubble-media-player-slider-background,\n  .bubble-cover-slider-background {\n    border-radius: var(--bubble-button-border-radius, var(--bubble-border-radius, 18px)) !important;\n    background: var(--slider-track-color, var(--divider-color)) !important;\n    overflow: hidden !important;\n  }\n\n  .bubble-range-fill,\n  .bubble-slider-fill,\n  .bubble-slider-active,\n  .bubble-media-player-slider-fill,\n  .bubble-cover-slider-fill {\n    background: var(--slider-color, var(--accent-color)) !important;\n  }\n  /* Slider-Hintergrund (Track) nutzt jetzt die echten, editierbaren Felder\n     slider-color/slider-track-color (Sektion \"Slider & Progress\") statt der\n     frueher hier verwendeten bubble-slider-*-Variablen - die gab es in Bubble\n     Card nie wirklich (Altlasten-Bereinigung hat sie deshalb aus dem Manifest\n     entfernt), wodurch diese Regel bisher IMMER auf divider-color/accent-color\n     zurueckgefallen ist, egal was auf \"Slider & Progress\" eingestellt war.\n     Hinweis: \"Slider-Enden abrunden\" und \"Slider-Farbverlauf\" (siehe Plugin-Seite)\n     wirken weiterhin nur direkt in der jeweiligen Bubble-Card ueber deren eigenen\n     \"styles:\"-Schluessel - Bubble Card ueberschreibt CSS am Slider-FUELLBALKEN\n     (.bubble-slider-fill usw.) hier per eigenem, hoeher spezifischem <style>-Tag\n     sonst selbst; der Slider-HINTERGRUND (Track) ist davon nicht betroffen und\n     reagiert jetzt korrekt auf slider-track-color. Fertige Kopiervorlagen fuer\n     Fuellfarbe/Rundung gibt es auf der Plugin-Seite. */\n\n  .bubble-climate-card-container {\n    border-radius: var(--bubble-climate-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-climate-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-climate-main-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  .bubble-cover-card-container {\n    border-radius: var(--bubble-cover-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-cover-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-cover-main-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  .bubble-media-player {\n    border-radius: var(--bubble-media-player-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-media-player-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-media-player-main-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  .bubble-horizontal-buttons-stack-card-container {\n    border-radius: var(--bubble-horizontal-buttons-stack-border-radius, var(--bubble-border-radius, 18px)) !important;\n    box-shadow: var(--bubble-horizontal-buttons-stack-box-shadow, var(--bubble-box-shadow, none)) !important;\n    background: var(--bubble-horizontal-buttons-stack-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n  }\n\n  /* Bubble Card horizontal-buttons-stack: die echten Klassen je Einzelbutton\n     sind \".bubble-button\" (Layout), \".bubble-background-color\" (von Bubble\n     Card hartcodierter weisser Rahmen) und \".bubble-background\" (Fuellfarbe,\n     Standard-Fallback landet NICHT bei --bubble-main-buttons-background-color wie bei\n     den anderen Kartentypen). \".bubble-horizontal-buttons-stack .bubble-button\"\n     (oben, alte Version) existierte in Bubble Card nie und griff nie. Ziel:\n     die drei Buttons sollen optisch genauso aussehen wie die uebrigen\n     Bubble-Karten (gleicher Radius, gleicher Rahmen, gleiche Kartenfarbe\n     statt hartcodiertem weissem Rahmen). */\n  .bubble-horizontal-buttons-stack-card-container .bubble-button,\n  .bubble-horizontal-buttons-stack-card-container .bubble-background-color,\n  .bubble-horizontal-buttons-stack-card-container .bubble-background {\n    border-radius: var(--bubble-horizontal-buttons-stack-border-radius, var(--bubble-border-radius, 18px)) !important;\n  }\n\n  .bubble-horizontal-buttons-stack-card-container .bubble-background-color {\n    border: var(--bubble-border, 1px solid var(--bubble-border-color, var(--ha-card-border-color, transparent))) !important;\n  }\n\n  .bubble-horizontal-buttons-stack-card-container .bubble-background {\n    background-color: var(--bubble-horizontal-buttons-stack-background-color, var(--bubble-main-buttons-background-color, var(--card-background-color))) !important;\n    box-shadow: var(--bubble-horizontal-buttons-stack-box-shadow, var(--bubble-box-shadow, none)) !important;\n    opacity: 1 !important;\n  }\n\n  .bubble-pop-up,\n  .bubble-pop-up-background,\n  .bubble-pop-up-container {\n    border-radius: var(--bubble-pop-up-border-radius, var(--bubble-border-radius, 18px)) !important;\n    background: var(--bubble-pop-up-background-color, var(--primary-background-color)) !important;\n    box-shadow: var(--bubble-pop-up-box-shadow, var(--bubble-box-shadow, none)) !important;\n    backdrop-filter: var(--bubble-pop-up-backdrop-filter, blur(16px)) !important;\n  }\n\n  /* --- Icon Leucht-Zustand (an/aus): Bubble Card ---\n     .bubble-icon-container, .is-on/.is-off und ha-icon.bubble-main-icon\n     liegen laut Bubble-Card-Quellcode im selben, von aussen erreichbaren\n     Shadow-Root wie .bubble-container (anders als Sub-Buttons, die\n     weiterhin card_mod: pro Karte brauchen). Live von Enrico getestet. */\n  .bubble-icon-container {\n    transition: box-shadow .3s ease-in-out;\n  }\n  .is-off .bubble-icon-container {\n    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25),\n                0 1px 2px rgba(0, 0, 0, 0.15) !important;\n  }\n  .is-on .bubble-icon-container {\n    box-shadow: 0 0 10px 2px rgba(var(--rgb-accent-color), 0.55),\n                inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;\n  }\n  .is-on ha-icon.bubble-main-icon {\n    color: var(--bubble-icon-color, var(--accent-color)) !important;\n    filter: drop-shadow(0 0 4px rgba(var(--rgb-accent-color), 0.7));\n  }\n\n  /* --- Mushroom: Icon-Farbe/-Hintergrund/-Rundung an Bubble angleichen ---\n     Mushroom liest --icon-color/--shape-color/--icon-border-radius selbst\n     ueber mushroom-shape-icon (eigener Quellcode: shape-icon.ts). Faellt\n     zuerst auf die eigenen mush-*-Felder zurueck, dann auf die Bubble-\n     Felder, damit alle drei Frameworks optisch gleich aussehen. */\n  mushroom-shape-icon {\n    --icon-color: var(--mush-icon-color, var(--bubble-icon-color, var(--accent-color)));\n    --shape-color: var(--mush-icon-background-color, var(--bubble-icon-background-color, var(--secondary-background-color)));\n    --icon-border-radius: var(--bubble-icon-border-radius, 50%);\n  }\n", "bubble-button-card-background-color": "#1C1C1E", "bubble-button-main-background-color": "#1C1C1E", "bubble-climate-button-background-color": "#2C2C2E", "bubble-cover-button-background-color": "#2C2C2E", "bubble-media-player-button-background-color": "#2C2C2E", "mush-slider-background-color": "#2C2C2E", "bubble-button-active-color": "#0A84FF", "bubble-climate-button-icon-color": "#C7C7CC", "bubble-cover-button-icon-color": "#C7C7CC", "bubble-horizontal-buttons-stack-button-icon-color": "#C7C7CC", "bubble-horizontal-buttons-stack-button-text-color": "#F2F2F7", "bubble-media-player-button-icon-color": "#C7C7CC", "deep-purple-color": "#6E41AB", "indigo-color": "#3F51B5", "light-blue-color": "#03A9F4", "teal-color": "#009688", "light-green-color": "#8BC34A", "lime-color": "#CDDC39", "amber-color": "#FFC107", "deep-orange-color": "#FF6F22", "brown-color": "#795548", "light-grey-color": "#BDBDBD", "dark-grey-color": "#606060", "blue-grey-color": "#607D8B", "disabled-color": "#464646", "outline-hover-color": "rgba(225, 225, 225, 0.24)", "state-alarm_control_panel-armed_custom_bypass-color": "#30D158", "state-alarm_control_panel-armed_night-color": "#30D158", "state-alarm_control_panel-armed_vacation-color": "#30D158", "state-alarm_control_panel-arming-color": "#0A84FF", "state-alarm_control_panel-disarming-color": "#0A84FF", "state-alarm_control_panel-pending-color": "#0A84FF", "state-alert-off-color": "#0A84FF", "state-alert-on-color": "#FF453A", "state-binary_sensor-active-color": "#FFC107", "state-binary_sensor-battery-on-color": "#FF453A", "state-binary_sensor-carbon_monoxide-on-color": "#FF453A", "state-binary_sensor-gas-on-color": "#FF453A", "state-binary_sensor-heat-on-color": "#FF453A", "state-binary_sensor-lock-on-color": "#FF453A", "state-binary_sensor-moisture-on-color": "#FF453A", "state-binary_sensor-problem-on-color": "#FF453A", "state-binary_sensor-safety-on-color": "#FF453A", "state-binary_sensor-smoke-on-color": "#FF453A", "state-binary_sensor-sound-on-color": "#FF453A", "state-binary_sensor-tamper-on-color": "#FF453A", "state-climate-dry-color": "#0A84FF", "state-climate-fan_only-color": "#32ADE6", "state-climate-heat_cool-color": "#FFC107", "state-device_tracker-active-color": "#0A84FF", "state-device_tracker-home-color": "#30D158", "state-humidifier-on-color": "#0A84FF", "state-lawn_mower-active-color": "#009688", "state-lawn_mower-error-color": "#FF453A", "state-lock-jammed-color": "#FF453A", "state-lock-open-color": "#FF453A", "state-lock-opening-color": "#0A84FF", "state-media_player-active-color": "#0A84FF", "state-person-active-color": "#0A84FF", "state-person-home-color": "#30D158", "state-plant-active-color": "#FF453A", "state-siren-active-color": "#FF453A", "state-sun-above_horizon-color": "#FFC107", "state-sun-below_horizon-color": "#3F51B5", "state-update-active-color": "#0A84FF", "state-valve-active-color": "#0A84FF", "state-vacuum-error-color": "#FF453A", "state-water_heater-eco-color": "#30D158", "state-water_heater-electric-color": "#0A84FF", "state-water_heater-gas-color": "#0A84FF", "state-water_heater-heat_pump-color": "#0A84FF", "state-water_heater-high_demand-color": "#FF6F22", "state-water_heater-performance-color": "#FF6F22", "state-weather-clear_night-color": "#6E41AB", "state-weather-cloudy-color": "#BDBDBD", "state-weather-exceptional-color": "#FF453A", "state-weather-fog-color": "#C7C7CC", "state-weather-hail-color": "#32ADE6", "state-weather-lightning_rainy-color": "#CDDC39", "state-weather-lightning-color": "#FFD60A", "state-weather-partlycloudy-color": "#607D8B", "state-weather-pouring-color": "#3F51B5", "state-weather-rainy-color": "#0A84FF", "state-weather-snowy_rainy-color": "#03A9F4", "state-weather-snowy-color": "#C0E0FF", "state-weather-sunny-color": "#FFC107", "state-weather-windy_variant-color": "#30D158", "state-weather-windy-color": "#30D158", "state-sensor-battery-high-color": "#30D158", "state-sensor-battery-medium-color": "#0A84FF", "state-sensor-battery-low-color": "#FF453A", "color-1": "#0A84FF", "color-2": "#64D2FF", "color-3": "#30D158", "color-4": "#BF5AF2", "color-5": "#FF453A", "color-6": "#32ADE6", "color-7": "#64D2FF", "color-8": "#FF375F", "color-9": "#FF9F0A", "color-10": "#5E5CE6", "color-11": "#A3D977", "color-12": "#FFD60A", "color-13": "#BF5AF2", "color-14": "#A2845E", "ha-switch-background-color": "#3A3A3C", "ha-switch-background-color-hover": "#3A3A3C", "ha-switch-border-color": "rgba(0,0,0,0)", "ha-switch-thumb-background-color": "#636366", "ha-switch-thumb-background-color-hover": "#636366", "ha-switch-thumb-border-color": "rgba(0,0,0,0)", "ha-switch-thumb-border-color-hover": "rgba(0,0,0,0)", "ha-switch-checked-background-color": "#1F3A5F", "ha-switch-checked-background-color-hover": "#1F3A5F", "ha-switch-checked-border-color": "rgba(0,0,0,0)", "ha-switch-checked-thumb-background-color": "#0A84FF", "ha-switch-checked-thumb-background-color-hover": "#0A84FF", "ha-switch-checked-thumb-border-color": "rgba(0,0,0,0)", "ha-switch-checked-thumb-border-color-hover": "rgba(0,0,0,0)", "printer-cyan-color": "#33C3FF", "printer-magenta-color": "#FF3EA8", "printer-yellow-color": "#FFE14D", "bubble-main-buttons-background-color": "#1C1C1E", "card-backdrop-blur": "none", "glass-effect-style": "off", "background-style": "off"}};
 
 const HATG_BASE_PRESET_CORE_KEYS = [
   "primary-color",
@@ -3604,6 +1523,28 @@ class HATGPanel extends HTMLElement {
       : "";
     const originalFormat = hatgGetKeyFormats()[key];
 
+    // Glaseffekt/Hintergrund (v0.2.5): einzelne "hex"-klassifizierte Felder
+    // (z.B. lovelace-background) koennen jetzt zur Laufzeit einen Gradient
+    // oder eine var(...)-Referenz enthalten statt eines einzelnen Farbwerts
+    // (z.B. "linear-gradient(...)" oder "var(--primary-background-color)").
+    // hatgParseRgba() liefert dafuer nur einen Blindwert (#000000) zurueck -
+    // ohne diese Weiche wuerde der Farb-Swatch/Hex-Feld faelschlich Schwarz
+    // anzeigen und ein versehentlicher Klick wuerde den echten Wert
+    // ueberschreiben. Faellt deshalb gezielt auf ein einfaches, sicheres
+    // Textfeld zurueck - das ist zugleich genau das "im Notfall direkt im
+    // Code anpassen"-Feld, das Enrico sich gewuenscht hat.
+    const isDynamicColorValue = hatgIsGradient(value) || /^\s*var\(/i.test(String(value ?? ""));
+    if ((originalFormat === "hex" || originalFormat === "rgba") && isDynamicColorValue) {
+      return `
+        <div class="field-row" data-key="${key}" data-type="${type}">
+          ${checkbox}
+          <span class="field-key">${key}${badge}<small class="format-tag">CSS</small></span>
+          <span class="field-input">
+            <input class="text-input" type="text" value="${hatgEscape(value)}" spellcheck="false" data-text-field="${key}" />
+          </span>
+        </div>`;
+    }
+
     if (originalFormat === "hex" || originalFormat === "rgba") {
       const isNativeRgba = originalFormat === "rgba";
       const otherMode = this._state.editorMode === "light" ? "dark" : "light";
@@ -3873,6 +1814,9 @@ class HATGPanel extends HTMLElement {
         </label>
 
         ${this.renderFieldList(curated)}
+
+        ${this.renderGlassEffectPicker()}
+        ${this.renderBackgroundPicker()}
       </section>`;
   }
 
@@ -4194,10 +2138,23 @@ class HATGPanel extends HTMLElement {
     // im echten Dashboard unlesbar (siehe Enricos Screenshot: Auswahlmenue-
     // Hintergrund wurde durchsichtig statt der Karten). Deshalb hier gezielt
     // nur echte Karten-Hintergrundfelder setzen.
+    //
+    // v0.2.7: Enrico (Live-Test, Screenshot Design-Dropdown in den HA-
+    // Einstellungen): "Bubble ist nicht durchsichtig, dafuer die
+    // Auswahlmenues... das scheint voll durch." Root Cause: "card-background-
+    // color" selbst stand noch in dieser Liste - anders als mdc-theme-surface
+    // ist das aber ein waschechtes, global angewendetes HA-Theme-Feld (nicht
+    // nur card-mod-Karten-CSS), das offenbar auch von HA's eigenen Material-
+    // Dropdown-/Menue-Oberflaechen in den Einstellungsseiten als Fallback
+    // gelesen wird - ausserhalb von Lovelace/card-mod, wo wir gar nicht
+    // eingreifen. Alle card-mod-Regeln fuer Karten lesen ohnehin zuerst
+    // "ha-card-background"/"bubble-main-buttons-background-color" (siehe
+    // card-mod-card-yaml), "card-background-color" wird dort nur als
+    // allerletzter Fallback gebraucht - der Glaseffekt bleibt also optisch
+    // unveraendert, wenn wir dieses eine, global wirkende Feld hier aussparen.
     const values = this.currentValues();
     const source = this.currentSource();
     const cardKeys = [
-      "card-background-color",
       "ha-card-background",
       "ha-card-background-color",
       "bubble-main-buttons-background-color",
@@ -4209,6 +2166,164 @@ class HATGPanel extends HTMLElement {
       values[key] = rgba;
       source[key] = "custom";
     });
+  }
+
+  // Glaseffekt (v0.2.5): Enrico - "wieso koennen wir zum Beispiel den
+  // Card-mod fuer Hintergruende in Glas nicht auf alle Karten ausweiten und
+  // ueber Plugins direkt ins Theme kopieren ohne Vorlage kopieren." Statt
+  // eines neuen Mechanismus nutzt jede Stilkachel hier bewusst denselben,
+  // bereits produktiv laufenden Weg wie der (Nav-seitig deaktivierte, Code
+  // bleibt aber gueltig) Blur-&-Transparenz-Generator: card-backdrop-blur +
+  // generatorApplyCardTransparency() setzen echte, exportierte Feldwerte -
+  // kein Copy-Paste-Textbaustein mehr noetig. "Lichtkante" sowie die beiden
+  // App-weiten Varianten (Sidebar/Header) sind bewusst erst als "bald"
+  // markierte Kacheln angelegt (siehe renderGlassEffectPicker) - die noetige
+  // ::before-Technik aus den Referenz-Themes (Liquid Glass/visionOS) ist als
+  // TODO vorgemerkt, damit hier nichts vorgetaeuscht wird, was noch nicht
+  // wirklich anders aussieht.
+  glassEffectStyleDefs() {
+    return {
+      frost: { label: "Frost-Glas", sub: "Hell, milchig", blurPx: 10, tint: "#FFFFFF", alpha: 0.4 },
+      smoke: { label: "Rauchglas", sub: "Dunkel, gedämpft", blurPx: 10, tint: "#0F0F12", alpha: 0.55 },
+      accent: { label: "Akzentglas", sub: "Folgt Akzentfarbe", blurPx: 10, tint: null, alpha: 0.4 },
+    };
+  }
+
+  applyGlassEffectStyle(id) {
+    const defs = this.glassEffectStyleDefs();
+    this.commitField("glass-effect-style", id);
+    if (id === "off") {
+      // v0.2.7: NICHT mehr ueber generatorBlurTransparencyState() gehen - die
+      // liest bewusst zuerst "card-background-color" (fuer den alten
+      // Blur-&-Transparenz-Generator), aber genau dieses Feld fasst
+      // generatorApplyCardTransparency() seit v0.2.7 nicht mehr an (siehe dort
+      // - globales HA-Feld, sonst durchsichtige Auswahlmenues). Es wuerde
+      // deshalb immer nur den unveraenderten Manifest-Default liefern statt
+      // des zuletzt gesetzten Glaseffekt-Tons. Der tatsaechlich zuletzt
+      // gesetzte Farbton steht in "ha-card-background".
+      const values = this.currentValues();
+      const bgValue = values["ha-card-background"] || values["card-background-color"] || "#1c1c1e";
+      const parsed = hatgIsHex(bgValue) ? { hex: hatgNormalizeHex6(bgValue) } : hatgParseRgba(bgValue);
+      this.commitField("card-backdrop-blur", "none");
+      this.generatorApplyCardTransparency(hatgComposeRgba(parsed.hex, 1));
+      this.render();
+      return;
+    }
+    const preset = defs[id];
+    if (!preset) return;
+    const values = this.currentValues();
+    let tintHex = preset.tint;
+    if (!tintHex) {
+      const accentValue = values["accent-color"] || "#FF9300";
+      tintHex = hatgIsHex(accentValue) ? hatgNormalizeHex6(accentValue) : hatgParseRgba(accentValue).hex;
+    }
+    this.commitField("card-backdrop-blur", `${preset.blurPx}px`);
+    this.generatorApplyCardTransparency(hatgComposeRgba(tintHex, preset.alpha));
+    this.render();
+  }
+
+  renderGlassEffectPicker() {
+    const values = this.currentValues();
+    const active = values["glass-effect-style"] || "off";
+    const defs = this.glassEffectStyleDefs();
+    const accentValue = values["accent-color"] || "#FF9300";
+    const accentHex = hatgIsHex(accentValue) ? hatgNormalizeHex6(accentValue) : hatgParseRgba(accentValue).hex;
+
+    const tile = (id, label, sub, previewHtml, soon) => `
+      <button type="button" class="style-tile ${active === id ? "active" : ""} ${soon ? "style-tile-soon" : ""}" ${soon ? "disabled" : `data-glass-style="${id}"`}>
+        <span class="style-tile-preview">${previewHtml}</span>
+        <span class="style-tile-label">${hatgEscape(label)}</span>
+        <span class="style-tile-sub">${hatgEscape(sub)}</span>
+        ${soon ? "" : `<span class="style-tile-radio">${active === id ? '<ha-icon icon="mdi:check"></ha-icon>' : ""}</span>`}
+      </button>`;
+
+    const blobs = `<span class="style-blob style-blob-a"></span><span class="style-blob style-blob-b"></span>`;
+    const offPreview = `<ha-icon icon="mdi:square-off-outline"></ha-icon>`;
+    const glassPreview = (tint, alpha) => `${blobs}<span class="style-glass-overlay" style="background: ${hatgEscape(hatgComposeRgba(tint, alpha))};"></span>`;
+
+    return `
+      <div class="style-picker">
+        <div class="style-picker-head">
+          <span class="style-picker-title">Glaseffekt</span>
+          <span class="style-picker-hint">Nur eine Auswahl möglich</span>
+        </div>
+        <div class="style-picker-grid">
+          ${tile("off", "Aus", "Standard", offPreview, false)}
+          ${tile("frost", defs.frost.label, defs.frost.sub, glassPreview(defs.frost.tint, defs.frost.alpha), false)}
+          ${tile("smoke", defs.smoke.label, defs.smoke.sub, glassPreview(defs.smoke.tint, defs.smoke.alpha), false)}
+          ${tile("accent", defs.accent.label, defs.accent.sub, glassPreview(accentHex, defs.accent.alpha), false)}
+          ${tile("edge", "Lichtkante", "Bald verfügbar", glassPreview("#FFFFFF", 0.4), true)}
+          ${tile("app-light", "App-weit hell", "Bald verfügbar", glassPreview("#FFFFFF", 0.4), true)}
+          ${tile("app-dark", "App-weit dunkel", "Bald verfügbar", glassPreview("#0F0F12", 0.55), true)}
+        </div>
+      </div>`;
+  }
+
+  // Hintergrund (v0.2.5): Enrico - "das Thema Hintergrund brauchen wir auch
+  // noch. da fangen wir am besten erst einmal mit linear gradient und so an."
+  // Schreibt direkt in das bereits vorhandene Feld "lovelace-background"
+  // (das ist die echte HA-Theme-Variable fuer den Dashboard-Hintergrund,
+  // siehe Liquid-Glass-/visionOS-Referenz-Themes) statt ein Duplikat-Feld
+  // anzulegen. "Eigene" liefert ein normales, per data-text-field bereits
+  // generisch verdrahtetes Textfeld - damit direkt im Notfall im Code
+  // anpassbar, keine Extra-Logik noetig.
+  backgroundStyleDefs() {
+    return {
+      sunrise: { label: "Verlauf Sonnenaufgang", sub: "135°, warm", css: "linear-gradient(135deg, #F0997B, #EF9F27)" },
+      night: { label: "Verlauf Nachthimmel", sub: "135°, kühl", css: "linear-gradient(135deg, #26215C, #04344C)" },
+    };
+  }
+
+  applyBackgroundStyle(id) {
+    this.commitField("background-style", id);
+    if (id === "off") {
+      const values = this.currentValues();
+      this.commitField("lovelace-background", values["primary-background-color"] || "#F2F2F7");
+    } else if (id !== "custom") {
+      const preset = this.backgroundStyleDefs()[id];
+      if (preset) this.commitField("lovelace-background", preset.css);
+    }
+    this.render();
+  }
+
+  renderBackgroundPicker() {
+    const values = this.currentValues();
+    const active = values["background-style"] || "off";
+    const defs = this.backgroundStyleDefs();
+    const currentBg = values["lovelace-background"] || "";
+
+    const tile = (id, label, sub, previewStyle, soon) => `
+      <button type="button" class="style-tile ${active === id ? "active" : ""} ${soon ? "style-tile-soon" : ""}" ${soon ? "disabled" : `data-bg-style="${id}"`}>
+        <span class="style-tile-preview" style="${previewStyle}"></span>
+        <span class="style-tile-label">${hatgEscape(label)}</span>
+        <span class="style-tile-sub">${hatgEscape(sub)}</span>
+        ${soon ? "" : `<span class="style-tile-radio">${active === id ? '<ha-icon icon="mdi:check"></ha-icon>' : ""}</span>`}
+      </button>`;
+
+    const customField = active === "custom"
+      ? `
+        <label class="style-custom-field">
+          <span>Eigene(r) CSS-Wert für background-image</span>
+          <input type="text" class="text-input" spellcheck="false" value="${hatgEscape(currentBg)}" data-text-field="lovelace-background" placeholder="linear-gradient(135deg, #7F77DD, #1D9E75)" />
+        </label>`
+      : "";
+
+    return `
+      <div class="style-picker">
+        <div class="style-picker-head">
+          <span class="style-picker-title">Hintergrund</span>
+          <span class="style-picker-hint">Neu &middot; erst Verläufe, mehr folgt</span>
+        </div>
+        <div class="style-picker-grid">
+          ${tile("off", "Aus", "Einfarbig", "background: var(--hatg-bg-2, rgba(127,140,160,.12));", false)}
+          ${tile("sunrise", defs.sunrise.label, defs.sunrise.sub, `background: ${defs.sunrise.css};`, false)}
+          ${tile("night", defs.night.label, defs.night.sub, `background: ${defs.night.css};`, false)}
+          ${tile("radial", "Radial", "Bald verfügbar", "background: var(--hatg-bg-2, rgba(127,140,160,.12));", true)}
+          ${tile("bild", "Bild", "Bald verfügbar", "background: var(--hatg-bg-2, rgba(127,140,160,.12));", true)}
+          ${tile("custom", "Eigene", "Direkt im Code", `background: ${hatgIsGradient(currentBg) ? currentBg : "var(--hatg-bg-2, rgba(127,140,160,.12))"};`, false)}
+        </div>
+        ${customField}
+      </div>`;
   }
 
   renderGenerators() {
@@ -4521,8 +2636,9 @@ class HATGPanel extends HTMLElement {
     const boxShadow = values["ha-card-box-shadow"] || "none";
     const tileColor = values["primary-color"] || "#03a9f4";
     const textColor = values["primary-text-color"] || "#e6eaf1";
+    const backdropBlur = values["card-backdrop-blur"] || "none";
 
-    const shellStyle = `background: ${hatgEscape(bg)}; border-radius: ${hatgEscape(borderRadius)}; border: ${hatgEscape(borderWidth)} solid ${hatgEscape(borderColor)}; box-shadow: ${hatgEscape(boxShadow)};`;
+    const shellStyle = `background: ${hatgEscape(bg)}; border-radius: ${hatgEscape(borderRadius)}; border: ${hatgEscape(borderWidth)} solid ${hatgEscape(borderColor)}; box-shadow: ${hatgEscape(boxShadow)}; backdrop-filter: ${hatgEscape(backdropBlur)};`;
 
     return `
       <div class="preview-tile-card">
@@ -4576,8 +2692,9 @@ class HATGPanel extends HTMLElement {
     const lightOnColor = values["state-light-on-color"] || values["state-light-active-color"] || values["state-active-color"] || "#4cd964";
     const sliderTrack = values["disabled-color"] || "rgba(127,140,160,.35)";
     const sliderFill = values["primary-color"] || "#03a9f4";
+    const backdropBlur = values["card-backdrop-blur"] || "none";
 
-    const shellStyle = `background: ${hatgEscape(bg)}; border-radius: ${hatgEscape(borderRadius)}; border: ${hatgEscape(borderWidth)} solid ${hatgEscape(borderColor)}; box-shadow: ${hatgEscape(boxShadow)};`;
+    const shellStyle = `background: ${hatgEscape(bg)}; border-radius: ${hatgEscape(borderRadius)}; border: ${hatgEscape(borderWidth)} solid ${hatgEscape(borderColor)}; box-shadow: ${hatgEscape(boxShadow)}; backdrop-filter: ${hatgEscape(backdropBlur)};`;
     const rowDivider = `border-top: 1px solid ${hatgEscape(dividerColor)};`;
 
     return `
@@ -5323,6 +3440,39 @@ class HATGPanel extends HTMLElement {
         }
         .generator-footnote { margin: 16px 0 0; font-size: 11px; color: var(--hatg-muted); line-height: 1.5; }
 
+        .style-picker { border: 1px solid var(--hatg-border); border-radius: 16px; background: var(--hatg-field); padding: 18px; margin-top: 22px; }
+        .style-picker-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+        .style-picker-title { font-size: 14px; font-weight: 650; }
+        .style-picker-hint { font-size: 11px; color: var(--hatg-muted); }
+        .style-picker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; }
+        .style-tile {
+          position: relative; display: flex; flex-direction: column; gap: 6px; text-align: left; cursor: pointer;
+          border: 1px solid var(--hatg-border); border-radius: 12px; background: var(--hatg-bg-1); padding: 10px;
+          font-family: inherit; color: var(--hatg-text);
+        }
+        .style-tile.active { border: 2px solid #1fae63; padding: 9px; }
+        .style-tile.style-tile-soon { opacity: .5; cursor: not-allowed; border-style: dashed; }
+        .style-tile-preview {
+          position: relative; height: 60px; border-radius: 9px; overflow: hidden; background: var(--hatg-bg-2);
+          display: flex; align-items: center; justify-content: center;
+        }
+        .style-tile-preview ha-icon { --mdc-icon-size: 20px; color: var(--hatg-muted); }
+        .style-blob { position: absolute; border-radius: 50%; }
+        .style-blob-a { width: 34px; height: 34px; background: #F0997B; top: -8px; left: -6px; }
+        .style-blob-b { width: 30px; height: 30px; background: #5DCAA5; bottom: -10px; right: 4px; }
+        .style-glass-overlay { position: absolute; inset: 0; backdrop-filter: blur(6px); }
+        .style-tile-label { font-size: 12.5px; font-weight: 600; }
+        .style-tile-sub { font-size: 10.5px; color: var(--hatg-muted); }
+        .style-tile-radio {
+          position: absolute; top: 8px; right: 8px; width: 16px; height: 16px; border-radius: 50%;
+          border: 1.5px solid var(--hatg-border); display: flex; align-items: center; justify-content: center;
+        }
+        .style-tile.active .style-tile-radio { background: #1fae63; border-color: #1fae63; }
+        .style-tile.active .style-tile-radio ha-icon { --mdc-icon-size: 10px; color: #fff; }
+        .style-custom-field { display: block; margin-top: 14px; }
+        .style-custom-field span { display: block; font-size: 11.5px; color: var(--hatg-muted); margin-bottom: 6px; }
+        .style-custom-field input { width: 100%; }
+
         @media (max-width: 1180px) {
           .app { grid-template-columns: 220px 1fr; }
           .mobile-preview-toggle { display: grid; }
@@ -5845,6 +3995,18 @@ class HATGPanel extends HTMLElement {
       });
     });
 
+    this.shadowRoot.querySelectorAll("[data-glass-style]").forEach((button) => {
+      button.addEventListener("click", () => {
+        this.applyGlassEffectStyle(button.dataset.glassStyle);
+      });
+    });
+
+    this.shadowRoot.querySelectorAll("[data-bg-style]").forEach((button) => {
+      button.addEventListener("click", () => {
+        this.applyBackgroundStyle(button.dataset.bgStyle);
+      });
+    });
+
     const generatorBlurInput = this.shadowRoot.querySelector("[data-generator-blur]");
     const generatorOpacityInput = this.shadowRoot.querySelector("[data-generator-opacity]");
     if (generatorBlurInput || generatorOpacityInput) {
@@ -6215,7 +4377,18 @@ class HATGPanel extends HTMLElement {
     const values = this._state.values[this._state.previewMode];
     const panel = this.shadowRoot.querySelector(".preview-panel");
     if (panel) {
-      panel.style.setProperty("--preview-page-bg", values["primary-background-color"] || "#0b111a");
+      // v0.2.5: Hintergrund-Kachel (Glaseffekt & Hintergrund) schreibt echte
+      // Verlaeufe/eigenen CSS-Code in "lovelace-background". Solange dort
+      // nichts ausgewaehlt ist (background-style === "off", der Standard),
+      // bleibt es beim bisherigen Verhalten: die Live-Vorschau folgt
+      // primary-background-color 1:1 (normale Farb-Bearbeitung unveraendert).
+      // Erst nach einer aktiven Hintergrund-Auswahl uebernimmt die Vorschau
+      // den echten lovelace-background-Wert (Verlauf/eigener CSS-Code).
+      const useCustomBg = (values["background-style"] || "off") !== "off";
+      const pageBg = useCustomBg
+        ? values["lovelace-background"] || values["primary-background-color"]
+        : values["primary-background-color"] || values["lovelace-background"];
+      panel.style.setProperty("--preview-page-bg", pageBg || "#0b111a");
     }
     this.refreshPreviewCards();
   }
