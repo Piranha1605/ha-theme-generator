@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import base64
+import binascii
+import re
 from pathlib import Path
 
 import voluptuous as vol
@@ -18,11 +21,22 @@ from .const import (
     PANEL_TITLE,
     PANEL_URL,
     STATIC_PATH,
+    WALLPAPER_STATIC_PATH,
 )
 
 THEMES_SUBDIR = "themes"
 WORK_FILE_PREFIX = "hatg-work-"
 _WS_REGISTERED_FLAG = f"{DOMAIN}_ws_registered"
+
+# v0.2.20: Hintergrund-Kachel "Bild" - eigener Unterordner innerhalb von
+# config/themes/ (Enrico: "beim speichern einen ordner unter themes anlegen
+# mit dem namen Wallpaper. dann kann man vielleicht da auch immer wieder
+# zugreifen bei anderen themes"). Bewusst EIN gemeinsamer Ordner fuer alle
+# Themes, kein Unterordner pro Theme - Bilder sollen ueber Themes hinweg
+# wiederverwendbar sein.
+WALLPAPER_SUBDIR = "Wallpaper"
+_WALLPAPER_ALLOWED_EXT = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
+_WALLPAPER_SAFE_NAME_RE = re.compile(r"[^A-Za-z0-9._-]+")
 
 
 def _is_safe_theme_name(name: str) -> bool:
@@ -43,6 +57,39 @@ def _is_safe_filename(filename: str) -> bool:
 
 def _is_work_file(filename: str) -> bool:
     return filename.startswith(WORK_FILE_PREFIX)
+
+
+def _sanitize_wallpaper_filename(filename: str) -> str | None:
+    """Saeubert einen vom Nutzer stammenden Dateinamen fuer den Wallpaper-
+    Ordner: nur Basisname (kein Pfad), erlaubte Bild-Endung, unerlaubte
+    Zeichen durch "_" ersetzt. Gibt None zurueck, wenn keine erlaubte
+    Bild-Endung erkannt wird."""
+    if not filename:
+        return None
+    base = Path(filename).name
+    suffix = Path(base).suffix.lower()
+    if suffix not in _WALLPAPER_ALLOWED_EXT:
+        return None
+    stem = base[: -len(suffix)] if suffix else base
+    stem = _WALLPAPER_SAFE_NAME_RE.sub("_", stem).strip("._") or "wallpaper"
+    return f"{stem}{suffix}"
+
+
+def _unique_wallpaper_path(directory: Path, filename: str) -> Path:
+    """Haengt bei Namenskollision '-2', '-3', ... an den Dateinamen an, statt
+    ein bestehendes, evtl. von einem anderen Theme genutztes Bild zu
+    ueberschreiben."""
+    candidate = directory / filename
+    if not candidate.exists():
+        return candidate
+    stem = Path(filename).stem
+    suffix = Path(filename).suffix
+    counter = 2
+    while True:
+        candidate = directory / f"{stem}-{counter}{suffix}"
+        if not candidate.exists():
+            return candidate
+        counter += 1
 
 
 @websocket_api.websocket_command(
@@ -271,6 +318,99 @@ async def ws_delete_work_file(hass: HomeAssistant, connection, msg):
     connection.send_result(msg["id"], {"deleted": deleted})
 
 
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "hatg/upload_wallpaper",
+        vol.Required("filename"): str,
+        vol.Required("data"): str,
+    }
+)
+@websocket_api.require_admin
+@websocket_api.async_response
+async def ws_upload_wallpaper(hass: HomeAssistant, connection, msg):
+    """Speichert ein vom Nutzer im Hintergrund-Picker ("Bild") hochgeladenes
+    Bild nach config/themes/Wallpaper/. 'data' ist Base64 (ohne
+    'data:image/...;base64,'-Praefix, das zieht das Frontend vorher ab).
+    Ein Bild landet in EINEM gemeinsamen Ordner fuer alle Themes, damit es
+    sich in kuenftigen Themes wiederverwenden laesst (Enricos Wunsch)."""
+    filename = _sanitize_wallpaper_filename(msg["filename"])
+    if filename is None:
+        connection.send_error(
+            msg["id"], "invalid_name", "Nur Bilddateien (jpg/jpeg/png/webp/gif) werden unterstützt."
+        )
+        return
+
+    try:
+        raw = base64.b64decode(msg["data"], validate=True)
+    except (binascii.Error, ValueError) as err:
+        connection.send_error(msg["id"], "invalid_data", f"Bilddaten konnten nicht gelesen werden: {err}")
+        return
+
+    if not raw:
+        connection.send_error(msg["id"], "invalid_data", "Die Bilddatei ist leer.")
+        return
+
+    wallpaper_dir = Path(hass.config.path(THEMES_SUBDIR, WALLPAPER_SUBDIR))
+
+    def _write():
+        wallpaper_dir.mkdir(parents=True, exist_ok=True)
+        target = _unique_wallpaper_path(wallpaper_dir, filename)
+        target.write_bytes(raw)
+        return target.name
+
+    try:
+        final_name = await hass.async_add_executor_job(_write)
+    except OSError as err:
+        connection.send_error(msg["id"], "write_failed", f"Bild konnte nicht gespeichert werden: {err}")
+        return
+
+    connection.send_result(
+        msg["id"],
+        {
+            "uploaded": True,
+            "filename": final_name,
+            "url": f"{WALLPAPER_STATIC_PATH}/{final_name}",
+        },
+    )
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "hatg/list_wallpapers",
+    }
+)
+@websocket_api.async_response
+async def ws_list_wallpapers(hass: HomeAssistant, connection, msg):
+    """Listet alle Bilder in config/themes/Wallpaper/ - fuer eine spaetere
+    Wiederverwendungs-Galerie ueber mehrere Themes hinweg (noch nicht in der
+    ersten Version der Bild-Kachel selbst verdrahtet)."""
+    wallpaper_dir = Path(hass.config.path(THEMES_SUBDIR, WALLPAPER_SUBDIR))
+
+    def _list():
+        if not wallpaper_dir.exists():
+            return []
+        items = []
+        for entry in sorted(wallpaper_dir.iterdir()):
+            if not entry.is_file() or entry.suffix.lower() not in _WALLPAPER_ALLOWED_EXT:
+                continue
+            try:
+                stat = entry.stat()
+            except OSError:
+                continue
+            items.append(
+                {
+                    "filename": entry.name,
+                    "url": f"{WALLPAPER_STATIC_PATH}/{entry.name}",
+                    "modified": stat.st_mtime,
+                    "size": stat.st_size,
+                }
+            )
+        return items
+
+    items = await hass.async_add_executor_job(_list)
+    connection.send_result(msg["id"], {"wallpapers": items})
+
+
 @callback
 def _register_websocket_commands(hass: HomeAssistant) -> None:
     if hass.data.get(_WS_REGISTERED_FLAG):
@@ -281,11 +421,19 @@ def _register_websocket_commands(hass: HomeAssistant) -> None:
     websocket_api.async_register_command(hass, ws_load_theme_file)
     websocket_api.async_register_command(hass, ws_save_work_file)
     websocket_api.async_register_command(hass, ws_delete_work_file)
+    websocket_api.async_register_command(hass, ws_upload_wallpaper)
+    websocket_api.async_register_command(hass, ws_list_wallpapers)
     hass.data[_WS_REGISTERED_FLAG] = True
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     www_path = Path(__file__).parent / "www"
+    wallpaper_path = Path(hass.config.path(THEMES_SUBDIR, WALLPAPER_SUBDIR))
+
+    def _ensure_wallpaper_dir():
+        wallpaper_path.mkdir(parents=True, exist_ok=True)
+
+    await hass.async_add_executor_job(_ensure_wallpaper_dir)
 
     await hass.http.async_register_static_paths(
         [
@@ -293,7 +441,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 STATIC_PATH,
                 str(www_path),
                 True,
-            )
+            ),
+            StaticPathConfig(
+                WALLPAPER_STATIC_PATH,
+                str(wallpaper_path),
+                True,
+            ),
         ]
     )
 
