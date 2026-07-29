@@ -1,13 +1,13 @@
 DOMAIN = "hatg"
 NAME = "HATG"
-VERSION = "0.2.35"
+VERSION = "0.2.36"
 
 PANEL_URL = "hatg"
 PANEL_TITLE = "HATG"
 PANEL_ICON = "mdi:palette-swatch"
 PANEL_TAG = "hatg-panel"
 STATIC_PATH = "/hatg_static"
-FRONTEND_MODULE = "/hatg_static/hatg-panel.js?v=0.2.35"
+FRONTEND_MODULE = "/hatg_static/hatg-panel.js?v=0.2.36"
 
 # v0.2.20: Hintergrund-Kachel "Bild" - eigener Web-Pfad fuer config/themes/Wallpaper/,
 # damit vom Nutzer hochgeladene Bilder trotz HAs sonst fehlender Freigabe von
