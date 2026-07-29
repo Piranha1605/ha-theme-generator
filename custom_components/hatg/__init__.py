@@ -28,12 +28,6 @@ THEMES_SUBDIR = "themes"
 WORK_FILE_PREFIX = "hatg-work-"
 _WS_REGISTERED_FLAG = f"{DOMAIN}_ws_registered"
 
-# v0.2.20: Hintergrund-Kachel "Bild" - eigener Unterordner innerhalb von
-# config/themes/ (Enrico: "beim speichern einen ordner unter themes anlegen
-# mit dem namen Wallpaper. dann kann man vielleicht da auch immer wieder
-# zugreifen bei anderen themes"). Bewusst EIN gemeinsamer Ordner fuer alle
-# Themes, kein Unterordner pro Theme - Bilder sollen ueber Themes hinweg
-# wiederverwendbar sein.
 WALLPAPER_SUBDIR = "Wallpaper"
 _WALLPAPER_ALLOWED_EXT = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
 _WALLPAPER_SAFE_NAME_RE = re.compile(r"[^A-Za-z0-9._-]+")
@@ -60,10 +54,7 @@ def _is_work_file(filename: str) -> bool:
 
 
 def _sanitize_wallpaper_filename(filename: str) -> str | None:
-    """Saeubert einen vom Nutzer stammenden Dateinamen fuer den Wallpaper-
-    Ordner: nur Basisname (kein Pfad), erlaubte Bild-Endung, unerlaubte
-    Zeichen durch "_" ersetzt. Gibt None zurueck, wenn keine erlaubte
-    Bild-Endung erkannt wird."""
+    """Bereinigt einen hochgeladenen Dateinamen fuer den Wallpaper-Ordner."""
     if not filename:
         return None
     base = Path(filename).name
@@ -76,9 +67,7 @@ def _sanitize_wallpaper_filename(filename: str) -> str | None:
 
 
 def _unique_wallpaper_path(directory: Path, filename: str) -> Path:
-    """Haengt bei Namenskollision '-2', '-3', ... an den Dateinamen an, statt
-    ein bestehendes, evtl. von einem anderen Theme genutztes Bild zu
-    ueberschreiben."""
+    """Haengt bei Namenskollision -2, -3, ... an, statt zu ueberschreiben."""
     candidate = directory / filename
     if not candidate.exists():
         return candidate
@@ -168,9 +157,7 @@ async def ws_save_theme(hass: HomeAssistant, connection, msg):
 )
 @websocket_api.async_response
 async def ws_list_themes(hass: HomeAssistant, connection, msg):
-    """Listet alle .yaml-Dateien in config/themes/ auf – echte Themes und
-    HATG-Work-Entwürfe (Präfix hatg-work-) zusammen, damit der Import-Dialog
-    beides in einer Liste anbieten kann."""
+    """Listet alle .yaml-Dateien in config/themes/ auf."""
     themes_dir = Path(hass.config.path(THEMES_SUBDIR))
 
     def _list():
@@ -243,12 +230,7 @@ async def ws_load_theme_file(hass: HomeAssistant, connection, msg):
 @websocket_api.require_admin
 @websocket_api.async_response
 async def ws_save_work_file(hass: HomeAssistant, connection, msg):
-    """Schreibt den aktuellen Bearbeitungsstand als Work-Datei direkt nach
-    config/themes/ (Präfix hatg-work-<name>.yaml). Kein Überschreiben-Dialog
-    wie beim echten 'Datei speichern' – das ist ein laufend aktualisierter
-    Arbeitsstand, kein bewusster Speicherpunkt. Löst bewusst frontend.reload_themes
-    aus (Wunsch: die 'HA Live'-Ansicht im Frontend soll nach jedem Zwischenstand
-    zeitnah die neue Farbgebung zeigen können)."""
+    """Schreibt den aktuellen Bearbeitungsstand als Work-Datei."""
     name = msg["name"]
     if not _is_safe_theme_name(name):
         connection.send_error(msg["id"], "invalid_name", "Ungültiger Name.")
@@ -292,9 +274,7 @@ async def ws_save_work_file(hass: HomeAssistant, connection, msg):
 @websocket_api.require_admin
 @websocket_api.async_response
 async def ws_delete_work_file(hass: HomeAssistant, connection, msg):
-    """Löscht ausschließlich HATG-Work-Dateien (Präfix hatg-work-), niemals
-    echte, vom Nutzer gespeicherte Theme-Dateien – Sicherheitsnetz gegen
-    versehentliches Löschen echter Themes über diesen Weg."""
+    """Loescht ausschliesslich HATG-Work-Dateien, niemals echte Themes."""
     filename = msg["filename"]
     if not _is_safe_filename(filename) or not _is_work_file(filename):
         connection.send_error(msg["id"], "invalid_name", "Nur Work-Entwürfe können hier gelöscht werden.")
@@ -328,11 +308,7 @@ async def ws_delete_work_file(hass: HomeAssistant, connection, msg):
 @websocket_api.require_admin
 @websocket_api.async_response
 async def ws_upload_wallpaper(hass: HomeAssistant, connection, msg):
-    """Speichert ein vom Nutzer im Hintergrund-Picker ("Bild") hochgeladenes
-    Bild nach config/themes/Wallpaper/. 'data' ist Base64 (ohne
-    'data:image/...;base64,'-Praefix, das zieht das Frontend vorher ab).
-    Ein Bild landet in EINEM gemeinsamen Ordner fuer alle Themes, damit es
-    sich in kuenftigen Themes wiederverwenden laesst (Enricos Wunsch)."""
+    """Speichert ein hochgeladenes Hintergrundbild im Wallpaper-Ordner."""
     filename = _sanitize_wallpaper_filename(msg["filename"])
     if filename is None:
         connection.send_error(
@@ -381,9 +357,7 @@ async def ws_upload_wallpaper(hass: HomeAssistant, connection, msg):
 )
 @websocket_api.async_response
 async def ws_list_wallpapers(hass: HomeAssistant, connection, msg):
-    """Listet alle Bilder in config/themes/Wallpaper/ - fuer eine spaetere
-    Wiederverwendungs-Galerie ueber mehrere Themes hinweg (noch nicht in der
-    ersten Version der Bild-Kachel selbst verdrahtet)."""
+    """Listet alle Bilder im Wallpaper-Ordner auf."""
     wallpaper_dir = Path(hass.config.path(THEMES_SUBDIR, WALLPAPER_SUBDIR))
 
     def _list():
