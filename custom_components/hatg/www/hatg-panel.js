@@ -1,4 +1,4 @@
-const HATG_VERSION = "0.3.8";
+const HATG_VERSION = "0.3.9";
 
 const HATG_MANIFEST = {"sections":[{"id":"grundfarben-text","label":"Grundfarben & Text","desc":"Zentrale Farben für Text, Akzent, Primärfarbe, Fehler, Erfolg, Warnungen und allgemeine Farbbasis.","icon":"mdi:palette-outline","keys":["accent-color","primary-color","dark-primary-color","light-primary-color","primary-text-color","secondary-text-color","text-primary-color","disabled-text-color","disabled-color","error-color","warning-color","success-color","info-color","red-color","green-color","blue-color","orange-color","yellow-color","purple-color","pink-color","cyan-color","grey-color","deep-purple-color","indigo-color","light-blue-color","teal-color","light-green-color","lime-color","amber-color","deep-orange-color","brown-color","light-grey-color","dark-grey-color","blue-grey-color","black-color","white-color","printer-cyan-color","printer-magenta-color","printer-yellow-color"],"exportGroups":[{"label":"Grundfarben","keys":["accent-color","primary-color","dark-primary-color","light-primary-color","disabled-color","error-color","warning-color","success-color","info-color","red-color","green-color","blue-color","orange-color","yellow-color","purple-color","pink-color","cyan-color","grey-color","deep-purple-color","indigo-color","light-blue-color","teal-color","light-green-color","lime-color","amber-color","deep-orange-color","brown-color","light-grey-color","dark-grey-color","blue-grey-color","black-color","white-color","printer-cyan-color","printer-magenta-color","printer-yellow-color"]},{"label":"Text","keys":["primary-text-color","secondary-text-color","text-primary-color","disabled-text-color"]}]},{"id":"hintergruende-karten","label":"HA-Grundgerüst","desc":"Die komplette native Home-Assistant-Oberfläche in 16 Unterordnern: Card, Hintergründe, Theme, Header, App Drawer, Sidebar, Status/Icons, Schalter/Toggle/Slider, Buttons & Chips, Eingaben, Material/MDC, HA 2026, Abstände/Schatten, Schrift, RGB-Hilfswerte, Graphen & Energie.","icon":"mdi:view-dashboard-outline","keys":["card-background-color","ha-card-background","ha-card-background-color","wa-color-surface-raised","ha-card-border-color","ha-card-border-radius","ha-card-border-width","ha-card-box-shadow","table-row-background-color","table-row-alternative-background-color","primary-background-color","background-color","lovelace-background","secondary-background-color","mdc-theme-background","mdc-theme-surface","mdc-theme-on-surface","app-header-background-color","app-header-text-color","app-header-backdrop-filter","app-header-edit-background-color","app-header-edit-text-color","app-theme-color","app-toolbar-background-color","toolbar-background-color","app-toolbar-text-color","toolbar-text-color","app-drawer-background-color","app-drawer-text-color","app-drawer-icon-color","sidebar-background-color","sidebar-selected-background-color","sidebar-text-color","sidebar-icon-color","sidebar-selected-text-color","sidebar-selected-icon-color","state-icon-color","state-icon-active-color","state-icon-unavailable-color","state-active-color","state-inactive-color","state-unavailable-color","state-on-color","state-off-color","state-light-color","state-light-active-color","state-light-on-color","state-switch-color","state-switch-active-color","state-switch-on-color","state-climate-cool-color","state-climate-heat-color","state-climate-auto-color","state-climate-dry-color","state-climate-fan_only-color","state-climate-heat_cool-color","state-cover-color","state-cover-active-color","state-cover-open-color","state-cover-closed-color","state-fan-color","state-fan-active-color","state-media_player-color","state-media_player-active-color","state-vacuum-color","state-vacuum-active-color","state-vacuum-error-color","state-lock-locked-color","state-lock-locking-color","state-lock-unlocked-color","state-lock-unlocking-color","state-lock-jammed-color","state-lock-open-color","state-lock-opening-color","state-alarm_control_panel-triggered-color","state-alarm-triggered-color","state-alarm_control_panel-armed_home-color","state-alarm_control_panel-armed_away-color","state-alarm-armed-color","state-alarm_control_panel-disarmed-color","state-alarm-disarmed-color","state-alarm_control_panel-armed_custom_bypass-color","state-alarm_control_panel-armed_night-color","state-alarm_control_panel-armed_vacation-color","state-alarm_control_panel-arming-color","state-alarm_control_panel-disarming-color","state-alarm_control_panel-pending-color","state-alert-off-color","state-alert-on-color","state-binary_sensor-active-color","state-binary_sensor-battery-on-color","state-binary_sensor-carbon_monoxide-on-color","state-binary_sensor-gas-on-color","state-binary_sensor-heat-on-color","state-binary_sensor-lock-on-color","state-binary_sensor-moisture-on-color","state-binary_sensor-problem-on-color","state-binary_sensor-safety-on-color","state-binary_sensor-smoke-on-color","state-binary_sensor-sound-on-color","state-binary_sensor-tamper-on-color","state-device_tracker-active-color","state-device_tracker-home-color","state-humidifier-on-color","state-lawn_mower-active-color","state-lawn_mower-error-color","state-person-active-color","state-person-home-color","state-plant-active-color","state-siren-active-color","state-sun-above_horizon-color","state-sun-below_horizon-color","state-update-active-color","state-valve-active-color","state-water_heater-eco-color","state-water_heater-electric-color","state-water_heater-gas-color","state-water_heater-heat_pump-color","state-water_heater-high_demand-color","state-water_heater-performance-color","state-weather-clear_night-color","state-weather-cloudy-color","state-weather-exceptional-color","state-weather-fog-color","state-weather-hail-color","state-weather-lightning_rainy-color","state-weather-lightning-color","state-weather-partlycloudy-color","state-weather-pouring-color","state-weather-rainy-color","state-weather-snowy_rainy-color","state-weather-snowy-color","state-weather-sunny-color","state-weather-windy_variant-color","state-weather-windy-color","state-battery-low-color","state-sensor-battery-high-color","state-sensor-battery-medium-color","state-sensor-battery-low-color","label-badge-background-color","label-badge-text-color","label-badge-red","label-badge-blue","label-badge-green","label-badge-yellow","state-battery-alert-color","ha-control-switch-color","ha-control-switch-checked-color","ha-control-switch-unchecked-color","ha-switch-background-color","ha-switch-background-color-hover","ha-switch-border-color","ha-switch-thumb-background-color","ha-switch-thumb-background-color-hover","ha-switch-thumb-border-color","ha-switch-thumb-border-color-hover","ha-switch-checked-background-color","ha-switch-checked-background-color-hover","ha-switch-checked-border-color","ha-switch-checked-thumb-background-color","ha-switch-checked-thumb-background-color-hover","ha-switch-checked-thumb-border-color","ha-switch-checked-thumb-border-color-hover","control-slider-color","slider-color","slider-secondary-color","slider-track-color","control-button-background-color","control-button-icon-color","control-button-border-radius","input-background-color","input-fill-color","input-disabled-fill-color","input-disabled-ink-color","input-disabled-label-ink-color","input-disabled-line-color","input-dropdown-icon-color","input-hover-line-color","input-idle-line-color","input-ink-color","input-label-ink-color","input-outlined-disabled-border-color","mdc-select-idle-line-color","mdc-select-dropdown-icon-color","mdc-select-hover-line-color","mdc-text-field-idle-line-color","mdc-text-field-hover-line-color","ha-color-form-background","ha-color-form-background-hover","ha-color-form-background-disabled","mdc-theme-primary","mdc-theme-secondary","mdc-theme-on-primary","md-sys-color-primary","md-sys-color-on-primary","md-sys-color-primary-container","md-sys-color-on-primary-container","md-sys-color-on-surface","ha-on-surface-color","md-radio-selected-icon-color","mdc-radio-unchecked-color","ha-color-fill-primary-normal-resting","ha-color-fill-primary-normal-hover","ha-color-fill-primary-quiet-resting","ha-color-fill-primary-quiet-hover","ha-color-fill-disabled-normal-resting","ha-color-on-disabled-normal","ha-color-fill-disabled-loud-resting","ha-color-on-disabled-loud","ha-color-on-disabled-quiet","ha-color-fill-neutral-quiet-resting","ha-color-fill-neutral-quiet-hover","ha-color-fill-neutral-quiet-active","ha-color-fill-neutral-normal-resting","ha-color-fill-neutral-normal-hover","ha-color-fill-neutral-normal-active","ha-color-fill-danger-normal-resting","ha-color-fill-danger-normal-hover","ha-color-fill-danger-normal-active","ha-color-on-danger-normal","ha-color-fill-warning-normal-resting","ha-color-fill-warning-normal-hover","ha-color-fill-warning-normal-active","ha-color-on-warning-normal","ha-tooltip-background-color","ha-tooltip-text-color","border-color","border-radius","box-shadow","divider-color","outline-color","outline-variant-color","outline-hover-color","ha-line-height-condensed","ha-line-height-expanded","ha-line-height-normal","primary-font-family","ha-font-family-body","ha-font-family-heading","ha-font-family-longform","ha-font-family-code","mdc-typography-font-family","ha-font-size-scale","ha-font-size-2xs","ha-font-size-xs","ha-font-size-s","ha-font-size-m","ha-font-size-l","ha-font-size-xl","ha-font-size-2xl","ha-font-size-3xl","ha-font-size-4xl","ha-font-weight-light","ha-font-weight-normal","ha-font-weight-body","ha-font-weight-medium","ha-font-weight-heading","ha-font-weight-action","ha-font-weight-bold","rgb-primary-color","rgb-accent-color","rgb-primary-text-color","rgb-secondary-text-color","rgb-card-background-color","rgb-primary-background-color","rgb-blue-color","rgb-orange-color","rgb-state-switch-color","rgb-state-light-color","rgb-state-cover-color","rgb-state-fan-color","rgb-state-media_player-color","graph-color-1","graph-color-2","graph-color-3","graph-color-4","graph-color-5","graph-color-6","graph-color-7","graph-color-8","graph-color-9","graph-color-10","graph-color-11","graph-color-12","graph-color-13","graph-color-14","color-1","color-2","color-3","color-4","color-5","color-6","color-7","color-8","color-9","color-10","color-11","color-12","color-13","color-14","energy-grid-consumption-color","energy-grid-return-color","energy-solar-color","energy-non-fossil-color","energy-battery-out-color","energy-battery-in-color","energy-gas-color","energy-water-color","glass-effect-style","background-style"],"groups":[{"label":"Card","keys":["card-background-color","ha-card-background","ha-card-background-color","wa-color-surface-raised","ha-card-border-color","ha-card-border-radius","ha-card-border-width","ha-card-box-shadow","table-row-background-color","table-row-alternative-background-color"],"id":"hintergruende-karten__card","icon":"mdi:card-outline"},{"label":"Hintergründe","keys":["primary-background-color","background-color","lovelace-background","secondary-background-color","glass-effect-style","background-style"],"id":"hintergruende-karten__hintergruende","icon":"mdi:image-outline"},{"label":"Theme","keys":["mdc-theme-background","mdc-theme-surface","mdc-theme-on-surface"],"id":"hintergruende-karten__theme","icon":"mdi:palette-swatch-outline"},{"label":"Header","keys":["app-header-background-color","app-header-text-color","app-header-backdrop-filter","app-header-edit-background-color","app-header-edit-text-color","app-theme-color","app-toolbar-background-color","toolbar-background-color","app-toolbar-text-color","toolbar-text-color"],"id":"hintergruende-karten__header","icon":"mdi:page-layout-header"},{"label":"App Drawer","keys":["app-drawer-background-color","app-drawer-text-color","app-drawer-icon-color"],"id":"hintergruende-karten__app-drawer","icon":"mdi:drawer"},{"label":"Sidebar","keys":["sidebar-background-color","sidebar-selected-background-color","sidebar-text-color","sidebar-icon-color","sidebar-selected-text-color","sidebar-selected-icon-color"],"id":"hintergruende-karten__sidebar","icon":"mdi:dock-left"},{"label":"Status, Icons & Entitäten","keys":["state-icon-color","state-icon-active-color","state-icon-unavailable-color","state-active-color","state-inactive-color","state-unavailable-color","state-on-color","state-off-color","state-light-color","state-light-active-color","state-light-on-color","state-switch-color","state-switch-active-color","state-switch-on-color","state-climate-cool-color","state-climate-heat-color","state-climate-auto-color","state-climate-dry-color","state-climate-fan_only-color","state-climate-heat_cool-color","state-cover-color","state-cover-active-color","state-cover-open-color","state-cover-closed-color","state-fan-color","state-fan-active-color","state-media_player-color","state-media_player-active-color","state-vacuum-color","state-vacuum-active-color","state-vacuum-error-color","state-lock-locked-color","state-lock-locking-color","state-lock-unlocked-color","state-lock-unlocking-color","state-lock-jammed-color","state-lock-open-color","state-lock-opening-color","state-alarm_control_panel-triggered-color","state-alarm-triggered-color","state-alarm_control_panel-armed_home-color","state-alarm_control_panel-armed_away-color","state-alarm-armed-color","state-alarm_control_panel-disarmed-color","state-alarm-disarmed-color","state-alarm_control_panel-armed_custom_bypass-color","state-alarm_control_panel-armed_night-color","state-alarm_control_panel-armed_vacation-color","state-alarm_control_panel-arming-color","state-alarm_control_panel-disarming-color","state-alarm_control_panel-pending-color","state-alert-off-color","state-alert-on-color","state-binary_sensor-active-color","state-binary_sensor-battery-on-color","state-binary_sensor-carbon_monoxide-on-color","state-binary_sensor-gas-on-color","state-binary_sensor-heat-on-color","state-binary_sensor-lock-on-color","state-binary_sensor-moisture-on-color","state-binary_sensor-problem-on-color","state-binary_sensor-safety-on-color","state-binary_sensor-smoke-on-color","state-binary_sensor-sound-on-color","state-binary_sensor-tamper-on-color","state-device_tracker-active-color","state-device_tracker-home-color","state-humidifier-on-color","state-lawn_mower-active-color","state-lawn_mower-error-color","state-person-active-color","state-person-home-color","state-plant-active-color","state-siren-active-color","state-sun-above_horizon-color","state-sun-below_horizon-color","state-update-active-color","state-valve-active-color","state-water_heater-eco-color","state-water_heater-electric-color","state-water_heater-gas-color","state-water_heater-heat_pump-color","state-water_heater-high_demand-color","state-water_heater-performance-color","state-weather-clear_night-color","state-weather-cloudy-color","state-weather-exceptional-color","state-weather-fog-color","state-weather-hail-color","state-weather-lightning_rainy-color","state-weather-lightning-color","state-weather-partlycloudy-color","state-weather-pouring-color","state-weather-rainy-color","state-weather-snowy_rainy-color","state-weather-snowy-color","state-weather-sunny-color","state-weather-windy_variant-color","state-weather-windy-color","state-battery-low-color","state-sensor-battery-high-color","state-sensor-battery-medium-color","state-sensor-battery-low-color","label-badge-background-color","label-badge-text-color","label-badge-red","label-badge-blue","label-badge-green","label-badge-yellow","state-battery-alert-color"],"id":"hintergruende-karten__status-icons-entitaeten","icon":"mdi:emoticon-outline"},{"label":"Schalter, Toggle & Slider","keys":["ha-control-switch-color","ha-control-switch-checked-color","ha-control-switch-unchecked-color","ha-switch-background-color","ha-switch-background-color-hover","ha-switch-border-color","ha-switch-thumb-background-color","ha-switch-thumb-background-color-hover","ha-switch-thumb-border-color","ha-switch-thumb-border-color-hover","ha-switch-checked-background-color","ha-switch-checked-background-color-hover","ha-switch-checked-border-color","ha-switch-checked-thumb-background-color","ha-switch-checked-thumb-background-color-hover","ha-switch-checked-thumb-border-color","ha-switch-checked-thumb-border-color-hover","control-slider-color","slider-color","slider-secondary-color","slider-track-color"],"id":"hintergruende-karten__schalter-toggle-slider","icon":"mdi:toggle-switch-outline"},{"label":"Buttons & Chips","keys":["control-button-background-color","control-button-icon-color","control-button-border-radius"],"id":"hintergruende-karten__buttons-chips","icon":"mdi:gesture-tap-button"},{"label":"Eingaben & Auswahlfelder","keys":["input-background-color","input-fill-color","input-disabled-fill-color","input-disabled-ink-color","input-disabled-label-ink-color","input-disabled-line-color","input-dropdown-icon-color","input-hover-line-color","input-idle-line-color","input-ink-color","input-label-ink-color","input-outlined-disabled-border-color","mdc-select-idle-line-color","mdc-select-dropdown-icon-color","mdc-select-hover-line-color","mdc-text-field-idle-line-color","mdc-text-field-hover-line-color","ha-color-form-background","ha-color-form-background-hover","ha-color-form-background-disabled"],"id":"hintergruende-karten__eingaben-auswahlfelder","icon":"mdi:form-select"},{"label":"Material, Paper & MDC","keys":["mdc-theme-primary","mdc-theme-secondary","mdc-theme-on-primary","md-sys-color-primary","md-sys-color-on-primary","md-sys-color-primary-container","md-sys-color-on-primary-container","md-sys-color-on-surface","ha-on-surface-color","md-radio-selected-icon-color","mdc-radio-unchecked-color"],"id":"hintergruende-karten__material-paper-mdc","icon":"mdi:material-design"},{"label":"HA 2026 / Web Awesome","keys":["ha-color-fill-primary-normal-resting","ha-color-fill-primary-normal-hover","ha-color-fill-primary-quiet-resting","ha-color-fill-primary-quiet-hover","ha-color-fill-disabled-normal-resting","ha-color-on-disabled-normal","ha-color-fill-disabled-loud-resting","ha-color-on-disabled-loud","ha-color-on-disabled-quiet","ha-color-fill-neutral-quiet-resting","ha-color-fill-neutral-quiet-hover","ha-color-fill-neutral-quiet-active","ha-color-fill-neutral-normal-resting","ha-color-fill-neutral-normal-hover","ha-color-fill-neutral-normal-active","ha-color-fill-danger-normal-resting","ha-color-fill-danger-normal-hover","ha-color-fill-danger-normal-active","ha-color-on-danger-normal","ha-color-fill-warning-normal-resting","ha-color-fill-warning-normal-hover","ha-color-fill-warning-normal-active","ha-color-on-warning-normal","ha-tooltip-background-color","ha-tooltip-text-color"],"id":"hintergruende-karten__ha-2026-web-awesome","icon":"mdi:web"},{"label":"Abstände, Rundungen, Schatten & Rahmen","keys":["border-color","border-radius","box-shadow","divider-color","outline-color","outline-variant-color","outline-hover-color","ha-line-height-condensed","ha-line-height-expanded","ha-line-height-normal"],"id":"hintergruende-karten__abstaende-rundungen-schatten-rahmen","icon":"mdi:square-rounded-outline"},{"label":"Schrift & Typografie","keys":["primary-font-family","ha-font-family-body","ha-font-family-heading","ha-font-family-longform","ha-font-family-code","mdc-typography-font-family","ha-font-size-scale","ha-font-size-2xs","ha-font-size-xs","ha-font-size-s","ha-font-size-m","ha-font-size-l","ha-font-size-xl","ha-font-size-2xl","ha-font-size-3xl","ha-font-size-4xl","ha-font-weight-light","ha-font-weight-normal","ha-font-weight-body","ha-font-weight-medium","ha-font-weight-heading","ha-font-weight-action","ha-font-weight-bold"],"id":"hintergruende-karten__schrift-typografie","icon":"mdi:format-font"},{"label":"RGB-Hilfswerte","keys":["rgb-primary-color","rgb-accent-color","rgb-primary-text-color","rgb-secondary-text-color","rgb-card-background-color","rgb-primary-background-color","rgb-blue-color","rgb-orange-color","rgb-state-switch-color","rgb-state-light-color","rgb-state-cover-color","rgb-state-fan-color","rgb-state-media_player-color"],"id":"hintergruende-karten__rgb-hilfswerte","icon":"mdi:invert-colors"},{"label":"Graphen & Energie","keys":["graph-color-1","graph-color-2","graph-color-3","graph-color-4","graph-color-5","graph-color-6","graph-color-7","graph-color-8","graph-color-9","graph-color-10","graph-color-11","graph-color-12","graph-color-13","graph-color-14","color-1","color-2","color-3","color-4","color-5","color-6","color-7","color-8","color-9","color-10","color-11","color-12","color-13","color-14","energy-grid-consumption-color","energy-grid-return-color","energy-solar-color","energy-non-fossil-color","energy-battery-out-color","energy-battery-in-color","energy-gas-color","energy-water-color"],"id":"hintergruende-karten__graphen-energie","icon":"mdi:chart-line"}]},{"id":"bubble-card","label":"Bubble Card","desc":"Alle Bubble-Card-Werte an einem Ort, in 9 Unterordnern: Karten & Hintergründe, Buttons, Sub-Buttons, Separator, Popup & Dialog, Horizontal Buttons Stack, Climate, Cover, Media Player.","icon":"mdi:circle-multiple-outline","keys":["bubble-card-background-color","bubble-main-buttons-background-color","bubble-secondary-background-color","bubble-icon-background-color","bubble-icon-color","bubble-name-color","bubble-state-color","bubble-accent-color","bubble-active-color","bubble-toggle-color","bubble-line-background-color","bubble-border","bubble-border-color","bubble-border-radius","bubble-box-shadow","bubble-card-border-radius","bubble-select-border-radius","bubble-icon-border-radius","bubble-button-background-color","bubble-button-active-background-color","bubble-button-icon-color","bubble-button-active-icon-color","bubble-button-text-color","bubble-button-active-text-color","bubble-button-border-radius","bubble-button-card-background-color","bubble-button-main-background-color","bubble-button-active-color","bubble-sub-button-background-color","bubble-sub-button-active-background-color","bubble-sub-button-icon-color","bubble-sub-button-active-icon-color","bubble-sub-button-text-color","bubble-sub-button-active-text-color","bubble-sub-button-border-radius","bubble-sub-button-box-shadow","bubble-sub-buttons-main-background-color","bubble-separator-background-color","bubble-separator-icon-background-color","bubble-separator-icon-color","bubble-separator-line-color","bubble-separator-name-color","bubble-separator-text-color","bubble-separator-border-radius","bubble-pop-up-background-color","bubble-pop-up-backdrop-filter","bubble-pop-up-border-radius","bubble-pop-up-box-shadow","dialog-box-shadow","more-info-header-background","more-info-header-color","popup-border-radius","ha-dialog-scrim-backdrop-filter","ha-dialog-surface-background","mdc-dialog-scrim-color","bubble-horizontal-buttons-stack-background-color","bubble-horizontal-buttons-stack-button-background-color","bubble-horizontal-buttons-stack-button-icon-color","bubble-horizontal-buttons-stack-button-text-color","bubble-horizontal-buttons-stack-border-radius","bubble-horizontal-buttons-stack-box-shadow","bubble-climate-background-color","bubble-climate-main-background-color","bubble-climate-button-background-color","bubble-climate-button-icon-color","bubble-climate-border-radius","bubble-climate-box-shadow","bubble-climate-icon-border-radius","bubble-cover-background-color","bubble-cover-main-background-color","bubble-cover-button-background-color","bubble-cover-button-icon-color","bubble-cover-border-radius","bubble-cover-box-shadow","bubble-media-player-background-color","bubble-media-player-main-background-color","bubble-media-player-button-background-color","bubble-media-player-button-icon-color","bubble-media-player-border-radius","bubble-media-player-box-shadow","bubble-calendar-height","bubble-calendar-mask-size","bubble-calendar-border-radius","bubble-event-background-color","bubble-event-background-image","bubble-select-main-background-color","bubble-select-background-color","bubble-select-list-background-color","bubble-select-list-item-accent-color","bubble-select-list-width","bubble-select-arrow-background-color","bubble-select-button-border-radius","bubble-select-icon-background-color","bubble-select-icon-border-radius","bubble-select-box-shadow","bubble-pop-up-main-background-color","bubble-backdrop-background-color","bubble-button-icon-border-radius","bubble-button-icon-background-color","bubble-light-white-color","bubble-light-color","bubble-button-box-shadow","bubble-media-player-buttons-border-radius","bubble-media-player-slider-background-color","bubble-media-player-icon-border-radius","bubble-media-player-icon-background-color","bubble-cover-icon-border-radius","bubble-cover-icon-background-color","bubble-state-climate-fan-only-color","bubble-state-climate-dry-color","bubble-state-climate-cool-color","bubble-state-climate-heat-color","bubble-state-climate-auto-color","bubble-state-climate-heat-cool-color","bubble-climate-accent-color","bubble-calendar-main-background-color","bubble-sub-slider-border-radius","bubble-sub-slider-background-color","bubble-sub-slider-height","bubble-sub-button-dark-text-color","bubble-footer-width","bubble-footer-bottom","bubble-footer-box-shadow","bubble-select-list-border-radius"],"groups":[{"label":"Karten & Hintergründe","keys":["bubble-card-background-color","bubble-main-buttons-background-color","bubble-secondary-background-color","bubble-icon-background-color","bubble-icon-color","bubble-name-color","bubble-state-color","bubble-accent-color","bubble-active-color","bubble-toggle-color","bubble-line-background-color","bubble-border","bubble-border-color","bubble-border-radius","bubble-box-shadow","bubble-card-border-radius","bubble-icon-border-radius"],"id":"bubble-card__karten-hintergruende","icon":"mdi:card-outline"},{"label":"Select (Auswahlkarte)","keys":["bubble-select-main-background-color","bubble-select-background-color","bubble-select-border-radius","bubble-select-list-background-color","bubble-select-list-border-radius","bubble-select-list-width","bubble-select-list-item-accent-color","bubble-select-arrow-background-color","bubble-select-button-border-radius","bubble-select-icon-background-color","bubble-select-icon-border-radius","bubble-select-box-shadow"],"id":"bubble-card__select","icon":"mdi:form-select"},{"label":"Buttons","keys":["bubble-button-background-color","bubble-button-active-background-color","bubble-button-icon-color","bubble-button-active-icon-color","bubble-button-text-color","bubble-button-active-text-color","bubble-button-border-radius","bubble-button-card-background-color","bubble-button-main-background-color","bubble-button-active-color","bubble-button-icon-border-radius","bubble-button-icon-background-color","bubble-light-white-color","bubble-light-color","bubble-button-box-shadow"],"id":"bubble-card__buttons","icon":"mdi:gesture-tap-button"},{"label":"Sub-Buttons","keys":["bubble-sub-button-background-color","bubble-sub-button-active-background-color","bubble-sub-button-icon-color","bubble-sub-button-active-icon-color","bubble-sub-button-text-color","bubble-sub-button-active-text-color","bubble-sub-button-border-radius","bubble-sub-button-box-shadow","bubble-sub-buttons-main-background-color","bubble-sub-slider-border-radius","bubble-sub-slider-background-color","bubble-sub-slider-height","bubble-sub-button-dark-text-color","bubble-footer-width","bubble-footer-bottom","bubble-footer-box-shadow"],"id":"bubble-card__sub-buttons","icon":"mdi:dots-horizontal-circle-outline"},{"label":"Separator","keys":["bubble-separator-background-color","bubble-separator-icon-background-color","bubble-separator-icon-color","bubble-separator-line-color","bubble-separator-name-color","bubble-separator-text-color","bubble-separator-border-radius"],"id":"bubble-card__separator","icon":"mdi:minus"},{"label":"Popup & Dialog","keys":["bubble-pop-up-background-color","bubble-pop-up-backdrop-filter","bubble-pop-up-border-radius","bubble-pop-up-box-shadow","dialog-box-shadow","more-info-header-background","more-info-header-color","popup-border-radius","ha-dialog-scrim-backdrop-filter","ha-dialog-surface-background","mdc-dialog-scrim-color","bubble-pop-up-main-background-color","bubble-backdrop-background-color"],"id":"bubble-card__popup-dialog","icon":"mdi:window-maximize"},{"label":"Horizontal Buttons Stack","keys":["bubble-horizontal-buttons-stack-background-color","bubble-horizontal-buttons-stack-button-background-color","bubble-horizontal-buttons-stack-button-icon-color","bubble-horizontal-buttons-stack-button-text-color","bubble-horizontal-buttons-stack-border-radius","bubble-horizontal-buttons-stack-box-shadow"],"id":"bubble-card__horizontal-buttons-stack","icon":"mdi:view-sequential"},{"label":"Climate","keys":["bubble-climate-background-color","bubble-climate-main-background-color","bubble-climate-button-background-color","bubble-climate-button-icon-color","bubble-climate-border-radius","bubble-climate-box-shadow","bubble-climate-icon-border-radius","bubble-state-climate-fan-only-color","bubble-state-climate-dry-color","bubble-state-climate-cool-color","bubble-state-climate-heat-color","bubble-state-climate-auto-color","bubble-state-climate-heat-cool-color","bubble-climate-accent-color"],"id":"bubble-card__climate","icon":"mdi:thermostat"},{"label":"Cover","keys":["bubble-cover-background-color","bubble-cover-main-background-color","bubble-cover-button-background-color","bubble-cover-button-icon-color","bubble-cover-border-radius","bubble-cover-box-shadow","bubble-cover-icon-border-radius","bubble-cover-icon-background-color"],"id":"bubble-card__cover","icon":"mdi:window-shutter"},{"label":"Media Player","keys":["bubble-media-player-background-color","bubble-media-player-main-background-color","bubble-media-player-button-background-color","bubble-media-player-button-icon-color","bubble-media-player-border-radius","bubble-media-player-box-shadow","bubble-media-player-buttons-border-radius","bubble-media-player-slider-background-color","bubble-media-player-icon-border-radius","bubble-media-player-icon-background-color"],"id":"bubble-card__media-player","icon":"mdi:play-circle-outline"},{"label":"Calendar","keys":["bubble-calendar-main-background-color","bubble-calendar-height","bubble-calendar-mask-size","bubble-calendar-border-radius","bubble-event-background-color","bubble-event-background-image"],"id":"bubble-card__calendar","icon":"mdi:calendar"}]},{"id":"mushroom","label":"Mushroom","desc":"Alle Mushroom-Werte an einem Ort, in 6 Unterordnern: Karten & Hintergründe, Icons, Toggle, Slider, Chips, RGB-Hilfswerte.","icon":"mdi:mushroom-outline","keys":["mush-card-background","mush-control-background-color","mush-card-primary-color","mush-card-secondary-color","mush-title-color","mush-subtitle-color","mush-icon-background-color","mush-icon-color","mush-icon-active-color","mush-toggle-color","mush-toggle-background-color","mush-slider-color","mush-slider-track-color","mush-slider-background-color","mush-chip-background","mush-chip-active-background","mush-chip-color","mush-chip-icon-color","mush-chip-active-color","mush-chip-active-icon-color","mush-chip-border-color","mush-chip-border-radius","mush-chip-font-size","mush-rgb-primary-text-color","mush-rgb-secondary-text-color","mush-rgb-state-switch","mush-rgb-state-light","mush-rgb-state-cover","mush-rgb-state-entity","mush-rgb-state-fan","mush-rgb-state-media-player","mush-rgb-state-vacuum","mush-rgb-success","mush-rgb-warning","mush-rgb-danger","mush-rgb-disabled","mush-rgb-info"],"groups":[{"label":"Karten & Hintergründe","keys":["mush-card-background","mush-control-background-color","mush-card-primary-color","mush-card-secondary-color","mush-title-color","mush-subtitle-color"],"id":"mushroom__karten-hintergruende","icon":"mdi:card-outline"},{"label":"Icons","keys":["mush-icon-background-color","mush-icon-color","mush-icon-active-color"],"id":"mushroom__icons","icon":"mdi:shape-outline"},{"label":"Toggle","keys":["mush-toggle-color","mush-toggle-background-color"],"id":"mushroom__toggle","icon":"mdi:toggle-switch-outline"},{"label":"Slider","keys":["mush-slider-color","mush-slider-track-color","mush-slider-background-color"],"id":"mushroom__slider","icon":"mdi:tune-variant"},{"label":"Chips","keys":["mush-chip-background","mush-chip-active-background","mush-chip-color","mush-chip-icon-color","mush-chip-active-color","mush-chip-active-icon-color","mush-chip-border-color","mush-chip-border-radius","mush-chip-font-size"],"id":"mushroom__chips","icon":"mdi:label-outline"},{"label":"RGB-Hilfswerte","keys":["mush-rgb-primary-text-color","mush-rgb-secondary-text-color","mush-rgb-state-switch","mush-rgb-state-light","mush-rgb-state-cover","mush-rgb-state-entity","mush-rgb-state-fan","mush-rgb-state-media-player","mush-rgb-state-vacuum","mush-rgb-success","mush-rgb-warning","mush-rgb-danger","mush-rgb-disabled","mush-rgb-info"],"id":"mushroom__rgb-hilfswerte","icon":"mdi:invert-colors"}]},{"id":"card-mod-generator","label":"Card-mod & Generator","desc":"Interne Generatorwerte, card-mod-Bloecke und ein Freitextfeld fuer eigene, von HATG nicht verwaltete Theme-Eintraege.","icon":"mdi:code-braces","keys":["card-mod-theme","card-mod-card","card-mod-root","card-backdrop-blur","eigene-theme-eintraege"]}],"light":{"accent-color":"#ff9300","primary-color":"#ff9300","dark-primary-color":"#F9F9FB","light-primary-color":"#E5F1FF","primary-text-color":"#1C1C1E","secondary-text-color":"#3C3C43","text-primary-color":"#FFFFFF","disabled-text-color":"#8E8E93","error-color":"#FF3B30","warning-color":"#FFCC00","success-color":"#34C759","info-color":"#007AFF","red-color":"#FF3B30","green-color":"#34C759","blue-color":"#007AFF","orange-color":"#FF9500","yellow-color":"#FFCC00","purple-color":"#AF52DE","pink-color":"#FF2D55","cyan-color":"#5AC8FA","grey-color":"#3C3C43","black-color":"#000000","white-color":"#FFFFFF","primary-background-color":"#F2F2F7","background-color":"#F2F2F7","lovelace-background":"#F2F2F7","secondary-background-color":"#F9F9FB","card-background-color":"#FFFFFF","ha-card-background":"#FFFFFF","ha-card-background-color":"#FFFFFF","table-row-background-color":"#F9F9FB","table-row-alternative-background-color":"#FFFFFF","app-header-background-color":"#FFFFFF","app-toolbar-background-color":"#FFFFFF","toolbar-background-color":"#FFFFFF","app-drawer-background-color":"#FFFFFF","sidebar-background-color":"#FFFFFF","sidebar-selected-background-color":"#E5F1FF","mdc-theme-background":"#F2F2F7","mdc-theme-surface":"#FFFFFF","mdc-theme-on-surface":"#1C1C1E","wa-color-surface-raised":"#FFFFFF","app-header-text-color":"#1C1C1E","app-toolbar-text-color":"#1C1C1E","toolbar-text-color":"#1C1C1E","app-drawer-text-color":"#3C3C43","app-drawer-icon-color":"#007AFF","sidebar-text-color":"#3C3C43","sidebar-icon-color":"rgba(33, 33, 33, 0.6)","sidebar-selected-text-color":"#1C1C1E","sidebar-selected-icon-color":"#007AFF","state-icon-color":"#007AFF","state-icon-active-color":"#007AFF","state-icon-unavailable-color":"#FFFFFF","state-active-color":"#007AFF","state-inactive-color":"#FFFFFF","state-unavailable-color":"#FFFFFF","state-on-color":"#34C759","state-off-color":"#FFFFFF","state-light-color":"#007AFF","state-light-active-color":"#007AFF","state-light-on-color":"#ff9300","state-switch-color":"#007AFF","state-switch-active-color":"#007AFF","state-switch-on-color":"#007AFF","state-climate-cool-color":"#007AFF","state-climate-heat-color":"#ff2600","state-climate-auto-color":"#007AFF","state-cover-color":"#007AFF","state-cover-active-color":"#007AFF","state-cover-open-color":"#929000","state-cover-closed-color":"#ff2600","state-fan-color":"#007AFF","state-fan-active-color":"#007AFF","state-media_player-color":"#007AFF","state-vacuum-color":"#007AFF","state-vacuum-active-color":"#007AFF","state-lock-locked-color":"#007AFF","state-lock-locking-color":"#ff2600","state-lock-unlocked-color":"#007AFF","state-lock-unlocking-color":"#929000","state-alarm_control_panel-triggered-color":"#ff2600","state-alarm-triggered-color":"#ff2600","state-alarm_control_panel-armed_home-color":"#ffd478","state-alarm_control_panel-armed_away-color":"#ffd478","state-alarm-armed-color":"#ffd478","state-alarm_control_panel-disarmed-color":"#ff9300","state-alarm-disarmed-color":"#ff9300","state-battery-low-color":"#ff2600","label-badge-background-color":"#FFFFFF","label-badge-text-color":"rgba(33, 33, 33, 0.8)","label-badge-red":"#FF3B30","label-badge-blue":"#007AFF","label-badge-green":"#34C759","label-badge-yellow":"#FFCC00","state-battery-alert-color":"#ff2600","ha-control-switch-color":"#007AFF","ha-control-switch-checked-color":"#007AFF","ha-control-switch-unchecked-color":"#D1D1D6","mush-toggle-color":"#007AFF","mush-rgb-state-switch":"0, 122, 255","bubble-toggle-color":"#007AFF","rgb-state-switch-color":"0, 122, 255","control-slider-color":"#007AFF","slider-color":"#007AFF","slider-secondary-color":"#E5F1FF","slider-track-color":"#D1D1D6","mush-slider-color":"#007AFF","mush-slider-track-color":"#D1D1D6","mush-toggle-background-color":"#D1D1D6","control-button-background-color":"#F9F9FB","control-button-icon-color":"#007AFF","control-button-border-radius":"18px","mush-chip-background":"#FFFFFF","mush-chip-active-background":"#F9F9FB","mush-chip-color":"#1C1C1E","mush-chip-icon-color":"#007AFF","mush-chip-active-color":"#ff9300","mush-chip-active-icon-color":"#ff9300","mush-chip-border-color":"#C6C6C8","mush-chip-border-radius":"16px","mush-chip-font-size":"12px","bubble-button-background-color":"#FFFFFF","bubble-button-active-background-color":"#007AFF","bubble-button-icon-color":"#007AFF","bubble-button-active-icon-color":"#FFFFFF","bubble-button-text-color":"#1C1C1E","bubble-button-active-text-color":"#FFFFFF","bubble-button-border-radius":"18px","bubble-sub-button-background-color":"#F9F9FB","bubble-sub-button-active-background-color":"#007AFF","bubble-sub-button-icon-color":"#007AFF","bubble-sub-button-active-icon-color":"#FFFFFF","bubble-sub-button-text-color":"#3C3C43","bubble-sub-button-active-text-color":"#FFFFFF","bubble-sub-button-border-radius":"14px","bubble-sub-button-box-shadow":"0 4px 10px rgba(60,60,67,.16)","input-background-color":"#F9F9FB","input-fill-color":"#F9F9FB","input-disabled-fill-color":"rgba(249, 249, 251, 0.55)","input-disabled-ink-color":"rgba(0, 0, 0, 0.37)","input-disabled-label-ink-color":"#8E8E93","input-disabled-line-color":"rgba(0, 0, 0, 0.06)","input-dropdown-icon-color":"rgba(0, 0, 0, 0.54)","input-hover-line-color":"rgba(0, 0, 0, 0.87)","input-idle-line-color":"rgba(0, 0, 0, 0.42)","input-ink-color":"rgba(0, 0, 0, 0.87)","input-label-ink-color":"rgba(0, 0, 0, 0.6)","input-outlined-disabled-border-color":"rgba(0, 0, 0, 0.06)","mdc-select-idle-line-color":"#C6C6C8","mdc-select-dropdown-icon-color":"#3C3C43","mdc-select-hover-line-color":"#C6C6C8","mdc-text-field-idle-line-color":"#C6C6C8","mdc-text-field-hover-line-color":"#C6C6C8","ha-color-form-background":"#F9F9FB","ha-color-form-background-hover":"#F9F9FB","ha-color-form-background-disabled":"rgba(249, 249, 251, 0.55)","mdc-theme-primary":"#007AFF","mdc-theme-secondary":"#007AFF","mdc-theme-on-primary":"#FFFFFF","md-sys-color-primary":"#ff9300","md-sys-color-on-primary":"#007AFF","md-sys-color-primary-container":"#E5F1FF","md-sys-color-on-primary-container":"#FFFFFF","md-sys-color-on-surface":"#feffff","ha-on-surface-color":"#feffff","md-radio-selected-icon-color":"#007AFF","mdc-radio-unchecked-color":"#3C3C43","ha-color-fill-primary-normal-resting":"rgba(0, 122, 255, 0.15)","ha-color-fill-primary-normal-hover":"rgba(0, 122, 255, 0.25)","ha-color-fill-primary-quiet-resting":"rgba(0, 122, 255, 0.08)","ha-color-fill-primary-quiet-hover":"rgba(0, 122, 255, 0.15)","ha-color-fill-disabled-normal-resting":"rgba(142, 142, 147, 0.12)","ha-color-on-disabled-normal":"rgba(60, 60, 67, 0.55)","ha-color-fill-disabled-loud-resting":"rgba(142, 142, 147, 0.22)","ha-color-on-disabled-loud":"rgba(60, 60, 67, 0.65)","ha-color-on-disabled-quiet":"rgba(60, 60, 67, 0.50)","ha-color-fill-neutral-quiet-resting":"#FFFFFF","ha-color-fill-neutral-quiet-hover":"#F9F9FB","ha-color-fill-neutral-quiet-active":"#E5F1FF","ha-color-fill-neutral-normal-resting":"#F9F9FB","ha-color-fill-neutral-normal-hover":"#FFFFFF","ha-color-fill-neutral-normal-active":"#E5F1FF","ha-color-fill-danger-normal-resting":"rgba(255, 59, 48, 0.15)","ha-color-fill-danger-normal-hover":"rgba(255, 59, 48, 0.22)","ha-color-fill-danger-normal-active":"rgba(255, 59, 48, 0.28)","ha-color-on-danger-normal":"#FF3B30","ha-color-fill-warning-normal-resting":"rgba(255, 204, 0, 0.15)","ha-color-fill-warning-normal-hover":"rgba(255, 204, 0, 0.22)","ha-color-fill-warning-normal-active":"rgba(255, 204, 0, 0.28)","ha-color-on-warning-normal":"#8A5A00","ha-tooltip-background-color":"#F9F9FB","ha-tooltip-text-color":"#1C1C1E","border-color":"rgba(0, 0, 0, 0.12)","border-radius":"18px","box-shadow":"0 10px 28px rgba(60,60,67,.14)","divider-color":"rgba(0, 0, 0, 0.12)","outline-color":"rgba(0, 0, 0, 0.12)","outline-variant-color":"#C6C6C8","ha-card-border-color":"rgba(0, 0, 0, 0.12)","ha-card-border-radius":"18px","ha-card-border-width":"1px","ha-card-box-shadow":"0 10px 28px rgba(60,60,67,.14)","ha-line-height-condensed":"1.25","ha-line-height-expanded":"1.35","ha-line-height-normal":"1.5","bubble-border":"1px solid #C6C6C8","bubble-border-color":"rgba(0, 0, 0, 0.12)","bubble-border-radius":"18px","bubble-box-shadow":"0 10px 28px rgba(60,60,67,.14)","bubble-card-border-radius":"18px","bubble-climate-border-radius":"18px","bubble-climate-box-shadow":"0 10px 28px rgba(60,60,67,.14)","bubble-climate-icon-border-radius":"32px","bubble-cover-border-radius":"18px","bubble-cover-box-shadow":"0 10px 28px rgba(60,60,67,.14)","bubble-icon-border-radius":"14px","bubble-media-player-border-radius":"18px","bubble-media-player-box-shadow":"0 10px 28px rgba(60,60,67,.14)","bubble-calendar-height":"56px","bubble-calendar-mask-size":"16px","bubble-calendar-border-radius":"18px","bubble-event-background-color":"#F9F9FB","bubble-event-background-image":"none","bubble-pop-up-border-radius":"18px","bubble-pop-up-box-shadow":"0 10px 28px rgba(60,60,67,.14)","bubble-select-border-radius":"18px","bubble-separator-border-radius":"18px","bubble-horizontal-buttons-stack-border-radius":"18px","bubble-horizontal-buttons-stack-box-shadow":"0 10px 28px rgba(60,60,67,.14)","primary-font-family":"-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif","ha-font-family-body":"-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif","ha-font-family-heading":"-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif","ha-font-family-longform":"-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif","ha-font-family-code":"'SF Mono', 'Roboto Mono', Consolas, monospace","mdc-typography-font-family":"'SF Mono', 'Roboto Mono', Consolas, monospace","ha-font-size-scale":"1","ha-font-size-2xs":"8px","ha-font-size-xs":"8px","ha-font-size-s":"12px","ha-font-size-m":"14px","ha-font-size-l":"16px","ha-font-size-xl":"18px","ha-font-size-2xl":"20px","ha-font-size-3xl":"22px","ha-font-size-4xl":"24px","ha-font-weight-light":"300","ha-font-weight-normal":"400","ha-font-weight-body":"400","ha-font-weight-medium":"500","ha-font-weight-heading":"500","ha-font-weight-action":"500","ha-font-weight-bold":"700","rgb-primary-color":"255, 147, 0","rgb-accent-color":"255, 147, 0","rgb-primary-text-color":"28, 28, 30","rgb-secondary-text-color":"60, 60, 67","rgb-card-background-color":"255, 255, 255","rgb-primary-background-color":"242, 242, 247","rgb-blue-color":"0, 122, 255","rgb-orange-color":"255, 149, 0","rgb-state-light-color":"0, 122, 255","rgb-state-cover-color":"0, 122, 255","rgb-state-fan-color":"0, 122, 255","rgb-state-media_player-color":"0, 122, 255","mush-rgb-primary-text-color":"28, 28, 30","mush-rgb-secondary-text-color":"60, 60, 67","mush-rgb-state-light":"0, 122, 255","mush-rgb-state-cover":"0, 122, 255","mush-rgb-state-entity":"0, 122, 255","mush-rgb-state-fan":"0, 122, 255","mush-rgb-state-media-player":"0, 122, 255","mush-rgb-state-vacuum":"0, 122, 255","mush-rgb-success":"52, 199, 89","mush-rgb-warning":"255, 204, 0","mush-rgb-danger":"255, 59, 48","mush-rgb-disabled":"142, 142, 147","mush-rgb-info":"0, 122, 255","graph-color-1":"#ff9300","graph-color-2":"#007AFF","graph-color-3":"#34C759","graph-color-4":"#AF52DE","graph-color-5":"#FF3B30","graph-color-6":"#5AC8FA","graph-color-7":"#00C7BE","graph-color-8":"#FF2D55","graph-color-9":"#FF6B22","graph-color-10":"#5856D6","graph-color-11":"#A3D977","graph-color-12":"#FFCC00","graph-color-13":"#AF52DE","graph-color-14":"#8E6E53","energy-grid-consumption-color":"#007AFF","energy-grid-return-color":"#AF52DE","energy-solar-color":"#ff9300","energy-non-fossil-color":"#34C759","energy-battery-out-color":"#00C7BE","energy-battery-in-color":"#AF52DE","energy-gas-color":"#FF3B30","energy-water-color":"#5AC8FA","bubble-card-background-color":"#FFFFFF","bubble-secondary-background-color":"#F9F9FB","bubble-icon-background-color":"#F9F9FB","bubble-icon-color":"#007AFF","bubble-name-color":"#1C1C1E","bubble-state-color":"#3C3C43","bubble-accent-color":"#007AFF","bubble-active-color":"#007AFF","bubble-line-background-color":"rgba(0, 0, 0, 0.12)","bubble-pop-up-background-color":"#F2F2F7","bubble-pop-up-backdrop-filter":"blur(18px)","dialog-box-shadow":"0 10px 28px rgba(60,60,67,.14)","more-info-header-background":"#F9F9FB","more-info-header-color":"#1C1C1E","popup-border-radius":"12px","ha-dialog-scrim-backdrop-filter":"blur(10px)","ha-dialog-surface-background":"rgba(255, 255, 255, 0.92)","mdc-dialog-scrim-color":"rgba(0, 0, 0, 0.35)","bubble-separator-background-color":"#FFFFFF","bubble-separator-icon-background-color":"#F9F9FB","bubble-separator-icon-color":"#007AFF","bubble-separator-line-color":"rgba(0, 0, 0, 0.12)","bubble-separator-name-color":"#1C1C1E","bubble-separator-text-color":"#1C1C1E","bubble-horizontal-buttons-stack-background-color":"#FFFFFF","bubble-horizontal-buttons-stack-button-background-color":"#F9F9FB","bubble-sub-buttons-main-background-color":"#FFFFFF","bubble-climate-background-color":"#FFFFFF","bubble-climate-main-background-color":"#FFFFFF","bubble-cover-background-color":"#FFFFFF","bubble-cover-main-background-color":"#FFFFFF","bubble-media-player-background-color":"#FFFFFF","bubble-media-player-main-background-color":"#FFFFFF","mush-card-background":"#FFFFFF","mush-control-background-color":"#F9F9FB","mush-icon-background-color":"#F9F9FB","mush-card-primary-color":"#1C1C1E","mush-card-secondary-color":"#3C3C43","mush-title-color":"#1C1C1E","mush-subtitle-color":"#3C3C43","mush-icon-color":"#3C3C43","mush-icon-active-color":"#007AFF","card-mod-theme":"basis","card-mod-card":"","bubble-button-card-background-color":"#FFFFFF","bubble-button-main-background-color":"#FFFFFF","bubble-climate-button-background-color":"#F9F9FB","bubble-cover-button-background-color":"#F9F9FB","bubble-media-player-button-background-color":"#F9F9FB","mush-slider-background-color":"#F9F9FB","bubble-button-active-color":"#007AFF","bubble-climate-button-icon-color":"#3C3C43","bubble-cover-button-icon-color":"#3C3C43","bubble-horizontal-buttons-stack-button-icon-color":"#3C3C43","bubble-horizontal-buttons-stack-button-text-color":"#1C1C1E","bubble-media-player-button-icon-color":"#3C3C43","deep-purple-color":"#6E41AB","indigo-color":"#3F51B5","light-blue-color":"#03A9F4","teal-color":"#009688","light-green-color":"#8BC34A","lime-color":"#CDDC39","amber-color":"#FFC107","deep-orange-color":"#FF6F22","brown-color":"#795548","light-grey-color":"#BDBDBD","dark-grey-color":"#606060","blue-grey-color":"#607D8B","disabled-color":"#D1D1D6","outline-hover-color":"rgba(0, 0, 0, 0.24)","state-alarm_control_panel-armed_custom_bypass-color":"#34C759","state-alarm_control_panel-armed_night-color":"#34C759","state-alarm_control_panel-armed_vacation-color":"#34C759","state-alarm_control_panel-arming-color":"#007AFF","state-alarm_control_panel-disarming-color":"#007AFF","state-alarm_control_panel-pending-color":"#007AFF","state-alert-off-color":"#007AFF","state-alert-on-color":"#FF3B30","state-binary_sensor-active-color":"#FFC107","state-binary_sensor-battery-on-color":"#FF3B30","state-binary_sensor-carbon_monoxide-on-color":"#FF3B30","state-binary_sensor-gas-on-color":"#FF3B30","state-binary_sensor-heat-on-color":"#FF3B30","state-binary_sensor-lock-on-color":"#FF3B30","state-binary_sensor-moisture-on-color":"#FF3B30","state-binary_sensor-problem-on-color":"#FF3B30","state-binary_sensor-safety-on-color":"#FF3B30","state-binary_sensor-smoke-on-color":"#FF3B30","state-binary_sensor-sound-on-color":"#FF3B30","state-binary_sensor-tamper-on-color":"#FF3B30","state-climate-dry-color":"#007AFF","state-climate-fan_only-color":"#5AC8FA","state-climate-heat_cool-color":"#FFC107","state-device_tracker-active-color":"#007AFF","state-device_tracker-home-color":"#34C759","state-humidifier-on-color":"#007AFF","state-lawn_mower-active-color":"#009688","state-lawn_mower-error-color":"#FF3B30","state-lock-jammed-color":"#FF3B30","state-lock-open-color":"#FF3B30","state-lock-opening-color":"#007AFF","state-media_player-active-color":"#007AFF","state-person-active-color":"#007AFF","state-person-home-color":"#34C759","state-plant-active-color":"#FF3B30","state-siren-active-color":"#FF3B30","state-sun-above_horizon-color":"#FFC107","state-sun-below_horizon-color":"#3F51B5","state-update-active-color":"#007AFF","state-valve-active-color":"#007AFF","state-vacuum-error-color":"#FF3B30","state-water_heater-eco-color":"#34C759","state-water_heater-electric-color":"#007AFF","state-water_heater-gas-color":"#007AFF","state-water_heater-heat_pump-color":"#007AFF","state-water_heater-high_demand-color":"#FF6F22","state-water_heater-performance-color":"#FF6F22","state-weather-clear_night-color":"#6E41AB","state-weather-cloudy-color":"#BDBDBD","state-weather-exceptional-color":"#FF3B30","state-weather-fog-color":"#3C3C43","state-weather-hail-color":"#5AC8FA","state-weather-lightning_rainy-color":"#CDDC39","state-weather-lightning-color":"#FFCC00","state-weather-partlycloudy-color":"#607D8B","state-weather-pouring-color":"#3F51B5","state-weather-rainy-color":"#007AFF","state-weather-snowy_rainy-color":"#03A9F4","state-weather-snowy-color":"#C0E0FF","state-weather-sunny-color":"#FFC107","state-weather-windy_variant-color":"#34C759","state-weather-windy-color":"#34C759","state-sensor-battery-high-color":"#34C759","state-sensor-battery-medium-color":"#007AFF","state-sensor-battery-low-color":"#FF3B30","color-1":"#ff9300","color-2":"#007AFF","color-3":"#34C759","color-4":"#AF52DE","color-5":"#FF3B30","color-6":"#5AC8FA","color-7":"#00C7BE","color-8":"#FF2D55","color-9":"#FF6B22","color-10":"#5856D6","color-11":"#A3D977","color-12":"#FFCC00","color-13":"#AF52DE","color-14":"#8E6E53","ha-switch-background-color":"#D1D1D6","ha-switch-background-color-hover":"#D1D1D6","ha-switch-border-color":"rgba(0,0,0,0)","ha-switch-thumb-background-color":"#FFFFFF","ha-switch-thumb-background-color-hover":"#FFFFFF","ha-switch-thumb-border-color":"rgba(0,0,0,0)","ha-switch-thumb-border-color-hover":"rgba(0,0,0,0)","ha-switch-checked-background-color":"#E5F1FF","ha-switch-checked-background-color-hover":"#E5F1FF","ha-switch-checked-border-color":"rgba(0,0,0,0)","ha-switch-checked-thumb-background-color":"#007AFF","ha-switch-checked-thumb-background-color-hover":"#007AFF","ha-switch-checked-thumb-border-color":"rgba(0,0,0,0)","ha-switch-checked-thumb-border-color-hover":"rgba(0,0,0,0)","printer-cyan-color":"#00AEEF","printer-magenta-color":"#EC008C","printer-yellow-color":"#FFD400","bubble-main-buttons-background-color":"#FFFFFF","card-backdrop-blur":"none","glass-effect-style":"off","background-style":"off","card-mod-root":"","app-header-backdrop-filter":"blur(8px) saturate(1.1)","app-header-edit-background-color":"rgba(30, 33, 54, 0.8)","app-header-edit-text-color":"rgba(234, 235, 238, 0.98)","app-theme-color":"rgb(0, 0, 0)","bubble-select-main-background-color":"#FFFFFF","bubble-select-background-color":"#F2F2F7","bubble-select-list-background-color":"#FFFFFF","bubble-select-list-item-accent-color":"#007AFF","bubble-select-list-width":"220px","bubble-select-arrow-background-color":"#F9F9FB","bubble-select-button-border-radius":"18px","bubble-select-icon-background-color":"#F9F9FB","bubble-select-icon-border-radius":"14px","bubble-select-box-shadow":"0 10px 28px rgba(60,60,67,.14)","bubble-pop-up-main-background-color":"#FFFFFF","bubble-backdrop-background-color":"rgba(0, 0, 0, 0.32)","bubble-button-icon-border-radius":"14px","bubble-button-icon-background-color":"#F9F9FB","bubble-light-white-color":"#FFFFFF","bubble-light-color":"#FFC107","bubble-button-box-shadow":"0 10px 28px rgba(60,60,67,.14)","bubble-media-player-buttons-border-radius":"14px","bubble-media-player-slider-background-color":"#F2F2F7","bubble-media-player-icon-border-radius":"14px","bubble-media-player-icon-background-color":"#F9F9FB","bubble-cover-icon-border-radius":"14px","bubble-cover-icon-background-color":"#F9F9FB","bubble-state-climate-fan-only-color":"#32ADE6","bubble-state-climate-dry-color":"#FF9500","bubble-state-climate-cool-color":"#007AFF","bubble-state-climate-heat-color":"#FF3B30","bubble-state-climate-auto-color":"#34C759","bubble-state-climate-heat-cool-color":"#AF52DE","bubble-climate-accent-color":"#007AFF","bubble-calendar-main-background-color":"#FFFFFF","bubble-sub-slider-border-radius":"18px","bubble-sub-slider-background-color":"#F9F9FB","bubble-sub-slider-height":"48px","bubble-sub-button-dark-text-color":"#1C1C1E","bubble-footer-width":"320px","bubble-footer-bottom":"16px","bubble-footer-box-shadow":"0 10px 28px rgba(60,60,67,.14)","bubble-select-list-border-radius":"18px","eigene-theme-eintraege":""},"dark":{"accent-color":"#ff9300","primary-color":"#ff9300","dark-primary-color":"#2C2C2E","light-primary-color":"#ff9300","primary-text-color":"#feffff","secondary-text-color":"#C7C7CC","text-primary-color":"#000000","disabled-text-color":"#636366","error-color":"#FF453A","warning-color":"#FFD60A","success-color":"#30D158","info-color":"#0A84FF","red-color":"#FF453A","green-color":"#30D158","blue-color":"#0A84FF","orange-color":"#FF9F0A","yellow-color":"#FFD60A","purple-color":"#BF5AF2","pink-color":"#FF375F","cyan-color":"#32ADE6","grey-color":"#C7C7CC","black-color":"#000000","white-color":"#FFFFFF","primary-background-color":"#000000","background-color":"#000000","lovelace-background":"#000000","secondary-background-color":"#2C2C2E","card-background-color":"#1C1C1E","ha-card-background":"#1C1C1E","ha-card-background-color":"#1C1C1E","table-row-background-color":"#2C2C2E","table-row-alternative-background-color":"#1C1C1E","app-header-background-color":"#1C1C1E","app-toolbar-background-color":"#1C1C1E","toolbar-background-color":"#1C1C1E","app-drawer-background-color":"#1C1C1E","sidebar-background-color":"#1C1C1E","sidebar-selected-background-color":"#d5d5d5","mdc-theme-background":"#000000","mdc-theme-surface":"#1C1C1E","mdc-theme-on-surface":"#F2F2F7","wa-color-surface-raised":"#1C1C1E","app-header-text-color":"#F2F2F7","app-toolbar-text-color":"#F2F2F7","toolbar-text-color":"#F2F2F7","app-drawer-text-color":"#C7C7CC","app-drawer-icon-color":"#ff9300","sidebar-text-color":"#C7C7CC","sidebar-icon-color":"rgba(225, 225, 225, 0.6)","sidebar-selected-text-color":"#feffff","sidebar-selected-icon-color":"#ff9300","state-icon-color":"#ff9300","state-icon-active-color":"#ff9300","state-icon-unavailable-color":"#929292","state-active-color":"#ff9300","state-inactive-color":"#929292","state-unavailable-color":"#929292","state-on-color":"#30D158","state-off-color":"#636366","state-light-color":"#ff9300","state-light-active-color":"#ff9300","state-light-on-color":"#ff9300","state-switch-color":"#0A84FF","state-switch-active-color":"#ff9300","state-switch-on-color":"#ff9300","state-climate-cool-color":"#0A84FF","state-climate-heat-color":"#ff2600","state-climate-auto-color":"#ffd478","state-cover-color":"#0A84FF","state-cover-active-color":"#929000","state-cover-open-color":"#929000","state-cover-closed-color":"#ff2600","state-fan-color":"#0A84FF","state-fan-active-color":"#0A84FF","state-media_player-color":"#0A84FF","state-vacuum-color":"#0A84FF","state-vacuum-active-color":"#0A84FF","state-lock-locked-color":"#ff2600","state-lock-locking-color":"#ff2600","state-lock-unlocked-color":"#929000","state-lock-unlocking-color":"#929000","state-alarm_control_panel-triggered-color":"#ff2600","state-alarm-triggered-color":"#ff2600","state-alarm_control_panel-armed_home-color":"#ffd478","state-alarm_control_panel-armed_away-color":"#ffd478","state-alarm-armed-color":"#ffd478","state-alarm_control_panel-disarmed-color":"#ff9300","state-alarm-disarmed-color":"#ff9300","state-battery-low-color":"#ff2600","label-badge-background-color":"#1C1C1E","label-badge-text-color":"rgba(225, 225, 225, 0.8)","label-badge-red":"#FF453A","label-badge-blue":"#0A84FF","label-badge-green":"#30D158","label-badge-yellow":"#FFD60A","state-battery-alert-color":"#ff2600","ha-control-switch-color":"#ff9300","ha-control-switch-checked-color":"#ff9300","ha-control-switch-unchecked-color":"#3A3A3C","mush-toggle-color":"#ff9300","mush-rgb-state-switch":"255, 147, 0","bubble-toggle-color":"#ff9300","rgb-state-switch-color":"255, 147, 0","control-slider-color":"#ff9300","slider-color":"#ff9300","slider-secondary-color":"#1F3A5F","slider-track-color":"#48484A","mush-slider-color":"#ff9300","mush-slider-track-color":"#48484A","mush-toggle-background-color":"#48484A","control-button-background-color":"#2C2C2E","control-button-icon-color":"#ff9300","control-button-border-radius":"18px","mush-chip-background":"#2C2C2E","mush-chip-active-background":"#1F3A5F","mush-chip-color":"#F2F2F7","mush-chip-icon-color":"#ff9300","mush-chip-active-color":"#0A84FF","mush-chip-active-icon-color":"#0A84FF","mush-chip-border-color":"#38383A","mush-chip-border-radius":"16px","mush-chip-font-size":"12px","bubble-button-background-color":"#1C1C1E","bubble-button-active-background-color":"#0A84FF","bubble-button-icon-color":"#ff9300","bubble-button-active-icon-color":"#000000","bubble-button-text-color":"#feffff","bubble-button-active-text-color":"#000000","bubble-button-border-radius":"18px","bubble-sub-button-background-color":"#2C2C2E","bubble-sub-button-active-background-color":"#0A84FF","bubble-sub-button-icon-color":"#ff9300","bubble-sub-button-active-icon-color":"#000000","bubble-sub-button-text-color":"#C7C7CC","bubble-sub-button-active-text-color":"#000000","bubble-sub-button-border-radius":"14px","bubble-sub-button-box-shadow":"0 4px 11px rgba(0,0,0,.45)","input-background-color":"#2C2C2E","input-fill-color":"#2C2C2E","input-disabled-fill-color":"rgba(44, 44, 46, 0.50)","input-disabled-ink-color":"rgba(255, 255, 255, 0.37)","input-disabled-label-ink-color":"#636366","input-disabled-line-color":"rgba(255, 255, 255, 0.06)","input-dropdown-icon-color":"rgba(255, 255, 255, 0.54)","input-hover-line-color":"rgba(255, 255, 255, 0.87)","input-idle-line-color":"rgba(255, 255, 255, 0.42)","input-ink-color":"rgba(255, 255, 255, 0.87)","input-label-ink-color":"rgba(255, 255, 255, 0.6)","input-outlined-disabled-border-color":"rgba(255, 255, 255, 0.06)","mdc-select-idle-line-color":"#38383A","mdc-select-dropdown-icon-color":"#C7C7CC","mdc-select-hover-line-color":"#38383A","mdc-text-field-idle-line-color":"#38383A","mdc-text-field-hover-line-color":"#38383A","ha-color-form-background":"#2C2C2E","ha-color-form-background-hover":"#2C2C2E","ha-color-form-background-disabled":"rgba(44, 44, 46, 0.50)","mdc-theme-primary":"#0A84FF","mdc-theme-secondary":"#0A84FF","mdc-theme-on-primary":"#000000","md-sys-color-primary":"#ff9300","md-sys-color-on-primary":"#0A84FF","md-sys-color-primary-container":"#1F3A5F","md-sys-color-on-primary-container":"#000000","md-sys-color-on-surface":"#feffff","ha-on-surface-color":"#feffff","md-radio-selected-icon-color":"#0A84FF","mdc-radio-unchecked-color":"#C7C7CC","ha-color-fill-primary-normal-resting":"rgba(255, 147, 0, 0.15)","ha-color-fill-primary-normal-hover":"rgba(255, 147, 0, 0.25)","ha-color-fill-primary-quiet-resting":"rgba(255, 147, 0, 0.08)","ha-color-fill-primary-quiet-hover":"rgba(255, 147, 0, 0.15)","ha-color-fill-disabled-normal-resting":"rgba(99, 99, 102, 0.08)","ha-color-on-disabled-normal":"rgba(199, 199, 204, 0.50)","ha-color-fill-disabled-loud-resting":"rgba(99, 99, 102, 0.22)","ha-color-on-disabled-loud":"rgba(199, 199, 204, 0.55)","ha-color-on-disabled-quiet":"rgba(199, 199, 204, 0.50)","ha-color-fill-neutral-quiet-resting":"#1C1C1E","ha-color-fill-neutral-quiet-hover":"#2C2C2E","ha-color-fill-neutral-quiet-active":"#1C1C1E","ha-color-fill-neutral-normal-resting":"#2C2C2E","ha-color-fill-neutral-normal-hover":"#1C1C1E","ha-color-fill-neutral-normal-active":"#2C2C2E","ha-color-fill-danger-normal-resting":"rgba(255, 69, 58, 0.15)","ha-color-fill-danger-normal-hover":"rgba(255, 69, 58, 0.22)","ha-color-fill-danger-normal-active":"rgba(255, 69, 58, 0.28)","ha-color-on-danger-normal":"#F2F2F7","ha-color-fill-warning-normal-resting":"rgba(255, 214, 10, 0.15)","ha-color-fill-warning-normal-hover":"rgba(255, 214, 10, 0.22)","ha-color-fill-warning-normal-active":"rgba(255, 214, 10, 0.28)","ha-color-on-warning-normal":"#F2F2F7","ha-tooltip-background-color":"#2C2C2E","ha-tooltip-text-color":"#F2F2F7","border-color":"rgba(225, 225, 225, 0.12)","border-radius":"18px","box-shadow":"0 10px 30px rgba(0,0,0,.50)","divider-color":"rgba(225, 225, 225, 0.12)","outline-color":"rgba(225, 225, 225, 0.12)","outline-variant-color":"#38383A","ha-card-border-color":"rgba(225, 225, 225, 0.12)","ha-card-border-radius":"18px","ha-card-border-width":"1px","ha-card-box-shadow":"0 10px 30px rgba(0,0,0,.50)","ha-line-height-condensed":"1.25","ha-line-height-expanded":"1.35","ha-line-height-normal":"1.5","bubble-border":"1px solid #38383A","bubble-border-color":"rgba(225, 225, 225, 0.12)","bubble-border-radius":"18px","bubble-box-shadow":"0 10px 30px rgba(0,0,0,.50)","bubble-card-border-radius":"18px","bubble-climate-border-radius":"18px","bubble-climate-box-shadow":"0 10px 30px rgba(0,0,0,.50)","bubble-climate-icon-border-radius":"32px","bubble-cover-border-radius":"18px","bubble-cover-box-shadow":"0 10px 30px rgba(0,0,0,.50)","bubble-icon-border-radius":"14px","bubble-media-player-border-radius":"18px","bubble-media-player-box-shadow":"0 10px 30px rgba(0,0,0,.50)","bubble-calendar-height":"56px","bubble-calendar-mask-size":"16px","bubble-calendar-border-radius":"18px","bubble-event-background-color":"#2C2C2E","bubble-event-background-image":"none","bubble-pop-up-border-radius":"18px","bubble-pop-up-box-shadow":"0 10px 30px rgba(0,0,0,.50)","bubble-select-border-radius":"18px","bubble-separator-border-radius":"18px","bubble-horizontal-buttons-stack-border-radius":"18px","bubble-horizontal-buttons-stack-box-shadow":"0 10px 30px rgba(0,0,0,.50)","primary-font-family":"-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif","ha-font-family-body":"-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif","ha-font-family-heading":"-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif","ha-font-family-longform":"-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif","ha-font-family-code":"'SF Mono', 'Roboto Mono', Consolas, monospace","mdc-typography-font-family":"'SF Mono', 'Roboto Mono', Consolas, monospace","ha-font-size-scale":"1","ha-font-size-2xs":"8px","ha-font-size-xs":"8px","ha-font-size-s":"12px","ha-font-size-m":"14px","ha-font-size-l":"16px","ha-font-size-xl":"18px","ha-font-size-2xl":"20px","ha-font-size-3xl":"22px","ha-font-size-4xl":"24px","ha-font-weight-light":"300","ha-font-weight-normal":"400","ha-font-weight-body":"400","ha-font-weight-medium":"500","ha-font-weight-heading":"500","ha-font-weight-action":"500","ha-font-weight-bold":"700","rgb-primary-color":"255, 147, 0","rgb-accent-color":"255, 147, 0","rgb-primary-text-color":"254, 255, 255","rgb-secondary-text-color":"199, 199, 204","rgb-card-background-color":"28, 28, 30","rgb-primary-background-color":"0, 0, 0","rgb-blue-color":"10, 132, 255","rgb-orange-color":"255, 159, 10","rgb-state-light-color":"10, 132, 255","rgb-state-cover-color":"10, 132, 255","rgb-state-fan-color":"10, 132, 255","rgb-state-media_player-color":"10, 132, 255","mush-rgb-primary-text-color":"242, 242, 247","mush-rgb-secondary-text-color":"199, 199, 204","mush-rgb-state-light":"10, 132, 255","mush-rgb-state-cover":"10, 132, 255","mush-rgb-state-entity":"10, 132, 255","mush-rgb-state-fan":"10, 132, 255","mush-rgb-state-media-player":"10, 132, 255","mush-rgb-state-vacuum":"10, 132, 255","mush-rgb-success":"48, 209, 88","mush-rgb-warning":"255, 214, 10","mush-rgb-danger":"255, 69, 58","mush-rgb-disabled":"99, 99, 102","mush-rgb-info":"10, 132, 255","graph-color-1":"#0A84FF","graph-color-2":"#64D2FF","graph-color-3":"#30D158","graph-color-4":"#BF5AF2","graph-color-5":"#FF453A","graph-color-6":"#32ADE6","graph-color-7":"#64D2FF","graph-color-8":"#FF375F","graph-color-9":"#FF9F0A","graph-color-10":"#5E5CE6","graph-color-11":"#A3D977","graph-color-12":"#FFD60A","graph-color-13":"#BF5AF2","graph-color-14":"#A2845E","energy-grid-consumption-color":"#0A84FF","energy-grid-return-color":"#BF5AF2","energy-solar-color":"#FF9F0A","energy-non-fossil-color":"#30D158","energy-battery-out-color":"#64D2FF","energy-battery-in-color":"#BF5AF2","energy-gas-color":"#FF453A","energy-water-color":"#32ADE6","bubble-card-background-color":"#1C1C1E","bubble-secondary-background-color":"#2C2C2E","bubble-icon-background-color":"#2C2C2E","bubble-icon-color":"#ff9300","bubble-name-color":"#feffff","bubble-state-color":"#C7C7CC","bubble-accent-color":"#ff9300","bubble-active-color":"#ff9300","bubble-line-background-color":"rgba(225, 225, 225, 0.12)","bubble-pop-up-background-color":"#000000","bubble-pop-up-backdrop-filter":"blur(18px)","dialog-box-shadow":"0 10px 30px rgba(0,0,0,.50)","more-info-header-background":"#2C2C2E","more-info-header-color":"#F2F2F7","popup-border-radius":"12px","ha-dialog-scrim-backdrop-filter":"blur(10px)","ha-dialog-surface-background":"rgba(28, 28, 30, 0.92)","mdc-dialog-scrim-color":"rgba(0, 0, 0, 0.60)","bubble-separator-background-color":"#1C1C1E","bubble-separator-icon-background-color":"#2C2C2E","bubble-separator-icon-color":"#0A84FF","bubble-separator-line-color":"rgba(225, 225, 225, 0.12)","bubble-separator-name-color":"#feffff","bubble-separator-text-color":"#feffff","bubble-horizontal-buttons-stack-background-color":"#1C1C1E","bubble-horizontal-buttons-stack-button-background-color":"#2C2C2E","bubble-sub-buttons-main-background-color":"#1C1C1E","bubble-climate-background-color":"#1C1C1E","bubble-climate-main-background-color":"#1C1C1E","bubble-cover-background-color":"#1C1C1E","bubble-cover-main-background-color":"#1C1C1E","bubble-media-player-background-color":"#1C1C1E","bubble-media-player-main-background-color":"#1C1C1E","mush-card-background":"#1C1C1E","mush-control-background-color":"#2C2C2E","mush-icon-background-color":"#2C2C2E","mush-card-primary-color":"#feffff","mush-card-secondary-color":"#C7C7CC","mush-title-color":"#feffff","mush-subtitle-color":"#C7C7CC","mush-icon-color":"#C7C7CC","mush-icon-active-color":"#ff9300","card-mod-theme":"basis","card-mod-card":"","bubble-button-card-background-color":"#1C1C1E","bubble-button-main-background-color":"#1C1C1E","bubble-climate-button-background-color":"#2C2C2E","bubble-cover-button-background-color":"#2C2C2E","bubble-media-player-button-background-color":"#2C2C2E","mush-slider-background-color":"#2C2C2E","bubble-button-active-color":"#0A84FF","bubble-climate-button-icon-color":"#C7C7CC","bubble-cover-button-icon-color":"#C7C7CC","bubble-horizontal-buttons-stack-button-icon-color":"#C7C7CC","bubble-horizontal-buttons-stack-button-text-color":"#F2F2F7","bubble-media-player-button-icon-color":"#C7C7CC","deep-purple-color":"#6E41AB","indigo-color":"#3F51B5","light-blue-color":"#03A9F4","teal-color":"#009688","light-green-color":"#8BC34A","lime-color":"#CDDC39","amber-color":"#FFC107","deep-orange-color":"#FF6F22","brown-color":"#795548","light-grey-color":"#BDBDBD","dark-grey-color":"#606060","blue-grey-color":"#607D8B","disabled-color":"#464646","outline-hover-color":"rgba(225, 225, 225, 0.24)","state-alarm_control_panel-armed_custom_bypass-color":"#30D158","state-alarm_control_panel-armed_night-color":"#30D158","state-alarm_control_panel-armed_vacation-color":"#30D158","state-alarm_control_panel-arming-color":"#0A84FF","state-alarm_control_panel-disarming-color":"#0A84FF","state-alarm_control_panel-pending-color":"#0A84FF","state-alert-off-color":"#0A84FF","state-alert-on-color":"#FF453A","state-binary_sensor-active-color":"#FFC107","state-binary_sensor-battery-on-color":"#FF453A","state-binary_sensor-carbon_monoxide-on-color":"#FF453A","state-binary_sensor-gas-on-color":"#FF453A","state-binary_sensor-heat-on-color":"#FF453A","state-binary_sensor-lock-on-color":"#FF453A","state-binary_sensor-moisture-on-color":"#FF453A","state-binary_sensor-problem-on-color":"#FF453A","state-binary_sensor-safety-on-color":"#FF453A","state-binary_sensor-smoke-on-color":"#FF453A","state-binary_sensor-sound-on-color":"#FF453A","state-binary_sensor-tamper-on-color":"#FF453A","state-climate-dry-color":"#0A84FF","state-climate-fan_only-color":"#32ADE6","state-climate-heat_cool-color":"#FFC107","state-device_tracker-active-color":"#0A84FF","state-device_tracker-home-color":"#30D158","state-humidifier-on-color":"#0A84FF","state-lawn_mower-active-color":"#009688","state-lawn_mower-error-color":"#FF453A","state-lock-jammed-color":"#FF453A","state-lock-open-color":"#FF453A","state-lock-opening-color":"#0A84FF","state-media_player-active-color":"#0A84FF","state-person-active-color":"#0A84FF","state-person-home-color":"#30D158","state-plant-active-color":"#FF453A","state-siren-active-color":"#FF453A","state-sun-above_horizon-color":"#FFC107","state-sun-below_horizon-color":"#3F51B5","state-update-active-color":"#0A84FF","state-valve-active-color":"#0A84FF","state-vacuum-error-color":"#FF453A","state-water_heater-eco-color":"#30D158","state-water_heater-electric-color":"#0A84FF","state-water_heater-gas-color":"#0A84FF","state-water_heater-heat_pump-color":"#0A84FF","state-water_heater-high_demand-color":"#FF6F22","state-water_heater-performance-color":"#FF6F22","state-weather-clear_night-color":"#6E41AB","state-weather-cloudy-color":"#BDBDBD","state-weather-exceptional-color":"#FF453A","state-weather-fog-color":"#C7C7CC","state-weather-hail-color":"#32ADE6","state-weather-lightning_rainy-color":"#CDDC39","state-weather-lightning-color":"#FFD60A","state-weather-partlycloudy-color":"#607D8B","state-weather-pouring-color":"#3F51B5","state-weather-rainy-color":"#0A84FF","state-weather-snowy_rainy-color":"#03A9F4","state-weather-snowy-color":"#C0E0FF","state-weather-sunny-color":"#FFC107","state-weather-windy_variant-color":"#30D158","state-weather-windy-color":"#30D158","state-sensor-battery-high-color":"#30D158","state-sensor-battery-medium-color":"#0A84FF","state-sensor-battery-low-color":"#FF453A","color-1":"#0A84FF","color-2":"#64D2FF","color-3":"#30D158","color-4":"#BF5AF2","color-5":"#FF453A","color-6":"#32ADE6","color-7":"#64D2FF","color-8":"#FF375F","color-9":"#FF9F0A","color-10":"#5E5CE6","color-11":"#A3D977","color-12":"#FFD60A","color-13":"#BF5AF2","color-14":"#A2845E","ha-switch-background-color":"#3A3A3C","ha-switch-background-color-hover":"#3A3A3C","ha-switch-border-color":"rgba(0,0,0,0)","ha-switch-thumb-background-color":"#636366","ha-switch-thumb-background-color-hover":"#636366","ha-switch-thumb-border-color":"rgba(0,0,0,0)","ha-switch-thumb-border-color-hover":"rgba(0,0,0,0)","ha-switch-checked-background-color":"#1F3A5F","ha-switch-checked-background-color-hover":"#1F3A5F","ha-switch-checked-border-color":"rgba(0,0,0,0)","ha-switch-checked-thumb-background-color":"#0A84FF","ha-switch-checked-thumb-background-color-hover":"#0A84FF","ha-switch-checked-thumb-border-color":"rgba(0,0,0,0)","ha-switch-checked-thumb-border-color-hover":"rgba(0,0,0,0)","printer-cyan-color":"#33C3FF","printer-magenta-color":"#FF3EA8","printer-yellow-color":"#FFE14D","bubble-main-buttons-background-color":"#1C1C1E","card-backdrop-blur":"none","glass-effect-style":"off","background-style":"off","card-mod-root":"","app-header-backdrop-filter":"blur(8px) saturate(1.1)","app-header-edit-background-color":"rgba(30, 33, 54, 0.8)","app-header-edit-text-color":"rgba(234, 235, 238, 0.98)","app-theme-color":"rgb(0, 0, 0)","bubble-select-main-background-color":"#1C1C1E","bubble-select-background-color":"#000000","bubble-select-list-background-color":"#1C1C1E","bubble-select-list-item-accent-color":"#0A84FF","bubble-select-list-width":"220px","bubble-select-arrow-background-color":"#2C2C2E","bubble-select-button-border-radius":"18px","bubble-select-icon-background-color":"#2C2C2E","bubble-select-icon-border-radius":"14px","bubble-select-box-shadow":"0 10px 30px rgba(0,0,0,.50)","bubble-pop-up-main-background-color":"#1C1C1E","bubble-backdrop-background-color":"rgba(0, 0, 0, 0.55)","bubble-button-icon-border-radius":"14px","bubble-button-icon-background-color":"#2C2C2E","bubble-light-white-color":"#FFFFFF","bubble-light-color":"#FFC107","bubble-button-box-shadow":"0 10px 30px rgba(0,0,0,.50)","bubble-media-player-buttons-border-radius":"14px","bubble-media-player-slider-background-color":"#2C2C2E","bubble-media-player-icon-border-radius":"14px","bubble-media-player-icon-background-color":"#2C2C2E","bubble-cover-icon-border-radius":"14px","bubble-cover-icon-background-color":"#2C2C2E","bubble-state-climate-fan-only-color":"#64D2FF","bubble-state-climate-dry-color":"#FF9F0A","bubble-state-climate-cool-color":"#0A84FF","bubble-state-climate-heat-color":"#FF453A","bubble-state-climate-auto-color":"#30D158","bubble-state-climate-heat-cool-color":"#BF5AF2","bubble-climate-accent-color":"#0A84FF","bubble-calendar-main-background-color":"#1C1C1E","bubble-sub-slider-border-radius":"18px","bubble-sub-slider-background-color":"#2C2C2E","bubble-sub-slider-height":"48px","bubble-sub-button-dark-text-color":"#1C1C1E","bubble-footer-width":"320px","bubble-footer-bottom":"16px","bubble-footer-box-shadow":"0 10px 30px rgba(0,0,0,.50)","bubble-select-list-border-radius":"18px","eigene-theme-eintraege":""}};
 
@@ -816,7 +816,7 @@ const HATG_CARDMOD_TEMPLATES = [
     id: "icon-farbe-hintergrund",
     label: "Icon: Farbe & Hintergrund-Chip",
     desc: "Icons bekommen einen runden, halbtransparenten Chip in der Akzentfarbe. Deckt ab: native HA- und Mushroom-Karten sowie Bubble Card auf allen Ebenen - Hauptsymbol, Button, Sub-Button, Separator, Climate, Cover, Media Player und Horizontal Buttons Stack.",
-    css: "ha-card state-badge,\nha-card .icon {\n  color: var(--accent-color) !important;\n  background: color-mix(in srgb, var(--accent-color) 16%, transparent) !important;\n  border-radius: 50% !important;\n}\nha-card {\n  --bubble-icon-color: var(--accent-color);\n  --bubble-button-icon-color: var(--accent-color);\n  --bubble-sub-button-icon-color: var(--accent-color);\n  --bubble-separator-icon-color: var(--accent-color);\n  --bubble-climate-button-icon-color: var(--accent-color);\n  --bubble-cover-button-icon-color: var(--accent-color);\n  --bubble-media-player-button-icon-color: var(--accent-color);\n  --bubble-horizontal-buttons-stack-button-icon-color: var(--accent-color);\n  --bubble-icon-background-color: color-mix(in srgb, var(--accent-color) 16%, transparent);\n  --bubble-button-icon-background-color: color-mix(in srgb, var(--accent-color) 16%, transparent);\n  --bubble-separator-icon-background-color: color-mix(in srgb, var(--accent-color) 16%, transparent);\n  --bubble-cover-icon-background-color: color-mix(in srgb, var(--accent-color) 16%, transparent);\n  --bubble-media-player-icon-background-color: color-mix(in srgb, var(--accent-color) 16%, transparent);\n  --bubble-select-icon-background-color: color-mix(in srgb, var(--accent-color) 16%, transparent);\n  --bubble-accent-color: var(--accent-color);\n  --bubble-climate-accent-color: var(--accent-color);\n}\n.bubble-icon {\n  color: var(--accent-color) !important;\n}\n:host(hui-heading-card) ha-card,\n:host(mushroom-chips-card) ha-card,\n:host(mushroom-chip) ha-card,\nha-card:has(.chip-container),\n:host(.type-heading) ha-card,\nha-card.type-heading,\nha-card:has(.bubble-sub-button),\nha-card:has(.bubble-separator),\nha-card:has(.bubble-container) {\n  border: none !important;\n  box-shadow: none !important;\n  background: none !important;\n  background-image: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n}",
+    css: "ha-card state-badge,\nha-card .icon {\n  color: var(--accent-color) !important;\n  background: var(--bubble-icon-background-color, color-mix(in srgb, var(--accent-color) 16%, transparent)) !important;\n  border-radius: 50% !important;\n}\nha-card {\n  --bubble-icon-color: var(--accent-color);\n  --bubble-button-icon-color: var(--accent-color);\n  --bubble-sub-button-icon-color: var(--accent-color);\n  --bubble-separator-icon-color: var(--accent-color);\n  --bubble-climate-button-icon-color: var(--accent-color);\n  --bubble-cover-button-icon-color: var(--accent-color);\n  --bubble-media-player-button-icon-color: var(--accent-color);\n  --bubble-horizontal-buttons-stack-button-icon-color: var(--accent-color);\n  --bubble-accent-color: var(--accent-color);\n  --bubble-climate-accent-color: var(--accent-color);\n}\n.bubble-icon {\n  color: var(--accent-color) !important;\n}\n:host(hui-heading-card) ha-card,\n:host(mushroom-chips-card) ha-card,\n:host(mushroom-chip) ha-card,\nha-card:has(.chip-container),\n:host(.type-heading) ha-card,\nha-card.type-heading,\nha-card:has(.bubble-sub-button),\nha-card:has(.bubble-separator),\nha-card:has(.bubble-container) {\n  border: none !important;\n  box-shadow: none !important;\n  background: none !important;\n  background-image: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n}",
   },
   {
     id: "kartenfarben-verlauf",
@@ -1237,20 +1237,38 @@ const HATG_MASTER_GROUPS = {
   an: {
     label: "Status An",
     ha: [
+      "state-icon-active-color",
       "state-active-color",
       "state-on-color",
-      "state-media_player-active-color",
+      "state-light-color",
+      "state-light-active-color",
+      "state-light-on-color",
+      "state-switch-color",
+      "state-switch-active-color",
+      "state-switch-on-color",
+      "state-cover-color",
+      "state-cover-active-color",
+      "state-fan-color",
+      "state-fan-active-color",
+      "state-media_player-color",
+      "state-vacuum-color",
       "state-vacuum-active-color",
       "state-alert-on-color",
+      "state-binary_sensor-active-color",
       "state-device_tracker-active-color",
       "state-humidifier-on-color",
       "state-lawn_mower-active-color",
+      "state-media_player-active-color",
       "state-person-active-color",
       "state-plant-active-color",
       "state-siren-active-color",
       "state-update-active-color",
       "state-valve-active-color",
-      "state-icon-active-color",
+      "rgb-state-switch-color",
+      "rgb-state-light-color",
+      "rgb-state-cover-color",
+      "rgb-state-fan-color",
+      "rgb-state-media_player-color",
     ],
     bubble: [
       "bubble-accent-color",
@@ -1278,7 +1296,12 @@ const HATG_MASTER_GROUPS = {
   },
   aus: {
     label: "Status Aus",
-    ha: ["state-inactive-color", "state-off-color", "state-alert-off-color", "state-icon-color"],
+    ha: [
+      "state-inactive-color",
+      "state-off-color",
+      "state-alert-off-color",
+      "state-icon-color",
+    ],
     bubble: [
       "bubble-icon-color",
       "bubble-button-icon-color",
@@ -1312,6 +1335,83 @@ const HATG_MASTER_GROUPS = {
   },
 };
 const HATG_MASTER_ORDER = ["an", "aus", "unavailable", "iconbg"];
+
+const HATG_BASIS_GROUPS = {
+  rahmenfarbe: {
+    label: "Rahmenfarbe",
+    art: "farbe",
+    ha: ["border-color", "ha-card-border-color"],
+    bubble: ["bubble-border-color"],
+    mush: ["mush-chip-border-color"],
+    zusammengesetzt: ["bubble-border"],
+  },
+  radius: {
+    label: "Radius",
+    art: "laenge",
+    einheit: "px",
+    min: 0,
+    max: 48,
+    innenAbstand: 4,
+    ha: ["border-radius", "ha-card-border-radius", "control-button-border-radius", "popup-border-radius"],
+    bubble: [
+      "bubble-border-radius",
+      "bubble-card-border-radius",
+      "bubble-button-border-radius",
+      "bubble-climate-border-radius",
+      "bubble-cover-border-radius",
+      "bubble-media-player-border-radius",
+      "bubble-calendar-border-radius",
+      "bubble-pop-up-border-radius",
+      "bubble-select-border-radius",
+      "bubble-select-button-border-radius",
+      "bubble-select-list-border-radius",
+      "bubble-separator-border-radius",
+      "bubble-horizontal-buttons-stack-border-radius",
+      "bubble-sub-slider-border-radius",
+    ],
+    mush: ["mush-chip-border-radius"],
+    innen: [
+      "bubble-sub-button-border-radius",
+      "bubble-icon-border-radius",
+      "bubble-select-icon-border-radius",
+      "bubble-button-icon-border-radius",
+      "bubble-media-player-buttons-border-radius",
+      "bubble-media-player-icon-border-radius",
+      "bubble-cover-icon-border-radius",
+    ],
+  },
+  schatten: {
+    label: "Schatten",
+    art: "text",
+    ha: ["box-shadow", "ha-card-box-shadow", "dialog-box-shadow"],
+    bubble: [
+      "bubble-box-shadow",
+      "bubble-button-box-shadow",
+      "bubble-climate-box-shadow",
+      "bubble-cover-box-shadow",
+      "bubble-media-player-box-shadow",
+      "bubble-pop-up-box-shadow",
+      "bubble-select-box-shadow",
+      "bubble-footer-box-shadow",
+      "bubble-horizontal-buttons-stack-box-shadow",
+    ],
+    mush: [],
+    innen: ["bubble-sub-button-box-shadow"],
+  },
+};
+const HATG_BASIS_ORDER = ["rahmenfarbe", "radius", "schatten"];
+
+function hatgBasisAllKeys(group) {
+  const m = HATG_BASIS_GROUPS[group];
+  if (!m) return [];
+  return [...m.ha, ...m.bubble, ...m.mush, ...(m.innen || []), ...(m.zusammengesetzt || [])];
+}
+
+function hatgParseLaenge(value) {
+  const m = /(-?[\d.]+)\s*([a-z%]*)/i.exec(String(value ?? ""));
+  if (!m) return { zahl: 0, einheit: "px" };
+  return { zahl: parseFloat(m[1]) || 0, einheit: m[2] || "px" };
+}
 
 function hatgMasterAllKeys(group) {
   const meta = HATG_MASTER_GROUPS[group];
@@ -1820,6 +1920,8 @@ class HATGPanel extends HTMLElement {
         dark: {},
       },
       statusMasterFormat: {},
+      customCardmods: [],
+      customCardmodDialog: null,
     };
     this.tryRestoreAutoSave();
     this.syncCardModThemeName();
@@ -1832,8 +1934,13 @@ class HATGPanel extends HTMLElement {
   }
 
   set hass(hass) {
+    const warOhne = !this._hass;
     this._hass = hass;
     if (!this._rendered) this.render();
+    if (warOhne && hass && !this._customCardmodsGeladen) {
+      this._customCardmodsGeladen = true;
+      this.loadCustomCardmods();
+    }
   }
 
   connectedCallback() {
@@ -2312,6 +2419,175 @@ class HATGPanel extends HTMLElement {
       </span>`;
   }
 
+  basisSyncOn(group) {
+    if (!this._state.basisSync) this._state.basisSync = {};
+    return this._state.basisSync[group] !== false;
+  }
+
+  getBasisRawValue(group, mode) {
+    const meta = HATG_BASIS_GROUPS[group];
+    if (!meta) return "";
+    const key = meta.ha[0] || meta.bubble[0] || meta.mush[0];
+    const values = mode ? this._state.values[mode] : this.currentValues();
+    return values[key];
+  }
+
+  basisFolgeFelder(group) {
+    const meta = HATG_BASIS_GROUPS[group];
+    if (!meta) return [];
+    return [...meta.bubble, ...meta.mush, ...(meta.innen || []), ...(meta.zusammengesetzt || [])];
+  }
+
+  applyBasisValue(group, value) {
+    const meta = HATG_BASIS_GROUPS[group];
+    if (!meta) return;
+    const sync = this.basisSyncOn(group);
+    const values = this.currentValues();
+    const source = this.currentSource();
+    const bewahren = sync ? null : this.basisFolgeFelder(group).map((k) => [k, values[k], source[k]]);
+    const ziele = sync ? [...meta.ha, ...meta.bubble, ...meta.mush] : [...meta.ha];
+    ziele.forEach((key) => this.commitField(key, value));
+
+    if (meta.innen && meta.innen.length && sync) {
+      let innenWert = value;
+      if (meta.art === "laenge") {
+        const { zahl, einheit } = hatgParseLaenge(value);
+        innenWert = `${Math.max(0, zahl - (meta.innenAbstand || 0))}${einheit}`;
+      }
+      meta.innen.forEach((key) => this.commitField(key, innenWert));
+    }
+
+    if (meta.zusammengesetzt && sync) {
+      const breite = this.currentValues()["ha-card-border-width"] || "1px";
+      meta.zusammengesetzt.forEach((key) => this.commitField(key, `${breite} solid ${value}`));
+    }
+    if (bewahren) {
+      bewahren.forEach(([key, alt, src]) => {
+        values[key] = alt;
+        source[key] = src;
+      });
+    }
+    this.applyPreviewTheme();
+  }
+
+  applyBasisInnenValue(group, value) {
+    const meta = HATG_BASIS_GROUPS[group];
+    if (!meta || !meta.innen || !meta.innen.length) return;
+    meta.innen.forEach((key) => this.commitField(key, value));
+    this.applyPreviewTheme();
+  }
+
+  toggleBasisSync(group) {
+    if (!this._state.basisSync) this._state.basisSync = {};
+    const an = this.basisSyncOn(group);
+    this._state.basisSync[group] = !an;
+    if (!an) this.applyBasisValue(group, this.getBasisRawValue(group));
+    this.render();
+    const meta = HATG_BASIS_GROUPS[group];
+    const anzahl = meta.bubble.length + meta.mush.length + (meta.innen || []).length + (meta.zusammengesetzt || []).length;
+    this.showToast(
+      an ? `Bubble und Mushroom folgen nicht mehr (${anzahl} Felder abgekoppelt).`
+         : `Bubble und Mushroom ziehen jetzt mit (${anzahl} Felder).`
+    );
+  }
+
+  copyBasisToOtherMode(group) {
+    const currentMode = this._state.editorMode;
+    const otherMode = currentMode === "light" ? "dark" : "light";
+    const value = this.getBasisRawValue(group, currentMode);
+    this._state.editorMode = otherMode;
+    this.applyBasisValue(group, value);
+    this._state.editorMode = currentMode;
+    this.render();
+    this.showToast(`${HATG_BASIS_GROUPS[group].label} nach ${otherMode === "dark" ? "Dark" : "Light"} übernommen: ${value}.`);
+  }
+
+  renderBasisFrameworkWidget(group) {
+    const meta = HATG_BASIS_GROUPS[group];
+    const anzahl = meta.bubble.length + meta.mush.length + (meta.innen || []).length + (meta.zusammengesetzt || []).length;
+    const an = this.basisSyncOn(group);
+    const titel = an
+      ? `Bubble und Mushroom ziehen mit (${anzahl} Felder) - klicken zum Abkoppeln`
+      : `Bubble und Mushroom folgen nicht - klicken zum Verbinden`;
+    return `
+      <span class="status-fw-widget ${an ? "on" : ""}" title="${hatgEscape(titel)}">
+        <ha-icon icon="mdi:home-assistant"></ha-icon>
+        ${meta.bubble.length ? '<ha-icon icon="mdi:chart-bubble"></ha-icon>' : ""}
+        ${meta.mush.length ? '<ha-icon icon="mdi:mushroom-outline"></ha-icon>' : ""}
+        <button type="button" class="status-fw-toggle ${an ? "on" : ""}" data-basis-sync="${group}" aria-label="${hatgEscape(titel)}">
+          <ha-icon icon="${an ? "mdi:link-variant" : "mdi:link-variant-off"}"></ha-icon>
+        </button>
+      </span>`;
+  }
+
+  renderBasisRow(group) {
+    const meta = HATG_BASIS_GROUPS[group];
+    if (!meta) return "";
+    const label = meta.label;
+    const raw = this.getBasisRawValue(group);
+    const anzahl = hatgBasisAllKeys(group).length;
+    const otherLabel = this._state.editorMode === "light" ? "Dark" : "Light";
+    const kopf = `<span class="field-key">${hatgEscape(label)}<small class="format-tag">${anzahl} Felder</small></span>`;
+    const rechts = `
+          ${this.renderBasisFrameworkWidget(group)}
+          <button class="apply-button copy-mode-button" type="button" data-basis-copy="${group}" aria-label="Nach ${otherLabel} übernehmen" title="${hatgEscape(label)} nach ${otherLabel} übernehmen">
+            <ha-icon icon="mdi:swap-horizontal"></ha-icon>
+          </button>`;
+
+    if (meta.art === "farbe") {
+      const parsed = hatgIsHex(raw) ? { hex: hatgNormalizeHex6(raw), alpha: 1 } : hatgParseRgba(raw);
+      return `
+          <div class="field-row" data-basis-row="${group}">
+            ${kopf}
+            <span class="field-input color-input-wrap rgba-input-wrap">
+              <input class="native-color" type="color" value="${parsed.hex}" data-basis-picker="${group}" aria-label="${hatgEscape(label)}" />
+              <input class="hex-input rgba-raw-input" type="text" spellcheck="false" data-basis-text="${group}" value="${hatgEscape(String(raw ?? ""))}" aria-label="${hatgEscape(label)} Wert" />
+            </span>
+            ${rechts}
+          </div>`;
+    }
+
+    if (meta.art === "laenge") {
+      const innenRaw = meta.innen && meta.innen.length ? this.currentValues()[meta.innen[0]] : "";
+      return `
+          <div class="field-row" data-basis-row="${group}">
+            ${kopf}
+            <span class="field-input basis-laenge-wrap">
+              <span class="basis-feld">
+                <small>außen</small>
+                <input class="hex-input" type="text" spellcheck="false" data-basis-text="${group}" value="${hatgEscape(String(raw ?? ""))}" aria-label="${hatgEscape(label)} außen" />
+              </span>
+              <span class="basis-feld">
+                <small>innen</small>
+                <input class="hex-input" type="text" spellcheck="false" data-basis-innen="${group}" value="${hatgEscape(String(innenRaw ?? ""))}" aria-label="${hatgEscape(label)} innen" />
+              </span>
+            </span>
+            ${rechts}
+          </div>`;
+    }
+
+    return `
+          <div class="field-row" data-basis-row="${group}">
+            ${kopf}
+            <span class="field-input">
+              <input class="text-input" type="text" spellcheck="false" data-basis-text="${group}" value="${hatgEscape(String(raw ?? ""))}" aria-label="${hatgEscape(label)} Wert" />
+            </span>
+            ${rechts}
+          </div>`;
+  }
+
+  renderBasisSection() {
+    const dark = this._state.editorMode === "dark";
+    return `
+      <div class="editing-surface ${dark ? "editing-surface-dark" : ""}">
+        <div class="field-group-title">Basis (Rahmen, Radius, Schatten)</div>
+        <p class="icon-master-hint">Diese drei Werte geben die Grundform aller Karten vor und reichen sie an Bubble Card samt Kartentypen und an Mushroom weiter. Beim Radius bekommen innen liegende Elemente wie Icons und Sub-Buttons automatisch ${HATG_BASIS_GROUPS.radius.innenAbstand}px weniger, damit die Rundungen konzentrisch bleiben.</p>
+        <div class="field-list">
+          ${HATG_BASIS_ORDER.map((g) => this.renderBasisRow(g)).join("")}
+        </div>
+      </div>`;
+  }
+
   renderStatusMasterSection() {
     const dark = this._state.editorMode === "dark";
     return `
@@ -2534,6 +2810,7 @@ class HATGPanel extends HTMLElement {
 
         ${this.renderFieldList(curated)}
 
+        ${this.renderBasisSection()}
         ${this.renderStatusMasterSection()}
 
         ${this.renderBackgroundPicker()}
@@ -2858,8 +3135,138 @@ class HATGPanel extends HTMLElement {
       </div>`;
   }
 
-  toggleCardmodTemplate(id) {
-    const tpl = HATG_CARDMOD_TEMPLATES.find((t) => t.id === id);
+  eigeneCardmods() {
+    return this._state.customCardmods || [];
+  }
+
+  alleCardmodVorlagen() {
+    return [...HATG_CARDMOD_TEMPLATES, ...this.eigeneCardmods()];
+  }
+
+  istEigeneVorlage(id) {
+    return this.eigeneCardmods().some((t) => t.id === id);
+  }
+
+  async loadCustomCardmods() {
+    if (!this._hass || typeof this._hass.callWS !== "function") return;
+    try {
+      const result = await this._hass.callWS({ type: "hatg/list_custom_cardmods" });
+      this._state.customCardmods = (result && result.templates) || [];
+      this.render();
+    } catch (error) {
+      console.error("HATG loadCustomCardmods failed", error);
+    }
+  }
+
+  async persistCustomCardmods() {
+    if (!this._hass || typeof this._hass.callWS !== "function") {
+      this.showToast("Keine Verbindung zu Home Assistant - Vorlage nicht gespeichert.");
+      return false;
+    }
+    try {
+      await this._hass.callWS({
+        type: "hatg/save_custom_cardmods",
+        templates: this.eigeneCardmods(),
+      });
+      return true;
+    } catch (error) {
+      console.error("HATG persistCustomCardmods failed", error);
+      this.showToast("Vorlage konnte nicht gespeichert werden.");
+      return false;
+    }
+  }
+
+  cardmodIdAusName(name, ignoriereId) {
+    const basis =
+      String(name || "")
+        .toLowerCase()
+        .replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss")
+        .normalize("NFKD")
+        .replace(/[̀-ͯ]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "") || "vorlage";
+    const belegt = new Set(
+      this.alleCardmodVorlagen().map((t) => t.id).filter((id) => id !== ignoriereId)
+    );
+    let kandidat = `eigene-${basis}`;
+    let n = 2;
+    while (belegt.has(kandidat)) kandidat = `eigene-${basis}-${n++}`;
+    return kandidat;
+  }
+
+  openCustomCardmodDialog(id) {
+    const vorhanden = id ? this.eigeneCardmods().find((t) => t.id === id) : null;
+    this._state.customCardmodDialog = {
+      id: vorhanden ? vorhanden.id : null,
+      label: vorhanden ? vorhanden.label : "",
+      desc: vorhanden ? vorhanden.desc : "",
+      css: vorhanden ? vorhanden.css : "",
+      error: null,
+    };
+    this.render();
+  }
+
+  async saveCustomCardmodDialog() {
+    const dialog = this._state.customCardmodDialog;
+    if (!dialog) return;
+    const label = String(dialog.label || "").trim();
+    const css = String(dialog.css || "").trim();
+    if (!label) {
+      dialog.error = "Bitte einen Namen vergeben.";
+      this.render();
+      return;
+    }
+    if (!css) {
+      dialog.error = "Ohne CSS hat die Vorlage keine Wirkung.";
+      this.render();
+      return;
+    }
+    const auf = (css.match(/{/g) || []).length;
+    const zu = (css.match(/}/g) || []).length;
+    if (auf !== zu) {
+      dialog.error = `Die geschweiften Klammern gehen nicht auf: ${auf}-mal "{" gegen ${zu}-mal "}".`;
+      this.render();
+      return;
+    }
+
+    const liste = [...this.eigeneCardmods()];
+    const eintrag = {
+      id: dialog.id || this.cardmodIdAusName(label),
+      label,
+      desc: String(dialog.desc || "").trim(),
+      css,
+    };
+    const index = liste.findIndex((t) => t.id === eintrag.id);
+    if (index >= 0) liste[index] = eintrag;
+    else liste.push(eintrag);
+    this._state.customCardmods = liste;
+
+    const gespeichert = await this.persistCustomCardmods();
+    if (!gespeichert) return;
+
+    if (index >= 0 && hatgCardmodBlockActive(String(this.currentValues()["card-mod-card"] || ""), eintrag.id)) {
+      this.refreshCardmodTemplates({ still: true });
+    }
+    this._state.customCardmodDialog = null;
+    this.render();
+    this.showToast(index >= 0 ? `"${eintrag.label}" gespeichert.` : `"${eintrag.label}" angelegt.`);
+  }
+
+  async deleteCustomCardmod(id) {
+    const eintrag = this.eigeneCardmods().find((t) => t.id === id);
+    if (!eintrag) return;
+    const aktiv = hatgCardmodBlockActive(String(this.currentValues()["card-mod-card"] || ""), id);
+    if (aktiv) this.toggleCardmodTemplate(id, { still: true });
+    this._state.customCardmods = this.eigeneCardmods().filter((t) => t.id !== id);
+    const gespeichert = await this.persistCustomCardmods();
+    if (!gespeichert) return;
+    this._state.customCardmodDialog = null;
+    this.render();
+    this.showToast(`"${eintrag.label}" gelöscht${aktiv ? " und aus dem Theme entfernt" : ""}.`);
+  }
+
+  toggleCardmodTemplate(id, options = {}) {
+    const tpl = this.alleCardmodVorlagen().find((t) => t.id === id);
     if (!tpl) return;
     const targetKey = "card-mod-card";
     const currentMode = this._state.editorMode;
@@ -2873,6 +3280,7 @@ class HATGPanel extends HTMLElement {
       this.commitField(targetKey, updated);
     });
     this._state.editorMode = currentMode;
+    if (options.still) return;
     this.render();
     this.showToast(
       wasActive
@@ -2883,7 +3291,7 @@ class HATGPanel extends HTMLElement {
 
   staleCardmodTemplates() {
     const text = String(this.currentValues()["card-mod-card"] || "");
-    return HATG_CARDMOD_TEMPLATES.filter((tpl) => {
+    return this.alleCardmodVorlagen().filter((tpl) => {
       const vorhanden = hatgExtractCardmodBlock(text, tpl.id);
       return vorhanden !== null && vorhanden !== String(tpl.css).trim();
     }).map((tpl) => tpl.id);
@@ -2896,7 +3304,7 @@ class HATGPanel extends HTMLElement {
     ["light", "dark"].forEach((mode) => {
       this._state.editorMode = mode;
       let text = String(this.currentValues()[targetKey] || "");
-      HATG_CARDMOD_TEMPLATES.forEach((tpl) => {
+      this.alleCardmodVorlagen().forEach((tpl) => {
         const vorhanden = hatgExtractCardmodBlock(text, tpl.id);
         if (vorhanden === null || vorhanden === String(tpl.css).trim()) return;
         text = hatgAppendCardmodBlock(text, tpl.id, tpl.css);
@@ -2915,6 +3323,33 @@ class HATGPanel extends HTMLElement {
     return anzahl;
   }
 
+  renderCustomCardmodDialog() {
+    const dialog = this._state.customCardmodDialog;
+    if (!dialog) return "";
+    const bearbeitet = !!dialog.id;
+    return `
+      <div class="modal-scrim" data-custom-cardmod-cancel></div>
+      <div class="modal-box modal-box-breit">
+        <h3>${bearbeitet ? "Vorlage bearbeiten" : "Neue eigene Vorlage"}</h3>
+        <p>Das CSS landet beim Aktivieren markiert in <code>card-mod-card</code> - genau wie die mitgelieferten Vorlagen, für Light und Dark gleichzeitig.</p>
+        <label class="custom-cardmod-label">Name
+          <input class="text-input" type="text" spellcheck="false" data-custom-cardmod-label value="${hatgEscape(dialog.label || "")}" placeholder="z. B. Kräftiger Kartenrand" />
+        </label>
+        <label class="custom-cardmod-label">Beschreibung <small>(optional)</small>
+          <input class="text-input" type="text" spellcheck="false" data-custom-cardmod-desc value="${hatgEscape(dialog.desc || "")}" placeholder="Wofür ist die Vorlage gut?" />
+        </label>
+        <label class="custom-cardmod-label">CSS
+          <textarea class="text-input custom-cardmod-css" spellcheck="false" data-custom-cardmod-css placeholder="ha-card {\n  border: 2px solid var(--accent-color) !important;\n}">${hatgEscape(dialog.css || "")}</textarea>
+        </label>
+        ${dialog.error ? `<p class="wallpaper-error">${hatgEscape(dialog.error)}</p>` : ""}
+        <div class="modal-actions">
+          ${bearbeitet ? `<button type="button" class="modal-btn danger" data-custom-cardmod-delete="${dialog.id}">Löschen</button>` : ""}
+          <button type="button" class="modal-btn ghost" data-custom-cardmod-cancel>Abbrechen</button>
+          <button type="button" class="modal-btn primary" data-custom-cardmod-save>Speichern</button>
+        </div>
+      </div>`;
+  }
+
   renderCardmodTemplates() {
     const activeText = String(this.currentValues()["card-mod-card"] || "");
     const veraltet = this.staleCardmodTemplates();
@@ -2927,7 +3362,7 @@ class HATGPanel extends HTMLElement {
           </button>
         </div>`
       : "";
-    const cards = HATG_CARDMOD_TEMPLATES.map((tpl) => {
+    const kachel = (tpl, eigen) => {
       const active = hatgCardmodBlockActive(activeText, tpl.id);
       return `
         <div class="plugin-card cardmod-tpl-card ${active ? "is-selected" : ""}">
@@ -2935,15 +3370,34 @@ class HATGPanel extends HTMLElement {
             <div class="plugin-card-heading">
               <strong>${hatgEscape(tpl.label)}</strong>
               ${active ? '<small class="cardmod-tpl-badge">aktiv</small>' : ""}
+              ${eigen ? '<small class="cardmod-tpl-badge eigen">eigene</small>' : ""}
             </div>
-            <p class="cardmod-tpl-desc">${hatgEscape(tpl.desc)}</p>
-            <button type="button" class="plugin-toggle-button ${active ? "is-active" : ""}" data-toggle-cardmod-template="${tpl.id}">
-              <ha-icon icon="${active ? "mdi:close-circle-outline" : "mdi:auto-fix"}"></ha-icon>
-              <span>${active ? "Entfernen" : "Aktivieren"}</span>
-            </button>
+            <p class="cardmod-tpl-desc">${hatgEscape(tpl.desc || "Ohne Beschreibung.")}</p>
+            <div class="cardmod-tpl-actions">
+              <button type="button" class="plugin-toggle-button ${active ? "is-active" : ""}" data-toggle-cardmod-template="${tpl.id}">
+                <ha-icon icon="${active ? "mdi:close-circle-outline" : "mdi:auto-fix"}"></ha-icon>
+                <span>${active ? "Entfernen" : "Aktivieren"}</span>
+              </button>
+              ${eigen ? `<button type="button" class="cardmod-tpl-edit" data-edit-cardmod-template="${tpl.id}" title="Bearbeiten"><ha-icon icon="mdi:pencil-outline"></ha-icon></button>` : ""}
+            </div>
           </div>
         </div>`;
-    }).join("");
+    };
+    const cards = HATG_CARDMOD_TEMPLATES.map((tpl) => kachel(tpl, false)).join("");
+    const eigene = this.eigeneCardmods();
+    const eigeneKacheln = eigene.map((tpl) => kachel(tpl, true)).join("");
+    const eigenerBlock = `
+      <div class="cardmod-eigene-kopf">
+        <h2>Eigene Vorlagen</h2>
+        <button type="button" class="cardmod-stale-button" data-new-cardmod-template>
+          <ha-icon icon="mdi:plus"></ha-icon><span>Neue Vorlage</span>
+        </button>
+      </div>
+      ${
+        eigene.length
+          ? `<div class="plugin-grid cardmod-tpl-grid">${eigeneKacheln}</div>`
+          : `<p class="cardmod-tpl-desc">Noch keine eigenen Vorlagen. Sie werden in <code>config/themes/hatg-cardmod-vorlagen.json</code> abgelegt und bleiben damit über Theme- und Browserwechsel hinweg erhalten.</p>`
+      }`;
     return `
       <section class="editor-section">
         <div class="section-heading">
@@ -2953,6 +3407,7 @@ class HATGPanel extends HTMLElement {
         </div>
         ${hinweis}
         <div class="plugin-grid cardmod-tpl-grid">${cards}</div>
+        ${eigenerBlock}
       </section>`;
   }
 
@@ -3130,35 +3585,171 @@ class HATGPanel extends HTMLElement {
       </div>`;
   }
 
+  wallpaperDubletten(liste) {
+    const nachHash = {};
+    (liste || []).forEach((bild) => {
+      if (!bild.hash) return;
+      (nachHash[bild.hash] = nachHash[bild.hash] || []).push(bild.filename);
+    });
+    const doppelt = {};
+    Object.values(nachHash).forEach((namen) => {
+      if (namen.length < 2) return;
+      namen.slice(1).forEach((name) => { doppelt[name] = namen[0]; });
+    });
+    return doppelt;
+  }
+
+  wallpaperGroesse(bytes) {
+    const kb = Number(bytes || 0) / 1024;
+    if (kb < 1000) return `${Math.round(kb)} kB`;
+    return `${(kb / 1024).toFixed(1)} MB`;
+  }
+
+  renderWallpaperGalerie(dialog) {
+    if (dialog.loading) return `<p class="wallpaper-hint">Ordner wird gelesen …</p>`;
+    const liste = dialog.gallery || [];
+    if (!liste.length) {
+      return `<p class="wallpaper-hint">Noch keine Bilder in <code>config/themes/Wallpaper/</code>. Lade unten das erste hoch.</p>`;
+    }
+    const doppelt = this.wallpaperDubletten(liste);
+    const aktuell = this.backgroundImageUrl(this.currentValues()["lovelace-background"] || "");
+    const anzahlDoppelt = Object.keys(doppelt).length;
+    const auswahl = dialog.selected || [];
+    const kacheln = liste
+      .map((bild) => {
+        const istAktuell = aktuell && aktuell === bild.url;
+        const istDublette = !!doppelt[bild.filename];
+        const markiert = auswahl.includes(bild.filename);
+        return `
+        <div class="wp-kachel ${istAktuell ? "aktiv" : ""} ${markiert ? "markiert" : ""}" data-wallpaper-pick="${hatgEscape(bild.filename)}" data-wallpaper-url="${hatgEscape(bild.url)}" title="${hatgEscape(bild.filename)} · ${this.wallpaperGroesse(bild.size)}">
+          <div class="wp-bild" style="background-image:url(${JSON.stringify(bild.url)});"></div>
+          ${istDublette ? `<span class="wp-marke dublette" title="Inhaltsgleich mit ${hatgEscape(doppelt[bild.filename])}">Dublette</span>` : ""}
+          ${istAktuell ? `<span class="wp-marke aktiv-marke">aktiv</span>` : ""}
+          <label class="wp-haken" title="Zum Löschen auswählen">
+            <input type="checkbox" data-wallpaper-check="${hatgEscape(bild.filename)}" ${markiert ? "checked" : ""} />
+          </label>
+          <span class="wp-name">${hatgEscape(bild.filename)}</span>
+        </div>`;
+      })
+      .join("");
+    return `
+      ${anzahlDoppelt ? `<p class="wallpaper-hint">${anzahlDoppelt} inhaltsgleiche ${anzahlDoppelt === 1 ? "Datei" : "Dateien"} gefunden - sie sind unten markiert und können weg.</p>` : ""}
+      <div class="wp-galerie">${kacheln}</div>
+      <div class="modal-actions" style="justify-content:flex-start;margin-top:8px;">
+        ${anzahlDoppelt ? `<button type="button" class="modal-btn ghost" data-wallpaper-select-dupes>Alle Dubletten markieren</button>` : ""}
+        ${auswahl.length ? `<button type="button" class="modal-btn danger" data-wallpaper-delete>${auswahl.length} löschen</button>` : ""}
+      </div>`;
+  }
+
   renderWallpaperDialog() {
     const dialog = this._state.wallpaperDialog;
     if (!dialog) return "";
     const preview = dialog.dataUrl
       ? `<div class="wallpaper-preview" style="background-image:url(${JSON.stringify(dialog.dataUrl)});"></div>`
-      : `<div class="wallpaper-preview wallpaper-preview-empty"><ha-icon icon="mdi:image-outline"></ha-icon></div>`;
+      : "";
     return `
       <div class="modal-scrim" data-wallpaper-cancel></div>
-      <div class="modal-box">
-        <h3>Eigenes Hintergrundbild</h3>
-        <p>Bild auswählen und hochladen – landet in <code>config/themes/Wallpaper/</code> und lässt sich später auch bei anderen Themes wiederverwenden.</p>
+      <div class="modal-box modal-box-breit">
+        <h3>Hintergrundbild</h3>
+        <p>Vorhandenes Bild anklicken oder ein neues hochladen. Alle Bilder liegen in <code>config/themes/Wallpaper/</code>.</p>
+        ${this.renderWallpaperGalerie(dialog)}
+        <div class="wp-trenner"></div>
         <input type="file" accept="image/png,image/jpeg,image/webp,image/gif" data-wallpaper-file-input style="display:none" />
         ${preview}
         <div class="modal-actions" style="justify-content:flex-start;margin-top:10px;">
-          <button type="button" class="modal-btn ghost" data-wallpaper-file-trigger>Datei wählen …</button>
+          <button type="button" class="modal-btn ghost" data-wallpaper-file-trigger>Neues Bild wählen …</button>
           ${dialog.fileName ? `<span style="font-size:11.5px;color:var(--hatg-muted);">${hatgEscape(dialog.fileName)}</span>` : ""}
         </div>
         ${dialog.processing ? `<p class="wallpaper-hint">Bild wird vorbereitet (verkleinert/komprimiert) …</p>` : ""}
         ${dialog.error ? `<p class="wallpaper-error">${hatgEscape(dialog.error)}</p>` : ""}
         <div class="modal-actions">
-          <button type="button" class="modal-btn ghost" data-wallpaper-cancel>Abbrechen</button>
+          <button type="button" class="modal-btn ghost" data-wallpaper-cancel>Schließen</button>
           <button type="button" class="modal-btn primary" data-wallpaper-upload ${dialog.dataUrl && !dialog.uploading && !dialog.processing ? "" : "disabled"}>${dialog.uploading ? "Lädt hoch …" : "Hochladen & übernehmen"}</button>
         </div>
       </div>`;
   }
 
   openWallpaperDialog() {
-    this._state.wallpaperDialog = { fileName: null, dataUrl: null, uploading: false, processing: false, error: null };
+    this._state.wallpaperDialog = {
+      fileName: null, dataUrl: null, uploading: false, processing: false,
+      error: null, gallery: [], selected: [], loading: true,
+    };
     this.render();
+    this.loadWallpaperGallery();
+  }
+
+  async loadWallpaperGallery() {
+    const dialog = this._state.wallpaperDialog;
+    if (!dialog) return;
+    if (!this._hass || typeof this._hass.callWS !== "function") {
+      dialog.loading = false;
+      this.render();
+      return;
+    }
+    try {
+      const result = await this._hass.callWS({ type: "hatg/list_wallpapers" });
+      if (!this._state.wallpaperDialog) return;
+      this._state.wallpaperDialog.gallery = (result && result.wallpapers) || [];
+    } catch (error) {
+      console.error("HATG loadWallpaperGallery failed", error);
+      if (this._state.wallpaperDialog) this._state.wallpaperDialog.error = "Ordner konnte nicht gelesen werden.";
+    }
+    if (this._state.wallpaperDialog) this._state.wallpaperDialog.loading = false;
+    this.render();
+  }
+
+  useWallpaperFromGallery(url) {
+    const alt = this.currentValues()["lovelace-background"] || "";
+    const prozent = this.backgroundImageUrl(alt) ? this.backgroundImageOpacity(alt) : 100;
+    this.commitField("background-style", "bild");
+    this.commitField("lovelace-background", this.composeBackgroundImage(url, prozent));
+    this._state.wallpaperDialog = null;
+    this.render();
+    this.scheduleHaLiveRefresh();
+  }
+
+  toggleWallpaperSelection(filename) {
+    const dialog = this._state.wallpaperDialog;
+    if (!dialog) return;
+    const liste = dialog.selected || [];
+    dialog.selected = liste.includes(filename) ? liste.filter((n) => n !== filename) : [...liste, filename];
+    this.render();
+  }
+
+  selectWallpaperDuplicates() {
+    const dialog = this._state.wallpaperDialog;
+    if (!dialog) return;
+    dialog.selected = Object.keys(this.wallpaperDubletten(dialog.gallery));
+    this.render();
+  }
+
+  async deleteSelectedWallpapers() {
+    const dialog = this._state.wallpaperDialog;
+    if (!dialog || !dialog.selected || !dialog.selected.length) return;
+    if (!this._hass || typeof this._hass.callWS !== "function") return;
+    const aktuell = this.backgroundImageUrl(this.currentValues()["lovelace-background"] || "");
+    const inBenutzung = dialog.selected.filter((name) =>
+      (dialog.gallery || []).some((b) => b.filename === name && b.url === aktuell)
+    );
+    if (inBenutzung.length) {
+      dialog.error = `${inBenutzung[0]} wird gerade als Hintergrund benutzt - erst ein anderes Bild wählen.`;
+      this.render();
+      return;
+    }
+    try {
+      const result = await this._hass.callWS({ type: "hatg/delete_wallpaper", filenames: dialog.selected });
+      const anzahl = (result && result.deleted && result.deleted.length) || 0;
+      if (this._state.wallpaperDialog) {
+        this._state.wallpaperDialog.selected = [];
+        this._state.wallpaperDialog.error = null;
+      }
+      this.showToast(anzahl === 1 ? "1 Bild gelöscht." : `${anzahl} Bilder gelöscht.`);
+      await this.loadWallpaperGallery();
+    } catch (error) {
+      console.error("HATG deleteSelectedWallpapers failed", error);
+      if (this._state.wallpaperDialog) this._state.wallpaperDialog.error = "Löschen fehlgeschlagen.";
+      this.render();
+    }
   }
 
   async _readFileAsDataUrl(file) {
@@ -3230,12 +3821,11 @@ class HATGPanel extends HTMLElement {
         data: base64Data,
       });
       if (result && result.uploaded && result.url) {
-        this.commitField("background-style", "bild");
-        this.commitField("lovelace-background", `url("${result.url}") center / cover no-repeat`);
-        this._state.wallpaperDialog = null;
-        this.render();
-        this.showToast(`Bild hochgeladen: ${result.filename}`);
-        this.scheduleHaLiveRefresh();
+        const meldung = result.duplicate
+          ? `Dieses Bild lag schon im Ordner - es wird ${result.filename} benutzt, keine neue Datei angelegt.`
+          : `Bild hochgeladen: ${result.filename}`;
+        this.useWallpaperFromGallery(result.url);
+        this.showToast(meldung);
       } else {
         throw new Error("unbekannte Antwort");
       }
@@ -4375,6 +4965,10 @@ class HATGPanel extends HTMLElement {
         .cardmod-tpl-desc { font-size: 12px; line-height: 1.5; color: var(--hatg-text-dim); margin: 0; }
         .cardmod-tpl-badge { flex: 0 0 auto; font-size: 10px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #38c76c; border: 1px solid #38c76c; border-radius: 6px; padding: 2px 6px; }
         .cardmod-tpl-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+        .basis-laenge-wrap { display: flex; align-items: center; gap: 8px; }
+        .basis-feld { display: flex; align-items: center; gap: 6px; flex: 1 1 0; min-width: 0; }
+        .basis-feld small { flex: 0 0 auto; color: var(--hatg-text-dim); font-size: 11px; }
+        .basis-feld .hex-input { flex: 1 1 auto; min-width: 0; }
         .status-fw-widget { display: inline-flex; align-items: center; gap: 4px; margin-right: 6px; padding: 3px 6px; border: 1px solid var(--hatg-border); border-radius: 9px; opacity: .45; }
         .status-fw-widget.on { opacity: 1; border-color: #38c76c; background: rgba(56,199,108,.10); }
         .status-fw-widget ha-icon { --mdc-icon-size: 15px; color: var(--hatg-text-dim); }
@@ -4481,6 +5075,33 @@ class HATGPanel extends HTMLElement {
         .style-custom-field span { display: block; font-size: 11.5px; color: var(--hatg-muted); margin-bottom: 6px; }
         .style-custom-field input { width: 100%; }
 
+        .cardmod-eigene-kopf { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 26px 0 10px; }
+        .cardmod-eigene-kopf h2 { margin: 0; font-size: 15px; font-weight: 650; color: var(--hatg-text); }
+        .cardmod-tpl-actions { display: flex; align-items: center; gap: 8px; }
+        .cardmod-tpl-actions .plugin-toggle-button { flex: 1 1 auto; }
+        .cardmod-tpl-edit { flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border: 1px solid var(--hatg-border); border-radius: 10px; background: transparent; color: var(--hatg-text-dim); cursor: pointer; }
+        .cardmod-tpl-edit:hover { color: var(--hatg-text); border-color: var(--hatg-text-dim); }
+        .cardmod-tpl-edit ha-icon { --mdc-icon-size: 17px; }
+        .cardmod-tpl-badge.eigen { background: rgba(56,199,108,.16); color: #38c76c; }
+        .custom-cardmod-label { display: block; margin-top: 12px; font-size: 12px; font-weight: 600; color: var(--hatg-text-dim); }
+        .custom-cardmod-label small { font-weight: 400; }
+        .custom-cardmod-label .text-input { display: block; width: 100%; box-sizing: border-box; margin-top: 5px; font-weight: 400; }
+        .custom-cardmod-css { min-height: 190px; resize: vertical; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; line-height: 1.5; }
+        .modal-box-breit { max-width: 720px; width: min(720px, 92vw); }
+        .wp-galerie { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; max-height: 320px; overflow-y: auto; padding: 2px; margin-top: 10px; }
+        .wp-kachel { position: relative; border: 2px solid transparent; border-radius: 12px; overflow: hidden; cursor: pointer; background: var(--hatg-bg-2, rgba(127,140,160,.10)); transition: border-color .15s ease, transform .15s ease; }
+        .wp-kachel:hover { transform: translateY(-2px); border-color: var(--hatg-border); }
+        .wp-kachel.aktiv { border-color: #38c76c; }
+        .wp-kachel.markiert { border-color: #ff453a; }
+        .wp-bild { width: 100%; aspect-ratio: 16 / 10; background-size: cover; background-position: center; }
+        .wp-name { display: block; padding: 4px 6px; font-size: 10.5px; color: var(--hatg-text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .wp-marke { position: absolute; top: 6px; left: 6px; padding: 1px 6px; border-radius: 8px; font-size: 10px; font-weight: 600; color: #fff; }
+        .wp-marke.dublette { background: rgba(255,69,58,.92); }
+        .wp-marke.aktiv-marke { background: rgba(56,199,108,.92); left: auto; right: 6px; }
+        .wp-haken { position: absolute; bottom: 24px; right: 6px; display: flex; padding: 3px; border-radius: 6px; background: rgba(0,0,0,.45); }
+        .wp-haken input { margin: 0; cursor: pointer; }
+        .wp-trenner { height: 1px; background: var(--hatg-border); margin: 14px 0 2px; }
+        .modal-btn.danger { background: #ff453a; color: #fff; border-color: #ff453a; }
         .wallpaper-preview {
           height: 140px; border-radius: 10px; overflow: hidden; background: var(--hatg-bg-2);
           background-size: cover; background-position: center; border: 1px solid var(--hatg-border);
@@ -4586,6 +5207,7 @@ class HATGPanel extends HTMLElement {
       ${this.renderValidationDialog()}
       ${this.renderPluginInfoDialog()}
       ${this.renderWallpaperDialog()}
+      ${this.renderCustomCardmodDialog()}
       <div class="toast" role="status" aria-live="polite"></div>
     `;
 
@@ -4944,6 +5566,59 @@ class HATGPanel extends HTMLElement {
       });
       el.addEventListener("change", () => this.render());
     });
+    this.shadowRoot.querySelector("[data-new-cardmod-template]")?.addEventListener("click", () => {
+      this.openCustomCardmodDialog(null);
+    });
+    this.shadowRoot.querySelectorAll("[data-edit-cardmod-template]").forEach((el) => {
+      el.addEventListener("click", () => this.openCustomCardmodDialog(el.dataset.editCardmodTemplate));
+    });
+    this.shadowRoot.querySelectorAll("[data-custom-cardmod-cancel]").forEach((el) => {
+      el.addEventListener("click", () => { this._state.customCardmodDialog = null; this.render(); });
+    });
+    this.shadowRoot.querySelector("[data-custom-cardmod-save]")?.addEventListener("click", () => {
+      this.saveCustomCardmodDialog();
+    });
+    this.shadowRoot.querySelector("[data-custom-cardmod-delete]")?.addEventListener("click", (event) => {
+      this.deleteCustomCardmod(event.currentTarget.dataset.customCardmodDelete);
+    });
+    [["label", "customCardmodLabel"], ["desc", "customCardmodDesc"], ["css", "customCardmodCss"]].forEach(([feld, attr]) => {
+      const el = this.shadowRoot.querySelector(`[data-custom-cardmod-${feld}]`);
+      if (!el) return;
+      el.addEventListener("input", () => {
+        if (this._state.customCardmodDialog) this._state.customCardmodDialog[feld] = el.value;
+      });
+    });
+    this.shadowRoot.querySelectorAll("[data-basis-sync]").forEach((el) => {
+      el.addEventListener("click", () => this.toggleBasisSync(el.dataset.basisSync));
+    });
+    this.shadowRoot.querySelectorAll("[data-basis-copy]").forEach((el) => {
+      el.addEventListener("click", () => this.copyBasisToOtherMode(el.dataset.basisCopy));
+    });
+    this.shadowRoot.querySelectorAll("[data-basis-picker]").forEach((input) => {
+      const commit = () => { this.applyBasisValue(input.dataset.basisPicker, input.value.toUpperCase()); this.render(); };
+      input.addEventListener("input", commit);
+      input.addEventListener("change", commit);
+    });
+    this.shadowRoot.querySelectorAll("[data-basis-innen]").forEach((input) => {
+      const commit = () => {
+        const typed = String(input.value || "").trim();
+        if (!typed) return;
+        this.applyBasisInnenValue(input.dataset.basisInnen, typed);
+        this.render();
+      };
+      input.addEventListener("change", commit);
+      input.addEventListener("blur", commit);
+    });
+    this.shadowRoot.querySelectorAll("[data-basis-text]").forEach((input) => {
+      const commit = () => {
+        const typed = String(input.value || "").trim();
+        if (!typed) return;
+        this.applyBasisValue(input.dataset.basisText, typed);
+        this.render();
+      };
+      input.addEventListener("change", commit);
+      input.addEventListener("blur", commit);
+    });
     this.shadowRoot.querySelectorAll("[data-status-framework-sync]").forEach((el) => {
       el.addEventListener("click", () => this.toggleStatusFrameworkSync(el.dataset.statusFrameworkSync));
     });
@@ -5122,6 +5797,21 @@ class HATGPanel extends HTMLElement {
     this.shadowRoot.querySelector("[data-wallpaper-cancel]")?.addEventListener("click", () => {
       this._state.wallpaperDialog = null;
       this.render();
+    });
+    this.shadowRoot.querySelectorAll("[data-wallpaper-pick]").forEach((el) => {
+      el.addEventListener("click", (event) => {
+        if (event.target.closest(".wp-haken")) return;
+        this.useWallpaperFromGallery(el.dataset.wallpaperUrl);
+      });
+    });
+    this.shadowRoot.querySelectorAll("[data-wallpaper-check]").forEach((el) => {
+      el.addEventListener("change", () => this.toggleWallpaperSelection(el.dataset.wallpaperCheck));
+    });
+    this.shadowRoot.querySelector("[data-wallpaper-select-dupes]")?.addEventListener("click", () => {
+      this.selectWallpaperDuplicates();
+    });
+    this.shadowRoot.querySelector("[data-wallpaper-delete]")?.addEventListener("click", () => {
+      this.deleteSelectedWallpapers();
     });
     this.shadowRoot.querySelector("[data-wallpaper-file-trigger]")?.addEventListener("click", () => {
       this.shadowRoot.querySelector("[data-wallpaper-file-input]")?.click();
@@ -5451,9 +6141,30 @@ class HATGPanel extends HTMLElement {
     this.commitField(key, ziel);
   }
 
+  snapshotFrameworkFields(group) {
+    const meta = HATG_MASTER_GROUPS[group];
+    if (!meta) return null;
+    const values = this.currentValues();
+    const source = this.currentSource();
+    return [...meta.bubble, ...meta.mush].map((key) => [key, values[key], source[key]]);
+  }
+
+  restoreFrameworkFields(snapshot) {
+    if (!snapshot) return;
+    const values = this.currentValues();
+    const source = this.currentSource();
+    snapshot.forEach(([key, value, src]) => {
+      values[key] = value;
+      source[key] = src;
+    });
+  }
+
   applyStatusMasterColor(group, value) {
+    const sync = this.statusFrameworkSyncOn(group);
+    const bewahren = sync ? null : this.snapshotFrameworkFields(group);
     this.getStatusMasterKeys(group).forEach((key) => this.writeMasterField(key, value));
-    if (this.statusFrameworkSyncOn(group)) this.applyStatusFrameworkSync(group, value);
+    if (sync) this.applyStatusFrameworkSync(group, value);
+    else this.restoreFrameworkFields(bewahren);
     this.applyPreviewTheme();
   }
 
@@ -5496,8 +6207,11 @@ class HATGPanel extends HTMLElement {
     const otherMode = currentMode === "light" ? "dark" : "light";
     const value = this.getStatusMasterRawValue(group, currentMode);
     this._state.editorMode = otherMode;
+    const sync = this.statusFrameworkSyncOn(group);
+    const bewahren = sync ? null : this.snapshotFrameworkFields(group);
     this.getStatusMasterKeys(group).forEach((key) => this.writeMasterField(key, value));
-    if (this.statusFrameworkSyncOn(group)) this.applyStatusFrameworkSync(group, value);
+    if (sync) this.applyStatusFrameworkSync(group, value);
+    else this.restoreFrameworkFields(bewahren);
     this._state.editorMode = currentMode;
     this.render();
     const label = (HATG_MASTER_GROUPS[group] || {}).label || group;

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import base64
 import binascii
+import hashlib
+import json
 import re
 from pathlib import Path
 
@@ -31,6 +33,9 @@ _WS_REGISTERED_FLAG = f"{DOMAIN}_ws_registered"
 WALLPAPER_SUBDIR = "Wallpaper"
 _WALLPAPER_ALLOWED_EXT = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
 _WALLPAPER_SAFE_NAME_RE = re.compile(r"[^A-Za-z0-9._-]+")
+
+CUSTOM_CARDMOD_FILE = "hatg-cardmod-vorlagen.json"
+_CUSTOM_CARDMOD_ID_RE = re.compile(r"[A-Za-z0-9_-]{1,64}")
 
 
 def _is_safe_theme_name(name: str) -> bool:
@@ -64,6 +69,30 @@ def _sanitize_wallpaper_filename(filename: str) -> str | None:
     stem = base[: -len(suffix)] if suffix else base
     stem = _WALLPAPER_SAFE_NAME_RE.sub("_", stem).strip("._") or "wallpaper"
     return f"{stem}{suffix}"
+
+
+def _wallpaper_hash(path: Path) -> str:
+    """Prüfsumme über den Dateiinhalt, um inhaltsgleiche Bilder zu erkennen."""
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(131072), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def _find_wallpaper_by_hash(directory: Path, digest: str) -> Path | None:
+    """Sucht ein bereits vorhandenes Bild mit identischem Inhalt."""
+    if not directory.exists():
+        return None
+    for entry in sorted(directory.iterdir()):
+        if not entry.is_file() or entry.suffix.lower() not in _WALLPAPER_ALLOWED_EXT:
+            continue
+        try:
+            if _wallpaper_hash(entry) == digest:
+                return entry
+        except OSError:
+            continue
+    return None
 
 
 def _unique_wallpaper_path(directory: Path, filename: str) -> Path:
@@ -330,12 +359,16 @@ async def ws_upload_wallpaper(hass: HomeAssistant, connection, msg):
 
     def _write():
         wallpaper_dir.mkdir(parents=True, exist_ok=True)
+        digest = hashlib.sha256(raw).hexdigest()
+        vorhanden = _find_wallpaper_by_hash(wallpaper_dir, digest)
+        if vorhanden is not None:
+            return vorhanden.name, True
         target = _unique_wallpaper_path(wallpaper_dir, filename)
         target.write_bytes(raw)
-        return target.name
+        return target.name, False
 
     try:
-        final_name = await hass.async_add_executor_job(_write)
+        final_name, war_schon_da = await hass.async_add_executor_job(_write)
     except OSError as err:
         connection.send_error(msg["id"], "write_failed", f"Bild konnte nicht gespeichert werden: {err}")
         return
@@ -346,6 +379,7 @@ async def ws_upload_wallpaper(hass: HomeAssistant, connection, msg):
             "uploaded": True,
             "filename": final_name,
             "url": f"{WALLPAPER_STATIC_PATH}/{final_name}",
+            "duplicate": war_schon_da,
         },
     )
 
@@ -371,18 +405,155 @@ async def ws_list_wallpapers(hass: HomeAssistant, connection, msg):
                 stat = entry.stat()
             except OSError:
                 continue
+            try:
+                digest = _wallpaper_hash(entry)
+            except OSError:
+                digest = ""
             items.append(
                 {
                     "filename": entry.name,
                     "url": f"{WALLPAPER_STATIC_PATH}/{entry.name}",
                     "modified": stat.st_mtime,
                     "size": stat.st_size,
+                    "hash": digest,
                 }
             )
         return items
 
     items = await hass.async_add_executor_job(_list)
     connection.send_result(msg["id"], {"wallpapers": items})
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "hatg/list_custom_cardmods",
+    }
+)
+@websocket_api.async_response
+async def ws_list_custom_cardmods(hass: HomeAssistant, connection, msg):
+    """Liest die selbst angelegten Cardmod-Vorlagen."""
+    ziel = Path(hass.config.path(THEMES_SUBDIR, CUSTOM_CARDMOD_FILE))
+
+    def _read():
+        if not ziel.is_file():
+            return []
+        try:
+            daten = json.loads(ziel.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            return []
+        if not isinstance(daten, list):
+            return []
+        sauber = []
+        for eintrag in daten:
+            if not isinstance(eintrag, dict):
+                continue
+            if not eintrag.get("id") or not isinstance(eintrag.get("css"), str):
+                continue
+            sauber.append(
+                {
+                    "id": str(eintrag["id"]),
+                    "label": str(eintrag.get("label") or eintrag["id"]),
+                    "desc": str(eintrag.get("desc") or ""),
+                    "css": eintrag["css"],
+                }
+            )
+        return sauber
+
+    try:
+        eintraege = await hass.async_add_executor_job(_read)
+    except OSError as err:
+        connection.send_error(msg["id"], "read_failed", f"Vorlagen konnten nicht gelesen werden: {err}")
+        return
+
+    connection.send_result(msg["id"], {"templates": eintraege})
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "hatg/save_custom_cardmods",
+        vol.Required("templates"): [dict],
+    }
+)
+@websocket_api.require_admin
+@websocket_api.async_response
+async def ws_save_custom_cardmods(hass: HomeAssistant, connection, msg):
+    """Schreibt die selbst angelegten Cardmod-Vorlagen."""
+    eintraege = []
+    for eintrag in msg["templates"]:
+        kennung = str(eintrag.get("id") or "").strip()
+        if not kennung or not _CUSTOM_CARDMOD_ID_RE.fullmatch(kennung):
+            connection.send_error(msg["id"], "invalid_id", f"Ungültige Vorlagen-Kennung: {kennung!r}")
+            return
+        css = eintrag.get("css")
+        if not isinstance(css, str):
+            connection.send_error(msg["id"], "invalid_css", f"Vorlage {kennung} enthält kein CSS.")
+            return
+        eintraege.append(
+            {
+                "id": kennung,
+                "label": str(eintrag.get("label") or kennung)[:120],
+                "desc": str(eintrag.get("desc") or "")[:600],
+                "css": css,
+            }
+        )
+
+    kennungen = [e["id"] for e in eintraege]
+    if len(kennungen) != len(set(kennungen)):
+        connection.send_error(msg["id"], "duplicate_id", "Zwei Vorlagen haben dieselbe Kennung.")
+        return
+
+    themes_dir = Path(hass.config.path(THEMES_SUBDIR))
+    ziel = themes_dir / CUSTOM_CARDMOD_FILE
+
+    def _write():
+        themes_dir.mkdir(parents=True, exist_ok=True)
+        ziel.write_text(json.dumps(eintraege, indent=2, ensure_ascii=False), encoding="utf-8")
+
+    try:
+        await hass.async_add_executor_job(_write)
+    except OSError as err:
+        connection.send_error(msg["id"], "write_failed", f"Vorlagen konnten nicht gespeichert werden: {err}")
+        return
+
+    connection.send_result(msg["id"], {"saved": True, "count": len(eintraege)})
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "hatg/delete_wallpaper",
+        vol.Required("filenames"): [str],
+    }
+)
+@websocket_api.require_admin
+@websocket_api.async_response
+async def ws_delete_wallpaper(hass: HomeAssistant, connection, msg):
+    """Löscht ein oder mehrere Bilder aus dem Wallpaper-Ordner."""
+    namen = []
+    for roh in msg["filenames"]:
+        sauber = _sanitize_wallpaper_filename(roh)
+        if sauber is None or sauber != Path(roh).name:
+            connection.send_error(msg["id"], "invalid_name", f"Ungültiger Dateiname: {roh}")
+            return
+        namen.append(sauber)
+
+    wallpaper_dir = Path(hass.config.path(THEMES_SUBDIR, WALLPAPER_SUBDIR))
+
+    def _delete():
+        geloescht = []
+        for name in namen:
+            ziel = wallpaper_dir / name
+            if ziel.is_file():
+                ziel.unlink()
+                geloescht.append(name)
+        return geloescht
+
+    try:
+        geloescht = await hass.async_add_executor_job(_delete)
+    except OSError as err:
+        connection.send_error(msg["id"], "delete_failed", f"Bild konnte nicht gelöscht werden: {err}")
+        return
+
+    connection.send_result(msg["id"], {"deleted": geloescht})
 
 
 @callback
@@ -397,6 +568,9 @@ def _register_websocket_commands(hass: HomeAssistant) -> None:
     websocket_api.async_register_command(hass, ws_delete_work_file)
     websocket_api.async_register_command(hass, ws_upload_wallpaper)
     websocket_api.async_register_command(hass, ws_list_wallpapers)
+    websocket_api.async_register_command(hass, ws_delete_wallpaper)
+    websocket_api.async_register_command(hass, ws_list_custom_cardmods)
+    websocket_api.async_register_command(hass, ws_save_custom_cardmods)
     hass.data[_WS_REGISTERED_FLAG] = True
 
 
