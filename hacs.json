@@ -1,6 +1,5 @@
 {
   "name": "HATG",
-  "content_in_root": false,
   "render_readme": true,
-  "domains": ["hatg"]
+  "homeassistant": "2025.1.0"
 }
