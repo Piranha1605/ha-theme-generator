@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/banner.png" alt="HATG – Home Assistant Theme Generator" width="100%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/banner.png" alt="HATG – Home Assistant Theme Generator" width="100%" />
 </p>
 
 <p align="center">
