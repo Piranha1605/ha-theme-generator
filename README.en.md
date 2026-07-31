@@ -26,7 +26,7 @@ HATG is a dedicated panel in your Home Assistant sidebar for building complete t
 
 Every one of the 515 fields was verified against the actual source code of Home Assistant, Bubble Card and Mushroom. Only variables that genuinely exist are included — what you set is what arrives.
 
-> **A note on language:** the HATG panel interface is currently German only. This page describes everything in English, but the buttons and labels you will see in Home Assistant are in German.
+> **Language:** HATG speaks English and German. The interface follows your Home Assistant language automatically and can be switched at any time under the gear icon.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/unified-theme-demo.png" alt="One theme applied simultaneously to HA cards, Mushroom and Bubble Card" width="85%" />
@@ -234,6 +234,7 @@ The export is valid YAML (verified with the same parser Home Assistant uses), wi
 - **Badges show the origin of each value:** *automatic* = follows a derivation, *custom* = set by you
 - **Undo:** the undo button (or Ctrl/Cmd+Z) reverts the last change — including bulk changes as a whole
 - **Validation before export** checks every value against its expected format and flags outliers before they end up in the theme
+- **Language:** HATG speaks German and English. The interface follows your Home Assistant language automatically and can be switched at any time via the gear icon
 - **After a HATG update**, do one hard reload (Ctrl/Cmd+Shift+R) so the browser picks up the new panel version
 
 ---

@@ -232,6 +232,7 @@ Der Export ist gültiges YAML (geprüft mit demselben Parser, den Home Assistant
 - **Badges zeigen die Herkunft jedes Werts:** *automatisch* = folgt einer Ableitung, *angepasst* = von dir gesetzt
 - **Rückgängig:** Der Undo-Knopf (oder Strg/Cmd+Z) nimmt die letzte Änderung zurück — auch Sammel-Änderungen als Ganzes
 - **Validierung vor dem Export** prüft alle Werte auf ihr erwartetes Format und meldet Ausreißer, bevor sie im Theme landen
+- **Sprache:** HATG spricht Deutsch und Englisch. Die Oberflaeche folgt automatisch der Home-Assistant-Sprache und laesst sich jederzeit ueber das Zahnrad umstellen
 - **Nach einem HATG-Update** einmal hart neu laden (Strg/Cmd+Shift+R), damit der Browser die neue Panel-Version zieht
 
 ---
