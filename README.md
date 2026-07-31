@@ -11,6 +11,10 @@
 </p>
 
 <p align="center">
+  <b>Deutsch</b> · <a href="https://github.com/Piranha1605/ha-theme-generator/blob/main/README.en.md">English</a>
+</p>
+
+<p align="center">
   <a href="https://buymeacoffee.com/enricotenif"><img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/bmac-badge.png" alt="Buy me a coffee" /></a>
 </p>
 
