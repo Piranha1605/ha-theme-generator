@@ -23,7 +23,7 @@ HATG ist ein eigenes Panel in deiner Home-Assistant-Seitenleiste, mit dem du kom
 Jedes der 515 Felder wurde gegen den echten Quellcode von Home Assistant, Bubble Card und Mushroom geprüft. Es sind ausschließlich real existierende Variablen enthalten — was du einstellst, kommt auch an.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/unified-theme-demo.png" alt="Ein Theme, gleichzeitig angewendet auf HA-Karten, Mushroom und Bubble Card" width="100%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/unified-theme-demo.png" alt="Ein Theme, gleichzeitig angewendet auf HA-Karten, Mushroom und Bubble Card" width="85%" />
 </p>
 
 ---
@@ -80,7 +80,7 @@ Danach Home Assistant neu starten. Nach jedem card-mod-Update die Nummer nachzie
 8. Unter **Einstellungen → Profil** das neue Theme auswählen
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/start-page.png" alt="Die Startseite: Name, Grundwerte, Basis-Block, Zustände und Hintergrund" width="100%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/start-page.png" alt="Die Startseite: Name, Grundwerte, Basis-Block, Zustände und Hintergrund" width="80%" />
 </p>
 
 ---
@@ -94,7 +94,7 @@ Die Startseite ist als geführter Einstieg gebaut: oben die wenigen Werte, die e
 Fünf Farben und ein Radius — mehr braucht der Anfang nicht. Jedes Farbfeld bietet einen **Hex/RGB/RGBA-Umschalter**, ein natives Farbrad und ein Textfeld für den direkten Wert. Kleine Punktreihen daneben zeigen, welche abgeleiteten Felder mitziehen.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/grundfarben.png" alt="Grundfarben mit Hex/RGB/RGBA-Umschalter" width="80%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/grundfarben.png" alt="Grundfarben mit Hex/RGB/RGBA-Umschalter" width="65%" />
 </p>
 
 ### Basis: Rahmen, Radius, Schatten
@@ -108,7 +108,7 @@ Drei Zeilen geben die Grundform **aller** Karten vor und reichen sie an Bubble C
 | **Schatten** | 13 | ein Wert für alle Kartenschatten, Sub-Buttons inklusive |
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/basis-block.png" alt="Basis-Block mit Rahmenfarbe, Radius außen/innen und Schatten" width="80%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/basis-block.png" alt="Basis-Block mit Rahmenfarbe, Radius außen/innen und Schatten" width="65%" />
 </p>
 
 ### Zustände: An / Aus / Nicht verfügbar / Icon-Hintergrund
@@ -139,7 +139,7 @@ Neben Verläufen (Sonnenaufgang, Nachthimmel, Radial) kannst du ein **eigenes Bi
 Die Seitenleiste gliedert alle 515 Felder in thematische Sektionen — Bubble Card mit eigenen Unterseiten pro Kartentyp:
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/nav-sections.png" alt="Navigation mit allen Sektionen" width="30%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/nav-sections.png" alt="Navigation mit allen Sektionen" width="25%" />
 </p>
 
 | Bereich | Inhalt |
@@ -158,7 +158,7 @@ Die Seitenleiste gliedert alle 515 Felder in thematische Sektionen — Bubble Ca
 Der **Wortbaustein-Filter** kombiniert Bausteine wie `color`, `background` oder `button` mit einschränkenden Zusatz-Tags (`bubble`, `climate`, `stack`) — so ist auch unter 515 Variablen die richtige in Sekunden gefunden. Mit der Mehrfachauswahl bekommen ganze Feldgruppen in einem Schritt denselben Wert.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/all-fields-filter.png" alt="Alle Felder mit Wortbaustein-Filter" width="100%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/all-fields-filter.png" alt="Alle Felder mit Wortbaustein-Filter" width="80%" />
 </p>
 
 ### Code-Editor
@@ -166,7 +166,7 @@ Der **Wortbaustein-Filter** kombiniert Bausteine wie `color`, `background` oder 
 Für alle, die Werte lieber tippen: sämtliche Felder als Text mit Syntax-Färbung, gruppiert nach Bereichen. Dazu die freien card-mod-Felder (`card-mod-card`, `card-mod-root`) und ein **Freifeld für eigene Theme-Einträge**, die HATG nicht kennt — sie überleben Speichern und Export unverändert.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/code-editor.png" alt="Code-Editor mit allen Feldern als Text" width="100%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/code-editor.png" alt="Code-Editor mit allen Feldern als Text" width="80%" />
 </p>
 
 ---
@@ -176,7 +176,7 @@ Für alle, die Werte lieber tippen: sämtliche Felder als Text mit Syntax-Färbu
 Fertige card-mod-Bausteine, die per Klick **global ins Theme** übernommen werden — markiert in `card-mod-card`, für Light und Dark gleichzeitig, jederzeit einzeln wieder entfernbar. Kein Kopieren, kein Einfügen in einzelne Karten.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/cardmod-vorlagen.png" alt="Cardmod-Vorlagen mit Werksvorlagen und eigenen Vorlagen" width="100%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/cardmod-vorlagen.png" alt="Cardmod-Vorlagen mit Werksvorlagen und eigenen Vorlagen" width="80%" />
 </p>
 
 Fünf Werksvorlagen sind enthalten: **Kartenfarben-Verlauf**, **Glow / Leucht-Schatten**, **Rahmen mit Leuchtkante**, **Glas-Effekt (Blur)** und **Relief**. Alle decken native HA-Karten und sämtliche Bubble-Kartentypen ab (Climate, Cover, Media Player, Select, Kalender, Popup, Horizontal Buttons Stack); Mushroom ist über die Theme-Variablen bereits versorgt. Hüllen-Karten wie Überschriften, Mushroom-Chips und Bubble-Sub-Buttons bleiben bewusst rahmenlos.
@@ -190,7 +190,7 @@ Fünf Werksvorlagen sind enthalten: **Kartenfarben-Verlauf**, **Glow / Leucht-Sc
 Manche Effekte gehören nicht global ins Theme, sondern auf genau eine Karte: Slider-Formen, Glas-Varianten, zustandsabhängiges Kartendesign (Ampel-Effekt), Sub-Button-Leuchtzustände. Die Plugins-Seite liefert sie als Kopiervorlagen mit Vorschaubild und Erklärung — mehrere lassen sich auswählen und als eine kombinierte Vorlage kopieren.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/plugins.png" alt="Plugins-Seite mit Kopiervorlagen" width="100%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/plugins.png" alt="Plugins-Seite mit Kopiervorlagen" width="80%" />
 </p>
 
 ---
@@ -200,12 +200,12 @@ Manche Effekte gehören nicht global ins Theme, sondern auf genau eine Karte: Sl
 Die eingebaute Demo-Vorschau reagiert sofort auf jede Änderung — mit pixelgenauen Nachbauten echter HA-Karten, jede Komponente gegen den originalen Frontend-Quellcode geprüft. Wenn das nicht reicht: **HA Live** zeigt dein *echtes* Home-Assistant-Dashboard direkt im Panel — kein Mockup, sondern die echte Oberfläche, wahlweise im Handy-, Tablet- oder Desktop-Rahmen. „Zwischenstand sichern" lädt die Themes automatisch neu, ein Klick auf „Aktualisieren" zeigt die neue Farbgebung.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/ha-live-tablet.png" alt="HA Live im Tablet-Rahmen" width="100%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/ha-live-tablet.png" alt="HA Live im Tablet-Rahmen" width="80%" />
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/ha-live-phone.png" alt="HA Live im Handy-Rahmen" width="49%" />
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/ha-live-desktop.png" alt="HA Live im Desktop-Rahmen" width="49%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/ha-live-phone.png" alt="HA Live im Handy-Rahmen" width="40%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/ha-live-desktop.png" alt="HA Live im Desktop-Rahmen" width="40%" />
 </p>
 
 ---
