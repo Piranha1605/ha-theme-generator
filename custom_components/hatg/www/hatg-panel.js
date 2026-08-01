@@ -1,4 +1,4 @@
-const HATG_VERSION = "0.4.0b2";
+const HATG_VERSION = "0.4.0b3";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -294,7 +294,83 @@ const HATG_TEXTE = {
   "Bubble Cards <code>styles:</code>-Schlüssel akzeptiert nicht nur reines CSS, sondern auch JS-Template-Literale (Backticks, <code>${...}</code>) mit direktem Zugriff auf <code>hass.states[...]</code> - dadurch kann sich das Aussehen einer Karte live nach einem Entity-Zustand richten, ganz ohne separate Template-/card-mod-Integration. Wichtig bei <code>button_type: switch</code>: Bubble Card legt bei 'an' selbst eine deckende Akzentfarben-Ebene (<code>.bubble-background</code>, Opazität 1) über die Karte - ohne die Neutralisierung unten via <code>--bubble-button-background-color</code> würde man vom eigenen Rot/Grün-Effekt nichts sehen. Vorlage unten in eine eigene Karte einfügen, ENTITY_HIER durch die zu überwachende Entity ersetzen.": "Bubble Card's <code>styles:</code> key accepts not only plain CSS but also JS template literals (backticks, <code>${...}</code>) with direct access to <code>hass.states[...]</code> - which lets a card's appearance follow an entity state live, with no separate template or card-mod integration. Important with <code>button_type: switch</code>: in the 'on' state Bubble Card places an opaque accent-colour layer (<code>.bubble-background</code>, opacity 1) over the card - without the neutralisation below via <code>--bubble-button-background-color</code> you would see nothing of your own red/green effect. Paste the snippet below into your own card and replace ENTITY_HIER with the entity you want to watch.",
   "Braucht die separate card-mod-Integration (nicht Bubble Cards eigenes <code>styles:</code>-Feld): das Glühen reagiert auf Bubble Cards intern per JS gesetzte Zustandsklassen <code>background-on</code>/<code>background-off</code> und nutzt ein <code>::before</code>-Pseudo-Element fürs Glühen. Beides landet nachweislich nur über <code>card_mod:</code> direkt auf der Karte zuverlässig im richtigen Shadow-DOM (per DevTools bestätigt) - die globale Theme-Einstellung card-mod-card erreicht Bubble Cards eigenes, verschachteltes Shadow-DOM dagegen gar nicht. Vorlage unten in eine eigene Sub-Buttons-Karte einfügen, Entities anpassen.": "Requires the separate card-mod integration (not Bubble Card's own <code>styles:</code> field): the glow reacts to the state classes <code>background-on</code>/<code>background-off</code> that Bubble Card sets internally via JS, and uses a <code>::before</code> pseudo-element for the glow. Both demonstrably reach the correct shadow DOM only via <code>card_mod:</code> directly on the card (confirmed with DevTools) - the global theme setting card-mod-card does not reach Bubble Card's own nested shadow DOM at all. Paste the snippet below into your own sub-buttons card and adjust the entities.",
   "Gedacht für den Fall, dass genau dieses CSS auf einzelnen, gezielt ausgewählten Karten laufen soll - ohne es global übers Theme zu setzen und ohne es in jede Karte erneut abzutippen. Wichtig: dies ist der GENERISCHE <code>card_mod:</code>-Baustein direkt auf <code>ha-card</code> (kein Bubble-Card-spezifisches <code>styles:</code>-Feld) - deshalb als einziges CSS-Karten-Plugin hier mit JEDER Home-Assistant-Kartenart kompatibel, nicht nur mit Bubble Card. Genau deshalb auch nicht mit den anderen (Bubble-styles:-basierten) Plugins kombinierbar. Vorlage unten in eine eigene Karte einfügen, Kartenart/Entity nach Bedarf anpassen.": "Intended for cases where exactly this CSS should run on a few specific cards - without setting it globally through the theme and without retyping it into every card. Important: this is the GENERIC <code>card_mod:</code> block applied directly to <code>ha-card</code> (not a Bubble-Card-specific <code>styles:</code> field) - which makes it the only CSS card plugin here that is compatible with EVERY Home Assistant card type, not just Bubble Card. For exactly that reason it cannot be combined with the other (Bubble styles:-based) plugins. Paste the snippet below into your own card and adjust card type and entity as needed.",
+  "Rahmenfarbe": "Border colour",
+  "Radius": "Radius",
+  "Schatten": "Shadow",
+  "Diese drei Werte geben die Grundform aller Karten vor und reichen sie an Bubble Card samt Kartentypen und an Mushroom weiter. Beim Radius bekommen innen liegende Elemente wie Icons und Sub-Buttons automatisch 4px weniger, damit die Rundungen konzentrisch bleiben.": "These three values define the basic shape of all cards and pass it on to Bubble Card including its card types and to Mushroom. For the radius, nested elements such as icons and sub-buttons automatically get 4px less so the roundings stay concentric.",
+  "Schalter, Toggle & Slider": "Switches, toggles & sliders",
+  "RGB-Hilfswerte": "RGB helpers",
+  "Graphen & Energie": "Graphs & energy",
+  "Select (Auswahlkarte)": "Select (selection card)",
+  "Eingaben & Auswahlfelder": "Inputs & selects",
+  "Card-mod & Generator": "Card-mod & generator",
+  "Material, Paper & MDC": "Material, Paper & MDC",
+  "Status-Farben": "State colours",
+  "Grundschrift": "Base font",
+  "Langtext": "Long text",
+  "Eingabefelder": "Input fields",
+  "Systemstandard": "System default",
+  "Eigene Schriftart…": "Custom font…",
+  "Eigene Schriftart...": "Custom font…",
+  "Schrift": "Font",
+  "Handy": "Phone",
+  "Tablet": "Tablet",
+  "Desktop": "Desktop",
+  "Frost-Glas": "Frosted glass",
+  "Rauchglas": "Smoked glass",
+  "Akzentglas": "Accent glass",
+  "Verlauf Sonnenaufgang": "Sunrise gradient",
+  "Verlauf Nachthimmel": "Night sky gradient",
+  "135°, warm": "135°, warm",
+  "135°, kühl": "135°, cool",
+  "kreisförmig, Glanzpunkt": "circular, highlight",
+  "Einfarbig": "Single colour",
+  "Bild": "Image",
+  "Eigenes Bild": "Your own image",
+  "Eigenes Hochladen": "Upload your own",
+  "Eigene": "Custom",
+  "Direkt im Code": "Directly in the code",
+  "Dashboard-Optionen (Vorschau-Simulation).": "Dashboard options (preview simulation).",
+  "Unbenannt": "Untitled",
+  "Start": "Start",
+  "Hell, milchig": "Light, milky",
+  "Dunkel, gedämpft": "Dark, muted",
+  "Folgt Akzentfarbe": "Follows the accent colour",
+  "Lichtkante": "Light edge",
   },
+};
+
+const HATG_TEXT_MUSTER = {
+  en: [
+    [/^(\d+)\s+Felder$/, "$1 fields"],
+    [/^(\d+)\s+Feld$/, "$1 field"],
+    [/^(\d+)\s+löschen$/, "delete $1"],
+    [/^(\d+)\s+Bilder gelöscht\.$/, "$1 images deleted."],
+    [/^(.+?)\s+außen$/, "$1 outer"],
+    [/^(.+?)\s+innen$/, "$1 inner"],
+    [/^(.+?)\s+erneut auf alle Felder anwenden$/, "Apply $1 to all fields again"],
+    [/^(.+?)\s+erneut auf alle Felder anwenden - zeigt sofort, ob die Zeile greift$/, "Apply $1 to all fields again - shows immediately whether the row takes effect"],
+    [/^(.+?)\s+nach\s+(.+?)\s+übernehmen$/, "Copy $1 to $2"],
+    [/^Farbe nach\s+(.+?)\s+übernehmen$/, "Copy colour to $1"],
+    [/^Nach\s+(.+?)\s+übernehmen$/, "Copy to $1"],
+    [/^Bubble und Mushroom ziehen mit \((\d+) Felder\) - klicken zum Abkoppeln$/, "Bubble and Mushroom follow along ($1 fields) - click to decouple"],
+    [/^Bubble und Mushroom folgen nicht mehr \((\d+) Felder abgekoppelt\)\.$/, "Bubble and Mushroom no longer follow ($1 fields decoupled)."],
+    [/^Bubble und Mushroom ziehen jetzt mit \((\d+) Felder\)\.$/, "Bubble and Mushroom now follow along ($1 fields)."],
+    [/^(.+?):\s+(\d+) Felder neu auf\s+(.+?)\s+gesetzt$/, "$1: $2 fields reset to $3"],
+    [/^(\d+) Felder wieder auf\s+(.+)$/, "$1 fields reset to $2"],
+    [/^nach „(.+?)“ weiter einschränken \((\d+) Treffer\)$/, "narrow further by “$1” ($2 matches)"],
+    [/^(.+?)\s+\((\d+)×\) – Mehrfachauswahl möglich$/, "$1 ($2×) – multiple selection possible"],
+    [/^Theme gespeichert:\s*(.+)$/, "Theme saved: $1"],
+    [/^Bild hochgeladen:\s*(.+)$/, "Image uploaded: $1"],
+    [/^Hintergrundbild gesetzt:\s*(.+?)\.\s*Nicht vergessen zu speichern\.$/, "Background image set: $1. Remember to save."],
+    [/^Rückgängig:\s*(\d+) Felder \(inkl\. automatischer Ableitungen\)\.$/, "Undone: $1 fields (including automatic derivations)."],
+    [/^Rückgängig:\s*(.+?)\.$/, "Undone: $1."],
+    [/^Löschen fehlgeschlagen:\s*(.+)$/, "Deleting failed: $1"],
+    [/^Kombinierte Vorlage \((\d+) Plugins\) in Zwischenablage kopiert\.$/, "Combined preset ($1 plugins) copied to the clipboard."],
+    [/^(.+?)\s+wird gerade als Hintergrund benutzt - erst ein anderes Bild wählen\.$/, "$1 is currently in use as the background - choose a different image first."],
+    [/^(.+?)\s+·\s+(.+?)\s+- anklicken zum Übernehmen$/, "$1 · $2 - click to apply"],
+    [/^(.+?)\s+übernommen:\s*(.+?)\.$/, "$1 applied: $2."],
+  ],
 };
 
 function hatgSpracheGespeichert() {
@@ -328,8 +404,20 @@ function hatgUebersetze(text, sprache) {
   if (sprache === "de") return text;
   const tabelle = HATG_TEXTE[sprache];
   if (!tabelle) return text;
-  const treffer = tabelle[hatgNormText(text)];
-  return treffer === undefined ? text : treffer;
+  const kern = hatgNormText(text);
+  const treffer = tabelle[kern];
+  if (treffer !== undefined) return treffer;
+  const muster = HATG_TEXT_MUSTER[sprache] || [];
+  for (let i = 0; i < muster.length; i++) {
+    const gefunden = kern.match(muster[i][0]);
+    if (!gefunden) continue;
+    return muster[i][1].replace(/\$(\d)/g, (ganz, nummer) => {
+      const teil = gefunden[Number(nummer)] === undefined ? "" : gefunden[Number(nummer)];
+      const uebersetzt = tabelle[hatgNormText(teil)];
+      return uebersetzt === undefined ? teil : uebersetzt;
+    });
+  }
+  return text;
 }
 
 function hatgUebersetzeBaum(wurzel, sprache) {
@@ -353,8 +441,8 @@ function hatgUebersetzeBaum(wurzel, sprache) {
     const roh = k.nodeValue;
     const kern = hatgNormText(roh);
     if (!kern) return;
-    const ersatz = tabelle[kern];
-    if (ersatz === undefined) return;
+    const ersatz = hatgUebersetze(kern, sprache);
+    if (ersatz === kern) return;
     const vorn = roh.match(/^\s*/)[0];
     const hinten = roh.match(/\s*$/)[0];
     k.nodeValue = vorn + ersatz + hinten;
@@ -365,8 +453,9 @@ function hatgUebersetzeBaum(wurzel, sprache) {
     ["title", "aria-label", "placeholder"].forEach((attribut) => {
       const wert = el.getAttribute(attribut);
       if (!wert) return;
-      const ersatz = tabelle[hatgNormText(wert)];
-      if (ersatz === undefined) return;
+      const roh = hatgNormText(wert);
+      const ersatz = hatgUebersetze(roh, sprache);
+      if (ersatz === roh) return;
       el.setAttribute(attribut, ersatz);
       ersetzt += 1;
     });
@@ -6834,6 +6923,7 @@ class HATGPanel extends HTMLElement {
       this._state.previewFontMenuOpen = !this._state.previewFontMenuOpen;
       this.render();
     });
+    hatgUebersetzeBaum(root, this._sprache);
   }
 
   copyYaml() {
