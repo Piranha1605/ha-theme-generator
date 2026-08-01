@@ -1,4 +1,4 @@
-const HATG_VERSION = "0.4.0b4";
+const HATG_VERSION = "0.4.0b7";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -248,6 +248,10 @@ const HATG_TEXTE = {
   "Sub-Buttons einer Bubble-Card bekommen im 'aus'-Zustand einen dezenten Neumorphic-Schatten statt kreidig-weißer Kanten, im 'an'-Zustand statt einer reinen Volltonfarbe ein sanftes, farbiges Glühen in der Akzentfarbe - der Hintergrund bleibt neutral grau, das Glühen wird zur alleinigen 'an'-Kennung.": "In the 'off' state, the sub-buttons of a Bubble Card get a subtle neumorphic shadow instead of chalky white edges; in the 'on' state they get a soft, coloured glow in the accent colour instead of a solid fill – the background stays neutral grey and the glow becomes the only 'on' indicator.",
   "Individuelles Karten-Relief (native card_mod, jede Kartenart)": "Custom card relief (native card_mod, any card type)",
   "Dunkler Verlaufshintergrund mit mehrschichtigem Relief-Schatten (erhabene Lichtkante oben, eingedrückte Schattenkante unten) und feinem Rahmen - für eine einzelne, gezielt ausgewählte Karte. Anders als die übrigen Plugins hier nutzt dieses den ganz normalen, kartenartunabhängigen card_mod-Baustein (nicht Bubble Cards eigenes styles:-Feld), funktioniert also z. B. auch bei Tile-, Entities- oder Thermostat-Karten.": "A dark gradient background with a layered relief shadow (a raised highlight along the top, a pressed shadow edge at the bottom) and a fine border – for one specific card. Unlike the other plugins here, this one uses the ordinary, card-type-independent card_mod block (not Bubble Card's own styles: field), so it also works on tile, entities or thermostat cards.",
+  "Bubble ohne An-Hintergrund": "Bubble without on-background",
+  "Bubble-Button-Karte ohne Bubble Cards eigene Volltonfarbe im 'an'-Zustand: nur der Icon-Kreis und das Icon selbst wechseln dezent die Farbe (ueber dieselben Mushroom-Zustandsvariablen wie im HATG-Theme), die Karte drumherum bleibt immer neutral in der normalen Kartenfarbe.": "A Bubble button card without Bubble Card's own solid fill in the 'on' state: only the icon circle and the icon itself change colour subtly (via the same Mushroom state variables as in the HATG theme), while the card around it always stays in its normal, neutral card colour.",
+  "Nutzt Bubble Cards eigene, direkt am Button haengende <code>state</code>-Variable (kein <code>hass.states[...]</code> noetig, da sich das Styling auf die eigene <code>entity:</code> der Karte bezieht). <code>.bubble-button-background</code> wird transparent gesetzt, weil Bubble Card im 'an'-Zustand sonst selbst eine deckende Akzentfarben-Ebene ueber die ganze Karte legt - ohne diese Zeile waere von der reinen Icon-Toenung nichts zu sehen. Vorlage unten in eine eigene Karte einfuegen, Entity anpassen.": "Uses Bubble Card's own <code>state</code> variable attached directly to the button (no <code>hass.states[...]</code> needed, since the styling refers to the card's own <code>entity:</code>). <code>.bubble-button-background</code> is set to transparent because Bubble Card otherwise places its own opaque accent-colour layer over the whole card in the 'on' state - without this line nothing of the pure icon tint would be visible. Paste the snippet below into your own card and adjust the entity.",
+  "noetig, da sich das Styling auf die eigene": "needed, since the styling refers to the card's own",
   "Kühles Blau-Grau": "Cool blue-grey",
   "Die HATG-Basis-Vorlage: kühlere Blau-/Grautöne, ruhiger, technischer Look.": "The HATG base preset: cooler blue and grey tones, a calm, technical look.",
   "Signature Blaugrün (v0219)": "Signature teal (v0219)",
@@ -1177,6 +1181,47 @@ const HATG_PLUGINS = [
   }
   :host, ha-card {
     --bubble-button-background-color: transparent !important;
+  }`,
+  },
+  {
+    id: "bubble-ohne-an-hintergrund",
+    label: "Bubble ohne An-Hintergrund",
+    desc: "Bubble-Button-Karte ohne Bubble Cards eigene Volltonfarbe im 'an'-Zustand: nur der Icon-Kreis und das Icon selbst wechseln dezent die Farbe (ueber dieselben Mushroom-Zustandsvariablen wie im HATG-Theme), die Karte drumherum bleibt immer neutral in der normalen Kartenfarbe.",
+    screenshot: "/hatg_static/plugins/bubble-ohne-an-hintergrund.png",
+    template: hatgGenericButtonPluginTemplate,
+    hint: "Nutzt Bubble Cards eigene, direkt am Button haengende <code>state</code>-Variable (kein <code>hass.states[...]</code> noetig, da sich das Styling auf die eigene <code>entity:</code> der Karte bezieht). <code>.bubble-button-background</code> wird transparent gesetzt, weil Bubble Card im 'an'-Zustand sonst selbst eine deckende Akzentfarben-Ebene ueber die ganze Karte legt - ohne diese Zeile waere von der reinen Icon-Toenung nichts zu sehen. Vorlage unten in eine eigene Karte einfuegen, Entity anpassen.",
+    css: `.bubble-button-card-container {
+    background: var(--bubble-card-background-color) !important;
+    border: var(--ha-card-border-width, 1px) solid rgba(255, 255, 255, 0.25) !important;
+    border-radius: var(--ha-card-border-radius) !important;
+    box-shadow: var(--ha-card-box-shadow) !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+  .bubble-button-background {
+    background: transparent !important;
+    border-radius: inherit !important;
+    opacity: 1 !important;
+  }
+  .bubble-icon-container {
+    border-radius: var(--bubble-icon-border-radius) !important;
+    background: \${state === 'on'
+      ? 'rgba(var(--mush-rgb-state-light), 0.20)'
+      : 'var(--mush-icon-background-color)'
+    } !important;
+  }
+  .bubble-icon {
+    opacity: 1 !important;
+    color: \${state === 'on'
+      ? 'var(--mush-icon-active-color)'
+      : 'var(--mush-icon-color)'
+    } !important;
+  }
+  .bubble-name {
+    color: var(--primary-text-color) !important;
+  }
+  .bubble-state {
+    color: var(--secondary-text-color) !important;
   }`,
   },
   {
@@ -3846,7 +3891,7 @@ class HATGPanel extends HTMLElement {
           <input class="text-input" type="text" spellcheck="false" data-custom-cardmod-label value="${hatgEscape(dialog.label || "")}" placeholder="z. B. Kräftiger Kartenrand" />
         </label>
         <label class="custom-cardmod-label">Beschreibung <small>(optional)</small>
-          <input class="text-input" type="text" spellcheck="false" data-custom-cardmod-desc value="${hatgEscape(dialog.desc || "")}" placeholder="Wofür ist die Vorlage gut?" />
+          <textarea class="text-input custom-cardmod-desc" spellcheck="false" rows="3" data-custom-cardmod-desc placeholder="Wofür ist die Vorlage gut?">${hatgEscape(dialog.desc || "")}</textarea>
         </label>
         <label class="custom-cardmod-label">CSS
           <textarea class="text-input custom-cardmod-css" spellcheck="false" data-custom-cardmod-css placeholder="ha-card {\n  border: 2px solid var(--accent-color) !important;\n}">${hatgEscape(dialog.css || "")}</textarea>
@@ -5609,6 +5654,7 @@ class HATGPanel extends HTMLElement {
         .custom-cardmod-label small { font-weight: 400; }
         .custom-cardmod-label .text-input { display: block; width: 100%; box-sizing: border-box; margin-top: 5px; font-weight: 400; }
         .custom-cardmod-css { min-height: 190px; resize: vertical; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; line-height: 1.5; }
+        .custom-cardmod-desc { min-height: 64px; height: auto; resize: vertical; line-height: 1.4; padding: 8px 10px; }
         .modal-box-breit { max-width: 720px; width: min(720px, 92vw); }
         .wp-galerie { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; max-height: 320px; overflow-y: auto; padding: 2px; margin-top: 10px; }
         .wp-kachel { position: relative; border: 2px solid transparent; border-radius: 12px; overflow: hidden; background: var(--hatg-bg-2, rgba(127,140,160,.10)); transition: border-color .15s ease, transform .15s ease; }
@@ -7245,6 +7291,7 @@ class HATGPanel extends HTMLElement {
           delete bag[oldKey];
           if (!value) return;
           const existing = String(parsed[mode][newKey] ?? "").trim();
+          if (existing && existing.includes(value)) return;
           parsed[mode][newKey] = existing ? `${existing}\n${value}` : value;
           migrated++;
         });
