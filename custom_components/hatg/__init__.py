@@ -34,6 +34,7 @@ WALLPAPER_SUBDIR = "Wallpaper"
 _WALLPAPER_ALLOWED_EXT = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
 _WALLPAPER_SAFE_NAME_RE = re.compile(r"[^A-Za-z0-9._-]+")
 
+CUSTOM_CARDMOD_SUBDIR = "hatg"
 CUSTOM_CARDMOD_FILE = "hatg-cardmod-vorlagen.json"
 _CUSTOM_CARDMOD_ID_RE = re.compile(r"[A-Za-z0-9_-]{1,64}")
 
@@ -432,13 +433,15 @@ async def ws_list_wallpapers(hass: HomeAssistant, connection, msg):
 @websocket_api.async_response
 async def ws_list_custom_cardmods(hass: HomeAssistant, connection, msg):
     """Liest die selbst angelegten Cardmod-Vorlagen."""
-    ziel = Path(hass.config.path(THEMES_SUBDIR, CUSTOM_CARDMOD_FILE))
+    ziel = Path(hass.config.path(THEMES_SUBDIR, CUSTOM_CARDMOD_SUBDIR, CUSTOM_CARDMOD_FILE))
+    alter_ort = Path(hass.config.path(THEMES_SUBDIR, CUSTOM_CARDMOD_FILE))
 
     def _read():
-        if not ziel.is_file():
+        quelle = ziel if ziel.is_file() else alter_ort
+        if not quelle.is_file():
             return []
         try:
-            daten = json.loads(ziel.read_text(encoding="utf-8"))
+            daten = json.loads(quelle.read_text(encoding="utf-8"))
         except (OSError, ValueError):
             return []
         if not isinstance(daten, list):
@@ -502,11 +505,11 @@ async def ws_save_custom_cardmods(hass: HomeAssistant, connection, msg):
         connection.send_error(msg["id"], "duplicate_id", "Zwei Vorlagen haben dieselbe Kennung.")
         return
 
-    themes_dir = Path(hass.config.path(THEMES_SUBDIR))
-    ziel = themes_dir / CUSTOM_CARDMOD_FILE
+    cardmod_dir = Path(hass.config.path(THEMES_SUBDIR, CUSTOM_CARDMOD_SUBDIR))
+    ziel = cardmod_dir / CUSTOM_CARDMOD_FILE
 
     def _write():
-        themes_dir.mkdir(parents=True, exist_ok=True)
+        cardmod_dir.mkdir(parents=True, exist_ok=True)
         ziel.write_text(json.dumps(eintraege, indent=2, ensure_ascii=False), encoding="utf-8")
 
     try:

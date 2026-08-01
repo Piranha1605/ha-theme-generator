@@ -1,4 +1,4 @@
-const HATG_VERSION = "0.4.0b3";
+const HATG_VERSION = "0.4.0b4";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -1885,6 +1885,13 @@ function hatgMasterAllKeys(group) {
 function hatgIsHex(value) {
   return /^#[0-9A-Fa-f]{6}$/.test(String(value ?? "").trim());
 }
+function hatgBareHexMitHash(value) {
+  const raw = String(value ?? "").trim();
+  if (/^(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$/.test(raw)) {
+    return `#${raw.toUpperCase()}`;
+  }
+  return null;
+}
 const HATG_CUSTOM_YAML_KEY = "eigene-theme-eintraege";
 function hatgIsLong(key, value) {
   if (key === "card-mod-card") return true;
@@ -3644,7 +3651,8 @@ class HATGPanel extends HTMLElement {
       return true;
     } catch (error) {
       console.error("HATG persistCustomCardmods failed", error);
-      this.showToast("Vorlage konnte nicht gespeichert werden.");
+      const detail = error && (error.message || error.code) ? ` (${error.message || error.code})` : "";
+      this.showToast(`Vorlage konnte nicht gespeichert werden${detail}.`);
       return false;
     }
   }
@@ -3702,7 +3710,8 @@ class HATGPanel extends HTMLElement {
       return;
     }
 
-    const liste = [...this.eigeneCardmods()];
+    const vorherigeListe = [...this.eigeneCardmods()];
+    const liste = [...vorherigeListe];
     const eintrag = {
       id: dialog.id || this.cardmodIdAusName(label),
       label,
@@ -3715,7 +3724,12 @@ class HATGPanel extends HTMLElement {
     this._state.customCardmods = liste;
 
     const gespeichert = await this.persistCustomCardmods();
-    if (!gespeichert) return;
+    if (!gespeichert) {
+      this._state.customCardmods = vorherigeListe;
+      dialog.error = "Vorlage konnte nicht gespeichert werden - siehe Meldung unten.";
+      this.render();
+      return;
+    }
 
     if (index >= 0 && hatgCardmodBlockActive(String(this.currentValues()["card-mod-card"] || ""), eintrag.id)) {
       this.refreshCardmodTemplates({ still: true });
@@ -3728,11 +3742,16 @@ class HATGPanel extends HTMLElement {
   async deleteCustomCardmod(id) {
     const eintrag = this.eigeneCardmods().find((t) => t.id === id);
     if (!eintrag) return;
+    const vorherigeListe = [...this.eigeneCardmods()];
     const aktiv = hatgCardmodBlockActive(String(this.currentValues()["card-mod-card"] || ""), id);
     if (aktiv) this.toggleCardmodTemplate(id, { still: true });
     this._state.customCardmods = this.eigeneCardmods().filter((t) => t.id !== id);
     const gespeichert = await this.persistCustomCardmods();
-    if (!gespeichert) return;
+    if (!gespeichert) {
+      this._state.customCardmods = vorherigeListe;
+      this.render();
+      return;
+    }
     this._state.customCardmodDialog = null;
     this.render();
     this.showToast(`"${eintrag.label}" gelöscht${aktiv ? " und aus dem Theme entfernt" : ""}.`);
@@ -7016,11 +7035,18 @@ class HATGPanel extends HTMLElement {
 
   validateTheme() {
     const formats = hatgGetKeyFormats();
-    const problems = { invalid: [], empty: [] };
+    const problems = { invalid: [], empty: [], repaired: 0 };
     const allowEmpty = new Set(["card-mod-root", "card-mod-card", HATG_CUSTOM_YAML_KEY]);
     ["light", "dark"].forEach((mode) => {
       const values = this._state.values[mode];
       Object.keys(formats).forEach((k) => {
+        if (formats[k] === "hex") {
+          const repariert = hatgBareHexMitHash(values[k]);
+          if (repariert && repariert !== values[k]) {
+            values[k] = repariert;
+            problems.repaired++;
+          }
+        }
         const status = hatgValidateValue(formats[k], values[k], k);
         if (status === "empty") {
           if (!allowEmpty.has(k)) problems.empty.push({ key: k, mode });
@@ -7089,12 +7115,16 @@ class HATGPanel extends HTMLElement {
     if (!v) return "";
     const { problems, forSave } = v;
     const total = problems.invalid.length + problems.empty.length;
+    const repariertHinweis = problems.repaired
+      ? `<p>${problems.repaired} Farbwert${problems.repaired === 1 ? "" : "e"} fehlte${problems.repaired === 1 ? "" : "n"} das "#" und wurde${problems.repaired === 1 ? "" : "n"} automatisch ergänzt.</p>`
+      : "";
     if (total === 0) {
       return `
         <div class="modal-scrim" data-validation-close></div>
         <div class="modal-box">
           <h3>Alles in Ordnung</h3>
           <p>Keine ungültigen Farbwerte und keine leeren Felder gefunden.</p>
+          ${repariertHinweis}
           <div class="modal-actions">
             <button type="button" class="modal-btn primary" data-validation-close>Schließen</button>
           </div>
@@ -7111,6 +7141,7 @@ class HATGPanel extends HTMLElement {
       <div class="modal-box modal-box-wide">
         <h3>${total} Problem${total === 1 ? "" : "e"} gefunden</h3>
         <p>${problems.invalid.length} ungültige${problems.invalid.length === 1 ? "r" : ""} Wert${problems.invalid.length === 1 ? "" : "e"}, ${problems.empty.length} leere${problems.empty.length === 1 ? "s" : ""} Feld${problems.empty.length === 1 ? "" : "er"}.</p>
+        ${repariertHinweis}
         <ul class="validation-list">${rows}</ul>
         <div class="modal-actions">
           ${forSave
