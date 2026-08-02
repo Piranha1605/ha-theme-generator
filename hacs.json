@@ -1,4 +1,5 @@
 {
   "name": "HATG",
+  "domains": ["hatg"],
   "render_readme": true
 }
