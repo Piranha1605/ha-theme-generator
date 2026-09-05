@@ -47,8 +47,7 @@ const HATG_TEXTE = {
   "Werkzeuge": "Tools",
   "Erweiterungen": "Extensions",
   "Generatoren": "Generators",
-  "Cardmod": "Card-mod",
-  "Cardmod-Vorlagen": "Card-mod presets",
+  "UIX-Vorlagen": "UIX presets",
   "Eigene Vorlagen": "Custom presets",
   "Neue Vorlage": "New preset",
   "Vorlage kopieren": "Copy preset",
@@ -78,13 +77,13 @@ const HATG_TEXTE = {
   "Werte direkt hier als Text bearbeiten – ohne durch die Sektionen zu navigieren. Änderungen werden beim Tippen sofort übernommen.": "Edit values directly as text here – no need to navigate the sections. Changes are applied as you type.",
   "Zeigt dein echtes Home-Assistant-Dashboard direkt hier – kein Mockup, sondern die echte Oberfläche. \"Zwischenstand sichern\" und \"Datei speichern\" laden HAs Themes automatisch neu; danach hier auf \"Aktualisieren\" tippen, um die neue Farbgebung zu sehen.": "Shows your real Home Assistant dashboard right here – not a mockup but the actual interface. \"Save draft\" and \"Save to file\" reload HA's themes automatically; then tap \"Refresh\" here to see the new colours.",
   "Bleibt die Ansicht leer oder fragt nach Login: der Browser blockiert vermutlich das Einbetten – bitte kurz Rückmeldung geben.": "If the view stays empty or asks you to log in, the browser is probably blocking the embed – please let us know.",
-  "Fertige card-mod-Bausteine für Bubble-Card-Slider – als Kopiervorlage für einzelne Karten (Details über das": "Ready-made card-mod blocks for Bubble Card sliders – as copy-and-paste snippets for individual cards (details via the",
+  "Fertige UIX-Bausteine für Bubble-Card-Slider – als Kopiervorlage für einzelne Karten (Details über das": "Ready-made UIX blocks for Bubble Card sliders – as copy-and-paste snippets for individual cards (details via the",
   "-Symbol je Karte). Mit den Kästchen lassen sich mehrere Plugins auswählen und als eine kombinierte Karte kopieren.": "icon on each card). Use the checkboxes to select several plugins and copy them as one combined card.",
   "Das CSS landet beim Aktivieren markiert in": "When activated, the CSS is written and marked in",
   "- genau wie die mitgelieferten Vorlagen, für Light und Dark gleichzeitig.": "– just like the built-in presets, for light and dark at the same time.",
   "Noch keine eigenen Vorlagen. Sie werden in": "No custom presets yet. They are stored in",
   "abgelegt und bleiben damit über Theme- und Browserwechsel hinweg erhalten.": "and therefore survive theme and browser changes.",
-  "Fertige card-mod-Bausteine, die per Klick global im Theme aktiviert werden (landen markiert in": "Ready-made card-mod blocks activated globally in the theme with one click (written and marked in",
+  "Fertige UIX-Bausteine, die per Klick global im Theme aktiviert werden (landen markiert in": "Ready-made UIX blocks activated globally in the theme with one click (written and marked in",
   ", für Light und Dark gleichzeitig) - kein Kopieren/Einfügen nötig. Decken native HA-, Mushroom- und Bubble-Karten ab, in": ", for light and dark at the same time) – no copy and paste needed. They cover native HA, Mushroom and Bubble cards, in",
   "Eigene(r) CSS-Wert für background-image": "Custom CSS value for background-image",
   "Deckkraft des Bildes": "Image opacity",
@@ -97,7 +96,7 @@ const HATG_TEXTE = {
   "Neues Bild wählen …": "Choose a new image …",
   "Bild wird vorbereitet (verkleinert/komprimiert) …": "Preparing image (resizing/compressing) …",
   "Interaktive Regler, die dir Theme-Werte direkt mit Live-Vorschau erzeugen – statt Werte von Hand einzutippen. Anders als die Plugin-Bibliothek (fertige Kopiervorlagen) wirken Generatoren direkt auf deine Theme-Felder.": "Interactive sliders that generate theme values with a live preview instead of typing values by hand. Unlike the plugin library (ready-made snippets), generators act directly on your theme fields.",
-  "Glaseffekt für Karten: Unschärfe wirkt auf Bubble-Card-Kacheln (per card-mod), die Kartentransparenz auf die Kartenhintergründe in Home Assistant, Bubble Card und Mushroom – bewusst nicht auf Auswahlmenüs/Dialoge, damit die bedienbar bleiben. Änderungen wirken sofort hier in der Vorschau; im echten Dashboard erst nach Speichern/Exportieren des Themes.": "Glass effect for cards: blur applies to Bubble Card tiles (via card-mod), card transparency to the card backgrounds in Home Assistant, Bubble Card and Mushroom – deliberately not to dropdowns and dialogs so they stay usable. Changes take effect here in the preview immediately; on the real dashboard only after saving or exporting the theme.",
+  "Glaseffekt für Karten: Unschärfe wirkt auf Bubble-Card-Kacheln (per UIX), die Kartentransparenz auf die Kartenhintergründe in Home Assistant, Bubble Card und Mushroom – bewusst nicht auf Auswahlmenüs/Dialoge, damit die bedienbar bleiben. Änderungen wirken sofort hier in der Vorschau; im echten Dashboard erst nach Speichern/Exportieren des Themes.": "Glass effect for cards: blur applies to Bubble Card tiles (via UIX), card transparency to the card backgrounds in Home Assistant, Bubble Card and Mushroom – deliberately not to dropdowns and dialogs so they stay usable. Changes take effect here in the preview immediately; on the real dashboard only after saving or exporting the theme.",
   "Unschärfe schreibt in": "Blur writes to",
   ", Kartentransparenz in": ", card transparency to",
   "und die entsprechenden Bubble-/Mushroom-Felder (als RGBA) – alle einzeln auch unter „Alle Felder\" zu finden. 0% = normale, blickdichte Karte, 100% = komplett durchsichtig. Auswahlmenüs/Dialoge bleiben bewusst unberührt.": "and the matching Bubble/Mushroom fields (as RGBA) – all of them also listed individually under \"All fields\". 0% = normal, opaque card, 100% = fully transparent. Dropdowns and dialogs are deliberately left untouched.",
@@ -199,7 +198,7 @@ const HATG_TEXTE = {
   "Alle Bubble-Card-Werte an einem Ort, in 9 Unterordnern: Karten & Hintergründe, Buttons, Sub-Buttons, Separator, Popup & Dialog, Horizontal Buttons Stack, Climate, Cover, Media Player.": "Every Bubble Card value in one place, in 9 subfolders: cards & backgrounds, buttons, sub-buttons, separator, popup & dialog, horizontal buttons stack, climate, cover, media player.",
   "Karten & Hintergründe": "Cards & backgrounds",
   "Alle Mushroom-Werte an einem Ort, in 6 Unterordnern: Karten & Hintergründe, Icons, Toggle, Slider, Chips, RGB-Hilfswerte.": "Every Mushroom value in one place, in 6 subfolders: cards & backgrounds, icons, toggles, sliders, chips, RGB helpers.",
-  "Interne Generatorwerte, card-mod-Bloecke und ein Freitextfeld fuer eigene, von HATG nicht verwaltete Theme-Eintraege.": "Internal generator values, card-mod blocks and a free-text field for your own theme entries that HATG does not manage.",
+  "UIX-Stilziele fuer das ganze Theme, interne Generatorwerte und ein Freitextfeld fuer eigene, von HATG nicht verwaltete Theme-Eintraege.": "UIX style targets for the whole theme, internal generator values and a free-text field for your own theme entries that HATG does not manage.",
   "Startet ein komplett neues, sauberes Theme mit dieser Werksvorlage: Grundfarben (Primär-/Akzentfarbe, Hintergründe, Text": "Starts a completely new, clean theme from this factory preset: base colours (primary/accent colour, backgrounds, text",
   "Screenshot folgt": "Screenshot coming soon",
   "HA Tile-Card — \"color: primary\"": "HA tile card — \"color: primary\"",
@@ -246,8 +245,8 @@ const HATG_TEXTE = {
   "Karte wechselt Hintergrund, Rahmen und Icon-Leuchten je nachdem, ob eine gewählte Entity 'on' oder 'off' ist - z. B. rot/warnend bei einer aktiven Kamera-Erkennung oder einem offenen Sensor, sonst ruhig grün. Nutzt Bubble Cards eigenes Template-Feature (JS-Template-Literal mit direktem hass.states-Zugriff) statt statischem CSS.": "The card changes background, border and icon glow depending on whether a chosen entity is 'on' or 'off' – red and alerting for an active camera detection or an open sensor, calm green otherwise. Uses Bubble Card's own template feature (a JS template literal with direct hass.states access) instead of static CSS.",
   "Sub-Button Leucht-Zustand (an/aus)": "Sub-button glow state (on/off)",
   "Sub-Buttons einer Bubble-Card bekommen im 'aus'-Zustand einen dezenten Neumorphic-Schatten statt kreidig-weißer Kanten, im 'an'-Zustand statt einer reinen Volltonfarbe ein sanftes, farbiges Glühen in der Akzentfarbe - der Hintergrund bleibt neutral grau, das Glühen wird zur alleinigen 'an'-Kennung.": "In the 'off' state, the sub-buttons of a Bubble Card get a subtle neumorphic shadow instead of chalky white edges; in the 'on' state they get a soft, coloured glow in the accent colour instead of a solid fill – the background stays neutral grey and the glow becomes the only 'on' indicator.",
-  "Individuelles Karten-Relief (native card_mod, jede Kartenart)": "Custom card relief (native card_mod, any card type)",
-  "Dunkler Verlaufshintergrund mit mehrschichtigem Relief-Schatten (erhabene Lichtkante oben, eingedrückte Schattenkante unten) und feinem Rahmen - für eine einzelne, gezielt ausgewählte Karte. Anders als die übrigen Plugins hier nutzt dieses den ganz normalen, kartenartunabhängigen card_mod-Baustein (nicht Bubble Cards eigenes styles:-Feld), funktioniert also z. B. auch bei Tile-, Entities- oder Thermostat-Karten.": "A dark gradient background with a layered relief shadow (a raised highlight along the top, a pressed shadow edge at the bottom) and a fine border – for one specific card. Unlike the other plugins here, this one uses the ordinary, card-type-independent card_mod block (not Bubble Card's own styles: field), so it also works on tile, entities or thermostat cards.",
+  "Individuelles Karten-Relief (nativer UIX-Baustein, jede Kartenart)": "Custom card relief (native UIX block, any card type)",
+  "Dunkler Verlaufshintergrund mit mehrschichtigem Relief-Schatten (erhabene Lichtkante oben, eingedrückte Schattenkante unten) und feinem Rahmen - für eine einzelne, gezielt ausgewählte Karte. Anders als die übrigen Plugins hier nutzt dieses den ganz normalen, kartenartunabhängigen UIX-Baustein (nicht Bubble Cards eigenes styles:-Feld), funktioniert also z. B. auch bei Tile-, Entities- oder Thermostat-Karten.": "A dark gradient background with a layered relief shadow (a raised highlight along the top, a pressed shadow edge at the bottom) and a fine border – for one specific card. Unlike the other plugins here, this one uses the ordinary, card-type-independent UIX block (not Bubble Card's own styles: field), so it also works on tile, entities or thermostat cards.",
   "Bubble ohne An-Hintergrund": "Bubble without on-background",
   "Bubble-Button-Karte ohne Bubble Cards eigene Volltonfarbe im 'an'-Zustand: nur der Icon-Kreis und das Icon selbst wechseln dezent die Farbe (ueber dieselben Mushroom-Zustandsvariablen wie im HATG-Theme), die Karte drumherum bleibt immer neutral in der normalen Kartenfarbe.": "A Bubble button card without Bubble Card's own solid fill in the 'on' state: only the icon circle and the icon itself change colour subtly (via the same Mushroom state variables as in the HATG theme), while the card around it always stays in its normal, neutral card colour.",
   "Nutzt Bubble Cards eigene, direkt am Button haengende <code>state</code>-Variable (kein <code>hass.states[...]</code> noetig, da sich das Styling auf die eigene <code>entity:</code> der Karte bezieht). <code>.bubble-button-background</code> wird transparent gesetzt, weil Bubble Card im 'an'-Zustand sonst selbst eine deckende Akzentfarben-Ebene ueber die ganze Karte legt - ohne diese Zeile waere von der reinen Icon-Toenung nichts zu sehen. Vorlage unten in eine eigene Karte einfuegen, Entity anpassen.": "Uses Bubble Card's own <code>state</code> variable attached directly to the button (no <code>hass.states[...]</code> needed, since the styling refers to the card's own <code>entity:</code>). <code>.bubble-button-background</code> is set to transparent because Bubble Card otherwise places its own opaque accent-colour layer over the whole card in the 'on' state - without this line nothing of the pure icon tint would be visible. Paste the snippet below into your own card and adjust the entity.",
@@ -295,9 +294,9 @@ const HATG_TEXTE = {
   "Gleiches Prinzip wie 'Helles Frost-Glas', nur mit dunklem statt hellem Grundton und dezenterem Rand. Enthält denselben Safari-Ecken-Fix (-webkit-mask-image). Vorlage unten in eine eigene Karte einfügen, Entity/Kartentyp anpassen.": "Same principle as 'Light frosted glass', just with a dark rather than a light base tone and a subtler edge. Includes the same Safari corner fix (-webkit-mask-image). Paste the snippet below into your own card and adjust entity and card type.",
   "Nutzt color-mix() direkt mit var(--accent-color), daher keine feste Hex-Farbe im CSS - der Farbton folgt automatisch der aktuell aktiven Theme-Akzentfarbe. Enthält denselben Safari-Ecken-Fix (-webkit-mask-image). Vorlage unten in eine eigene Karte einfügen, Entity/Kartentyp anpassen.": "Uses color-mix() directly with var(--accent-color), so there is no fixed hex colour in the CSS - the shade follows the currently active theme accent colour automatically. Includes the same Safari corner fix (-webkit-mask-image). Paste the snippet below into your own card and adjust entity and card type.",
   "Der Licht-Schimmer wird per ::before-Pseudoelement auf .bubble-container erzeugt, daher zusätzlich position: relative und overflow: hidden gesetzt (Bubble Card setzt overflow:hidden zwar bereits selbst, hier zur Sicherheit explizit). Enthält denselben Safari-Ecken-Fix (-webkit-mask-image). Vorlage unten in eine eigene Karte einfügen, Entity/Kartentyp anpassen.": "The shimmer is created with a ::before pseudo-element on .bubble-container, which is why position: relative and overflow: hidden are set as well (Bubble Card already sets overflow: hidden itself, but it is stated explicitly here to be safe). Includes the same Safari corner fix (-webkit-mask-image). Paste the snippet below into your own card and adjust entity and card type.",
-  "Bubble Cards <code>styles:</code>-Schlüssel akzeptiert nicht nur reines CSS, sondern auch JS-Template-Literale (Backticks, <code>${...}</code>) mit direktem Zugriff auf <code>hass.states[...]</code> - dadurch kann sich das Aussehen einer Karte live nach einem Entity-Zustand richten, ganz ohne separate Template-/card-mod-Integration. Wichtig bei <code>button_type: switch</code>: Bubble Card legt bei 'an' selbst eine deckende Akzentfarben-Ebene (<code>.bubble-background</code>, Opazität 1) über die Karte - ohne die Neutralisierung unten via <code>--bubble-button-background-color</code> würde man vom eigenen Rot/Grün-Effekt nichts sehen. Vorlage unten in eine eigene Karte einfügen, ENTITY_HIER durch die zu überwachende Entity ersetzen.": "Bubble Card's <code>styles:</code> key accepts not only plain CSS but also JS template literals (backticks, <code>${...}</code>) with direct access to <code>hass.states[...]</code> - which lets a card's appearance follow an entity state live, with no separate template or card-mod integration. Important with <code>button_type: switch</code>: in the 'on' state Bubble Card places an opaque accent-colour layer (<code>.bubble-background</code>, opacity 1) over the card - without the neutralisation below via <code>--bubble-button-background-color</code> you would see nothing of your own red/green effect. Paste the snippet below into your own card and replace ENTITY_HIER with the entity you want to watch.",
-  "Braucht die separate card-mod-Integration (nicht Bubble Cards eigenes <code>styles:</code>-Feld): das Glühen reagiert auf Bubble Cards intern per JS gesetzte Zustandsklassen <code>background-on</code>/<code>background-off</code> und nutzt ein <code>::before</code>-Pseudo-Element fürs Glühen. Beides landet nachweislich nur über <code>card_mod:</code> direkt auf der Karte zuverlässig im richtigen Shadow-DOM (per DevTools bestätigt) - die globale Theme-Einstellung card-mod-card erreicht Bubble Cards eigenes, verschachteltes Shadow-DOM dagegen gar nicht. Vorlage unten in eine eigene Sub-Buttons-Karte einfügen, Entities anpassen.": "Requires the separate card-mod integration (not Bubble Card's own <code>styles:</code> field): the glow reacts to the state classes <code>background-on</code>/<code>background-off</code> that Bubble Card sets internally via JS, and uses a <code>::before</code> pseudo-element for the glow. Both demonstrably reach the correct shadow DOM only via <code>card_mod:</code> directly on the card (confirmed with DevTools) - the global theme setting card-mod-card does not reach Bubble Card's own nested shadow DOM at all. Paste the snippet below into your own sub-buttons card and adjust the entities.",
-  "Gedacht für den Fall, dass genau dieses CSS auf einzelnen, gezielt ausgewählten Karten laufen soll - ohne es global übers Theme zu setzen und ohne es in jede Karte erneut abzutippen. Wichtig: dies ist der GENERISCHE <code>card_mod:</code>-Baustein direkt auf <code>ha-card</code> (kein Bubble-Card-spezifisches <code>styles:</code>-Feld) - deshalb als einziges CSS-Karten-Plugin hier mit JEDER Home-Assistant-Kartenart kompatibel, nicht nur mit Bubble Card. Genau deshalb auch nicht mit den anderen (Bubble-styles:-basierten) Plugins kombinierbar. Vorlage unten in eine eigene Karte einfügen, Kartenart/Entity nach Bedarf anpassen.": "Intended for cases where exactly this CSS should run on a few specific cards - without setting it globally through the theme and without retyping it into every card. Important: this is the GENERIC <code>card_mod:</code> block applied directly to <code>ha-card</code> (not a Bubble-Card-specific <code>styles:</code> field) - which makes it the only CSS card plugin here that is compatible with EVERY Home Assistant card type, not just Bubble Card. For exactly that reason it cannot be combined with the other (Bubble styles:-based) plugins. Paste the snippet below into your own card and adjust card type and entity as needed.",
+  "Bubble Cards <code>styles:</code>-Schlüssel akzeptiert nicht nur reines CSS, sondern auch JS-Template-Literale (Backticks, <code>${...}</code>) mit direktem Zugriff auf <code>hass.states[...]</code> - dadurch kann sich das Aussehen einer Karte live nach einem Entity-Zustand richten, ganz ohne separate Template-/UIX-Integration. Wichtig bei <code>button_type: switch</code>: Bubble Card legt bei 'an' selbst eine deckende Akzentfarben-Ebene (<code>.bubble-background</code>, Opazität 1) über die Karte - ohne die Neutralisierung unten via <code>--bubble-button-background-color</code> würde man vom eigenen Rot/Grün-Effekt nichts sehen. Vorlage unten in eine eigene Karte einfügen, ENTITY_HIER durch die zu überwachende Entity ersetzen.": "Bubble Card's <code>styles:</code> key accepts not only plain CSS but also JS template literals (backticks, <code>${...}</code>) with direct access to <code>hass.states[...]</code> - which lets a card's appearance follow an entity state live, with no separate template or UIX integration. Important with <code>button_type: switch</code>: in the 'on' state Bubble Card places an opaque accent-colour layer (<code>.bubble-background</code>, opacity 1) over the card - without the neutralisation below via <code>--bubble-button-background-color</code> you would see nothing of your own red/green effect. Paste the snippet below into your own card and replace ENTITY_HIER with the entity you want to watch.",
+  "Braucht die separate UIX-Integration (nicht Bubble Cards eigenes <code>styles:</code>-Feld): das Glühen reagiert auf Bubble Cards intern per JS gesetzte Zustandsklassen <code>background-on</code>/<code>background-off</code> und nutzt ein <code>::before</code>-Pseudo-Element fürs Glühen. Beides landet nachweislich nur über <code>uix:</code> direkt auf der Karte zuverlässig im richtigen Shadow-DOM (per DevTools bestätigt) - die globale Theme-Einstellung uix-card erreicht Bubble Cards eigenes, verschachteltes Shadow-DOM dagegen gar nicht. Vorlage unten in eine eigene Sub-Buttons-Karte einfügen, Entities anpassen.": "Requires the separate UIX integration (not Bubble Card's own <code>styles:</code> field): the glow reacts to the state classes <code>background-on</code>/<code>background-off</code> that Bubble Card sets internally via JS, and uses a <code>::before</code> pseudo-element for the glow. Both demonstrably reach the correct shadow DOM only via <code>uix:</code> directly on the card (confirmed with DevTools) - the global theme setting uix-card does not reach Bubble Card's own nested shadow DOM at all. Paste the snippet below into your own sub-buttons card and adjust the entities.",
+  "Gedacht für den Fall, dass genau dieses CSS auf einzelnen, gezielt ausgewählten Karten laufen soll - ohne es global übers Theme zu setzen und ohne es in jede Karte erneut abzutippen. Wichtig: dies ist der GENERISCHE <code>uix:</code>-Baustein direkt auf <code>ha-card</code> (kein Bubble-Card-spezifisches <code>styles:</code>-Feld) - deshalb als einziges CSS-Karten-Plugin hier mit JEDER Home-Assistant-Kartenart kompatibel, nicht nur mit Bubble Card. Genau deshalb auch nicht mit den anderen (Bubble-styles:-basierten) Plugins kombinierbar. Vorlage unten in eine eigene Karte einfügen, Kartenart/Entity nach Bedarf anpassen.": "Intended for cases where exactly this CSS should run on a few specific cards - without setting it globally through the theme and without retyping it into every card. Important: this is the GENERIC <code>uix:</code> block applied directly to <code>ha-card</code> (not a Bubble-Card-specific <code>styles:</code> field) - which makes it the only CSS card plugin here that is compatible with EVERY Home Assistant card type, not just Bubble Card. For exactly that reason it cannot be combined with the other (Bubble styles:-based) plugins. Paste the snippet below into your own card and adjust card type and entity as needed.",
   "Rahmenfarbe": "Border colour",
   "Radius": "Radius",
   "Schatten": "Shadow",
@@ -307,7 +306,7 @@ const HATG_TEXTE = {
   "Graphen & Energie": "Graphs & energy",
   "Select (Auswahlkarte)": "Select (selection card)",
   "Eingaben & Auswahlfelder": "Inputs & selects",
-  "Card-mod & Generator": "Card-mod & generator",
+  "UIX & Generator": "UIX & generator",
   "Material, Paper & MDC": "Material, Paper & MDC",
   "Status-Farben": "State colours",
   "Grundschrift": "Base font",
@@ -843,8 +842,13 @@ const HATG_BASE_PRESETS = [
   },
 ];
 
-function hatgPluginCardTemplate(plugin) {
-  if (typeof plugin.template === "function") return plugin.template(plugin);
+// Der Konfigurationsschluessel an der einzelnen Karte heisst bei UIX "uix:",
+// bei card-mod hiess er "card_mod:".
+function hatgKartenSchluessel(format) {
+  return format === HATG_AUSGABE_CARDMOD ? "card_mod" : "uix";
+}
+function hatgPluginCardTemplate(plugin, format) {
+  if (typeof plugin.template === "function") return plugin.template(plugin, format);
   return `type: custom:bubble-card
 card_type: button
 button_type: slider
@@ -875,7 +879,7 @@ styles: |
   ${plugin.css}
 `;
 }
-function hatgSubButtonGlowPluginTemplate(plugin) {
+function hatgSubButtonGlowPluginTemplate(plugin, format) {
   return `type: custom:bubble-card
 card_type: sub-buttons
 hide_main_background: true
@@ -900,16 +904,17 @@ sub_button:
             action: toggle
           show_background: true
           state_background: true
-card_mod:
+${hatgKartenSchluessel(format)}:
   style: |
     ${plugin.css}
 `;
 }
 
-function hatgNativeCardModTemplate(plugin) {
-  return `type: tile   # Beispiel - dieses Plugin nutzt den GENERISCHEN card_mod-Baustein und funktioniert daher mit JEDER Kartenart (tile, entities, glance, thermostat, ...), nicht nur mit Bubble Card
+function hatgNativeStilTemplate(plugin, format) {
+  const schluessel = hatgKartenSchluessel(format);
+  return `type: tile   # Beispiel - dieses Plugin nutzt den GENERISCHEN ${schluessel}-Baustein und funktioniert daher mit JEDER Kartenart (tile, entities, glance, thermostat, ...), nicht nur mit Bubble Card
 entity: light.deine_entity_hier   # eigene Entity eintragen
-card_mod:
+${schluessel}:
   style: |
     ${plugin.css}
 `;
@@ -1160,7 +1165,7 @@ const HATG_PLUGINS = [
     desc: "Karte wechselt Hintergrund, Rahmen und Icon-Leuchten je nachdem, ob eine gewählte Entity 'on' oder 'off' ist - z. B. rot/warnend bei einer aktiven Kamera-Erkennung oder einem offenen Sensor, sonst ruhig grün. Nutzt Bubble Cards eigenes Template-Feature (JS-Template-Literal mit direktem hass.states-Zugriff) statt statischem CSS.",
     screenshot: "/hatg_static/plugins/state-reactive-glow.png",
     template: hatgStateReactivePluginTemplate,
-    hint: "Bubble Cards <code>styles:</code>-Schlüssel akzeptiert nicht nur reines CSS, sondern auch JS-Template-Literale (Backticks, <code>${...}</code>) mit direktem Zugriff auf <code>hass.states[...]</code> - dadurch kann sich das Aussehen einer Karte live nach einem Entity-Zustand richten, ganz ohne separate Template-/card-mod-Integration. Wichtig bei <code>button_type: switch</code>: Bubble Card legt bei 'an' selbst eine deckende Akzentfarben-Ebene (<code>.bubble-background</code>, Opazität 1) über die Karte - ohne die Neutralisierung unten via <code>--bubble-button-background-color</code> würde man vom eigenen Rot/Grün-Effekt nichts sehen. Vorlage unten in eine eigene Karte einfügen, ENTITY_HIER durch die zu überwachende Entity ersetzen.",
+    hint: "Bubble Cards <code>styles:</code>-Schlüssel akzeptiert nicht nur reines CSS, sondern auch JS-Template-Literale (Backticks, <code>${...}</code>) mit direktem Zugriff auf <code>hass.states[...]</code> - dadurch kann sich das Aussehen einer Karte live nach einem Entity-Zustand richten, ganz ohne separate Template-/UIX-Integration. Wichtig bei <code>button_type: switch</code>: Bubble Card legt bei 'an' selbst eine deckende Akzentfarben-Ebene (<code>.bubble-background</code>, Opazität 1) über die Karte - ohne die Neutralisierung unten via <code>--bubble-button-background-color</code> würde man vom eigenen Rot/Grün-Effekt nichts sehen. Vorlage unten in eine eigene Karte einfügen, ENTITY_HIER durch die zu überwachende Entity ersetzen.",
     css: `.bubble-button-card-container {
     border-radius: 24px !important;
     background: \${hass.states['ENTITY_HIER'].state === 'on'
@@ -1231,7 +1236,7 @@ const HATG_PLUGINS = [
     screenshot: "/hatg_static/plugins/sub-button-state-glow.png",
     template: hatgSubButtonGlowPluginTemplate,
     combinable: false,
-    hint: "Braucht die separate card-mod-Integration (nicht Bubble Cards eigenes <code>styles:</code>-Feld): das Glühen reagiert auf Bubble Cards intern per JS gesetzte Zustandsklassen <code>background-on</code>/<code>background-off</code> und nutzt ein <code>::before</code>-Pseudo-Element fürs Glühen. Beides landet nachweislich nur über <code>card_mod:</code> direkt auf der Karte zuverlässig im richtigen Shadow-DOM (per DevTools bestätigt) - die globale Theme-Einstellung card-mod-card erreicht Bubble Cards eigenes, verschachteltes Shadow-DOM dagegen gar nicht. Vorlage unten in eine eigene Sub-Buttons-Karte einfügen, Entities anpassen.",
+    hint: "Braucht die separate UIX-Integration (nicht Bubble Cards eigenes <code>styles:</code>-Feld): das Glühen reagiert auf Bubble Cards intern per JS gesetzte Zustandsklassen <code>background-on</code>/<code>background-off</code> und nutzt ein <code>::before</code>-Pseudo-Element fürs Glühen. Beides landet nachweislich nur über <code>uix:</code> direkt auf der Karte zuverlässig im richtigen Shadow-DOM (per DevTools bestätigt) - die globale Theme-Einstellung uix-card erreicht Bubble Cards eigenes, verschachteltes Shadow-DOM dagegen gar nicht. Vorlage unten in eine eigene Sub-Buttons-Karte einfügen, Entities anpassen.",
     css: `.bubble-sub-button.background-off {
     box-shadow: 0 13px 21px -8px rgba(40, 30, 10, 0.32),
                 0 6px 11px -4px rgba(40, 30, 10, 0.18),
@@ -1264,12 +1269,12 @@ const HATG_PLUGINS = [
   },
   {
     id: "native-card-relief-dark",
-    label: "Individuelles Karten-Relief (native card_mod, jede Kartenart)",
-    desc: "Dunkler Verlaufshintergrund mit mehrschichtigem Relief-Schatten (erhabene Lichtkante oben, eingedrückte Schattenkante unten) und feinem Rahmen - für eine einzelne, gezielt ausgewählte Karte. Anders als die übrigen Plugins hier nutzt dieses den ganz normalen, kartenartunabhängigen card_mod-Baustein (nicht Bubble Cards eigenes styles:-Feld), funktioniert also z. B. auch bei Tile-, Entities- oder Thermostat-Karten.",
+    label: "Individuelles Karten-Relief (nativer UIX-Baustein, jede Kartenart)",
+    desc: "Dunkler Verlaufshintergrund mit mehrschichtigem Relief-Schatten (erhabene Lichtkante oben, eingedrückte Schattenkante unten) und feinem Rahmen - für eine einzelne, gezielt ausgewählte Karte. Anders als die übrigen Plugins hier nutzt dieses den ganz normalen, kartenartunabhängigen UIX-Baustein (nicht Bubble Cards eigenes styles:-Feld), funktioniert also z. B. auch bei Tile-, Entities- oder Thermostat-Karten.",
     screenshot: "/hatg_static/plugins/native-card-relief-dark.png",
-    template: hatgNativeCardModTemplate,
+    template: hatgNativeStilTemplate,
     combinable: false,
-    hint: "Gedacht für den Fall, dass genau dieses CSS auf einzelnen, gezielt ausgewählten Karten laufen soll - ohne es global übers Theme zu setzen und ohne es in jede Karte erneut abzutippen. Wichtig: dies ist der GENERISCHE <code>card_mod:</code>-Baustein direkt auf <code>ha-card</code> (kein Bubble-Card-spezifisches <code>styles:</code>-Feld) - deshalb als einziges CSS-Karten-Plugin hier mit JEDER Home-Assistant-Kartenart kompatibel, nicht nur mit Bubble Card. Genau deshalb auch nicht mit den anderen (Bubble-styles:-basierten) Plugins kombinierbar. Vorlage unten in eine eigene Karte einfügen, Kartenart/Entity nach Bedarf anpassen.",
+    hint: "Gedacht für den Fall, dass genau dieses CSS auf einzelnen, gezielt ausgewählten Karten laufen soll - ohne es global übers Theme zu setzen und ohne es in jede Karte erneut abzutippen. Wichtig: dies ist der GENERISCHE <code>uix:</code>-Baustein direkt auf <code>ha-card</code> (kein Bubble-Card-spezifisches <code>styles:</code>-Feld) - deshalb als einziges CSS-Karten-Plugin hier mit JEDER Home-Assistant-Kartenart kompatibel, nicht nur mit Bubble Card. Genau deshalb auch nicht mit den anderen (Bubble-styles:-basierten) Plugins kombinierbar. Vorlage unten in eine eigene Karte einfügen, Kartenart/Entity nach Bedarf anpassen.",
     css: `ha-card {
     background: linear-gradient(180deg, #282828 0%, #1e1e1e 50%, #121212 100%);
     box-shadow:
@@ -1548,7 +1553,7 @@ const HATG_ALLE_FELDER_NAV = { id: "alle-felder", label: "Alle Felder", icon: "m
 
 const HATG_TAIL_NAV = [
   { id: "code-editor", label: "Code-Editor", icon: "mdi:xml" },
-  { id: "uix-vorlagen", label: "Cardmod-Vorlagen", icon: "mdi:auto-fix" },
+  { id: "uix-vorlagen", label: "UIX-Vorlagen", icon: "mdi:auto-fix" },
   { id: "plugins", label: "Plugins", icon: "mdi:puzzle-outline" },
 ];
 
@@ -2706,7 +2711,7 @@ class HATGPanel extends HTMLElement {
     if (this._activeSection === "overview") return "Start";
     if (this._activeSection === "alle-felder") return "Alle Felder";
     if (this._activeSection === "code-editor") return "Code-Editor";
-    if (this._activeSection === "uix-vorlagen") return "Cardmod-Vorlagen";
+    if (this._activeSection === "uix-vorlagen") return "UIX-Vorlagen";
     if (this._activeSection === "plugins") return "Plugins";
     if (this._activeSection === "generatoren") return "Generatoren";
     const gm = this.groupMeta(this._activeSection);
@@ -3607,12 +3612,12 @@ class HATGPanel extends HTMLElement {
           </div>
         </div>`);
     });
-    const cardModMeta = HATG_MANIFEST.sections.find((s) => s.id === "uix-generator");
-    const cardModBlock = cardModMeta
+    const uixMeta = HATG_MANIFEST.sections.find((s) => s.id === "uix-generator");
+    const uixBlock = uixMeta
       ? `
         <div class="code-section-card code-section-card-uix">
-          <div class="code-section-title">${hatgEscape(cardModMeta.label)}</div>
-          ${this.renderFieldList(cardModMeta.keys, cardModMeta.groups, true)}
+          <div class="code-section-title">${hatgEscape(uixMeta.label)}</div>
+          ${this.renderFieldList(uixMeta.keys, uixMeta.groups, true)}
         </div>`
       : "";
     return `
@@ -3623,7 +3628,7 @@ class HATGPanel extends HTMLElement {
           <p>Werte direkt hier als Text bearbeiten – ohne durch die Sektionen zu navigieren. Änderungen werden beim Tippen sofort übernommen.</p>
         </div>
         <div class="section-toolbar">${this.renderModeToggleBar()}</div>
-        <div class="code-view">${sectionCards.join("")}${cardModBlock}</div>
+        <div class="code-view">${sectionCards.join("")}${uixBlock}</div>
       </section>`;
   }
 
@@ -3709,7 +3714,7 @@ class HATGPanel extends HTMLElement {
   copyPluginTemplate(id) {
     const plugin = HATG_PLUGINS.find((p) => p.id === id);
     if (!plugin) return;
-    const text = hatgPluginCardTemplate(plugin);
+    const text = hatgPluginCardTemplate(plugin, this.ausgabeFormat());
     this.copyTextToClipboard(text).then(
       () => this.showToast(`Vorlage "${plugin.label}" in Zwischenablage kopiert.`),
       () => this.showToast("Kopieren nicht möglich – bitte manuell markieren.")
@@ -3772,7 +3777,7 @@ class HATGPanel extends HTMLElement {
         <div class="section-heading">
           <span class="eyebrow">Erweiterungen</span>
           <h1>Plugins</h1>
-          <p>Fertige card-mod-Bausteine für Bubble-Card-Slider – als Kopiervorlage für einzelne Karten (Details über das <ha-icon icon="mdi:information-outline"></ha-icon>-Symbol je Karte). Mit den Kästchen lassen sich mehrere Plugins auswählen und als eine kombinierte Karte kopieren.</p>
+          <p>Fertige UIX-Bausteine für Bubble-Card-Slider – als Kopiervorlage für einzelne Karten (Details über das <ha-icon icon="mdi:information-outline"></ha-icon>-Symbol je Karte). Mit den Kästchen lassen sich mehrere Plugins auswählen und als eine kombinierte Karte kopieren.</p>
         </div>
         <div class="plugin-combine-bar">
           <span class="plugin-combine-count">${selectedCount} ausgewählt</span>
@@ -3844,7 +3849,7 @@ class HATGPanel extends HTMLElement {
     }
   }
 
-  cardmodIdAusName(name, ignoriereId) {
+  vorlagenIdAusName(name, ignoriereId) {
     const basis =
       String(name || "")
         .toLowerCase()
@@ -3900,7 +3905,7 @@ class HATGPanel extends HTMLElement {
     const vorherigeListe = [...this.eigeneVorlagen()];
     const liste = [...vorherigeListe];
     const eintrag = {
-      id: dialog.id || this.cardmodIdAusName(label),
+      id: dialog.id || this.vorlagenIdAusName(label),
       label,
       desc: String(dialog.desc || "").trim(),
       css,
@@ -3963,8 +3968,8 @@ class HATGPanel extends HTMLElement {
     this.render();
     this.showToast(
       wasActive
-        ? `"${tpl.label}" deaktiviert und aus card-mod-card entfernt.`
-        : `"${tpl.label}" aktiviert - global ins Theme (card-mod-card) übernommen.`
+        ? `"${tpl.label}" deaktiviert und aus uix-card entfernt.`
+        : `"${tpl.label}" aktiviert - global ins Theme (uix-card) übernommen.`
     );
   }
 
@@ -4028,7 +4033,7 @@ class HATGPanel extends HTMLElement {
       <div class="modal-scrim" data-eigene-vorlage-cancel></div>
       <div class="modal-box modal-box-breit">
         <h3>${bearbeitet ? "Vorlage bearbeiten" : "Neue eigene Vorlage"}</h3>
-        <p>Das CSS landet beim Aktivieren markiert in <code>card-mod-card</code> - genau wie die mitgelieferten Vorlagen, für Light und Dark gleichzeitig.</p>
+        <p>Das CSS landet beim Aktivieren markiert in <code>uix-card</code> - genau wie die mitgelieferten Vorlagen, für Light und Dark gleichzeitig.</p>
         <label class="eigene-vorlage-label">Name
           <input class="text-input" type="text" spellcheck="false" data-eigene-vorlage-label value="${hatgEscape(dialog.label || "")}" placeholder="z. B. Kräftiger Kartenrand" />
         </label>
@@ -4051,10 +4056,10 @@ class HATGPanel extends HTMLElement {
     const activeText = String(this.currentValues()["uix-card"] || "");
     const veraltet = this.veralteteVorlagen();
     const hinweis = veraltet.length
-      ? `<div class="cardmod-stale-bar">
+      ? `<div class="vorlage-veraltet-bar">
           <ha-icon icon="mdi:update"></ha-icon>
           <span>${veraltet.length} aktive Vorlage${veraltet.length === 1 ? "" : "n"} stammt noch aus einer älteren HATG-Version. Das CSS steht in der Theme-Datei und wird durch ein Update von HATG nicht automatisch mitgezogen.</span>
-          <button type="button" class="cardmod-stale-button" data-frische-vorlagen-auf>
+          <button type="button" class="vorlage-veraltet-button" data-frische-vorlagen-auf>
             <ha-icon icon="mdi:autorenew"></ha-icon><span>Auffrischen</span>
           </button>
         </div>`
@@ -4062,20 +4067,20 @@ class HATGPanel extends HTMLElement {
     const kachel = (tpl, eigen) => {
       const active = hatgVorlagenBlockActive(activeText, tpl.id);
       return `
-        <div class="plugin-card cardmod-tpl-card ${active ? "is-selected" : ""}">
+        <div class="plugin-card vorlage-card ${active ? "is-selected" : ""}">
           <div class="plugin-card-body">
             <div class="plugin-card-heading">
               <strong${eigen ? " data-roh" : ""}>${hatgEscape(tpl.label)}</strong>
-              ${active ? '<small class="cardmod-tpl-badge">aktiv</small>' : ""}
-              ${eigen ? '<small class="cardmod-tpl-badge eigen">eigene</small>' : ""}
+              ${active ? '<small class="vorlage-badge">aktiv</small>' : ""}
+              ${eigen ? '<small class="vorlage-badge eigen">eigene</small>' : ""}
             </div>
-            <p class="cardmod-tpl-desc"${eigen ? " data-roh" : ""}>${hatgEscape(tpl.desc || "Ohne Beschreibung.")}</p>
-            <div class="cardmod-tpl-actions">
+            <p class="vorlage-desc"${eigen ? " data-roh" : ""}>${hatgEscape(tpl.desc || "Ohne Beschreibung.")}</p>
+            <div class="vorlage-actions">
               <button type="button" class="plugin-toggle-button ${active ? "is-active" : ""}" data-schalte-vorlage="${tpl.id}">
                 <ha-icon icon="${active ? "mdi:close-circle-outline" : "mdi:auto-fix"}"></ha-icon>
                 <span>${active ? "Entfernen" : "Aktivieren"}</span>
               </button>
-              ${eigen ? `<button type="button" class="cardmod-tpl-edit" data-bearbeite-vorlage="${tpl.id}" title="Bearbeiten"><ha-icon icon="mdi:pencil-outline"></ha-icon></button>` : ""}
+              ${eigen ? `<button type="button" class="vorlage-edit" data-bearbeite-vorlage="${tpl.id}" title="Bearbeiten"><ha-icon icon="mdi:pencil-outline"></ha-icon></button>` : ""}
             </div>
           </div>
         </div>`;
@@ -4084,26 +4089,26 @@ class HATGPanel extends HTMLElement {
     const eigene = this.eigeneVorlagen();
     const eigeneKacheln = eigene.map((tpl) => kachel(tpl, true)).join("");
     const eigenerBlock = `
-      <div class="cardmod-eigene-kopf">
+      <div class="vorlage-eigene-kopf">
         <h2>Eigene Vorlagen</h2>
-        <button type="button" class="cardmod-stale-button" data-neue-vorlage>
+        <button type="button" class="vorlage-veraltet-button" data-neue-vorlage>
           <ha-icon icon="mdi:plus"></ha-icon><span>Neue Vorlage</span>
         </button>
       </div>
       ${
         eigene.length
-          ? `<div class="plugin-grid cardmod-tpl-grid">${eigeneKacheln}</div>`
-          : `<p class="cardmod-tpl-desc">Noch keine eigenen Vorlagen. Sie werden in <code>config/themes/hatg-cardmod-vorlagen.json</code> abgelegt und bleiben damit über Theme- und Browserwechsel hinweg erhalten.</p>`
+          ? `<div class="plugin-grid vorlage-grid">${eigeneKacheln}</div>`
+          : `<p class="vorlage-desc">Noch keine eigenen Vorlagen. Sie werden in <code>config/themes/hatg/hatg-uix-vorlagen.json</code> abgelegt und bleiben damit über Theme- und Browserwechsel hinweg erhalten.</p>`
       }`;
     return `
       <section class="editor-section">
         <div class="section-heading">
-          <span class="eyebrow">Cardmod</span>
-          <h1>Cardmod-Vorlagen</h1>
-          <p>Fertige card-mod-Bausteine, die per Klick global im Theme aktiviert werden (landen markiert in <code>card-mod-card</code>, für Light und Dark gleichzeitig) - kein Kopieren/Einfügen nötig. Decken native HA-, Mushroom- und Bubble-Karten ab, inklusive der Bubble-Kartentypen Climate, Cover, Media Player, Select und Horizontal Buttons Stack. Bei Hüllen-Karten (Überschriften, Mushroom-Chips, Bubble-Sub-Buttons) bleibt der äußere Kartenrahmen bewusst unangetastet. Mehrere Vorlagen lassen sich kombinieren; bei überlappenden Eigenschaften gewinnt die zuletzt aktivierte.</p>
+          <span class="eyebrow">UIX</span>
+          <h1>UIX-Vorlagen</h1>
+          <p>Fertige UIX-Bausteine, die per Klick global im Theme aktiviert werden (landen markiert in <code>uix-card</code>, für Light und Dark gleichzeitig) - kein Kopieren/Einfügen nötig. Decken native HA-, Mushroom- und Bubble-Karten ab, inklusive der Bubble-Kartentypen Climate, Cover, Media Player, Select und Horizontal Buttons Stack. Bei Hüllen-Karten (Überschriften, Mushroom-Chips, Bubble-Sub-Buttons) bleibt der äußere Kartenrahmen bewusst unangetastet. Mehrere Vorlagen lassen sich kombinieren; bei überlappenden Eigenschaften gewinnt die zuletzt aktivierte.</p>
         </div>
         ${hinweis}
-        <div class="plugin-grid cardmod-tpl-grid">${cards}</div>
+        <div class="plugin-grid vorlage-grid">${cards}</div>
         ${eigenerBlock}
       </section>`;
   }
@@ -4557,7 +4562,7 @@ class HATGPanel extends HTMLElement {
             <ha-icon icon="mdi:blur"></ha-icon>
             <div>
               <strong>Blur &amp; Kartentransparenz</strong>
-              <p>Glaseffekt für Karten: Unschärfe wirkt auf Bubble-Card-Kacheln (per card-mod), die Kartentransparenz auf die Kartenhintergründe in Home Assistant, Bubble Card und Mushroom – bewusst nicht auf Auswahlmenüs/Dialoge, damit die bedienbar bleiben. Änderungen wirken sofort hier in der Vorschau; im echten Dashboard erst nach Speichern/Exportieren des Themes.</p>
+              <p>Glaseffekt für Karten: Unschärfe wirkt auf Bubble-Card-Kacheln (per UIX), die Kartentransparenz auf die Kartenhintergründe in Home Assistant, Bubble Card und Mushroom – bewusst nicht auf Auswahlmenüs/Dialoge, damit die bedienbar bleiben. Änderungen wirken sofort hier in der Vorschau; im echten Dashboard erst nach Speichern/Exportieren des Themes.</p>
             </div>
           </div>
           <div class="generator-preview-backdrop">
@@ -5683,10 +5688,10 @@ class HATGPanel extends HTMLElement {
         .plugin-toggle-button:hover { border-color: var(--hatg-blue); color: var(--hatg-blue); }
         .plugin-toggle-button.is-active { border-color: #38c76c; background: rgba(56,199,108,.14); color: #38c76c; }
         .plugin-toggle-button.is-active:hover { border-color: #ff453a; background: rgba(255,69,58,.14); color: #ff453a; }
-        .cardmod-tpl-card { min-height: 0; }
-        .cardmod-tpl-desc { font-size: 12px; line-height: 1.5; color: var(--hatg-text-dim); margin: 0; }
-        .cardmod-tpl-badge { flex: 0 0 auto; font-size: 10px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #38c76c; border: 1px solid #38c76c; border-radius: 6px; padding: 2px 6px; }
-        .cardmod-tpl-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+        .vorlage-card { min-height: 0; }
+        .vorlage-desc { font-size: 12px; line-height: 1.5; color: var(--hatg-text-dim); margin: 0; }
+        .vorlage-badge { flex: 0 0 auto; font-size: 10px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #38c76c; border: 1px solid #38c76c; border-radius: 6px; padding: 2px 6px; }
+        .vorlage-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
         .reapply-button ha-icon { --mdc-icon-size: 17px; }
         .basis-laenge-wrap { display: flex; align-items: center; gap: 8px; }
         .basis-feld { display: flex; align-items: center; gap: 6px; flex: 1 1 0; min-width: 0; }
@@ -5705,11 +5710,11 @@ class HATGPanel extends HTMLElement {
         .bg-opacity-row input[type="range"] { width: 100%; }
         .bg-opacity-row small { font-size: 11px; line-height: 1.45; color: var(--hatg-muted); }
         .icon-master-hint { margin: 0 0 10px; font-size: 12px; line-height: 1.5; color: var(--hatg-muted); }
-        .cardmod-stale-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; padding: 12px 14px; border: 1px solid #e6a23c; border-radius: 12px; background: rgba(230,162,60,.12); color: var(--hatg-text); font-size: 12px; line-height: 1.5; }
-        .cardmod-stale-bar ha-icon { flex: 0 0 auto; color: #e6a23c; --mdc-icon-size: 20px; }
-        .cardmod-stale-bar span { flex: 1 1 auto; }
-        .cardmod-stale-button { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border: 0; border-radius: 10px; background: #e6a23c; color: #1b1e25; cursor: pointer; font-size: 12px; font-weight: 700; }
-        .cardmod-stale-button ha-icon { color: #1b1e25; --mdc-icon-size: 16px; }
+        .vorlage-veraltet-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; padding: 12px 14px; border: 1px solid #e6a23c; border-radius: 12px; background: rgba(230,162,60,.12); color: var(--hatg-text); font-size: 12px; line-height: 1.5; }
+        .vorlage-veraltet-bar ha-icon { flex: 0 0 auto; color: #e6a23c; --mdc-icon-size: 20px; }
+        .vorlage-veraltet-bar span { flex: 1 1 auto; }
+        .vorlage-veraltet-button { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border: 0; border-radius: 10px; background: #e6a23c; color: #1b1e25; cursor: pointer; font-size: 12px; font-weight: 700; }
+        .vorlage-veraltet-button ha-icon { color: #1b1e25; --mdc-icon-size: 16px; }
         @media (max-width: 820px) {
           .plugin-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
         }
@@ -5798,14 +5803,14 @@ class HATGPanel extends HTMLElement {
         .style-custom-field span { display: block; font-size: 11.5px; color: var(--hatg-muted); margin-bottom: 6px; }
         .style-custom-field input { width: 100%; }
 
-        .cardmod-eigene-kopf { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 26px 0 10px; }
-        .cardmod-eigene-kopf h2 { margin: 0; font-size: 15px; font-weight: 650; color: var(--hatg-text); }
-        .cardmod-tpl-actions { display: flex; align-items: center; gap: 8px; }
-        .cardmod-tpl-actions .plugin-toggle-button { flex: 1 1 auto; }
-        .cardmod-tpl-edit { flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border: 1px solid var(--hatg-border); border-radius: 10px; background: transparent; color: var(--hatg-text-dim); cursor: pointer; }
-        .cardmod-tpl-edit:hover { color: var(--hatg-text); border-color: var(--hatg-text-dim); }
-        .cardmod-tpl-edit ha-icon { --mdc-icon-size: 17px; }
-        .cardmod-tpl-badge.eigen { background: rgba(56,199,108,.16); color: #38c76c; }
+        .vorlage-eigene-kopf { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 26px 0 10px; }
+        .vorlage-eigene-kopf h2 { margin: 0; font-size: 15px; font-weight: 650; color: var(--hatg-text); }
+        .vorlage-actions { display: flex; align-items: center; gap: 8px; }
+        .vorlage-actions .plugin-toggle-button { flex: 1 1 auto; }
+        .vorlage-edit { flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border: 1px solid var(--hatg-border); border-radius: 10px; background: transparent; color: var(--hatg-text-dim); cursor: pointer; }
+        .vorlage-edit:hover { color: var(--hatg-text); border-color: var(--hatg-text-dim); }
+        .vorlage-edit ha-icon { --mdc-icon-size: 17px; }
+        .vorlage-badge.eigen { background: rgba(56,199,108,.16); color: #38c76c; }
         .eigene-vorlage-label { display: block; margin-top: 12px; font-size: 12px; font-weight: 600; color: var(--hatg-text-dim); }
         .eigene-vorlage-label small { font-weight: 400; }
         .eigene-vorlage-label .text-input { display: block; width: 100%; box-sizing: border-box; margin-top: 5px; font-weight: 400; }
@@ -7492,7 +7497,7 @@ class HATGPanel extends HTMLElement {
         `${migrierteStilziele} card-mod-Feld${migrierteStilziele === 1 ? "" : "er"} auf UIX umgestellt`
       );
     const aufgefrischt = this.frischeVorlagenAuf({ silent: true });
-    if (aufgefrischt) parts.push(`${aufgefrischt} Cardmod-Vorlage${aufgefrischt === 1 ? "" : "n"} auf den aktuellen Stand gebracht`);
+    if (aufgefrischt) parts.push(`${aufgefrischt} UIX-Vorlage${aufgefrischt === 1 ? "" : "n"} auf den aktuellen Stand gebracht`);
     this.showToast(parts.join(", ") + ".");
   }
 
