@@ -3548,16 +3548,20 @@ class HATGPanel extends HTMLElement {
   renderAusgabeFormatHinweis() {
     const offen = this.stilzieleOhneAusgabe();
     if (!offen.length) return "";
+    const englisch = this._sprache === "en";
     const namen = offen
       .map((key) => {
         const meta = hatgStilzielMeta(key);
-        return `<code>${key}</code>${meta ? ` (${hatgEscape(meta.label)})` : ""}`;
+        return `<code>${key}</code>${meta ? ` (${hatgEscape(hatgStilzielLabel(meta, englisch ? "en" : "de"))})` : ""}`;
       })
       .join(", ");
+    const text = englisch
+      ? `Output format card-mod: ${offen.length} filled target${offen.length === 1 ? "" : "s"} will not reach the theme file because card-mod does not know ${offen.length === 1 ? "it" : "them"} - ${namen}. Switch to UIX in the settings or clear the fields.`
+      : `Ausgabeformat card-mod: ${offen.length} belegte${offen.length === 1 ? "s" : ""} Ziel${offen.length === 1 ? "" : "e"} landet nicht in der Theme-Datei, weil card-mod ${offen.length === 1 ? "es" : "sie"} nicht kennt - ${namen}. In den Einstellungen auf UIX umstellen oder die Felder leeren.`;
     return `
-      <div class="vorlage-veraltet-bar">
+      <div class="vorlage-veraltet-bar" data-roh>
         <ha-icon icon="mdi:alert-outline"></ha-icon>
-        <span>Ausgabeformat card-mod: ${offen.length} belegte${offen.length === 1 ? "s" : ""} Ziel${offen.length === 1 ? "" : "e"} landet nicht in der Theme-Datei, weil card-mod es nicht kennt - ${namen}. In den Einstellungen auf UIX umstellen oder die Felder leeren.</span>
+        <span>${text}</span>
       </div>`;
   }
 
