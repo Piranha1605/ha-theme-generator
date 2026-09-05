@@ -3523,8 +3523,26 @@ class HATGPanel extends HTMLElement {
           <h1>${meta.label}</h1>
           <p>${meta.desc} &middot; ${meta.keys.length} Variablen</p>
         </div>
+        ${id === "uix-generator" ? this.renderAusgabeFormatHinweis() : ""}
         ${this.renderFieldList(meta.keys, meta.groups)}
       </section>`;
+  }
+
+  // Im alten Ausgabeformat koennen belegte Nur-UIX-Ziele nicht geschrieben werden.
+  renderAusgabeFormatHinweis() {
+    const offen = this.stilzieleOhneAusgabe();
+    if (!offen.length) return "";
+    const namen = offen
+      .map((key) => {
+        const meta = hatgStilzielMeta(key);
+        return `<code>${key}</code>${meta ? ` (${hatgEscape(meta.label)})` : ""}`;
+      })
+      .join(", ");
+    return `
+      <div class="vorlage-veraltet-bar">
+        <ha-icon icon="mdi:alert-outline"></ha-icon>
+        <span>Ausgabeformat card-mod: ${offen.length} belegte${offen.length === 1 ? "s" : ""} Ziel${offen.length === 1 ? "" : "e"} landet nicht in der Theme-Datei, weil card-mod es nicht kennt - ${namen}. In den Einstellungen auf UIX umstellen oder die Felder leeren.</span>
+      </div>`;
   }
 
   renderAlleFelder() {
@@ -4720,6 +4738,7 @@ class HATGPanel extends HTMLElement {
 
   renderSettingsMenu() {
     if (!this._state.settingsOpen) return "";
+    const format = this.ausgabeFormat();
     return `
       <div class="topbar-dropdown-menu">
         <div class="settings-row">
@@ -4740,6 +4759,18 @@ class HATGPanel extends HTMLElement {
             <button type="button" class="${this._sprache === "en" ? "active" : ""}" data-app-sprache="en" data-roh>English</button>
           </div>
         </div>
+        <div class="settings-row">
+          <span>Ausgabeformat</span>
+          <div class="mode-toggle-group inline" role="group" aria-label="Ausgabeformat">
+            <button type="button" class="${format === HATG_AUSGABE_UIX ? "active" : ""}" data-ausgabe-format="${HATG_AUSGABE_UIX}" data-roh>UIX</button>
+            <button type="button" class="${format === HATG_AUSGABE_CARDMOD ? "active" : ""}" data-ausgabe-format="${HATG_AUSGABE_CARDMOD}" data-roh>card-mod</button>
+          </div>
+        </div>
+        <p class="settings-note">${
+          format === HATG_AUSGABE_CARDMOD
+            ? "Das Theme wird mit card-mod-Schlüsseln geschrieben. card-mod wird seit Home Assistant 2026.8 nicht mehr repariert - nur wählen, solange die alte Integration noch läuft."
+            : "Das Theme wird mit uix-Schlüsseln geschrieben. Dafür muss UI eXtension installiert und als Gerät hinzugefügt sein."
+        }</p>
       </div>`;
   }
 
@@ -5803,6 +5834,7 @@ class HATGPanel extends HTMLElement {
         .style-custom-field span { display: block; font-size: 11.5px; color: var(--hatg-muted); margin-bottom: 6px; }
         .style-custom-field input { width: 100%; }
 
+        .settings-note { margin: 2px 12px 10px; font-size: 11px; line-height: 1.5; color: var(--hatg-muted); }
         .vorlage-eigene-kopf { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 26px 0 10px; }
         .vorlage-eigene-kopf h2 { margin: 0; font-size: 15px; font-weight: 650; color: var(--hatg-text); }
         .vorlage-actions { display: flex; align-items: center; gap: 8px; }
@@ -6051,6 +6083,13 @@ class HATGPanel extends HTMLElement {
         }
         this._state.settingsOpen = false;
         this.render();
+      });
+    });
+
+    this.shadowRoot.querySelectorAll("[data-ausgabe-format]").forEach((button) => {
+      button.addEventListener("click", () => {
+        this._state.settingsOpen = false;
+        this.setzeAusgabeFormat(button.dataset.ausgabeFormat);
       });
     });
 
