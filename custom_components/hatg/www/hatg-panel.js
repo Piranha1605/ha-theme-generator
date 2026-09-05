@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.1.0b3";
+const HATG_VERSION = "1.1.0b4";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -7899,7 +7899,11 @@ uix:
   validateTheme() {
     const formats = hatgGetKeyFormats();
     const problems = { invalid: [], empty: [], repaired: 0 };
-    const allowEmpty = new Set([HATG_CUSTOM_YAML_KEY, ...HATG_STILZIELE.map((z) => `uix-${z.id}`)]);
+    // Ein Feld, das schon im Manifest leer ist, darf leer bleiben - Stilziele,
+    // die -yaml-Felder und Freitextfelder haben schlicht keinen sinnvollen Standard.
+    const allowEmpty = new Set(
+      Object.keys(HATG_MANIFEST.light).filter((k) => String(HATG_MANIFEST.light[k] ?? "").trim() === "")
+    );
     ["light", "dark"].forEach((mode) => {
       const values = this._state.values[mode];
       Object.keys(formats).forEach((k) => {
