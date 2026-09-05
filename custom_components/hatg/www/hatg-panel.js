@@ -243,8 +243,6 @@ const HATG_TEXTE = {
   "Dialoge übernehmen den Eckenradius deiner Karten, bekommen etwas Abstand nach oben und einen kräftigeren Schleier dahinter, damit sie sich klarer vom Dashboard abheben. Setzt nur Variablen an der Dialog-Wurzel - für tiefere Eingriffe in Dialoge braucht es das Feld uix-dialog-yaml im Freitext.": "Dialogs take on your card corner radius, get some space at the top and a stronger scrim behind them so they stand out from the dashboard. Only sets variables at the dialog root - deeper changes to dialogs need the uix-dialog-yaml field in the free-text area.",
   "Hintergrundbild über die ganze Oberfläche": "Background image across the whole interface",
   "Legt ein Bild als Hintergrund hinter Ansichten UND hinter Kopfleiste und Seitenleiste - anders als das Hintergrundbild auf der Startseite, das nur den Inhaltsbereich füllt. Der Dateiname muss angepasst werden: Bilder, die du in HATG hochlädst, liegen unter /hatg_wallpaper/. Der Verlauf davor dunkelt das Bild ab, damit Text lesbar bleibt.": "Puts an image behind the views AND behind the top bar and sidebar - unlike the background image on the start page, which only fills the content area. The file name has to be adjusted: images you upload in HATG live under /hatg_wallpaper/. The gradient in front dims the image so text stays readable.",
-  "Hintergrund dämpfen": "Dim the background",
-  "Nimmt dem Hintergrund - Bild, Video oder Kamerabild - etwas Deckkraft, damit Karten und Text davor ruhiger stehen. Ergänzt die Vorlage für das Hintergrundbild und wirkt nur, wenn ein UIX-Hintergrund gesetzt ist.": "Takes some opacity off the background - image, video or camera stream - so cards and text sit more calmly in front of it. Complements the background image preset and only works when a UIX background is set.",
   "Wirkt auf": "Applies to",
   "Das CSS landet beim Aktivieren markiert im gewählten Stilziel - genau wie die mitgelieferten Vorlagen, für Light und Dark gleichzeitig.": "When activated, the CSS is written and marked into the chosen style target - just like the built-in presets, for light and dark at the same time.",
   "Kartenfarben: Sanfter Verlauf": "Card colours: soft gradient",
@@ -1486,7 +1484,10 @@ function hatgLeseVorlagenBlock(text, id) {
   return m ? m[1].trim() : null;
 }
 
-const HATG_VORLAGEN_STILLGELEGT = ["icon-farbe-hintergrund"];
+const HATG_VORLAGEN_STILLGELEGT = ["icon-farbe-hintergrund", "ansicht-hintergrund-daempfen"];
+// Ziele, in denen stillgelegte Vorlagen liegen koennen - sonst findet das
+// Aufraeumen sie nicht mehr, sobald die Definition weg ist.
+const HATG_VORLAGEN_STILLGELEGT_ZIELE = ["uix-card", "uix-view-background"];
 // Vorlagen ohne eigene Angabe schreiben weiterhin in uix-card.
 const HATG_VORLAGEN_STANDARDZIEL = "uix-card";
 const HATG_VORLAGEN_ZIEL_ICONS = {
@@ -1512,7 +1513,7 @@ function hatgVorlagenZiel(tpl) {
 }
 // Alle Ziele, in denen Vorlagenbloecke stecken koennen - fuer Suche und Aufraeumen.
 function hatgVorlagenZieleAlle(vorlagen) {
-  const ziele = new Set([HATG_VORLAGEN_STANDARDZIEL]);
+  const ziele = new Set([HATG_VORLAGEN_STANDARDZIEL, ...HATG_VORLAGEN_STILLGELEGT_ZIELE]);
   (vorlagen || []).forEach((t) => ziele.add(hatgVorlagenZiel(t)));
   return [...ziele];
 }
@@ -1691,15 +1692,6 @@ ha-adaptive-dialog {
   span[slot="supporting-text"] {
     opacity: 0.75;
   }`,
-  },
-  {
-    id: "ansicht-hintergrund-daempfen",
-    label: "Hintergrund dämpfen",
-    desc: "Nimmt dem Hintergrund - Bild, Video oder Kamerabild - etwas Deckkraft, damit Karten und Text davor ruhiger stehen. Ergänzt die Vorlage für das Hintergrundbild und wirkt nur, wenn ein UIX-Hintergrund gesetzt ist.",
-    ziel: "uix-view-background",
-    css: `:host {
-  opacity: 0.7;
-}`,
   },
 ];
 
