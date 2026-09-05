@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.1.0b5";
+const HATG_VERSION = "1.1.0b6";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -242,7 +242,7 @@ const HATG_TEXTE = {
   "Dialoge: Kartenradius und dunklerer Schleier": "Dialogs: card radius and a darker scrim",
   "Dialoge übernehmen den Eckenradius deiner Karten, bekommen etwas Abstand nach oben und einen kräftigeren Schleier dahinter, damit sie sich klarer vom Dashboard abheben. Setzt nur Variablen an der Dialog-Wurzel - für tiefere Eingriffe in Dialoge braucht es das Feld uix-dialog-yaml im Freitext.": "Dialogs take on your card corner radius, get some space at the top and a stronger scrim behind them so they stand out from the dashboard. Only sets variables at the dialog root - deeper changes to dialogs need the uix-dialog-yaml field in the free-text area.",
   "Hintergrundbild über die ganze Oberfläche": "Background image across the whole interface",
-  "Legt ein Bild als Hintergrund hinter Ansichten UND hinter Kopfleiste und Seitenleiste - anders als das Hintergrundbild auf der Startseite, das nur den Inhaltsbereich füllt. Der Dateiname muss angepasst werden: Bilder, die du in HATG hochlädst, liegen unter /hatg_wallpaper/. Der Verlauf davor dunkelt das Bild ab, damit Text lesbar bleibt.": "Puts an image behind the views AND behind the top bar and sidebar - unlike the background image on the start page, which only fills the content area. The file name has to be adjusted: images you upload in HATG live under /hatg_wallpaper/. The gradient in front dims the image so text stays readable.",
+  "Legt ein Bild als Hintergrund hinter Ansichten UND hinter Kopfleiste und Seitenleiste - anders als das Hintergrundbild auf der Startseite, das nur den Inhaltsbereich füllt. Wichtig: Den Dateinamen im CSS auf ein eigenes Bild ändern, sonst passiert nichts. Bilder, die du in HATG hochlädst, liegen unter /hatg_wallpaper/. Soll das Bild abgedunkelt werden, statt --uix-view-background-image die Variable --uix-view-background mit einem Verlauf vor dem url(...) setzen.": "Puts an image behind the views AND behind the top bar and sidebar - unlike the background image on the start page, which only fills the content area. Important: change the file name in the CSS to one of your own images, otherwise nothing happens. Images you upload in HATG live under /hatg_wallpaper/. To dim the image, use the variable --uix-view-background with a gradient in front of the url(...) instead of --uix-view-background-image.",
   "Wirkt auf": "Applies to",
   "Das CSS landet beim Aktivieren markiert im gewählten Stilziel - genau wie die mitgelieferten Vorlagen, für Light und Dark gleichzeitig.": "When activated, the CSS is written and marked into the chosen style target - just like the built-in presets, for light and dark at the same time.",
   "Kartenfarben: Sanfter Verlauf": "Card colours: soft gradient",
@@ -1635,10 +1635,11 @@ ha-adaptive-dialog {
   {
     id: "ansicht-hintergrundbild",
     label: "Hintergrundbild über die ganze Oberfläche",
-    desc: "Legt ein Bild als Hintergrund hinter Ansichten UND hinter Kopfleiste und Seitenleiste - anders als das Hintergrundbild auf der Startseite, das nur den Inhaltsbereich füllt. Der Dateiname muss angepasst werden: Bilder, die du in HATG hochlädst, liegen unter /hatg_wallpaper/. Der Verlauf davor dunkelt das Bild ab, damit Text lesbar bleibt.",
+    desc: "Legt ein Bild als Hintergrund hinter Ansichten UND hinter Kopfleiste und Seitenleiste - anders als das Hintergrundbild auf der Startseite, das nur den Inhaltsbereich füllt. Wichtig: Den Dateinamen im CSS auf ein eigenes Bild ändern, sonst passiert nichts. Bilder, die du in HATG hochlädst, liegen unter /hatg_wallpaper/. Soll das Bild abgedunkelt werden, statt --uix-view-background-image die Variable --uix-view-background mit einem Verlauf vor dem url(...) setzen.",
     ziel: "uix-drawer",
     css: `:host {
-  --uix-view-background: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), url("/hatg_wallpaper/DEIN-BILD.jpg") center / cover no-repeat;
+  /* Dateinamen anpassen - in HATG hochgeladene Bilder liegen unter /hatg_wallpaper/ */
+  --uix-view-background-image: /hatg_wallpaper/DEIN-BILD.jpg;
   --uix-view-background-cover: full;
 }`,
   },
