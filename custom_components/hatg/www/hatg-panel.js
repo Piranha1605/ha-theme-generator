@@ -48,6 +48,10 @@ const HATG_TEXTE = {
   "Erweiterungen": "Extensions",
   "Generatoren": "Generators",
   "UIX-Vorlagen": "UIX presets",
+  "Alle Vorlagen": "All presets",
+  "Vorlagen, die in": "Presets that write into",
+  "Selbst angelegte Vorlagen, quer über alle Stilziele. Sie liegen in": "Presets you created yourself, across all style targets. They live in",
+  "Für dieses Stilziel gibt es noch keine Vorlage.": "There is no preset for this style target yet.",
   "UIX-Hilfe": "UIX help",
   "Stilziele: häufig": "Style targets: common",
   "Stilziele: weitere": "Style targets: more",
@@ -1461,6 +1465,22 @@ function hatgLeseVorlagenBlock(text, id) {
 const HATG_VORLAGEN_STILLGELEGT = ["icon-farbe-hintergrund"];
 // Vorlagen ohne eigene Angabe schreiben weiterhin in uix-card.
 const HATG_VORLAGEN_STANDARDZIEL = "uix-card";
+const HATG_VORLAGEN_ZIEL_ICONS = {
+  card: "mdi:card-outline",
+  root: "mdi:view-dashboard-outline",
+  view: "mdi:page-layout-body",
+  "view-background": "mdi:image-outline",
+  row: "mdi:format-list-bulleted",
+  badge: "mdi:label-outline",
+  sidebar: "mdi:dock-left",
+  "more-info": "mdi:information-outline",
+  dialog: "mdi:window-maximize",
+  drawer: "mdi:menu",
+  glance: "mdi:view-grid-outline",
+  "top-app-bar-fixed": "mdi:page-layout-header",
+  toast: "mdi:message-outline",
+  "grid-section": "mdi:view-grid-plus-outline",
+};
 function hatgVorlagenZiel(tpl) {
   const ziel = tpl && tpl.ziel;
   return ziel && HATG_STILZIEL_KEY_MAP.has(ziel) ? ziel : HATG_VORLAGEN_STANDARDZIEL;
@@ -2775,6 +2795,7 @@ class HATGPanel extends HTMLElement {
       const validUserSection =
         this.userSectionMeta(this._activeSection) ||
         HATG_TAIL_NAV.some((s) => s.id === this._activeSection) ||
+        this._activeSection.startsWith("uix-vorlagen__") ||
         ["overview", "alle-felder", "code-editor"].includes(this._activeSection);
       if (this._state.mode === "user" && !validUserSection) {
         this._activeSection = "overview";
@@ -2864,6 +2885,10 @@ class HATGPanel extends HTMLElement {
     if (this._activeSection === "alle-felder") return "Alle Felder";
     if (this._activeSection === "code-editor") return "Code-Editor";
     if (this._activeSection === "uix-vorlagen") return "UIX-Vorlagen";
+    if (this._activeSection.startsWith("uix-vorlagen__")) {
+      const gruppe = this.vorlagenGruppeMeta(this._activeSection);
+      return gruppe ? gruppe.label : "UIX-Vorlagen";
+    }
     if (this._activeSection === "uix-hilfe") return "UIX-Hilfe";
     if (this._activeSection === "plugins") return "Plugins";
     if (this._activeSection === "generatoren") return "Generatoren";
@@ -2916,16 +2941,40 @@ class HATGPanel extends HTMLElement {
         <button class="nav-item nav-subitem ${group.id === this._activeSection ? "active" : ""}" type="button" data-section="${group.id}">
           <span class="nav-icon-badge" style="background: ${hatgNavIconGradient(parentId)};"><ha-icon icon="${group.icon || "mdi:folder-outline"}"></ha-icon></span>
           <span>${group.label}</span>
+          ${group.anzahl === undefined ? "" : `<small class="nav-anzahl" data-roh>${group.anzahl}</small>`}
         </button>`;
     const renderPlainHeading = (label) => `<div class="nav-group-heading nav-group-heading-plain">${label}</div>`;
 
     const overviewItem = renderItem({ id: "overview", label: "Start", icon: "mdi:view-grid-outline" });
+    // Die Vorlagen sind der einzige Werkzeug-Eintrag mit Untermenues - nach Stilziel getrennt.
+    const werkzeugEintraege = () => {
+      const eintraege = [];
+      HATG_TAIL_NAV.forEach((s) => {
+        if (s.id !== "uix-vorlagen") {
+          eintraege.push(renderItem(s));
+          return;
+        }
+        const gruppen = this.vorlagenNavGruppen();
+        const pseudo = { ...s, groups: [{ id: s.id }, ...gruppen] };
+        eintraege.push(renderGroupHeading(pseudo));
+        if (this.navGroupExpanded(pseudo)) {
+          eintraege.push(
+            renderSubItem(
+              { id: s.id, label: this._sprache === "en" ? "All presets" : "Alle Vorlagen", icon: "mdi:view-grid-outline" },
+              s.id
+            )
+          );
+          gruppen.forEach((g) => eintraege.push(renderSubItem(g, s.id)));
+        }
+      });
+      return eintraege;
+    };
     if (this._state.mode === "user") {
       return [
         overviewItem,
         ...HATG_USER_SECTIONS.map((s) => renderItem(s)),
         renderItem(HATG_ALLE_FELDER_NAV),
-        ...HATG_TAIL_NAV.map((s) => renderItem(s)),
+        ...werkzeugEintraege(),
       ].join("");
     }
     const mid = [];
@@ -2940,7 +2989,7 @@ class HATGPanel extends HTMLElement {
       }
       if (s.id === "mushroom") mid.push(renderItem(HATG_ALLE_FELDER_NAV));
     });
-    const tools = [renderPlainHeading("Tools"), ...HATG_TAIL_NAV.map((s) => renderItem(s))];
+    const tools = [renderPlainHeading("Tools"), ...werkzeugEintraege()];
     return [overviewItem, ...mid, ...tools].join("");
   }
 
@@ -4467,7 +4516,39 @@ uix:
       </section>`;
   }
 
-  renderVorlagen() {
+  // Die Vorlagenseite gliedert sich nach Stilzielen. Untermenues entstehen nur
+  // fuer Ziele, zu denen es tatsaechlich Vorlagen gibt - sonst stuenden dort
+  // zwei Dutzend leere Eintraege.
+  vorlagenNavGruppen() {
+    const sprache = this._sprache === "en" ? "en" : "de";
+    const zaehler = new Map();
+    this.alleVorlagen().forEach((tpl) => {
+      const ziel = hatgVorlagenZiel(tpl);
+      zaehler.set(ziel, (zaehler.get(ziel) || 0) + 1);
+    });
+    const gruppen = HATG_STILZIELE.filter((z) => zaehler.has(`uix-${z.id}`)).map((z) => ({
+      id: `uix-vorlagen__${z.id}`,
+      label: hatgStilzielLabel(z, sprache),
+      icon: HATG_VORLAGEN_ZIEL_ICONS[z.id] || "mdi:target",
+      ziel: `uix-${z.id}`,
+      anzahl: zaehler.get(`uix-${z.id}`),
+    }));
+    gruppen.push({
+      id: "uix-vorlagen__eigene",
+      label: this._sprache === "en" ? "Custom presets" : "Eigene Vorlagen",
+      icon: "mdi:pencil-outline",
+      ziel: null,
+      eigen: true,
+      anzahl: this.eigeneVorlagen().length,
+    });
+    return gruppen;
+  }
+  vorlagenGruppeMeta(id) {
+    return this.vorlagenNavGruppen().find((g) => g.id === id) || null;
+  }
+
+  renderVorlagen(sektion = "uix-vorlagen") {
+    const gruppe = this.vorlagenGruppeMeta(sektion);
     const werte = this.currentValues();
     const istAktiv = (tpl) => hatgVorlagenBlockActive(String(werte[hatgVorlagenZiel(tpl)] || ""), tpl.id);
     const veraltet = this.veralteteVorlagen();
@@ -4503,8 +4584,11 @@ uix:
           </div>
         </div>`;
     };
-    const cards = HATG_VORLAGEN.map((tpl) => kachel(tpl, false)).join("");
-    const eigene = this.eigeneVorlagen();
+    const passt = (tpl) => !gruppe || !gruppe.ziel || hatgVorlagenZiel(tpl) === gruppe.ziel;
+    const nurEigene = !!(gruppe && gruppe.eigen);
+    const werksVorlagen = nurEigene ? [] : HATG_VORLAGEN.filter(passt);
+    const cards = werksVorlagen.map((tpl) => kachel(tpl, false)).join("");
+    const eigene = this.eigeneVorlagen().filter(passt);
     const eigeneKacheln = eigene.map((tpl) => kachel(tpl, true)).join("");
     const eigenerBlock = `
       <div class="vorlage-eigene-kopf">
@@ -4518,16 +4602,27 @@ uix:
           ? `<div class="plugin-grid vorlage-grid">${eigeneKacheln}</div>`
           : `<p class="vorlage-desc">Noch keine eigenen Vorlagen. Sie werden in <code>config/themes/hatg/hatg-uix-vorlagen.json</code> abgelegt und bleiben damit über Theme- und Browserwechsel hinweg erhalten.</p>`
       }`;
-    return `
-      <section class="editor-section">
-        <div class="section-heading">
+    const kopf = gruppe
+      ? `
+          <span class="eyebrow">UIX-Vorlagen</span>
+          <h1>${hatgEscape(gruppe.label)}</h1>
+          <p>${
+            gruppe.eigen
+              ? "Selbst angelegte Vorlagen, quer über alle Stilziele. Sie liegen in <code>config/themes/hatg/hatg-uix-vorlagen.json</code> und bleiben über Theme- und Browserwechsel hinweg erhalten."
+              : `Vorlagen, die in <code>${gruppe.ziel}</code> schreiben. Sie gelten global fürs ganze Theme, für Light und Dark gleichzeitig, und lassen sich einzeln wieder entfernen.`
+          }</p>`
+      : `
           <span class="eyebrow">UIX</span>
           <h1>UIX-Vorlagen</h1>
-          <p>Fertige UIX-Bausteine, die per Klick global im Theme aktiviert werden (landen markiert im jeweiligen Stilziel, für Light und Dark gleichzeitig) - kein Kopieren/Einfügen nötig. Decken native HA-, Mushroom- und Bubble-Karten ab, inklusive der Bubble-Kartentypen Climate, Cover, Media Player, Select und Horizontal Buttons Stack. Bei Hüllen-Karten (Überschriften, Mushroom-Chips, Bubble-Sub-Buttons) bleibt der äußere Kartenrahmen bewusst unangetastet. Mehrere Vorlagen lassen sich kombinieren; bei überlappenden Eigenschaften gewinnt die zuletzt aktivierte.</p>
-        </div>
+          <p>Fertige UIX-Bausteine, die per Klick global im Theme aktiviert werden (landen markiert im jeweiligen Stilziel, für Light und Dark gleichzeitig) - kein Kopieren/Einfügen nötig. In der Seitenleiste stehen sie zusätzlich nach Stilziel getrennt. Mehrere Vorlagen lassen sich kombinieren; bei überlappenden Eigenschaften gewinnt die zuletzt aktivierte.</p>`;
+    const leer = !cards && !eigeneKacheln;
+    return `
+      <section class="editor-section">
+        <div class="section-heading">${kopf}</div>
         ${hinweis}
-        <div class="plugin-grid vorlage-grid">${cards}</div>
-        ${eigenerBlock}
+        ${cards ? `<div class="plugin-grid vorlage-grid">${cards}</div>` : ""}
+        ${nurEigene || !gruppe || eigene.length ? eigenerBlock : ""}
+        ${leer && gruppe && !gruppe.eigen ? `<p class="vorlage-desc">Für dieses Stilziel gibt es noch keine Vorlage.</p>` : ""}
       </section>`;
   }
 
@@ -5127,7 +5222,8 @@ uix:
     if (this._activeSection === "alle-felder") return this.renderAlleFelder();
     if (this._activeSection === "code-editor") return this.renderCodeEditor();
     if (this._activeSection === "ha-live") return this.renderHaLive();
-    if (this._activeSection === "uix-vorlagen") return this.renderVorlagen();
+    if (this._activeSection === "uix-vorlagen" || this._activeSection.startsWith("uix-vorlagen__"))
+      return this.renderVorlagen(this._activeSection);
     if (this._activeSection === "uix-hilfe") return this.renderUixHilfe();
     if (this._activeSection === "plugins") return this.renderPlugins();
     if (this._activeSection === "generatoren") return this.renderGenerators();
@@ -6120,6 +6216,7 @@ uix:
         .plugin-toggle-button.is-active { border-color: #38c76c; background: rgba(56,199,108,.14); color: #38c76c; }
         .plugin-toggle-button.is-active:hover { border-color: #ff453a; background: rgba(255,69,58,.14); color: #ff453a; }
         .vorlage-card { min-height: 0; }
+        .nav-anzahl { margin-left: auto; font-size: 10px; font-weight: 600; color: var(--hatg-muted); background: var(--hatg-field); border-radius: 999px; padding: 1px 7px; }
         .vorlage-ziel { display: flex; align-items: center; gap: 5px; margin: 8px 0 0; font-size: 11px; color: var(--hatg-muted); }
         .vorlage-ziel ha-icon { --mdc-icon-size: 14px; }
         .vorlage-desc { font-size: 12px; line-height: 1.5; color: var(--hatg-text-dim); margin: 0; }
@@ -6516,6 +6613,7 @@ uix:
         if (nextMode !== this._state.mode) {
           this._state.mode = nextMode;
           const alwaysAvailable = ["overview", "alle-felder", "code-editor", ...HATG_TAIL_NAV.map((s) => s.id)];
+          if (this._activeSection.startsWith("uix-vorlagen__")) alwaysAvailable.push(this._activeSection);
           if (nextMode === "user" && !this.userSectionMeta(this._activeSection) && !alwaysAvailable.includes(this._activeSection)) {
             this._activeSection = "overview";
           }
@@ -6552,7 +6650,9 @@ uix:
     this.shadowRoot.querySelectorAll("[data-nav-toggle]").forEach((button) => {
       button.addEventListener("click", () => {
         const id = button.dataset.navToggle;
-        const section = HATG_MANIFEST.sections.find((s) => s.id === id);
+        const section =
+          HATG_MANIFEST.sections.find((s) => s.id === id) ||
+          (id === "uix-vorlagen" ? { id, groups: [{ id }, ...this.vorlagenNavGruppen()] } : null);
         const currentlyExpanded = section ? this.navGroupExpanded(section) : !!this._navExpanded[id];
         this._navExpanded[id] = !currentlyExpanded;
         this.render();
