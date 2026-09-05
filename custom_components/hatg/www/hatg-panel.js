@@ -3538,6 +3538,7 @@ class HATGPanel extends HTMLElement {
             <h1>${hatgEscape(gm.group.label)}</h1>
             <p>${gm.group.keys.length} Variablen</p>
           </div>
+          ${gm.parent.id === "uix-generator" ? this.renderAusgabeFormatHinweis() : ""}
           ${this.renderFieldList(gm.group.keys)}
         </section>`;
     }
@@ -5540,7 +5541,6 @@ uix:
 
   render() {
     if (this._activeSection === "generatoren") this._activeSection = "overview";
-    if (this._activeSection === "uix-generator") this._activeSection = "code-editor";
     const lightAppearance = this._state.appearance === "light";
     const focusInfo = this.captureFocus();
     this.shadowRoot.innerHTML = `
