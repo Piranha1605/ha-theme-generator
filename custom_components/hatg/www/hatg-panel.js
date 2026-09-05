@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.0.3";
+const HATG_VERSION = "1.1.0";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -2406,6 +2406,17 @@ function hatgParseThemeYaml(text, knownKeys) {
     result.foundLight = true;
     result.foundDark = true;
     result.flatSingleMode = true;
+  } else {
+    // Theme-globale Felder stehen ausserhalb von modes: und gelten fuer beide
+    // Modi - ohne diesen Schritt gingen uix-/card-mod-Bloecke beim Import verloren.
+    Object.keys(flat).forEach((key) => {
+      if (result.light[key] === undefined) result.light[key] = flat[key];
+      if (result.dark[key] === undefined) result.dark[key] = flat[key];
+    });
+    Object.keys(flatExtra).forEach((key) => {
+      if (result.extra.light[key] === undefined) result.extra.light[key] = flatExtra[key];
+      if (result.extra.dark[key] === undefined) result.extra.dark[key] = flatExtra[key];
+    });
   }
   return result;
 }
@@ -7736,7 +7747,8 @@ uix:
   // "-yaml"-Varianten. Beides wandert auf die uix-Felder, egal ob es beim Parsen als
   // bekanntes Feld oder im Unbekannt-Topf gelandet ist.
   migriereImportierteStilziele(parsed) {
-    let migriert = 0;
+    // Theme-globale Felder liegen in beiden Modi - gezaehlt wird das Feld, nicht der Modus.
+    const migriert = new Set();
     ["light", "dark"].forEach((mode) => {
       [parsed[mode], parsed.extra ? parsed.extra[mode] : null].forEach((bag) => {
         if (!bag) return;
@@ -7749,11 +7761,11 @@ uix:
           const vorhanden = String(parsed[mode][neu] ?? "").trim();
           if (vorhanden && vorhanden.includes(wert)) return;
           parsed[mode][neu] = vorhanden ? `${vorhanden}\n${wert}` : wert;
-          migriert++;
+          migriert.add(neu);
         });
       });
     });
-    return migriert;
+    return migriert.size;
   }
 
   applyImportedTheme(parsed) {
