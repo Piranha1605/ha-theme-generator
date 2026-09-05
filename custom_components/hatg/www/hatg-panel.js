@@ -1503,6 +1503,7 @@ const HATG_NAV_ICON_COLOR = {
   "alle-felder": "blue",
   "code-editor": "indigo",
   "uix-vorlagen": "pink",
+  "uix-hilfe": "cyan",
   "ha-live": "green",
   plugins: "purple",
   generatoren: "mint",
@@ -1555,6 +1556,7 @@ const HATG_TAIL_NAV = [
   { id: "code-editor", label: "Code-Editor", icon: "mdi:xml" },
   { id: "uix-vorlagen", label: "UIX-Vorlagen", icon: "mdi:auto-fix" },
   { id: "plugins", label: "Plugins", icon: "mdi:puzzle-outline" },
+  { id: "uix-hilfe", label: "UIX-Hilfe", icon: "mdi:lifebuoy" },
 ];
 
 const HATG_USER_SECTIONS = [
@@ -2623,6 +2625,7 @@ class HATGPanel extends HTMLElement {
       }
       const validUserSection =
         this.userSectionMeta(this._activeSection) ||
+        HATG_TAIL_NAV.some((s) => s.id === this._activeSection) ||
         ["overview", "alle-felder", "code-editor"].includes(this._activeSection);
       if (this._state.mode === "user" && !validUserSection) {
         this._activeSection = "overview";
@@ -2712,6 +2715,7 @@ class HATGPanel extends HTMLElement {
     if (this._activeSection === "alle-felder") return "Alle Felder";
     if (this._activeSection === "code-editor") return "Code-Editor";
     if (this._activeSection === "uix-vorlagen") return "UIX-Vorlagen";
+    if (this._activeSection === "uix-hilfe") return "UIX-Hilfe";
     if (this._activeSection === "plugins") return "Plugins";
     if (this._activeSection === "generatoren") return "Generatoren";
     const gm = this.groupMeta(this._activeSection);
@@ -2777,7 +2781,6 @@ class HATGPanel extends HTMLElement {
     }
     const mid = [];
     HATG_MANIFEST.sections.forEach((s) => {
-      if (s.id === "uix-generator") return;
       if (s.groups && s.groups.length) {
         mid.push(renderGroupHeading(s));
         if (this.navGroupExpanded(s)) {
@@ -4070,6 +4073,107 @@ class HATGPanel extends HTMLElement {
       </div>`;
   }
 
+  renderUixHilfe() {
+    const format = this.ausgabeFormat();
+    const zieleZeilen = HATG_STILZIELE.map(
+      (z) => `
+        <tr>
+          <td><code>uix-${z.id}</code></td>
+          <td>${hatgEscape(z.label)}</td>
+          <td>${z.cardmod === false ? "&mdash;" : `<code>card-mod-${z.id}</code>`}</td>
+        </tr>`
+    ).join("");
+    return `
+      <section class="editor-section">
+        <div class="section-heading">
+          <span class="eyebrow">Hilfe</span>
+          <h1>UIX-Hilfe</h1>
+          <p>UI eXtension, kurz UIX, bringt eigenes CSS in die Home-Assistant-Oberfläche - dahin, wo Theme-Variablen allein nicht hinkommen. Es ist der Nachfolger von card-mod und die Grundlage für die UIX-Vorlagen, die Plugins und die Stilziele in HATG.</p>
+        </div>
+
+        <div class="hilfe-block">
+          <h2>Warum nicht mehr card-mod</h2>
+          <p>card-mod hat jahrelang genau diese Aufgabe erfüllt. Seit Home Assistant 2026.8 lädt es die Theme-Abschnitte nicht mehr zuverlässig; der Entwickler hat angekündigt, dafür keinen Fix mehr zu veröffentlichen, und arbeitet stattdessen an UIX. Wer weiter card-mod einsetzt, verliert früher oder später sämtliche Styles.</p>
+          <p>UIX versteht die alte Schreibweise weiter: bestehende <code>card-mod-*</code>-Felder und <code>card_mod:</code>-Blöcke in Karten funktionieren nach dem Umstieg unverändert. Umschreiben musst du also nichts, HATG tut es trotzdem, damit die Themes auf dem aktuellen Stand sind.</p>
+        </div>
+
+        <div class="hilfe-block">
+          <h2>Umstieg in fünf Schritten</h2>
+          <ol class="hilfe-liste">
+            <li><strong>card-mod deinstallieren.</strong> Beide gleichzeitig gehen nicht - UIX weigert sich zu starten, wenn card-mod noch geladen ist.</li>
+            <li><strong>Eintrag in <code>configuration.yaml</code> entfernen.</strong> Falls du card-mod über <code>frontend: extra_module_url:</code> eingebunden hast, muss diese Zeile weg. Bei UIX braucht es sie nicht mehr.</li>
+            <li><strong>UIX über HACS herunterladen.</strong> Zu finden unter "UI eXtension" (Repository <code>Lint-Free-Technology/uix</code>), danach Home Assistant neu starten.</li>
+            <li><strong>UIX als Gerät hinzufügen.</strong> Einstellungen &rarr; Geräte &amp; Dienste &rarr; Integration hinzufügen &rarr; UI eXtension. Dieser Schritt wird am häufigsten vergessen; ohne ihn passiert gar nichts.</li>
+            <li><strong>Theme neu speichern.</strong> In HATG einmal speichern, damit die Datei die <code>uix-</code>Schlüssel bekommt, danach in Home Assistant die Themes neu laden.</li>
+          </ol>
+        </div>
+
+        <div class="hilfe-block">
+          <h2>Was sich in der Theme-Datei ändert</h2>
+          <p>Die Schlüssel heißen jetzt <code>uix-</code> statt <code>card-mod-</code>, sonst bleibt alles gleich: Sie stehen auf Theme-Ebene, nicht unter <code>modes:</code>, und ihr Inhalt ist gewöhnliches CSS.</p>
+          <pre class="hilfe-code">mein-theme:
+  uix-theme: mein-theme     # muss exakt dem Theme-Namen entsprechen
+  uix-card: |
+    ha-card {
+      border-radius: 18px;
+    }
+  modes:
+    light:
+      primary-color: "#ff9300"</pre>
+          <p><code>uix-theme</code> setzt HATG selbst und hält es am Themenamen ausgerichtet. Ohne diesen Schlüssel wertet UIX die übrigen Stilziele nicht aus.</p>
+        </div>
+
+        <div class="hilfe-block">
+          <h2>An einzelnen Karten</h2>
+          <p>Was global nicht passt, geht weiterhin direkt an der Karte - der Schlüssel heißt dort <code>uix:</code> statt <code>card_mod:</code>. Die Kopiervorlagen unter "Plugins" schreiben ihn bereits richtig.</p>
+          <pre class="hilfe-code">type: tile
+entity: light.kueche
+uix:
+  style: |
+    ha-card {
+      background: #202020;
+    }</pre>
+        </div>
+
+        <div class="hilfe-block">
+          <h2>Stilziele</h2>
+          <p>Ein Stilziel bestimmt, an welchem Teil der Oberfläche dein CSS ansetzt. HATG bietet alle ${HATG_STILZIELE.length} an, die UIX kennt - zu finden im Profi-Modus unter "UIX &amp; Generator". Zehn davon gibt es in card-mod nicht.</p>
+          <div class="hilfe-tabelle-rahmen">
+            <table class="hilfe-tabelle">
+              <thead><tr><th>Feld in HATG</th><th>Wirkt auf</th><th>Früher in card-mod</th></tr></thead>
+              <tbody>${zieleZeilen}</tbody>
+            </table>
+          </div>
+          <p>Reicht ein einfacher CSS-Block nicht, weil du tiefer ins Shadow DOM musst, gibt es zu jedem Ziel die Variante mit <code>-yaml</code> am Ende, etwa <code>uix-card-yaml</code>. Die trägst du im Freitextfeld "Eigene Theme-Einträge" ein.</p>
+        </div>
+
+        <div class="hilfe-block">
+          <h2>Was HATG für dich erledigt</h2>
+          <ul class="hilfe-liste">
+            <li>Importierte Themes werden beim Einlesen von <code>card-mod-*</code> auf <code>uix-*</code> gehoben, die alten <code>-yaml</code>-Felder eingeschlossen.</li>
+            <li>Aktivierte Vorlagen werden im Theme mit Kommentaren markiert. Blöcke aus älteren HATG-Versionen werden weiter erkannt und beim nächsten Auffrischen umgestellt.</li>
+            <li>Das Ausgabeformat steht in den Einstellungen. Aktuell: <strong>${format === HATG_AUSGABE_CARDMOD ? "card-mod (veraltet)" : "UIX"}</strong>.</li>
+          </ul>
+        </div>
+
+        <div class="hilfe-block">
+          <h2>Wenn etwas nicht wirkt</h2>
+          <ul class="hilfe-liste">
+            <li>UIX wurde heruntergeladen, aber nicht als Gerät hinzugefügt - der häufigste Fall.</li>
+            <li><code>uix-theme</code> stimmt nicht mit dem Theme-Namen überein, Groß- und Kleinschreibung eingeschlossen.</li>
+            <li>card-mod ist noch installiert.</li>
+            <li>Das Theme wurde gespeichert, aber in Home Assistant nicht neu geladen.</li>
+            <li>Der Browser hält eine alte Fassung: einmal hart neu laden.</li>
+          </ul>
+        </div>
+
+        <div class="hilfe-block">
+          <h2>Weiterlesen</h2>
+          <p>Die Dokumentation von UIX steht unter <a href="https://uix.lf.technology" target="_blank" rel="noreferrer">uix.lf.technology</a>, der Umstieg im Einzelnen unter <a href="https://uix.lf.technology/faq/" target="_blank" rel="noreferrer">uix.lf.technology/faq</a>. UIX kann über das hinaus, was HATG anbietet, noch einiges mehr - eigene Elemente, wiederverwendbare Jinja-Makros und Werkzeuge zum Durchsuchen des Shadow DOM.</p>
+        </div>
+      </section>`;
+  }
+
   renderVorlagen() {
     const activeText = String(this.currentValues()["uix-card"] || "");
     const veraltet = this.veralteteVorlagen();
@@ -4728,6 +4832,7 @@ class HATGPanel extends HTMLElement {
     if (this._activeSection === "code-editor") return this.renderCodeEditor();
     if (this._activeSection === "ha-live") return this.renderHaLive();
     if (this._activeSection === "uix-vorlagen") return this.renderVorlagen();
+    if (this._activeSection === "uix-hilfe") return this.renderUixHilfe();
     if (this._activeSection === "plugins") return this.renderPlugins();
     if (this._activeSection === "generatoren") return this.renderGenerators();
     if (this._activeSection === "overview") return this.renderOverview();
@@ -5834,6 +5939,21 @@ class HATGPanel extends HTMLElement {
         .style-custom-field span { display: block; font-size: 11.5px; color: var(--hatg-muted); margin-bottom: 6px; }
         .style-custom-field input { width: 100%; }
 
+        .hilfe-block { margin: 0 0 26px; padding: 18px 20px; border: 1px solid var(--hatg-border); border-radius: 14px; background: var(--hatg-field); }
+        .hilfe-block h2 { margin: 0 0 10px; font-size: 15px; font-weight: 650; color: var(--hatg-text); }
+        .hilfe-block p { margin: 0 0 10px; font-size: 13px; line-height: 1.65; color: var(--hatg-text-dim); }
+        .hilfe-block p:last-child { margin-bottom: 0; }
+        .hilfe-block code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; padding: 1px 5px; border-radius: 5px; background: rgba(127,127,127,.16); color: var(--hatg-text); }
+        .hilfe-block a { color: var(--hatg-blue); }
+        .hilfe-liste { margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.7; color: var(--hatg-text-dim); }
+        .hilfe-liste li { margin-bottom: 6px; }
+        .hilfe-liste strong { color: var(--hatg-text); }
+        .hilfe-code { margin: 0 0 12px; padding: 12px 14px; border-radius: 10px; background: rgba(127,127,127,.12); border: 1px solid var(--hatg-border); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; line-height: 1.6; color: var(--hatg-text); overflow-x: auto; white-space: pre; }
+        .hilfe-tabelle-rahmen { overflow-x: auto; margin: 0 0 12px; }
+        .hilfe-tabelle { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .hilfe-tabelle th { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--hatg-border); color: var(--hatg-muted); font-weight: 600; white-space: nowrap; }
+        .hilfe-tabelle td { padding: 7px 10px; border-bottom: 1px solid var(--hatg-border); color: var(--hatg-text-dim); vertical-align: top; }
+        .hilfe-tabelle tr:last-child td { border-bottom: 0; }
         .settings-note { margin: 2px 12px 10px; font-size: 11px; line-height: 1.5; color: var(--hatg-muted); }
         .vorlage-eigene-kopf { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 26px 0 10px; }
         .vorlage-eigene-kopf h2 { margin: 0; font-size: 15px; font-weight: 650; color: var(--hatg-text); }
@@ -6098,7 +6218,7 @@ class HATGPanel extends HTMLElement {
         const nextMode = button.dataset.appMode;
         if (nextMode !== this._state.mode) {
           this._state.mode = nextMode;
-          const alwaysAvailable = ["overview", "alle-felder", "code-editor"];
+          const alwaysAvailable = ["overview", "alle-felder", "code-editor", ...HATG_TAIL_NAV.map((s) => s.id)];
           if (nextMode === "user" && !this.userSectionMeta(this._activeSection) && !alwaysAvailable.includes(this._activeSection)) {
             this._activeSection = "overview";
           }
