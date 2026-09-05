@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.1.0b6";
+const HATG_VERSION = "1.1.0b7";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -235,6 +235,8 @@ const HATG_TEXTE = {
   "Vergrößert die farbigen Kacheln vor jedem Eintrag und rückt Überschrift und Untertitel enger zusammen. Greift auf Elemente innerhalb der Liste zu und braucht deshalb Shadow-DOM-Pfade - sollte das Frontend die Liste umbauen, muss der Pfad nachgezogen werden. Prüfen lässt er sich in der Browser-Konsole mit uix_tree($0).": "Enlarges the coloured tiles in front of each entry and tightens the gap between headline and supporting text. It reaches elements inside the list and therefore needs shadow DOM paths - if the frontend rebuilds the list, the path has to be adjusted. You can check it in the browser console with uix_tree($0).",
   "Glas: eigene Ebene unter der Karte": "Glass: its own layer beneath the card",
   "Milchiges Glas, das den Weichzeichner nicht auf die Karte selbst legt, sondern auf eine Ebene darunter. Anders als der einfache Glas-Effekt bleibt der Kartenhintergrund dadurch mit Hintergrundbildern und Verläufen verträglich. Hüllen-Karten (Überschriften, Mushroom-Titel und -Chips, reine Textkarten) sind bewusst ausgenommen, damit sie nicht plötzlich als Kachel erscheinen.": "Frosted glass that puts the blur on a layer beneath the card instead of on the card itself. Unlike the plain glass effect, the card background stays compatible with background images and gradients. Wrapper cards (headings, Mushroom titles and chips, text-only cards) are deliberately excluded so they do not suddenly show up as tiles.",
+  "Seitenleiste: aktiver Eintrag als Glaskörper": "Sidebar: active entry as a glass body",
+  "Der markierte Eintrag wird zum Glaskörper statt zur flachen Farbfläche: Verlauf in der Auswahlfarbe, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Home Assistant zeichnet diese Fläche als Overlay mit fester Deckkraft - die Vorlage hebt sie auf und ersetzt sie durch die Schichten.": "The highlighted entry becomes a glass body instead of a flat colour patch: a gradient in the selection colour, a light edge at the top, a shadow edge at the bottom, a fine border and a soft drop shadow. Home Assistant draws that surface as an overlay with fixed opacity - the preset lifts it and replaces it with the layers.",
   "Seitenleiste in Glas": "Sidebar in glass",
   "Die Seitenleiste wird durchscheinend und weichgezeichnet, die Einträge übernehmen den Eckenradius deiner Karten. Wirkt nur, wenn hinter der Seitenleiste etwas zu sehen ist - also mit Hintergrundbild oder einem farbigen Verlauf.": "The sidebar becomes translucent and blurred, and its entries take on your card corner radius. Only visible when there is something behind the sidebar - a background image or a coloured gradient.",
   "App Drawer in Glas": "App drawer in glass",
@@ -1601,6 +1603,37 @@ ha-list-item-button,
 ha-list-item-button.selected::before {
   border-radius: var(--ha-card-border-radius, 12px) !important;
   --ha-list-item-focus-radius: var(--ha-card-border-radius, 12px) !important;
+}`,
+  },
+  {
+    id: "seitenleiste-aktiv-liquid",
+    label: "Seitenleiste: aktiver Eintrag als Glaskörper",
+    desc: "Der markierte Eintrag wird zum Glaskörper statt zur flachen Farbfläche: Verlauf in der Auswahlfarbe, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Home Assistant zeichnet diese Fläche als Overlay mit fester Deckkraft - die Vorlage hebt sie auf und ersetzt sie durch die Schichten.",
+    ziel: "uix-sidebar",
+    css: `ha-list-item-button.selected::before {
+  border-radius: var(--ha-card-border-radius, 14px);
+  opacity: 1;
+  background-color: transparent;
+  background-image:
+    linear-gradient(155deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.06) 38%, rgba(255, 255, 255, 0) 62%),
+    linear-gradient(180deg, rgba(10, 132, 255, 0.42), rgba(10, 132, 255, 0.2));
+  background-image:
+    linear-gradient(155deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.06) 38%, rgba(255, 255, 255, 0) 62%),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--sidebar-selected-icon-color, var(--primary-color)) 42%, transparent),
+      color-mix(in srgb, var(--sidebar-selected-icon-color, var(--primary-color)) 20%, transparent)
+    );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.25),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 6px 16px -8px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px) saturate(170%);
+  -webkit-backdrop-filter: blur(6px) saturate(170%);
+}
+ha-list-item-button::before {
+  transition: opacity 160ms ease, box-shadow 160ms ease;
 }`,
   },
   {
