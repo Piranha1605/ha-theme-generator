@@ -181,7 +181,7 @@ For everyone who prefers typing: all fields as text with syntax highlighting, gr
 
 ## UIX presets — global effects in one click
 
-Ready-made UIX building blocks applied **globally to the theme** with a single click — marked inside `uix-card`, for light and dark simultaneously, individually removable at any time. No copying, no pasting into individual cards.
+Ready-made UIX building blocks applied **globally to the theme** with a single click — for light and dark simultaneously, individually removable at any time. Eleven presets that go beyond cards: glass and gradients for `uix-card`, glass for the sidebar and app drawer, corner radius and scrim for dialogs, a background image across the whole interface. Every tile names its style target, and custom presets can address any of the 25 targets. No copying, no pasting into individual cards.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/cardmod-vorlagen.png" alt="UIX presets with built-in and custom presets" width="80%" />

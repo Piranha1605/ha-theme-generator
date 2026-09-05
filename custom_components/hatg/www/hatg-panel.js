@@ -92,7 +92,7 @@ const HATG_TEXTE = {
   "- genau wie die mitgelieferten Vorlagen, für Light und Dark gleichzeitig.": "– just like the built-in presets, for light and dark at the same time.",
   "Noch keine eigenen Vorlagen. Sie werden in": "No custom presets yet. They are stored in",
   "abgelegt und bleiben damit über Theme- und Browserwechsel hinweg erhalten.": "and therefore survive theme and browser changes.",
-  "Fertige UIX-Bausteine, die per Klick global im Theme aktiviert werden (landen markiert in": "Ready-made UIX blocks activated globally in the theme with one click (written and marked in",
+  "Fertige UIX-Bausteine, die per Klick global im Theme aktiviert werden (landen markiert im jeweiligen Stilziel, für Light und Dark gleichzeitig) - kein Kopieren/Einfügen nötig.": "Ready-made UIX blocks activated globally in the theme with one click - written and marked into their style target, for light and dark at once. No copy and paste needed.",
   ", für Light und Dark gleichzeitig) - kein Kopieren/Einfügen nötig. Decken native HA-, Mushroom- und Bubble-Karten ab, in": ", for light and dark at the same time) – no copy and paste needed. They cover native HA, Mushroom and Bubble cards, in",
   "Eigene(r) CSS-Wert für background-image": "Custom CSS value for background-image",
   "Deckkraft des Bildes": "Image opacity",
@@ -222,6 +222,20 @@ const HATG_TEXTE = {
   "Serversteuerung Server LED": "Server control server LED",
   "Tile Licht": "Tile light",
   "Kellerlicht": "Basement light",
+  "Glas: eigene Ebene unter der Karte": "Glass: its own layer beneath the card",
+  "Milchiges Glas, das den Weichzeichner nicht auf die Karte selbst legt, sondern auf eine Ebene darunter. Anders als der einfache Glas-Effekt bleibt der Kartenhintergrund dadurch mit Hintergrundbildern und Verläufen verträglich. Hüllen-Karten (Überschriften, Mushroom-Titel und -Chips, reine Textkarten) sind bewusst ausgenommen, damit sie nicht plötzlich als Kachel erscheinen.": "Frosted glass that puts the blur on a layer beneath the card instead of on the card itself. Unlike the plain glass effect, the card background stays compatible with background images and gradients. Wrapper cards (headings, Mushroom titles and chips, text-only cards) are deliberately excluded so they do not suddenly show up as tiles.",
+  "Seitenleiste in Glas": "Sidebar in glass",
+  "Die Seitenleiste wird durchscheinend und weichgezeichnet, die Einträge übernehmen den Eckenradius deiner Karten. Wirkt nur, wenn hinter der Seitenleiste etwas zu sehen ist - also mit Hintergrundbild oder einem farbigen Verlauf.": "The sidebar becomes translucent and blurred, and its entries take on your card corner radius. Only visible when there is something behind the sidebar - a background image or a coloured gradient.",
+  "App Drawer in Glas": "App drawer in glass",
+  "Das ausklappbare Menü auf schmalen Bildschirmen bekommt dieselbe Glasfläche wie die Seitenleiste. Sinnvoll zusammen mit der Vorlage für die Seitenleiste, sonst wirken beide unterschiedlich.": "The slide-out menu on narrow screens gets the same glass surface as the sidebar. Best used together with the sidebar preset, otherwise the two look different.",
+  "Dialoge: Kartenradius und dunklerer Schleier": "Dialogs: card radius and a darker scrim",
+  "Dialoge übernehmen den Eckenradius deiner Karten, bekommen etwas Abstand nach oben und einen kräftigeren Schleier dahinter, damit sie sich klarer vom Dashboard abheben. Setzt nur Variablen an der Dialog-Wurzel - für tiefere Eingriffe in Dialoge braucht es das Feld uix-dialog-yaml im Freitext.": "Dialogs take on your card corner radius, get some space at the top and a stronger scrim behind them so they stand out from the dashboard. Only sets variables at the dialog root - deeper changes to dialogs need the uix-dialog-yaml field in the free-text area.",
+  "Hintergrundbild über die ganze Oberfläche": "Background image across the whole interface",
+  "Legt ein Bild als Hintergrund hinter Ansichten UND hinter Kopfleiste und Seitenleiste - anders als das Hintergrundbild auf der Startseite, das nur den Inhaltsbereich füllt. Der Dateiname muss angepasst werden: Bilder, die du in HATG hochlädst, liegen unter /hatg_wallpaper/. Der Verlauf davor dunkelt das Bild ab, damit Text lesbar bleibt.": "Puts an image behind the views AND behind the top bar and sidebar - unlike the background image on the start page, which only fills the content area. The file name has to be adjusted: images you upload in HATG live under /hatg_wallpaper/. The gradient in front dims the image so text stays readable.",
+  "Hintergrund dämpfen": "Dim the background",
+  "Nimmt dem Hintergrund - Bild, Video oder Kamerabild - etwas Deckkraft, damit Karten und Text davor ruhiger stehen. Ergänzt die Vorlage für das Hintergrundbild und wirkt nur, wenn ein UIX-Hintergrund gesetzt ist.": "Takes some opacity off the background - image, video or camera stream - so cards and text sit more calmly in front of it. Complements the background image preset and only works when a UIX background is set.",
+  "Wirkt auf": "Applies to",
+  "Das CSS landet beim Aktivieren markiert im gewählten Stilziel - genau wie die mitgelieferten Vorlagen, für Light und Dark gleichzeitig.": "When activated, the CSS is written and marked into the chosen style target - just like the built-in presets, for light and dark at the same time.",
   "Kartenfarben: Sanfter Verlauf": "Card colours: soft gradient",
   "Dezenter Verlauf von der eigenen Kartenfarbe zu einem leichten Schwarzschleier. Deckt ab: native HA-Karten sowie alle Bubble-Kartentypen inklusive Climate, Cover, Media Player, Select, Kalender, Popup und Horizontal Buttons Stack.": "A subtle gradient from your own card colour into a light black veil. Covers native HA cards and every Bubble card type including climate, cover, media player, select, calendar, popup and horizontal buttons stack.",
   "Glow / Leucht-Schatten": "Glow / light shadow",
@@ -1445,6 +1459,18 @@ function hatgLeseVorlagenBlock(text, id) {
 }
 
 const HATG_VORLAGEN_STILLGELEGT = ["icon-farbe-hintergrund"];
+// Vorlagen ohne eigene Angabe schreiben weiterhin in uix-card.
+const HATG_VORLAGEN_STANDARDZIEL = "uix-card";
+function hatgVorlagenZiel(tpl) {
+  const ziel = tpl && tpl.ziel;
+  return ziel && HATG_STILZIEL_KEY_MAP.has(ziel) ? ziel : HATG_VORLAGEN_STANDARDZIEL;
+}
+// Alle Ziele, in denen Vorlagenbloecke stecken koennen - fuer Suche und Aufraeumen.
+function hatgVorlagenZieleAlle(vorlagen) {
+  const ziele = new Set([HATG_VORLAGEN_STANDARDZIEL]);
+  (vorlagen || []).forEach((t) => ziele.add(hatgVorlagenZiel(t)));
+  return [...ziele];
+}
 
 const HATG_VORLAGEN = [
   {
@@ -1476,6 +1502,105 @@ const HATG_VORLAGEN = [
     label: "Relief: Weiche Tiefenwirkung",
     desc: "Mehrschichtiger Schatten (aussen weich, oben eine feine Glanzkante) laesst Karten leicht erhaben wirken. Deckt ab: native HA-Karten sowie jeden Bubble-Kartentyp inklusive Climate, Cover, Media Player, Select, Popup und Horizontal Buttons Stack.",
     css: "ha-card {\n  box-shadow: 0 6px 14px -4px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;\n  --bubble-box-shadow: 0 6px 14px -4px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);\n  --bubble-button-box-shadow: 0 6px 14px -4px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);\n  --bubble-sub-button-box-shadow: 0 3px 8px -2px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08);\n  --bubble-footer-box-shadow: 0 6px 14px -4px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);\n  --bubble-climate-box-shadow: 0 6px 14px -4px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);\n  --bubble-cover-box-shadow: 0 6px 14px -4px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);\n  --bubble-media-player-box-shadow: 0 6px 14px -4px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);\n  --bubble-select-box-shadow: 0 6px 14px -4px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);\n  --bubble-horizontal-buttons-stack-box-shadow: 0 6px 14px -4px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);\n}\n.bubble-container {\n  box-shadow: 0 6px 14px -4px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;\n}\n.bubble-sub-button {\n  box-shadow: 0 3px 8px -2px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;\n}\n:host(hui-heading-card) ha-card,\n:host(mushroom-chips-card) ha-card,\n:host(mushroom-chip) ha-card,\nha-card:has(.chip-container),\n:host(.type-heading) ha-card,\nha-card.type-heading,\nha-card:has(.bubble-sub-button),\nha-card:has(.bubble-separator),\nha-card:has(.bubble-container) {\n  border: none !important;\n  box-shadow: none !important;\n  background: none !important;\n  background-image: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n}",
+  },
+  {
+    id: "glas-ebene",
+    label: "Glas: eigene Ebene unter der Karte",
+    desc: "Milchiges Glas, das den Weichzeichner nicht auf die Karte selbst legt, sondern auf eine Ebene darunter. Anders als der einfache Glas-Effekt bleibt der Kartenhintergrund dadurch mit Hintergrundbildern und Verläufen verträglich. Hüllen-Karten (Überschriften, Mushroom-Titel und -Chips, reine Textkarten) sind bewusst ausgenommen, damit sie nicht plötzlich als Kachel erscheinen.",
+    ziel: "uix-card",
+    css: `ha-card {
+  background: color-mix(in srgb, var(--ha-card-background, var(--card-background-color)) 45%, transparent) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+ha-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  box-shadow: var(--ha-card-box-shadow, none);
+}
+:host(hui-heading-card) ha-card,
+:host(mushroom-title-card) ha-card,
+:host(mushroom-chips-card) ha-card,
+ha-card.text-only {
+  background: none !important;
+}
+:host(hui-heading-card) ha-card::before,
+:host(mushroom-title-card) ha-card::before,
+:host(mushroom-chips-card) ha-card::before,
+ha-card.text-only::before {
+  content: none !important;
+}`,
+  },
+  {
+    id: "seitenleiste-glas",
+    label: "Seitenleiste in Glas",
+    desc: "Die Seitenleiste wird durchscheinend und weichgezeichnet, die Einträge übernehmen den Eckenradius deiner Karten. Wirkt nur, wenn hinter der Seitenleiste etwas zu sehen ist - also mit Hintergrundbild oder einem farbigen Verlauf.",
+    ziel: "uix-sidebar",
+    css: `:host {
+  background: color-mix(in srgb, var(--sidebar-background-color, var(--primary-background-color)) 55%, transparent) !important;
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+}
+ha-md-list-item,
+ha-md-list-item.selected::before,
+ha-list-item-button,
+ha-list-item-button.selected::before {
+  border-radius: var(--ha-card-border-radius, 12px) !important;
+  --ha-list-item-focus-radius: var(--ha-card-border-radius, 12px) !important;
+}`,
+  },
+  {
+    id: "drawer-glas",
+    label: "App Drawer in Glas",
+    desc: "Das ausklappbare Menü auf schmalen Bildschirmen bekommt dieselbe Glasfläche wie die Seitenleiste. Sinnvoll zusammen mit der Vorlage für die Seitenleiste, sonst wirken beide unterschiedlich.",
+    ziel: "uix-drawer",
+    css: `.mdc-drawer {
+  background-color: color-mix(in srgb, var(--app-header-background-color, var(--primary-background-color)) 55%, transparent) !important;
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+}
+.sidebar-shell {
+  background-color: transparent !important;
+}`,
+  },
+  {
+    id: "dialog-weich",
+    label: "Dialoge: Kartenradius und dunklerer Schleier",
+    desc: "Dialoge übernehmen den Eckenradius deiner Karten, bekommen etwas Abstand nach oben und einen kräftigeren Schleier dahinter, damit sie sich klarer vom Dashboard abheben. Setzt nur Variablen an der Dialog-Wurzel - für tiefere Eingriffe in Dialoge braucht es das Feld uix-dialog-yaml im Freitext.",
+    ziel: "uix-dialog",
+    css: `:host,
+ha-dialog,
+ha-adaptive-dialog {
+  --ha-dialog-border-radius: var(--ha-card-border-radius, 18px);
+  --mdc-shape-medium: var(--ha-card-border-radius, 18px);
+  --mdc-dialog-scrim-color: rgba(0, 0, 0, 0.55);
+  --dialog-surface-margin-top: 40px;
+}`,
+  },
+  {
+    id: "ansicht-hintergrundbild",
+    label: "Hintergrundbild über die ganze Oberfläche",
+    desc: "Legt ein Bild als Hintergrund hinter Ansichten UND hinter Kopfleiste und Seitenleiste - anders als das Hintergrundbild auf der Startseite, das nur den Inhaltsbereich füllt. Der Dateiname muss angepasst werden: Bilder, die du in HATG hochlädst, liegen unter /hatg_wallpaper/. Der Verlauf davor dunkelt das Bild ab, damit Text lesbar bleibt.",
+    ziel: "uix-drawer",
+    css: `:host {
+  --uix-view-background: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), url("/hatg_wallpaper/DEIN-BILD.jpg") center / cover no-repeat;
+  --uix-view-background-cover: full;
+}`,
+  },
+  {
+    id: "ansicht-hintergrund-daempfen",
+    label: "Hintergrund dämpfen",
+    desc: "Nimmt dem Hintergrund - Bild, Video oder Kamerabild - etwas Deckkraft, damit Karten und Text davor ruhiger stehen. Ergänzt die Vorlage für das Hintergrundbild und wirkt nur, wenn ein UIX-Hintergrund gesetzt ist.",
+    ziel: "uix-view-background",
+    css: `:host {
+  opacity: 0.7;
+}`,
   },
 ];
 
@@ -3923,6 +4048,7 @@ class HATGPanel extends HTMLElement {
       id: vorhanden ? vorhanden.id : null,
       label: vorhanden ? vorhanden.label : "",
       desc: vorhanden ? vorhanden.desc : "",
+      ziel: hatgVorlagenZiel(vorhanden),
       css: vorhanden ? vorhanden.css : "",
       error: null,
     };
@@ -3958,6 +4084,7 @@ class HATGPanel extends HTMLElement {
       id: dialog.id || this.vorlagenIdAusName(label),
       label,
       desc: String(dialog.desc || "").trim(),
+      ziel: hatgVorlagenZiel(dialog),
       css,
     };
     const index = liste.findIndex((t) => t.id === eintrag.id);
@@ -3973,7 +4100,7 @@ class HATGPanel extends HTMLElement {
       return;
     }
 
-    if (index >= 0 && hatgVorlagenBlockActive(String(this.currentValues()["uix-card"] || ""), eintrag.id)) {
+    if (index >= 0 && hatgVorlagenBlockActive(String(this.currentValues()[hatgVorlagenZiel(eintrag)] || ""), eintrag.id)) {
       this.frischeVorlagenAuf({ still: true });
     }
     this._state.vorlagenDialog = null;
@@ -3985,7 +4112,7 @@ class HATGPanel extends HTMLElement {
     const eintrag = this.eigeneVorlagen().find((t) => t.id === id);
     if (!eintrag) return;
     const vorherigeListe = [...this.eigeneVorlagen()];
-    const aktiv = hatgVorlagenBlockActive(String(this.currentValues()["uix-card"] || ""), id);
+    const aktiv = hatgVorlagenBlockActive(String(this.currentValues()[hatgVorlagenZiel(eintrag)] || ""), id);
     if (aktiv) this.schalteVorlage(id, { still: true });
     this._state.eigeneVorlagenListe = this.eigeneVorlagen().filter((t) => t.id !== id);
     const gespeichert = await this.speichereEigeneVorlagen();
@@ -4002,7 +4129,7 @@ class HATGPanel extends HTMLElement {
   schalteVorlage(id, options = {}) {
     const tpl = this.alleVorlagen().find((t) => t.id === id);
     if (!tpl) return;
-    const targetKey = "uix-card";
+    const targetKey = hatgVorlagenZiel(tpl);
     const currentMode = this._state.editorMode;
     const wasActive = hatgVorlagenBlockActive(this.currentValues()[targetKey] || "", id);
     ["light", "dark"].forEach((mode) => {
@@ -4018,51 +4145,62 @@ class HATGPanel extends HTMLElement {
     this.render();
     this.showToast(
       wasActive
-        ? `"${tpl.label}" deaktiviert und aus uix-card entfernt.`
-        : `"${tpl.label}" aktiviert - global ins Theme (uix-card) übernommen.`
+        ? `"${tpl.label}" deaktiviert und aus ${targetKey} entfernt.`
+        : `"${tpl.label}" aktiviert - global ins Theme (${targetKey}) übernommen.`
     );
   }
 
   veralteteVorlagen() {
-    const text = String(this.currentValues()["uix-card"] || "");
+    const werte = this.currentValues();
     return this.alleVorlagen().filter((tpl) => {
+      const text = String(werte[hatgVorlagenZiel(tpl)] || "");
       const vorhanden = hatgLeseVorlagenBlock(text, tpl.id);
       return vorhanden !== null && vorhanden !== String(tpl.css).trim();
     }).map((tpl) => tpl.id);
   }
 
   entferneStillgelegteVorlagen() {
-    const targetKey = "uix-card";
+    const ziele = hatgVorlagenZieleAlle(this.alleVorlagen());
     const currentMode = this._state.editorMode;
     let anzahl = 0;
     ["light", "dark"].forEach((mode) => {
       this._state.editorMode = mode;
-      let text = String(this.currentValues()[targetKey] || "");
-      HATG_VORLAGEN_STILLGELEGT.forEach((id) => {
-        if (hatgLeseVorlagenBlock(text, id) === null) return;
-        text = hatgEntferneVorlagenBlock(text, id);
-        if (mode === "light") anzahl++;
+      ziele.forEach((targetKey) => {
+        let text = String(this.currentValues()[targetKey] || "");
+        const vorher = text;
+        HATG_VORLAGEN_STILLGELEGT.forEach((id) => {
+          if (hatgLeseVorlagenBlock(text, id) === null) return;
+          text = hatgEntferneVorlagenBlock(text, id);
+          if (mode === "light") anzahl++;
+        });
+        if (text !== vorher) this.commitField(targetKey, text);
       });
-      if (text !== String(this.currentValues()[targetKey] || "")) this.commitField(targetKey, text);
     });
     this._state.editorMode = currentMode;
     return anzahl;
   }
 
   frischeVorlagenAuf(options = {}) {
-    const targetKey = "uix-card";
+    const vorlagen = this.alleVorlagen();
+    const ziele = hatgVorlagenZieleAlle(vorlagen);
     const currentMode = this._state.editorMode;
     let anzahl = this.entferneStillgelegteVorlagen();
     ["light", "dark"].forEach((mode) => {
       this._state.editorMode = mode;
-      let text = String(this.currentValues()[targetKey] || "");
-      this.alleVorlagen().forEach((tpl) => {
+      vorlagen.forEach((tpl) => {
+        const ziel = hatgVorlagenZiel(tpl);
+        // Hat eine Vorlage ihr Ziel gewechselt, bleibt sonst ein Block im alten stehen.
+        ziele.filter((k) => k !== ziel).forEach((fremd) => {
+          const fremdText = String(this.currentValues()[fremd] || "");
+          if (hatgLeseVorlagenBlock(fremdText, tpl.id) === null) return;
+          this.commitField(fremd, hatgEntferneVorlagenBlock(fremdText, tpl.id));
+        });
+        const text = String(this.currentValues()[ziel] || "");
         const vorhanden = hatgLeseVorlagenBlock(text, tpl.id);
         if (vorhanden === null || vorhanden === String(tpl.css).trim()) return;
-        text = hatgHaengeVorlagenBlockAn(text, tpl.id, tpl.css);
+        this.commitField(ziel, hatgHaengeVorlagenBlockAn(text, tpl.id, tpl.css));
         if (mode === "light") anzahl++;
       });
-      if (text !== String(this.currentValues()[targetKey] || "")) this.commitField(targetKey, text);
     });
     this._state.editorMode = currentMode;
     if (options.silent) return anzahl;
@@ -4083,12 +4221,21 @@ class HATGPanel extends HTMLElement {
       <div class="modal-scrim" data-eigene-vorlage-cancel></div>
       <div class="modal-box modal-box-breit">
         <h3>${bearbeitet ? "Vorlage bearbeiten" : "Neue eigene Vorlage"}</h3>
-        <p>Das CSS landet beim Aktivieren markiert in <code>uix-card</code> - genau wie die mitgelieferten Vorlagen, für Light und Dark gleichzeitig.</p>
+        <p>Das CSS landet beim Aktivieren markiert im gewählten Stilziel - genau wie die mitgelieferten Vorlagen, für Light und Dark gleichzeitig.</p>
         <label class="eigene-vorlage-label">Name
           <input class="text-input" type="text" spellcheck="false" data-eigene-vorlage-label value="${hatgEscape(dialog.label || "")}" placeholder="z. B. Kräftiger Kartenrand" />
         </label>
         <label class="eigene-vorlage-label">Beschreibung <small>(optional)</small>
           <textarea class="text-input eigene-vorlage-desc" spellcheck="false" rows="3" data-eigene-vorlage-desc placeholder="Wofür ist die Vorlage gut?">${hatgEscape(dialog.desc || "")}</textarea>
+        </label>
+        <label class="eigene-vorlage-label">Wirkt auf
+          <select class="text-input" data-eigene-vorlage-ziel>
+            ${HATG_STILZIELE.map((z) => {
+              const key = `uix-${z.id}`;
+              const gewaehlt = key === hatgVorlagenZiel(dialog) ? " selected" : "";
+              return `<option value="${key}"${gewaehlt}>${hatgEscape(hatgStilzielLabel(z, this._sprache === "en" ? "en" : "de"))} (${key})</option>`;
+            }).join("")}
+          </select>
         </label>
         <label class="eigene-vorlage-label">CSS
           <textarea class="text-input eigene-vorlage-css" spellcheck="false" data-eigene-vorlage-css placeholder="ha-card {\n  border: 2px solid var(--accent-color) !important;\n}">${hatgEscape(dialog.css || "")}</textarea>
@@ -4156,7 +4303,7 @@ uix:
       hatgTitel: "Was HATG für dich erledigt",
       hatg: [
         "Importierte Themes werden beim Einlesen von <code>card-mod-*</code> auf <code>uix-*</code> gehoben, die alten <code>-yaml</code>-Felder eingeschlossen.",
-        "Aktivierte Vorlagen sind im Theme mit Kommentaren markiert. Blöcke aus älteren HATG-Versionen werden weiter erkannt und beim nächsten Auffrischen umgestellt.",
+        "Jede Vorlage schreibt in ihr eigenes Stilziel - die Kachel nennt es - und wird im Theme mit Kommentaren markiert. Blöcke aus älteren HATG-Versionen werden weiter erkannt und beim nächsten Auffrischen umgestellt.",
         "Das Ausgabeformat steht in den Einstellungen. Aktuell: <strong>{format}</strong>.",
       ],
       problemeTitel: "Wenn etwas nicht wirkt",
@@ -4224,7 +4371,7 @@ uix:
       hatgTitel: "What HATG does for you",
       hatg: [
         "Imported themes are lifted from <code>card-mod-*</code> to <code>uix-*</code> while reading, including the old <code>-yaml</code> fields.",
-        "Active presets are marked in the theme with comments. Blocks from older HATG versions are still recognised and converted on the next refresh.",
+        "Every preset writes into its own style target - the tile names it - and is marked in the theme with comments. Blocks from older HATG versions are still recognised and converted on the next refresh.",
         "The output format is in the settings. Currently: <strong>{format}</strong>.",
       ],
       problemeTitel: "When nothing happens",
@@ -4321,7 +4468,8 @@ uix:
   }
 
   renderVorlagen() {
-    const activeText = String(this.currentValues()["uix-card"] || "");
+    const werte = this.currentValues();
+    const istAktiv = (tpl) => hatgVorlagenBlockActive(String(werte[hatgVorlagenZiel(tpl)] || ""), tpl.id);
     const veraltet = this.veralteteVorlagen();
     const hinweis = veraltet.length
       ? `<div class="vorlage-veraltet-bar">
@@ -4333,7 +4481,8 @@ uix:
         </div>`
       : "";
     const kachel = (tpl, eigen) => {
-      const active = hatgVorlagenBlockActive(activeText, tpl.id);
+      const active = istAktiv(tpl);
+      const ziel = hatgVorlagenZiel(tpl);
       return `
         <div class="plugin-card vorlage-card ${active ? "is-selected" : ""}">
           <div class="plugin-card-body">
@@ -4343,6 +4492,7 @@ uix:
               ${eigen ? '<small class="vorlage-badge eigen">eigene</small>' : ""}
             </div>
             <p class="vorlage-desc"${eigen ? " data-roh" : ""}>${hatgEscape(tpl.desc || "Ohne Beschreibung.")}</p>
+            <p class="vorlage-ziel" data-roh><ha-icon icon="mdi:target"></ha-icon><code>${ziel}</code></p>
             <div class="vorlage-actions">
               <button type="button" class="plugin-toggle-button ${active ? "is-active" : ""}" data-schalte-vorlage="${tpl.id}">
                 <ha-icon icon="${active ? "mdi:close-circle-outline" : "mdi:auto-fix"}"></ha-icon>
@@ -4373,7 +4523,7 @@ uix:
         <div class="section-heading">
           <span class="eyebrow">UIX</span>
           <h1>UIX-Vorlagen</h1>
-          <p>Fertige UIX-Bausteine, die per Klick global im Theme aktiviert werden (landen markiert in <code>uix-card</code>, für Light und Dark gleichzeitig) - kein Kopieren/Einfügen nötig. Decken native HA-, Mushroom- und Bubble-Karten ab, inklusive der Bubble-Kartentypen Climate, Cover, Media Player, Select und Horizontal Buttons Stack. Bei Hüllen-Karten (Überschriften, Mushroom-Chips, Bubble-Sub-Buttons) bleibt der äußere Kartenrahmen bewusst unangetastet. Mehrere Vorlagen lassen sich kombinieren; bei überlappenden Eigenschaften gewinnt die zuletzt aktivierte.</p>
+          <p>Fertige UIX-Bausteine, die per Klick global im Theme aktiviert werden (landen markiert im jeweiligen Stilziel, für Light und Dark gleichzeitig) - kein Kopieren/Einfügen nötig. Decken native HA-, Mushroom- und Bubble-Karten ab, inklusive der Bubble-Kartentypen Climate, Cover, Media Player, Select und Horizontal Buttons Stack. Bei Hüllen-Karten (Überschriften, Mushroom-Chips, Bubble-Sub-Buttons) bleibt der äußere Kartenrahmen bewusst unangetastet. Mehrere Vorlagen lassen sich kombinieren; bei überlappenden Eigenschaften gewinnt die zuletzt aktivierte.</p>
         </div>
         ${hinweis}
         <div class="plugin-grid vorlage-grid">${cards}</div>
@@ -5970,6 +6120,8 @@ uix:
         .plugin-toggle-button.is-active { border-color: #38c76c; background: rgba(56,199,108,.14); color: #38c76c; }
         .plugin-toggle-button.is-active:hover { border-color: #ff453a; background: rgba(255,69,58,.14); color: #ff453a; }
         .vorlage-card { min-height: 0; }
+        .vorlage-ziel { display: flex; align-items: center; gap: 5px; margin: 8px 0 0; font-size: 11px; color: var(--hatg-muted); }
+        .vorlage-ziel ha-icon { --mdc-icon-size: 14px; }
         .vorlage-desc { font-size: 12px; line-height: 1.5; color: var(--hatg-text-dim); margin: 0; }
         .vorlage-badge { flex: 0 0 auto; font-size: 10px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #38c76c; border: 1px solid #38c76c; border-radius: 6px; padding: 2px 6px; }
         .vorlage-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
@@ -6629,12 +6781,14 @@ uix:
     this.shadowRoot.querySelector("[data-eigene-vorlage-delete]")?.addEventListener("click", (event) => {
       this.loescheEigeneVorlage(event.currentTarget.dataset.vorlagenDelete);
     });
-    [["label", "vorlagenLabel"], ["desc", "vorlagenDesc"], ["css", "vorlagenCss"]].forEach(([feld, attr]) => {
+    [["label", "vorlagenLabel"], ["desc", "vorlagenDesc"], ["css", "vorlagenCss"], ["ziel", "vorlagenZiel"]].forEach(([feld, attr]) => {
       const el = this.shadowRoot.querySelector(`[data-eigene-vorlage-${feld}]`);
       if (!el) return;
-      el.addEventListener("input", () => {
+      const uebernehmen = () => {
         if (this._state.vorlagenDialog) this._state.vorlagenDialog[feld] = el.value;
-      });
+      };
+      el.addEventListener("input", uebernehmen);
+      if (el.tagName === "SELECT") el.addEventListener("change", uebernehmen);
     });
     this.shadowRoot.querySelectorAll("[data-status-master-reapply]").forEach((el) => {
       el.addEventListener("click", () => this.reapplyStatusMaster(el.dataset.statusMasterReapply));

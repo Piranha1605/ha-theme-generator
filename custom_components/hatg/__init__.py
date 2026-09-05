@@ -39,6 +39,8 @@ VORLAGEN_FILE = "hatg-uix-vorlagen.json"
 # Bis v1.0.3 hiessen die Vorlagen nach card-mod; beide Altpfade werden noch gelesen.
 VORLAGEN_FILE_ALT = "hatg-cardmod-vorlagen.json"
 _VORLAGEN_ID_RE = re.compile(r"[A-Za-z0-9_-]{1,64}")
+# Stilziel einer Vorlage, z.B. uix-card. Ohne Angabe gilt uix-card.
+_VORLAGEN_ZIEL_RE = re.compile(r"uix-[a-z-]{1,48}")
 
 
 def _is_safe_theme_name(name: str) -> bool:
@@ -459,11 +461,15 @@ async def ws_list_uix_templates(hass: HomeAssistant, connection, msg):
                 continue
             if not eintrag.get("id") or not isinstance(eintrag.get("css"), str):
                 continue
+            ziel = str(eintrag.get("ziel") or "uix-card")
+            if not _VORLAGEN_ZIEL_RE.fullmatch(ziel):
+                ziel = "uix-card"
             sauber.append(
                 {
                     "id": str(eintrag["id"]),
                     "label": str(eintrag.get("label") or eintrag["id"]),
                     "desc": str(eintrag.get("desc") or ""),
+                    "ziel": ziel,
                     "css": eintrag["css"],
                 }
             )
@@ -498,11 +504,16 @@ async def ws_save_uix_templates(hass: HomeAssistant, connection, msg):
         if not isinstance(css, str):
             connection.send_error(msg["id"], "invalid_css", f"Vorlage {kennung} enthält kein CSS.")
             return
+        ziel = str(eintrag.get("ziel") or "uix-card")
+        if not _VORLAGEN_ZIEL_RE.fullmatch(ziel):
+            connection.send_error(msg["id"], "invalid_target", f"Ungültiges Stilziel: {ziel!r}")
+            return
         eintraege.append(
             {
                 "id": kennung,
                 "label": str(eintrag.get("label") or kennung)[:120],
                 "desc": str(eintrag.get("desc") or "")[:600],
+                "ziel": ziel,
                 "css": css,
             }
         )
