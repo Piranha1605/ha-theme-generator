@@ -34,9 +34,11 @@ WALLPAPER_SUBDIR = "Wallpaper"
 _WALLPAPER_ALLOWED_EXT = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
 _WALLPAPER_SAFE_NAME_RE = re.compile(r"[^A-Za-z0-9._-]+")
 
-CUSTOM_CARDMOD_SUBDIR = "hatg"
-CUSTOM_CARDMOD_FILE = "hatg-cardmod-vorlagen.json"
-_CUSTOM_CARDMOD_ID_RE = re.compile(r"[A-Za-z0-9_-]{1,64}")
+VORLAGEN_SUBDIR = "hatg"
+VORLAGEN_FILE = "hatg-uix-vorlagen.json"
+# Bis v1.0.3 hiessen die Vorlagen nach card-mod; beide Altpfade werden noch gelesen.
+VORLAGEN_FILE_ALT = "hatg-cardmod-vorlagen.json"
+_VORLAGEN_ID_RE = re.compile(r"[A-Za-z0-9_-]{1,64}")
 
 
 def _is_safe_theme_name(name: str) -> bool:
@@ -427,17 +429,22 @@ async def ws_list_wallpapers(hass: HomeAssistant, connection, msg):
 
 @websocket_api.websocket_command(
     {
-        vol.Required("type"): "hatg/list_custom_cardmods",
+        vol.Required("type"): "hatg/list_uix_templates",
     }
 )
 @websocket_api.async_response
-async def ws_list_custom_cardmods(hass: HomeAssistant, connection, msg):
-    """Liest die selbst angelegten Cardmod-Vorlagen."""
-    ziel = Path(hass.config.path(THEMES_SUBDIR, CUSTOM_CARDMOD_SUBDIR, CUSTOM_CARDMOD_FILE))
-    alter_ort = Path(hass.config.path(THEMES_SUBDIR, CUSTOM_CARDMOD_FILE))
+async def ws_list_uix_templates(hass: HomeAssistant, connection, msg):
+    """Liest die selbst angelegten UIX-Vorlagen."""
+    ziel = Path(hass.config.path(THEMES_SUBDIR, VORLAGEN_SUBDIR, VORLAGEN_FILE))
+    alte_orte = [
+        Path(hass.config.path(THEMES_SUBDIR, VORLAGEN_SUBDIR, VORLAGEN_FILE_ALT)),
+        Path(hass.config.path(THEMES_SUBDIR, VORLAGEN_FILE_ALT)),
+    ]
 
     def _read():
-        quelle = ziel if ziel.is_file() else alter_ort
+        quelle = ziel
+        if not quelle.is_file():
+            quelle = next((p for p in alte_orte if p.is_file()), ziel)
         if not quelle.is_file():
             return []
         try:
@@ -473,18 +480,18 @@ async def ws_list_custom_cardmods(hass: HomeAssistant, connection, msg):
 
 @websocket_api.websocket_command(
     {
-        vol.Required("type"): "hatg/save_custom_cardmods",
+        vol.Required("type"): "hatg/save_uix_templates",
         vol.Required("templates"): [dict],
     }
 )
 @websocket_api.require_admin
 @websocket_api.async_response
-async def ws_save_custom_cardmods(hass: HomeAssistant, connection, msg):
-    """Schreibt die selbst angelegten Cardmod-Vorlagen."""
+async def ws_save_uix_templates(hass: HomeAssistant, connection, msg):
+    """Schreibt die selbst angelegten UIX-Vorlagen."""
     eintraege = []
     for eintrag in msg["templates"]:
         kennung = str(eintrag.get("id") or "").strip()
-        if not kennung or not _CUSTOM_CARDMOD_ID_RE.fullmatch(kennung):
+        if not kennung or not _VORLAGEN_ID_RE.fullmatch(kennung):
             connection.send_error(msg["id"], "invalid_id", f"Ungültige Vorlagen-Kennung: {kennung!r}")
             return
         css = eintrag.get("css")
@@ -505,12 +512,16 @@ async def ws_save_custom_cardmods(hass: HomeAssistant, connection, msg):
         connection.send_error(msg["id"], "duplicate_id", "Zwei Vorlagen haben dieselbe Kennung.")
         return
 
-    cardmod_dir = Path(hass.config.path(THEMES_SUBDIR, CUSTOM_CARDMOD_SUBDIR))
-    ziel = cardmod_dir / CUSTOM_CARDMOD_FILE
+    vorlagen_dir = Path(hass.config.path(THEMES_SUBDIR, VORLAGEN_SUBDIR))
+    ziel = vorlagen_dir / VORLAGEN_FILE
+    altes_ziel = vorlagen_dir / VORLAGEN_FILE_ALT
 
     def _write():
-        cardmod_dir.mkdir(parents=True, exist_ok=True)
+        vorlagen_dir.mkdir(parents=True, exist_ok=True)
         ziel.write_text(json.dumps(eintraege, indent=2, ensure_ascii=False), encoding="utf-8")
+        # Nach dem Umzug bleibt keine Zweitschrift stehen, die spaeter wieder gelesen wird.
+        if altes_ziel.is_file():
+            altes_ziel.unlink()
 
     try:
         await hass.async_add_executor_job(_write)
@@ -572,8 +583,8 @@ def _register_websocket_commands(hass: HomeAssistant) -> None:
     websocket_api.async_register_command(hass, ws_upload_wallpaper)
     websocket_api.async_register_command(hass, ws_list_wallpapers)
     websocket_api.async_register_command(hass, ws_delete_wallpaper)
-    websocket_api.async_register_command(hass, ws_list_custom_cardmods)
-    websocket_api.async_register_command(hass, ws_save_custom_cardmods)
+    websocket_api.async_register_command(hass, ws_list_uix_templates)
+    websocket_api.async_register_command(hass, ws_save_uix_templates)
     hass.data[_WS_REGISTERED_FLAG] = True
 
 
