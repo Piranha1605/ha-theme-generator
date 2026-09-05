@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.1.0b7";
+const HATG_VERSION = "1.1.0b8";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -1611,24 +1611,26 @@ ha-list-item-button.selected::before {
     desc: "Der markierte Eintrag wird zum Glaskörper statt zur flachen Farbfläche: Verlauf in der Auswahlfarbe, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Home Assistant zeichnet diese Fläche als Overlay mit fester Deckkraft - die Vorlage hebt sie auf und ersetzt sie durch die Schichten.",
     ziel: "uix-sidebar",
     css: `ha-list-item-button.selected::before {
-  border-radius: var(--ha-card-border-radius, 14px);
-  opacity: 1;
-  background-color: transparent;
+  border-radius: var(--ha-card-border-radius, 14px) !important;
+  /* Home Assistant faerbt diese Flaeche selbst und daempft sie ueber opacity -
+     ohne !important bleibt davon nichts uebrig. */
+  opacity: 1 !important;
+  background-color: transparent !important;
   background-image:
-    linear-gradient(155deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.06) 38%, rgba(255, 255, 255, 0) 62%),
-    linear-gradient(180deg, rgba(10, 132, 255, 0.42), rgba(10, 132, 255, 0.2));
+    linear-gradient(155deg, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0.08) 38%, rgba(255, 255, 255, 0) 62%),
+    linear-gradient(180deg, rgba(10, 132, 255, 0.45), rgba(10, 132, 255, 0.22)) !important;
   background-image:
-    linear-gradient(155deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.06) 38%, rgba(255, 255, 255, 0) 62%),
+    linear-gradient(155deg, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0.08) 38%, rgba(255, 255, 255, 0) 62%),
     linear-gradient(
       180deg,
-      color-mix(in srgb, var(--sidebar-selected-icon-color, var(--primary-color)) 42%, transparent),
-      color-mix(in srgb, var(--sidebar-selected-icon-color, var(--primary-color)) 20%, transparent)
-    );
+      color-mix(in srgb, var(--sidebar-selected-icon-color, var(--primary-color)) 45%, transparent),
+      color-mix(in srgb, var(--sidebar-selected-icon-color, var(--primary-color)) 22%, transparent)
+    ) !important;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.45),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.25),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
-    0 6px 16px -8px rgba(0, 0, 0, 0.6);
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.28),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.14),
+    0 6px 16px -8px rgba(0, 0, 0, 0.6) !important;
   backdrop-filter: blur(6px) saturate(170%);
   -webkit-backdrop-filter: blur(6px) saturate(170%);
 }
