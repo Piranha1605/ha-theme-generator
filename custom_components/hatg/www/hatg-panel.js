@@ -5108,6 +5108,44 @@ class HATGPanel extends HTMLElement {
     });
     return treffer;
   }
+  // card-background-color faerbt auch Auswahlfelder, Menues und Dialoge. Steht sie
+  // halbtransparent - etwa durch den Generator "Kartentransparenz" -, liest man
+  // durch geoeffnete Listen hindurch. Mit aktivem Glas-Paket wird sie nicht gebraucht.
+  zuDurchsichtigeGrundfarben() {
+    const treffer = [];
+    ["card-background-color", "hatg-glas-menuegrund"].forEach((key) => {
+      const duenn = ["light", "dark"].some((mode) => {
+        const wert = String(this._state.values[mode][key] || "").trim();
+        const rgba = /^rgba\(\s*[\d.]+\s*,\s*[\d.]+\s*,\s*[\d.]+\s*,\s*([\d.]+)\s*\)$/.exec(wert);
+        return rgba ? Number(rgba[1]) < 0.9 : false;
+      });
+      if (duenn) treffer.push(key);
+    });
+    return treffer;
+  }
+  grundfarbenDeckendSetzen() {
+    const currentMode = this._state.editorMode;
+    let anzahl = 0;
+    ["light", "dark"].forEach((mode) => {
+      this._state.editorMode = mode;
+      this.zuDurchsichtigeGrundfarben().forEach((key) => {
+        const wert = String(this._state.values[mode][key] || "").trim();
+        const rgba = /^rgba\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*[\d.]+\s*\)$/.exec(wert);
+        if (!rgba) return;
+        // rgb(...) kennt die Pruefung nicht - deckend heisst hier Alpha 1.
+        this.commitField(key, `rgba(${rgba[1]}, ${rgba[2]}, ${rgba[3]}, 1)`);
+        if (mode === "light") anzahl++;
+      });
+    });
+    this._state.editorMode = currentMode;
+    this.render();
+    this.showToast(
+      anzahl
+        ? `${anzahl} Grundfarbe${anzahl === 1 ? "" : "n"} auf deckend gesetzt. Auswahlfelder und Menüs sind wieder lesbar.`
+        : "Die Grundfarben sind bereits deckend."
+    );
+  }
+
   // Uebernimmt die Glasfuellung des jeweiligen Modus in diese Felder.
   flaechenfarbenAufGlas() {
     const currentMode = this._state.editorMode;
@@ -5610,12 +5648,28 @@ uix:
           </button>
         </div>`
       : "";
+    const duenn = stand.aktiv ? this.zuDurchsichtigeGrundfarben() : [];
+    const duennHinweis = duenn.length
+      ? `
+        <div class="vorlage-veraltet-bar" data-roh>
+          <ha-icon icon="mdi:eye-off-outline"></ha-icon>
+          <span>${
+            this._sprache === "en"
+              ? `${duenn.join(", ")} is semi-transparent. Home Assistant uses that colour for dropdowns, menus and dialogs too - there you end up reading through the open list. With the glass package active it is not needed; the cards get their glass from the presets.`
+              : `${duenn.join(", ")} ist halbtransparent. Home Assistant färbt damit auch Auswahlfelder, Menüs und Dialoge - dort liest man dann durch die geöffnete Liste hindurch. Mit aktivem Glas-Paket wird der Wert nicht gebraucht, die Karten bekommen ihr Glas aus den Vorlagen.`
+          }</span>
+          <button type="button" class="vorlage-veraltet-button" data-grundfarben-deckend>
+            <ha-icon icon="mdi:eye-outline"></ha-icon><span>${this._sprache === "en" ? "Set opaque" : "Deckend setzen"}</span>
+          </button>
+        </div>`
+      : "";
     const leer = !cards && !eigeneKacheln;
     return `
       <section class="editor-section">
         <div class="section-heading">${kopf}</div>
         ${paketLeiste}
         ${farbHinweis}
+        ${duennHinweis}
         ${hinweis}
         ${cards ? `<div class="plugin-grid vorlage-grid">${cards}</div>` : ""}
         ${nurEigene || !gruppe || eigene.length ? eigenerBlock : ""}
@@ -7868,6 +7922,7 @@ uix:
       el.addEventListener("change", () => this.render());
     });
     this.shadowRoot.querySelector("[data-flaechenfarben-glas]")?.addEventListener("click", () => this.flaechenfarbenAufGlas());
+    this.shadowRoot.querySelector("[data-grundfarben-deckend]")?.addEventListener("click", () => this.grundfarbenDeckendSetzen());
     this.shadowRoot.querySelectorAll("[data-schalte-paket]").forEach((el) => {
       el.addEventListener("click", () => this.schaltePaket(el.dataset.schaltePaket));
     });
