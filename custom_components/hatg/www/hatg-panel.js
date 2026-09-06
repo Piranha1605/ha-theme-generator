@@ -231,12 +231,8 @@ const HATG_TEXTE = {
   "Die obere Leiste wird durchscheinend und weichgezeichnet, passend zu Seitenleiste und App Drawer. Zusammen ergeben die drei eine durchgehende Glasfläche um das Dashboard herum.": "The top bar becomes translucent and blurred, matching the sidebar and the app drawer. Together the three form one continuous glass surface around the dashboard.",
   "Einstellungsseiten: luftige Liste": "Settings pages: airier list",
   "Gibt den Einträgen auf den Einstellungsseiten Abstand zueinander, rundet die Hervorhebung beim Antippen im Kartenradius ab und macht aus den runden Icon-Kreisen abgerundete Quadrate. Setzt nur Variablen an der Wurzel, kommt also ohne Shadow-DOM-Pfade aus und übersteht Umbauten im Frontend.": "Puts space between the entries on the settings pages, rounds the tap highlight to your card radius and turns the round icon circles into rounded squares. Only sets variables at the root, so it needs no shadow DOM paths and survives frontend rebuilds.",
-  "Einstellungsseiten: Schrift der Einträge": "Settings pages: type of the entries",
-  "Trennt Überschrift und Untertitel deutlicher: Größe und Gewicht der Überschrift, Größe und Deckkraft des Untertitels. iOS setzt die Überschrift kräftiger und nimmt dem Untertitel Kontrast, statt ihn nur zu verkleinern. Die vier Werte stehen als Felder im Bereich Glaslook.": "Separates headline and supporting text more clearly: size and weight of the headline, size and opacity of the supporting text. iOS makes the headline heavier and takes contrast off the subtitle rather than merely shrinking it. The four values are fields under Glass look.",
-  "Einstellungsseiten: Pfeile zurücknehmen": "Settings pages: quieter chevrons",
-  "Die Pfeile am rechten Rand jeder Zeile werden kleiner und blasser - iOS zeigt sie als leisen Hinweis, nicht als Bedienelement. Größe und Deckkraft stehen als Felder im Bereich Glaslook; auf 0 gesetzt verschwinden sie ganz.": "The chevrons on the right of each row become smaller and paler - iOS shows them as a quiet hint, not as a control. Size and opacity are fields under Glass look; set to 0 they disappear entirely.",
-  "Einstellungsseiten: Icons im iOS-Stil": "Settings pages: icons in iOS style",
-  "Macht aus den runden Farbkreisen vor jedem Eintrag abgerundete Quadrate, wie iOS sie in seinen Einstellungen zeigt - mit Lichtverlauf, feiner Kante und einem kurzen Schatten. Größe, Radius, Glanz, Rand und Schatten stehen als eigene Felder im Bereich Glaslook. Der Shadow-DOM-Pfad wurde in einer laufenden Instanz mit uix_style_path geprüft; baut das Frontend die Liste um, muss er nachgezogen werden.": "Turns the round colour circles in front of each entry into rounded squares, the way iOS shows them in its settings - with a light gradient, a fine edge and a short shadow. Size, radius, sheen, border and shadow are fields of their own under Glass look. The shadow DOM path was verified in a running instance with uix_style_path; if the frontend rebuilds the list, it has to be adjusted.",
+  "Einstellungsseiten im iOS-Stil": "Settings pages in iOS style",
+  "Macht aus den runden Farbkreisen abgerundete Quadrate, wie iOS sie in seinen Einstellungen zeigt - mit Lichtverlauf, feiner Kante und kurzem Schatten. Dazu kräftigere Überschriften, zurückgenommene Untertitel und leisere Pfeile am Zeilenende. Alle Werte stehen als eigene Felder im Bereich Glaslook; wer etwas davon nicht will, setzt den betreffenden Wert auf den Ausgangszustand zurück. Der Shadow-DOM-Pfad wurde mit uix_style_path in einer laufenden Instanz geprüft.": "Turns the round colour circles into rounded squares, the way iOS shows them in its settings - with a light gradient, a fine edge and a short shadow. Plus heavier headlines, quieter supporting text and paler chevrons at the end of each row. Every value is a field of its own under Glass look; anything you don't want, you set back to its starting value. The shadow DOM path was verified with uix_style_path in a running instance.",
   "Glas: eigene Ebene unter der Karte": "Glass: its own layer beneath the card",
   "Milchiges Glas, das den Weichzeichner nicht auf die Karte selbst legt, sondern auf eine Ebene darunter. Anders als der einfache Glas-Effekt bleibt der Kartenhintergrund dadurch mit Hintergrundbildern und Verläufen verträglich. Hüllen-Karten (Überschriften, Mushroom-Titel und -Chips, reine Textkarten) sind bewusst ausgenommen, damit sie nicht plötzlich als Kachel erscheinen.": "Frosted glass that puts the blur on a layer beneath the card instead of on the card itself. Unlike the plain glass effect, the card background stays compatible with background images and gradients. Wrapper cards (headings, Mushroom titles and chips, text-only cards) are deliberately excluded so they do not suddenly show up as tiles.",
   "Seitenleiste: aktiver Eintrag als Glaskörper": "Sidebar: active entry as a glass body",
@@ -2639,36 +2635,9 @@ ha-adaptive-dialog {
 }`,
   },
   {
-    id: "einstellungen-typografie",
-    label: "Einstellungsseiten: Schrift der Einträge",
-    desc: "Trennt Überschrift und Untertitel deutlicher: Größe und Gewicht der Überschrift, Größe und Deckkraft des Untertitels. iOS setzt die Überschrift kräftiger und nimmt dem Untertitel Kontrast, statt ihn nur zu verkleinern. Die vier Werte stehen als Felder im Bereich Glaslook.",
-    ziel: "uix-config-yaml",
-    css: `ha-config-dashboard $$ ha-config-navigation-list $: |
-  ha-list-nav ha-list-item-button span[slot="headline"] {
-    font-size: var(--hatg-liste-titel-groesse, 15px);
-    font-weight: var(--hatg-liste-titel-gewicht, 600);
-  }
-  ha-list-nav ha-list-item-button span[slot="supporting-text"] {
-    font-size: var(--hatg-liste-untertitel-groesse, 12.5px);
-    opacity: var(--hatg-liste-untertitel-deckkraft, 0.68);
-  }`,
-  },
-  {
-    id: "einstellungen-pfeile",
-    label: "Einstellungsseiten: Pfeile zurücknehmen",
-    desc: "Die Pfeile am rechten Rand jeder Zeile werden kleiner und blasser - iOS zeigt sie als leisen Hinweis, nicht als Bedienelement. Größe und Deckkraft stehen als Felder im Bereich Glaslook; auf 0 gesetzt verschwinden sie ganz.",
-    ziel: "uix-config-yaml",
-    css: `ha-config-dashboard $$ ha-config-navigation-list $: |
-  ha-list-nav ha-list-item-button ha-icon-next {
-    width: var(--hatg-liste-pfeil-groesse, 18px);
-    height: var(--hatg-liste-pfeil-groesse, 18px);
-    opacity: var(--hatg-liste-pfeil-deckkraft, 0.4);
-  }`,
-  },
-  {
     id: "einstellungen-icons-gross",
-    label: "Einstellungsseiten: Icons im iOS-Stil",
-    desc: "Macht aus den runden Farbkreisen vor jedem Eintrag abgerundete Quadrate, wie iOS sie in seinen Einstellungen zeigt - mit Lichtverlauf, feiner Kante und einem kurzen Schatten. Größe, Radius, Glanz, Rand und Schatten stehen als eigene Felder im Bereich Glaslook. Der Shadow-DOM-Pfad wurde in einer laufenden Instanz mit uix_style_path geprüft; baut das Frontend die Liste um, muss er nachgezogen werden.",
+    label: "Einstellungsseiten im iOS-Stil",
+    desc: "Macht aus den runden Farbkreisen abgerundete Quadrate, wie iOS sie in seinen Einstellungen zeigt - mit Lichtverlauf, feiner Kante und kurzem Schatten. Dazu kräftigere Überschriften, zurückgenommene Untertitel und leisere Pfeile am Zeilenende. Alle Werte stehen als eigene Felder im Bereich Glaslook; wer etwas davon nicht will, setzt den betreffenden Wert auf den Ausgangszustand zurück. Der Shadow-DOM-Pfad wurde mit uix_style_path in einer laufenden Instanz geprüft.",
     ziel: "uix-config-yaml",
     css: `ha-config-dashboard $$ ha-config-navigation-list $: |
   ha-list-nav ha-list-item-button div.icon-background {
@@ -2689,6 +2658,19 @@ ha-adaptive-dialog {
     padding: 0 !important;
     width: 20px;
     height: 20px;
+  }
+  ha-list-nav ha-list-item-button span[slot="headline"] {
+    font-size: var(--hatg-liste-titel-groesse, 15px);
+    font-weight: var(--hatg-liste-titel-gewicht, 600);
+  }
+  ha-list-nav ha-list-item-button span[slot="supporting-text"] {
+    font-size: var(--hatg-liste-untertitel-groesse, 12.5px);
+    opacity: var(--hatg-liste-untertitel-deckkraft, 0.68);
+  }
+  ha-list-nav ha-list-item-button ha-icon-next {
+    width: var(--hatg-liste-pfeil-groesse, 18px);
+    height: var(--hatg-liste-pfeil-groesse, 18px);
+    opacity: var(--hatg-liste-pfeil-deckkraft, 0.4);
   }`,
   },
 ];
