@@ -1,0 +1,1667 @@
+# ---------------------------------------------------------------------------
+# HATG Glas-Basis - Testtheme fuer den vollstaendigen Glaslook mit UI eXtension
+#
+# Voraussetzung: UI eXtension (UIX) ist ueber HACS installiert UND unter
+# Einstellungen > Geraete & Dienste als Integration hinzugefuegt. card-mod muss
+# deinstalliert sein, beide gleichzeitig funktionieren nicht.
+#
+# Einbauen:
+#   1. Diese Datei nach config/themes/glas-basis.yaml kopieren
+#   2. Entwicklerwerkzeuge > Aktionen > frontend.reload_themes ausfuehren
+#      (oder Home Assistant neu starten)
+#   3. Profil > Theme > "glas_basis" waehlen
+#   4. Im Browser einmal hart neu laden (Strg/Cmd+Shift+R)
+#
+# Was drinsteckt:
+#   - Grundfarben und Formen der Basis-Vorlage "iOS / Apple-Stil"
+#   - ein Farbverlauf als Hintergrund, damit das Glas etwas zum Durchscheinen hat.
+#     Eigenes Bild? lovelace-background unter modes.light/dark ersetzen durch:
+#       url("/hatg_wallpaper/DEIN-BILD.jpg") center / cover no-repeat
+#   - 21 UIX-Stilziele auf Theme-Ebene: Karten, Seitenleiste, Kopfleiste,
+#     App Drawer, Dialoge, Info-Dialog, Toasts, Benachrichtigungen, Badges,
+#     Glance, Grid-Abschnitte, Kalender, To-do, Verlauf, Diagramme, eigene Panels
+#     und saemtliche Schaltflaechen
+#   - 14 Glaswerte unter modes.light/dark (hatg-glas-*). Das sind die Stellschrauben:
+#     hatg-glas-blur         Weichzeichnung der Karten
+#     hatg-glas-blur-gross   Seitenleiste, Kopfleiste, App Drawer
+#     hatg-glas-fuellung     Deckkraft der Flaechen
+#     hatg-glas-reflex       der Lichtverlauf auf jeder Flaeche
+#     Eine Zahl aendern wirkt auf alle Flaechen gleichzeitig.
+#
+# Zu blass? hatg-glas-fuellung erhoehen. Zu unruhig auf Tablets?
+# hatg-glas-blur und -gross verringern - Weichzeichnung kostet Rechenzeit.
+# ---------------------------------------------------------------------------
+
+# Erstellt mit HATG v1.1.0b10
+# Theme: Glas Basis – Grundfarbe #007AFF, Akzent #007AFF, Karten-Radius 14px
+# Generiert am 2026-09-06
+
+glas_basis:
+  # UIX (theme-global; muss auf Theme-Ebene stehen, nicht unter modes.light/dark)
+  uix-card: |
+    /* HATG:UIX:glas-ebene:START */
+    ha-card {
+      background-color: rgba(255, 255, 255, 0.12) !important;
+      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.12)) !important;
+      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+      -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      box-shadow:
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
+        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+    }
+    :host(hui-heading-card) ha-card,
+    :host(mushroom-title-card) ha-card,
+    :host(mushroom-chips-card) ha-card,
+    ha-card.text-only {
+      background: none !important;
+      background-image: none !important;
+      border: 0 !important;
+      box-shadow: none !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+    /* HATG:UIX:glas-ebene:END */
+    /* HATG:UIX:glas-buttons-karten:START */
+    ha-button,
+    ha-icon-button,
+    ha-assist-chip {
+      --ha-button-border-radius: var(--ha-card-border-radius, 14px);
+      --ha-button-box-shadow:
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
+        inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)),
+        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7));
+    }
+    ha-control-button,
+    ha-control-select,
+    ha-control-slider {
+      --control-button-border-radius: var(--ha-card-border-radius, 14px);
+      --control-select-border-radius: var(--ha-card-border-radius, 14px);
+      --control-slider-border-radius: var(--ha-card-border-radius, 14px);
+      --control-button-background-color: var(--primary-color);
+      --control-button-background-opacity: 0.22;
+    }
+    /* HATG:UIX:glas-buttons-karten:END */
+  uix-root: |
+    /* HATG:UIX:glas-buttons-rahmen:START */
+    ha-button,
+    ha-icon-button,
+    ha-assist-chip {
+      --ha-button-border-radius: var(--ha-card-border-radius, 14px);
+      --ha-button-box-shadow:
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
+        inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)),
+        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7));
+    }
+    ha-control-button,
+    ha-control-select,
+    ha-control-slider {
+      --control-button-border-radius: var(--ha-card-border-radius, 14px);
+      --control-select-border-radius: var(--ha-card-border-radius, 14px);
+      --control-slider-border-radius: var(--ha-card-border-radius, 14px);
+      --control-button-background-color: var(--primary-color);
+      --control-button-background-opacity: 0.22;
+    }
+    /* HATG:UIX:glas-buttons-rahmen:END */
+  uix-badge: |
+    /* HATG:UIX:glas-badges:START */
+    :host,
+    ha-badge {
+      background-color: rgba(255, 255, 255, 0.12) !important;
+      background-color: var(--hatg-glas-fuellung-leicht, rgba(255, 255, 255, 0.12)) !important;
+      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
+      -webkit-backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      box-shadow:
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
+        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+    }
+    /* HATG:UIX:glas-badges:END */
+  uix-sidebar: |
+    /* HATG:UIX:seitenleiste-glas:START */
+    :host {
+      background-color: rgba(255, 255, 255, 0.12) !important;
+      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.12)) !important;
+      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
+      -webkit-backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      box-shadow:
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
+        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+    }
+    ha-md-list-item,
+    ha-md-list-item.selected::before,
+    ha-list-item-button,
+    ha-list-item-button.selected::before {
+      border-radius: var(--ha-card-border-radius, 14px) !important;
+    }
+    /* HATG:UIX:seitenleiste-glas:END */
+    /* HATG:UIX:seitenleiste-aktiv-liquid:START */
+    ha-list-item-button.selected::before {
+      border-radius: var(--ha-card-border-radius, 14px) !important;
+      /* Home Assistant faerbt diese Flaeche selbst und daempft sie ueber opacity -
+         ohne !important bleibt davon nichts uebrig. */
+      opacity: 1 !important;
+      background-color: rgba(10, 132, 255, 0.28) !important;
+      background-color: color-mix(in srgb, var(--sidebar-selected-icon-color, var(--primary-color)) 38%, transparent) !important;
+      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      box-shadow:
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
+        inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)),
+        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+      backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
+      -webkit-backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
+    }
+    ha-list-item-button::before {
+      transition: opacity 160ms ease, box-shadow 160ms ease;
+    }
+    /* HATG:UIX:seitenleiste-aktiv-liquid:END */
+  uix-more-info: |
+    /* HATG:UIX:glas-more-info:START */
+    :host,
+    ha-card {
+      background-color: rgba(255, 255, 255, 0.18) !important;
+      background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.18)) !important;
+      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+      -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      box-shadow:
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
+        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+    }
+    /* HATG:UIX:glas-more-info:END */
+  uix-dialog: |
+    /* HATG:UIX:glas-dialoge:START */
+    :host,
+    ha-dialog,
+    ha-adaptive-dialog {
+      background-color: rgba(255, 255, 255, 0.18) !important;
+      background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.18)) !important;
+      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+      -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      box-shadow:
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
+        var(--hatg-glas-schatten-hoch, 0 22px 55px -22px rgba(0, 0, 0, 0.8)) !important;
+    }
+    /* HATG:UIX:glas-dialoge:END */
+    /* HATG:UIX:glas-buttons-dialoge:START */
+    ha-button,
+    ha-icon-button,
+    ha-assist-chip {
+      --ha-button-border-radius: var(--ha-card-border-radius, 14px);
+      --ha-button-box-shadow:
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
+        inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)),
+        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7));
+    }
+    ha-control-button,
+    ha-control-select,
+    ha-control-slider {
+      --control-button-border-radius: var(--ha-card-border-radius, 14px);
+      --control-select-border-radius: var(--ha-card-border-radius, 14px);
+      --control-slider-border-radius: var(--ha-card-border-radius, 14px);
+      --control-button-background-color: var(--primary-color);
+      --control-button-background-opacity: 0.22;
+    }
+    /* HATG:UIX:glas-buttons-dialoge:END */
+  uix-drawer: |
+    /* HATG:UIX:drawer-glas:START */
+    .mdc-drawer {
+      background-color: rgba(255, 255, 255, 0.12) !important;
+      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.12)) !important;
+      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
+      -webkit-backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      box-shadow:
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
+        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+    }
+    .sidebar-shell {
+      background-color: transparent !important;
+    }
+    /* HATG:UIX:drawer-glas:END */
+  uix-glance: |
+    /* HATG:UIX:glas-glance:START */
+    :host,
+    ha-card {
+      background-color: rgba(255, 255, 255, 0.12) !important;
+      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.12)) !important;
+      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+      -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      box-shadow:
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
+        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+    }
+    :host(hui-heading-card) ha-card,
+    :host(mushroom-title-card) ha-card,
+    :host(mushroom-chips-card) ha-card,
+    ha-card.text-only {
+      background: none !important;
+      background-image: none !important;
+      border: 0 !important;
+      box-shadow: none !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+    /* HATG:UIX:glas-glance:END */
+  uix-heading-badge: |
+    /* HATG:UIX:glas-heading-badges:START */
+    :host {
+      background-color: rgba(255, 255, 255, 0.12) !important;
+      background-color: var(--hatg-glas-fuellung-leicht, rgba(255, 255, 255, 0.12)) !important;
+      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
+      -webkit-backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      box-shadow:
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
+        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+    }
+    /* HATG:UIX:glas-heading-badges:END */
+  uix-config: |
+    /* HATG:UIX:glas-buttons-einstellungen:START */
+    ha-button,
+    ha-icon-button,
+    ha-assist-chip {
+      --ha-button-border-radius: var(--ha-card-border-radius, 14px);
+      --ha-button-box-shadow:
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
+        inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)),
+        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7));
+    }
+    ha-control-button,
+    ha-control-select,
+    ha-control-slider {
+      --control-button-border-radius: var(--ha-card-border-radius, 14px);
+      --control-select-border-radius: var(--ha-card-border-radius, 14px);
+      --control-slider-border-radius: var(--ha-card-border-radius, 14px);
+      --control-button-background-color: var(--primary-color);
+      --control-button-background-opacity: 0.22;
+    }
+    /* HATG:UIX:glas-buttons-einstellungen:END */
+  uix-panel-custom: |
+    /* HATG:UIX:glas-panels:START */
+    :host,
+    ha-card {
+      background-color: rgba(255, 255, 255, 0.12) !important;
+      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.12)) !important;
+      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+      -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      box-shadow:
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
+        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+    }
+    /* HATG:UIX:glas-panels:END */
+  uix-top-app-bar-fixed: |
+    /* HATG:UIX:kopfleiste-glas:START */
+    :host,
+    .mdc-top-app-bar {
+      background-color: rgba(255, 255, 255, 0.12) !important;
+      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.12)) !important;
+      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
+      -webkit-backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      box-shadow:
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
+        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+    }
+    /* HATG:UIX:kopfleiste-glas:END */
+  uix-toast: |
+    /* HATG:UIX:glas-toast:START */
+    :host,
+    .mdc-snackbar__surface {
+      background-color: rgba(255, 255, 255, 0.12) !important;
+      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.12)) !important;
+      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
+      -webkit-backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      box-shadow:
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
+        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+    }
+    /* HATG:UIX:glas-toast:END */
+  uix-grid-section: |
+    /* HATG:UIX:glas-abschnitte:START */
+    :host,
+    .container {
+      background-color: rgba(255, 255, 255, 0.12) !important;
+      background-color: var(--hatg-glas-fuellung-leicht, rgba(255, 255, 255, 0.12)) !important;
+      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+      -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      box-shadow:
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
+        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+    }
+    /* HATG:UIX:glas-abschnitte:END */
+  uix-calendar: |
+    /* HATG:UIX:glas-kalender:START */
+    :host,
+    ha-card {
+      background-color: rgba(255, 255, 255, 0.12) !important;
+      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.12)) !important;
+      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+      -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      box-shadow:
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
+        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+    }
+    /* HATG:UIX:glas-kalender:END */
+  uix-todo: |
+    /* HATG:UIX:glas-todo:START */
+    :host,
+    ha-card {
+      background-color: rgba(255, 255, 255, 0.12) !important;
+      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.12)) !important;
+      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+      -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      box-shadow:
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
+        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+    }
+    /* HATG:UIX:glas-todo:END */
+  uix-history: |
+    /* HATG:UIX:glas-verlauf:START */
+    :host,
+    ha-card {
+      background-color: rgba(255, 255, 255, 0.12) !important;
+      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.12)) !important;
+      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+      -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      box-shadow:
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
+        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+    }
+    /* HATG:UIX:glas-verlauf:END */
+  uix-states-history-charts: |
+    /* HATG:UIX:glas-verlaufsdiagramme:START */
+    :host,
+    ha-card {
+      background-color: rgba(255, 255, 255, 0.12) !important;
+      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.12)) !important;
+      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+      -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      box-shadow:
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
+        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+    }
+    /* HATG:UIX:glas-verlaufsdiagramme:END */
+  uix-persistent-notification-item: |
+    /* HATG:UIX:glas-benachrichtigungen:START */
+    :host,
+    ha-card {
+      background-color: rgba(255, 255, 255, 0.12) !important;
+      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.12)) !important;
+      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+      -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      box-shadow:
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
+        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+    }
+    /* HATG:UIX:glas-benachrichtigungen:END */
+  uix-card-yaml: |
+    # HATG:UIX:glas-buttons-glanz:START
+    ha-button $: |
+      .button {
+        background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%));
+        backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
+        -webkit-backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
+      }
+    # HATG:UIX:glas-buttons-glanz:END
+  uix-theme: "glas_basis"
+  modes:
+    light:
+      # Grundfarben & Text / Grundfarben
+      accent-color: "#007AFF"
+      primary-color: "#007AFF"
+      dark-primary-color: "#0053AD"
+      light-primary-color: "#B8DAFF"
+      disabled-color: "#D1D1D6"
+      error-color: "#FF3B30"
+      warning-color: "#FFCC00"
+      success-color: "#34C759"
+      info-color: "#007AFF"
+      red-color: "#FF3B30"
+      green-color: "#34C759"
+      blue-color: "#007AFF"
+      orange-color: "#FF9500"
+      yellow-color: "#FFCC00"
+      purple-color: "#AF52DE"
+      pink-color: "#FF2D55"
+      cyan-color: "#5AC8FA"
+      grey-color: "#3C3C43"
+      deep-purple-color: "#6E41AB"
+      indigo-color: "#3F51B5"
+      light-blue-color: "#03A9F4"
+      teal-color: "#009688"
+      light-green-color: "#8BC34A"
+      lime-color: "#CDDC39"
+      amber-color: "#FFC107"
+      deep-orange-color: "#FF6F22"
+      brown-color: "#795548"
+      light-grey-color: "#BDBDBD"
+      dark-grey-color: "#606060"
+      blue-grey-color: "#607D8B"
+      black-color: "#000000"
+      white-color: "#FFFFFF"
+      printer-cyan-color: "#00AEEF"
+      printer-magenta-color: "#EC008C"
+      printer-yellow-color: "#FFD400"
+
+      # Grundfarben & Text / Text
+      primary-text-color: "#000000"
+      secondary-text-color: "rgba(60, 60, 67, 0.6)"
+      text-primary-color: "#FFFFFF"
+      disabled-text-color: "#8E8E93"
+
+      # HA-Grundgerüst / Card
+      card-background-color: "#FFFFFF"
+      ha-card-background: "#FFFFFF"
+      ha-card-background-color: "#FFFFFF"
+      wa-color-surface-raised: "#FFFFFF"
+      ha-card-border-color: "rgba(0, 0, 0, 0.12)"
+      ha-card-border-radius: "14px"
+      ha-card-border-width: "1px"
+      ha-card-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
+      table-row-background-color: "#F9F9FB"
+      table-row-alternative-background-color: "#FFFFFF"
+
+      # HA-Grundgerüst / Hintergründe
+      primary-background-color: "#F2F2F7"
+      background-color: "#F2F2F7"
+      lovelace-background: "linear-gradient(160deg, #DCE7F5 0%, #EAD9F0 45%, #F6E3D5 100%)"
+      secondary-background-color: "#FFFFFF"
+      glass-effect-style: "off"
+      background-style: "off"
+
+      # HA-Grundgerüst / Theme
+      mdc-theme-background: "#F2F2F7"
+      mdc-theme-surface: "#FFFFFF"
+      mdc-theme-on-surface: "#000000"
+
+      # HA-Grundgerüst / Header
+      app-header-background-color: "#FFFFFF"
+      app-header-text-color: "#000000"
+      app-header-backdrop-filter: "blur(8px) saturate(1.1)"
+      app-header-edit-background-color: "rgba(30, 33, 54, 0.8)"
+      app-header-edit-text-color: "rgba(234, 235, 238, 0.98)"
+      app-theme-color: "rgb(0, 0, 0)"
+      app-toolbar-background-color: "#FFFFFF"
+      toolbar-background-color: "#FFFFFF"
+      app-toolbar-text-color: "#1C1C1E"
+      toolbar-text-color: "#1C1C1E"
+
+      # HA-Grundgerüst / App Drawer
+      app-drawer-background-color: "#FFFFFF"
+      app-drawer-text-color: "#3C3C43"
+      app-drawer-icon-color: "#007AFF"
+
+      # HA-Grundgerüst / Sidebar
+      sidebar-background-color: "#FFFFFF"
+      sidebar-selected-background-color: "#E5F1FF"
+      sidebar-text-color: "#000000"
+      sidebar-icon-color: "rgba(0, 0, 0, 0.6)"
+      sidebar-selected-text-color: "#1C1C1E"
+      sidebar-selected-icon-color: "#007AFF"
+
+      # HA-Grundgerüst / Status, Icons & Entitäten
+      state-icon-color: "#007AFF"
+      state-icon-active-color: "#007AFF"
+      state-icon-unavailable-color: "#FFFFFF"
+      state-active-color: "#007AFF"
+      state-inactive-color: "#FFFFFF"
+      state-unavailable-color: "#FFFFFF"
+      state-on-color: "#34C759"
+      state-off-color: "#FFFFFF"
+      state-light-color: "#007AFF"
+      state-light-active-color: "#007AFF"
+      state-light-on-color: "#ff9300"
+      state-switch-color: "#007AFF"
+      state-switch-active-color: "#007AFF"
+      state-switch-on-color: "#007AFF"
+      state-climate-cool-color: "#007AFF"
+      state-climate-heat-color: "#ff2600"
+      state-climate-auto-color: "#007AFF"
+      state-climate-dry-color: "#007AFF"
+      state-climate-fan_only-color: "#5AC8FA"
+      state-climate-heat_cool-color: "#FFC107"
+      state-cover-color: "#007AFF"
+      state-cover-active-color: "#007AFF"
+      state-cover-open-color: "#929000"
+      state-cover-closed-color: "#ff2600"
+      state-fan-color: "#007AFF"
+      state-fan-active-color: "#007AFF"
+      state-media_player-color: "#007AFF"
+      state-media_player-active-color: "#007AFF"
+      state-vacuum-color: "#007AFF"
+      state-vacuum-active-color: "#007AFF"
+      state-vacuum-error-color: "#FF3B30"
+      state-lock-locked-color: "#007AFF"
+      state-lock-locking-color: "#ff2600"
+      state-lock-unlocked-color: "#007AFF"
+      state-lock-unlocking-color: "#929000"
+      state-lock-jammed-color: "#FF3B30"
+      state-lock-open-color: "#FF3B30"
+      state-lock-opening-color: "#007AFF"
+      state-alarm_control_panel-triggered-color: "#ff2600"
+      state-alarm-triggered-color: "#ff2600"
+      state-alarm_control_panel-armed_home-color: "#ffd478"
+      state-alarm_control_panel-armed_away-color: "#ffd478"
+      state-alarm-armed-color: "#ffd478"
+      state-alarm_control_panel-disarmed-color: "#ff9300"
+      state-alarm-disarmed-color: "#ff9300"
+      state-alarm_control_panel-armed_custom_bypass-color: "#34C759"
+      state-alarm_control_panel-armed_night-color: "#34C759"
+      state-alarm_control_panel-armed_vacation-color: "#34C759"
+      state-alarm_control_panel-arming-color: "#007AFF"
+      state-alarm_control_panel-disarming-color: "#007AFF"
+      state-alarm_control_panel-pending-color: "#007AFF"
+      state-alert-off-color: "#007AFF"
+      state-alert-on-color: "#FF3B30"
+      state-binary_sensor-active-color: "#FFC107"
+      state-binary_sensor-battery-on-color: "#FF3B30"
+      state-binary_sensor-carbon_monoxide-on-color: "#FF3B30"
+      state-binary_sensor-gas-on-color: "#FF3B30"
+      state-binary_sensor-heat-on-color: "#FF3B30"
+      state-binary_sensor-lock-on-color: "#FF3B30"
+      state-binary_sensor-moisture-on-color: "#FF3B30"
+      state-binary_sensor-problem-on-color: "#FF3B30"
+      state-binary_sensor-safety-on-color: "#FF3B30"
+      state-binary_sensor-smoke-on-color: "#FF3B30"
+      state-binary_sensor-sound-on-color: "#FF3B30"
+      state-binary_sensor-tamper-on-color: "#FF3B30"
+      state-device_tracker-active-color: "#007AFF"
+      state-device_tracker-home-color: "#34C759"
+      state-humidifier-on-color: "#007AFF"
+      state-lawn_mower-active-color: "#009688"
+      state-lawn_mower-error-color: "#FF3B30"
+      state-person-active-color: "#007AFF"
+      state-person-home-color: "#34C759"
+      state-plant-active-color: "#FF3B30"
+      state-siren-active-color: "#FF3B30"
+      state-sun-above_horizon-color: "#FFC107"
+      state-sun-below_horizon-color: "#3F51B5"
+      state-update-active-color: "#007AFF"
+      state-valve-active-color: "#007AFF"
+      state-water_heater-eco-color: "#34C759"
+      state-water_heater-electric-color: "#007AFF"
+      state-water_heater-gas-color: "#007AFF"
+      state-water_heater-heat_pump-color: "#007AFF"
+      state-water_heater-high_demand-color: "#FF6F22"
+      state-water_heater-performance-color: "#FF6F22"
+      state-weather-clear_night-color: "#6E41AB"
+      state-weather-cloudy-color: "#BDBDBD"
+      state-weather-exceptional-color: "#FF3B30"
+      state-weather-fog-color: "#3C3C43"
+      state-weather-hail-color: "#5AC8FA"
+      state-weather-lightning_rainy-color: "#CDDC39"
+      state-weather-lightning-color: "#FFCC00"
+      state-weather-partlycloudy-color: "#607D8B"
+      state-weather-pouring-color: "#3F51B5"
+      state-weather-rainy-color: "#007AFF"
+      state-weather-snowy_rainy-color: "#03A9F4"
+      state-weather-snowy-color: "#C0E0FF"
+      state-weather-sunny-color: "#FFC107"
+      state-weather-windy_variant-color: "#34C759"
+      state-weather-windy-color: "#34C759"
+      state-battery-low-color: "#ff2600"
+      state-sensor-battery-high-color: "#34C759"
+      state-sensor-battery-medium-color: "#007AFF"
+      state-sensor-battery-low-color: "#FF3B30"
+      label-badge-background-color: "#FFFFFF"
+      label-badge-text-color: "rgba(0, 0, 0, 0.8)"
+      label-badge-red: "#FF3B30"
+      label-badge-blue: "#007AFF"
+      label-badge-green: "#34C759"
+      label-badge-yellow: "#FFCC00"
+      state-battery-alert-color: "#ff2600"
+
+      # HA-Grundgerüst / Schalter, Toggle & Slider
+      ha-control-switch-color: "#007AFF"
+      ha-control-switch-checked-color: "#007AFF"
+      ha-control-switch-unchecked-color: "#D1D1D6"
+      ha-switch-background-color: "#D1D1D6"
+      ha-switch-background-color-hover: "#D1D1D6"
+      ha-switch-border-color: "rgba(0,0,0,0)"
+      ha-switch-thumb-background-color: "#FFFFFF"
+      ha-switch-thumb-background-color-hover: "#FFFFFF"
+      ha-switch-thumb-border-color: "rgba(0,0,0,0)"
+      ha-switch-thumb-border-color-hover: "rgba(0,0,0,0)"
+      ha-switch-checked-background-color: "#B8DAFF"
+      ha-switch-checked-background-color-hover: "#B8DAFF"
+      ha-switch-checked-border-color: "rgba(0,0,0,0)"
+      ha-switch-checked-thumb-background-color: "#007AFF"
+      ha-switch-checked-thumb-background-color-hover: "#007AFF"
+      ha-switch-checked-thumb-border-color: "rgba(0,0,0,0)"
+      ha-switch-checked-thumb-border-color-hover: "rgba(0,0,0,0)"
+      control-slider-color: "#007AFF"
+      slider-color: "#007AFF"
+      slider-secondary-color: "#E5F1FF"
+      slider-track-color: "#D1D1D6"
+
+      # HA-Grundgerüst / Buttons & Chips
+      control-button-background-color: "#FFFFFF"
+      control-button-icon-color: "#007AFF"
+      control-button-border-radius: "10px"
+
+      # HA-Grundgerüst / Eingaben & Auswahlfelder
+      input-background-color: "#FFFFFF"
+      input-fill-color: "#FFFFFF"
+      input-disabled-fill-color: "rgba(249, 249, 251, 0.55)"
+      input-disabled-ink-color: "rgba(0, 0, 0, 0.37)"
+      input-disabled-label-ink-color: "#8E8E93"
+      input-disabled-line-color: "rgba(0, 0, 0, 0.06)"
+      input-dropdown-icon-color: "rgba(0, 0, 0, 0.54)"
+      input-hover-line-color: "rgba(0, 0, 0, 0.87)"
+      input-idle-line-color: "rgba(0, 0, 0, 0.42)"
+      input-ink-color: "rgba(0, 0, 0, 0.87)"
+      input-label-ink-color: "rgba(0, 0, 0, 0.6)"
+      input-outlined-disabled-border-color: "rgba(0, 0, 0, 0.06)"
+      mdc-select-idle-line-color: "#C6C6C8"
+      mdc-select-dropdown-icon-color: "#3C3C43"
+      mdc-select-hover-line-color: "#C6C6C8"
+      mdc-text-field-idle-line-color: "#C6C6C8"
+      mdc-text-field-hover-line-color: "#C6C6C8"
+      ha-color-form-background: "#F9F9FB"
+      ha-color-form-background-hover: "#F9F9FB"
+      ha-color-form-background-disabled: "rgba(249, 249, 251, 0.55)"
+
+      # HA-Grundgerüst / Material, Paper & MDC
+      mdc-theme-primary: "#007AFF"
+      mdc-theme-secondary: "#007AFF"
+      mdc-theme-on-primary: "#FFFFFF"
+      md-sys-color-primary: "#007AFF"
+      md-sys-color-on-primary: "#007AFF"
+      md-sys-color-primary-container: "#E5F1FF"
+      md-sys-color-on-primary-container: "#FFFFFF"
+      md-sys-color-on-surface: "#feffff"
+      ha-on-surface-color: "#feffff"
+      md-radio-selected-icon-color: "#007AFF"
+      mdc-radio-unchecked-color: "#3C3C43"
+
+      # HA-Grundgerüst / HA 2026 / Web Awesome
+      ha-color-fill-primary-normal-resting: "rgba(0, 122, 255, 0.15)"
+      ha-color-fill-primary-normal-hover: "rgba(0, 122, 255, 0.25)"
+      ha-color-fill-primary-quiet-resting: "rgba(0, 122, 255, 0.08)"
+      ha-color-fill-primary-quiet-hover: "rgba(0, 122, 255, 0.15)"
+      ha-color-fill-disabled-normal-resting: "rgba(142, 142, 147, 0.12)"
+      ha-color-on-disabled-normal: "rgba(60, 60, 67, 0.55)"
+      ha-color-fill-disabled-loud-resting: "rgba(142, 142, 147, 0.22)"
+      ha-color-on-disabled-loud: "rgba(60, 60, 67, 0.65)"
+      ha-color-on-disabled-quiet: "rgba(60, 60, 67, 0.50)"
+      ha-color-fill-neutral-quiet-resting: "#FFFFFF"
+      ha-color-fill-neutral-quiet-hover: "#F9F9FB"
+      ha-color-fill-neutral-quiet-active: "#E5F1FF"
+      ha-color-fill-neutral-normal-resting: "#F9F9FB"
+      ha-color-fill-neutral-normal-hover: "#FFFFFF"
+      ha-color-fill-neutral-normal-active: "#E5F1FF"
+      ha-color-fill-danger-normal-resting: "rgba(255, 59, 48, 0.15)"
+      ha-color-fill-danger-normal-hover: "rgba(255, 59, 48, 0.22)"
+      ha-color-fill-danger-normal-active: "rgba(255, 59, 48, 0.28)"
+      ha-color-on-danger-normal: "#FF3B30"
+      ha-color-fill-warning-normal-resting: "rgba(255, 204, 0, 0.15)"
+      ha-color-fill-warning-normal-hover: "rgba(255, 204, 0, 0.22)"
+      ha-color-fill-warning-normal-active: "rgba(255, 204, 0, 0.28)"
+      ha-color-on-warning-normal: "#8A5A00"
+      ha-tooltip-background-color: "#F9F9FB"
+      ha-tooltip-text-color: "#1C1C1E"
+
+      # HA-Grundgerüst / Abstände, Rundungen, Schatten & Rahmen
+      border-color: "rgba(0, 0, 0, 0.12)"
+      border-radius: "14px"
+      box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
+      divider-color: "rgba(0, 0, 0, 0.12)"
+      outline-color: "rgba(0, 0, 0, 0.12)"
+      outline-variant-color: "#C6C6C8"
+      outline-hover-color: "rgba(0, 0, 0, 0.24)"
+      ha-line-height-condensed: "1.25"
+      ha-line-height-expanded: "1.35"
+      ha-line-height-normal: "1.5"
+      ha-list-gap: "0px"
+      ha-list-padding: "0px"
+      ha-list-item-focus-radius: "12px"
+      ha-list-item-focus-background: "rgba(127, 127, 127, 0.12)"
+      ha-border-radius-circle: "50%"
+
+      # HA-Grundgerüst / Schrift & Typografie
+      primary-font-family: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', sans-serif"
+      ha-font-family-body: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', sans-serif"
+      ha-font-family-heading: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', sans-serif"
+      ha-font-family-longform: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', sans-serif"
+      ha-font-family-code: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', sans-serif"
+      mdc-typography-font-family: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', sans-serif"
+      ha-font-size-scale: "1"
+      ha-font-size-2xs: "8px"
+      ha-font-size-xs: "8px"
+      ha-font-size-s: "12px"
+      ha-font-size-m: "14px"
+      ha-font-size-l: "16px"
+      ha-font-size-xl: "18px"
+      ha-font-size-2xl: "20px"
+      ha-font-size-3xl: "22px"
+      ha-font-size-4xl: "24px"
+      ha-font-weight-light: "300"
+      ha-font-weight-normal: "400"
+      ha-font-weight-body: "400"
+      ha-font-weight-medium: "500"
+      ha-font-weight-heading: "500"
+      ha-font-weight-action: "500"
+      ha-font-weight-bold: "700"
+
+      # HA-Grundgerüst / RGB-Hilfswerte
+      rgb-primary-color: "0, 122, 255"
+      rgb-accent-color: "0, 122, 255"
+      rgb-primary-text-color: "0, 0, 0"
+      rgb-secondary-text-color: "60, 60, 67"
+      rgb-card-background-color: "255, 255, 255"
+      rgb-primary-background-color: "242, 242, 247"
+      rgb-blue-color: "0, 122, 255"
+      rgb-orange-color: "255, 149, 0"
+      rgb-state-switch-color: "0, 122, 255"
+      rgb-state-light-color: "0, 122, 255"
+      rgb-state-cover-color: "0, 122, 255"
+      rgb-state-fan-color: "0, 122, 255"
+      rgb-state-media_player-color: "0, 122, 255"
+
+      # HA-Grundgerüst / Graphen & Energie
+      graph-color-1: "#ff9300"
+      graph-color-2: "#007AFF"
+      graph-color-3: "#34C759"
+      graph-color-4: "#AF52DE"
+      graph-color-5: "#FF3B30"
+      graph-color-6: "#5AC8FA"
+      graph-color-7: "#00C7BE"
+      graph-color-8: "#FF2D55"
+      graph-color-9: "#FF6B22"
+      graph-color-10: "#5856D6"
+      graph-color-11: "#A3D977"
+      graph-color-12: "#FFCC00"
+      graph-color-13: "#AF52DE"
+      graph-color-14: "#8E6E53"
+      color-1: "#ff9300"
+      color-2: "#007AFF"
+      color-3: "#34C759"
+      color-4: "#AF52DE"
+      color-5: "#FF3B30"
+      color-6: "#5AC8FA"
+      color-7: "#00C7BE"
+      color-8: "#FF2D55"
+      color-9: "#FF6B22"
+      color-10: "#5856D6"
+      color-11: "#A3D977"
+      color-12: "#FFCC00"
+      color-13: "#AF52DE"
+      color-14: "#8E6E53"
+      energy-grid-consumption-color: "#007AFF"
+      energy-grid-return-color: "#AF52DE"
+      energy-solar-color: "#ff9300"
+      energy-non-fossil-color: "#34C759"
+      energy-battery-out-color: "#00C7BE"
+      energy-battery-in-color: "#AF52DE"
+      energy-gas-color: "#FF3B30"
+      energy-water-color: "#5AC8FA"
+
+      # Bubble Card / Karten & Hintergründe
+      bubble-card-background-color: "#FFFFFF"
+      bubble-main-buttons-background-color: "#FFFFFF"
+      bubble-secondary-background-color: "#FFFFFF"
+      bubble-icon-background-color: "#F9F9FB"
+      bubble-icon-color: "#007AFF"
+      bubble-name-color: "#000000"
+      bubble-state-color: "rgba(60, 60, 67, 0.6)"
+      bubble-accent-color: "#007AFF"
+      bubble-active-color: "#007AFF"
+      bubble-toggle-color: "#007AFF"
+      bubble-line-background-color: "rgba(0, 0, 0, 0.12)"
+      bubble-border: "1px solid #C6C6C8"
+      bubble-border-color: "rgba(0, 0, 0, 0.12)"
+      bubble-border-radius: "14px"
+      bubble-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
+      bubble-card-border-radius: "14px"
+      bubble-icon-border-radius: "999px"
+
+      # Bubble Card / Select (Auswahlkarte)
+      bubble-select-main-background-color: "#FFFFFF"
+      bubble-select-background-color: "#FFFFFF"
+      bubble-select-border-radius: "14px"
+      bubble-select-list-background-color: "#FFFFFF"
+      bubble-select-list-border-radius: "14px"
+      bubble-select-list-width: "220px"
+      bubble-select-list-item-accent-color: "#007AFF"
+      bubble-select-arrow-background-color: "#FFFFFF"
+      bubble-select-button-border-radius: "10px"
+      bubble-select-icon-background-color: "#F9F9FB"
+      bubble-select-icon-border-radius: "999px"
+      bubble-select-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
+
+      # Bubble Card / Buttons
+      bubble-button-background-color: "#FFFFFF"
+      bubble-button-active-background-color: "#007AFF"
+      bubble-button-icon-color: "#007AFF"
+      bubble-button-active-icon-color: "#FFFFFF"
+      bubble-button-text-color: "#1C1C1E"
+      bubble-button-active-text-color: "#FFFFFF"
+      bubble-button-border-radius: "14px"
+      bubble-button-card-background-color: "#FFFFFF"
+      bubble-button-main-background-color: "#FFFFFF"
+      bubble-button-active-color: "#007AFF"
+      bubble-button-icon-border-radius: "999px"
+      bubble-button-icon-background-color: "#F9F9FB"
+      bubble-light-white-color: "#FFFFFF"
+      bubble-light-color: "#FFC107"
+      bubble-button-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
+
+      # Bubble Card / Sub-Buttons
+      bubble-sub-button-background-color: "#FFFFFF"
+      bubble-sub-button-active-background-color: "#007AFF"
+      bubble-sub-button-icon-color: "#007AFF"
+      bubble-sub-button-active-icon-color: "#FFFFFF"
+      bubble-sub-button-text-color: "#3C3C43"
+      bubble-sub-button-active-text-color: "#FFFFFF"
+      bubble-sub-button-border-radius: "10px"
+      bubble-sub-button-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
+      bubble-sub-buttons-main-background-color: "#FFFFFF"
+      bubble-sub-slider-border-radius: "14px"
+      bubble-sub-slider-background-color: "#FFFFFF"
+      bubble-sub-slider-height: "48px"
+      bubble-sub-button-dark-text-color: "#1C1C1E"
+      bubble-footer-width: "320px"
+      bubble-footer-bottom: "16px"
+      bubble-footer-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
+
+      # Bubble Card / Separator
+      bubble-separator-background-color: "#FFFFFF"
+      bubble-separator-icon-background-color: "#F9F9FB"
+      bubble-separator-icon-color: "#007AFF"
+      bubble-separator-line-color: "rgba(0, 0, 0, 0.12)"
+      bubble-separator-name-color: "#1C1C1E"
+      bubble-separator-text-color: "#1C1C1E"
+      bubble-separator-border-radius: "14px"
+
+      # Bubble Card / Popup & Dialog
+      bubble-pop-up-background-color: "#FFFFFF"
+      bubble-pop-up-backdrop-filter: "blur(18px)"
+      bubble-pop-up-border-radius: "20px"
+      bubble-pop-up-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
+      dialog-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
+      more-info-header-background: "#F9F9FB"
+      more-info-header-color: "#1C1C1E"
+      popup-border-radius: "20px"
+      ha-dialog-scrim-backdrop-filter: "blur(10px)"
+      ha-dialog-surface-background: "rgba(255, 255, 255, 0.92)"
+      mdc-dialog-scrim-color: "rgba(0, 0, 0, 0.35)"
+      bubble-pop-up-main-background-color: "#FFFFFF"
+      bubble-backdrop-background-color: "rgba(0, 0, 0, 0.32)"
+
+      # Bubble Card / Horizontal Buttons Stack
+      bubble-horizontal-buttons-stack-background-color: "#FFFFFF"
+      bubble-horizontal-buttons-stack-button-background-color: "#FFFFFF"
+      bubble-horizontal-buttons-stack-button-icon-color: "#3C3C43"
+      bubble-horizontal-buttons-stack-button-text-color: "#1C1C1E"
+      bubble-horizontal-buttons-stack-border-radius: "14px"
+      bubble-horizontal-buttons-stack-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
+
+      # Bubble Card / Climate
+      bubble-climate-background-color: "#FFFFFF"
+      bubble-climate-main-background-color: "#FFFFFF"
+      bubble-climate-button-background-color: "#FFFFFF"
+      bubble-climate-button-icon-color: "#3C3C43"
+      bubble-climate-border-radius: "14px"
+      bubble-climate-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
+      bubble-climate-icon-border-radius: "999px"
+      bubble-state-climate-fan-only-color: "#32ADE6"
+      bubble-state-climate-dry-color: "#FF9500"
+      bubble-state-climate-cool-color: "#007AFF"
+      bubble-state-climate-heat-color: "#FF3B30"
+      bubble-state-climate-auto-color: "#34C759"
+      bubble-state-climate-heat-cool-color: "#AF52DE"
+      bubble-climate-accent-color: "#007AFF"
+
+      # Bubble Card / Cover
+      bubble-cover-background-color: "#FFFFFF"
+      bubble-cover-main-background-color: "#FFFFFF"
+      bubble-cover-button-background-color: "#FFFFFF"
+      bubble-cover-button-icon-color: "#3C3C43"
+      bubble-cover-border-radius: "14px"
+      bubble-cover-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
+      bubble-cover-icon-border-radius: "999px"
+      bubble-cover-icon-background-color: "#F9F9FB"
+
+      # Bubble Card / Media Player
+      bubble-media-player-background-color: "#FFFFFF"
+      bubble-media-player-main-background-color: "#FFFFFF"
+      bubble-media-player-button-background-color: "#FFFFFF"
+      bubble-media-player-button-icon-color: "#3C3C43"
+      bubble-media-player-border-radius: "14px"
+      bubble-media-player-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
+      bubble-media-player-buttons-border-radius: "999px"
+      bubble-media-player-slider-background-color: "#FFFFFF"
+      bubble-media-player-icon-border-radius: "999px"
+      bubble-media-player-icon-background-color: "#F9F9FB"
+
+      # Bubble Card / Calendar
+      bubble-calendar-main-background-color: "#FFFFFF"
+      bubble-calendar-height: "56px"
+      bubble-calendar-mask-size: "16px"
+      bubble-calendar-border-radius: "14px"
+      bubble-event-background-color: "#FFFFFF"
+      bubble-event-background-image: "none"
+
+      # Mushroom / Karten & Hintergründe
+      mush-card-background: "#FFFFFF"
+      mush-control-background-color: "#FFFFFF"
+      mush-card-primary-color: "#000000"
+      mush-card-secondary-color: "rgba(60, 60, 67, 0.6)"
+      mush-title-color: "#000000"
+      mush-subtitle-color: "rgba(60, 60, 67, 0.6)"
+
+      # Mushroom / Icons
+      mush-icon-background-color: "#F9F9FB"
+      mush-icon-color: "#3C3C43"
+      mush-icon-active-color: "#007AFF"
+
+      # Mushroom / Toggle
+      mush-toggle-color: "#007AFF"
+      mush-toggle-background-color: "#D1D1D6"
+
+      # Mushroom / Slider
+      mush-slider-color: "#007AFF"
+      mush-slider-track-color: "#D1D1D6"
+      mush-slider-background-color: "#F9F9FB"
+
+      # Mushroom / Chips
+      mush-chip-background: "#FFFFFF"
+      mush-chip-active-background: "#F9F9FB"
+      mush-chip-color: "#1C1C1E"
+      mush-chip-icon-color: "#007AFF"
+      mush-chip-active-color: "#007AFF"
+      mush-chip-active-icon-color: "#007AFF"
+      mush-chip-border-color: "#C6C6C8"
+      mush-chip-border-radius: "999px"
+      mush-chip-font-size: "12px"
+
+      # Mushroom / RGB-Hilfswerte
+      mush-rgb-primary-text-color: "0, 0, 0"
+      mush-rgb-secondary-text-color: "60, 60, 67"
+      mush-rgb-state-switch: "0, 122, 255"
+      mush-rgb-state-light: "0, 122, 255"
+      mush-rgb-state-cover: "0, 122, 255"
+      mush-rgb-state-entity: "0, 122, 255"
+      mush-rgb-state-fan: "0, 122, 255"
+      mush-rgb-state-media-player: "0, 122, 255"
+      mush-rgb-state-vacuum: "0, 122, 255"
+      mush-rgb-success: "52, 199, 89"
+      mush-rgb-warning: "255, 204, 0"
+      mush-rgb-danger: "255, 59, 48"
+      mush-rgb-disabled: "142, 142, 147"
+      mush-rgb-info: "0, 122, 255"
+
+      # UIX & Generator / Glaslook
+      hatg-glas-blur-klein: "8px"
+      hatg-glas-blur: "18px"
+      hatg-glas-blur-gross: "32px"
+      hatg-glas-saettigung: "150%"
+      hatg-glas-fuellung-leicht: "rgba(255, 255, 255, 0.12)"
+      hatg-glas-fuellung: "rgba(255, 255, 255, 0.2)"
+      hatg-glas-fuellung-stark: "rgba(255, 255, 255, 0.3)"
+      hatg-glas-rand: "rgba(255, 255, 255, 0.25)"
+      hatg-glas-rand-hell: "rgba(255, 255, 255, 0.5)"
+      hatg-glas-kante-hell: "rgba(255, 255, 255, 0.5)"
+      hatg-glas-kante-dunkel: "rgba(0, 0, 0, 0.12)"
+      hatg-glas-schatten: "0 8px 26px -12px rgba(0, 0, 0, 0.28)"
+      hatg-glas-schatten-hoch: "0 20px 50px -20px rgba(0, 0, 0, 0.35)"
+      hatg-glas-reflex: "linear-gradient(135deg, rgba(255,255,255,0.42) 0%, rgba(255,255,255,0.08) 38%, rgba(255,255,255,0) 62%)"
+
+      # UIX & Generator / Generator & Eigenes
+      card-backdrop-blur: "none"
+
+    dark:
+      # Grundfarben & Text / Grundfarben
+      accent-color: "#0A84FF"
+      primary-color: "#0A84FF"
+      dark-primary-color: "#075AAD"
+      light-primary-color: "#BADDFF"
+      disabled-color: "#464646"
+      error-color: "#FF453A"
+      warning-color: "#FFD60A"
+      success-color: "#30D158"
+      info-color: "#0A84FF"
+      red-color: "#FF453A"
+      green-color: "#30D158"
+      blue-color: "#0A84FF"
+      orange-color: "#FF9F0A"
+      yellow-color: "#FFD60A"
+      purple-color: "#BF5AF2"
+      pink-color: "#FF375F"
+      cyan-color: "#32ADE6"
+      grey-color: "#C7C7CC"
+      deep-purple-color: "#6E41AB"
+      indigo-color: "#3F51B5"
+      light-blue-color: "#03A9F4"
+      teal-color: "#009688"
+      light-green-color: "#8BC34A"
+      lime-color: "#CDDC39"
+      amber-color: "#FFC107"
+      deep-orange-color: "#FF6F22"
+      brown-color: "#795548"
+      light-grey-color: "#BDBDBD"
+      dark-grey-color: "#606060"
+      blue-grey-color: "#607D8B"
+      black-color: "#000000"
+      white-color: "#FFFFFF"
+      printer-cyan-color: "#33C3FF"
+      printer-magenta-color: "#FF3EA8"
+      printer-yellow-color: "#FFE14D"
+
+      # Grundfarben & Text / Text
+      primary-text-color: "#FFFFFF"
+      secondary-text-color: "rgba(235, 235, 245, 0.6)"
+      text-primary-color: "#000000"
+      disabled-text-color: "#636366"
+
+      # HA-Grundgerüst / Card
+      card-background-color: "#1C1C1E"
+      ha-card-background: "#1C1C1E"
+      ha-card-background-color: "#1C1C1E"
+      wa-color-surface-raised: "#1C1C1E"
+      ha-card-border-color: "rgba(225, 225, 225, 0.12)"
+      ha-card-border-radius: "14px"
+      ha-card-border-width: "1px"
+      ha-card-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
+      table-row-background-color: "#2C2C2E"
+      table-row-alternative-background-color: "#1C1C1E"
+
+      # HA-Grundgerüst / Hintergründe
+      primary-background-color: "#000000"
+      background-color: "#000000"
+      lovelace-background: "linear-gradient(160deg, #10202E 0%, #1E1633 48%, #2A1520 100%)"
+      secondary-background-color: "#1C1C1E"
+      glass-effect-style: "off"
+      background-style: "off"
+
+      # HA-Grundgerüst / Theme
+      mdc-theme-background: "#000000"
+      mdc-theme-surface: "#1C1C1E"
+      mdc-theme-on-surface: "#FFFFFF"
+
+      # HA-Grundgerüst / Header
+      app-header-background-color: "#1C1C1E"
+      app-header-text-color: "#FFFFFF"
+      app-header-backdrop-filter: "blur(8px) saturate(1.1)"
+      app-header-edit-background-color: "rgba(30, 33, 54, 0.8)"
+      app-header-edit-text-color: "rgba(234, 235, 238, 0.98)"
+      app-theme-color: "rgb(0, 0, 0)"
+      app-toolbar-background-color: "#1C1C1E"
+      toolbar-background-color: "#1C1C1E"
+      app-toolbar-text-color: "#F2F2F7"
+      toolbar-text-color: "#F2F2F7"
+
+      # HA-Grundgerüst / App Drawer
+      app-drawer-background-color: "#1C1C1E"
+      app-drawer-text-color: "#C7C7CC"
+      app-drawer-icon-color: "#ff9300"
+
+      # HA-Grundgerüst / Sidebar
+      sidebar-background-color: "#1C1C1E"
+      sidebar-selected-background-color: "#d5d5d5"
+      sidebar-text-color: "#FFFFFF"
+      sidebar-icon-color: "rgba(255, 255, 255, 0.6)"
+      sidebar-selected-text-color: "#feffff"
+      sidebar-selected-icon-color: "#ff9300"
+
+      # HA-Grundgerüst / Status, Icons & Entitäten
+      state-icon-color: "#ff9300"
+      state-icon-active-color: "#0A84FF"
+      state-icon-unavailable-color: "#929292"
+      state-active-color: "#ff9300"
+      state-inactive-color: "#929292"
+      state-unavailable-color: "#929292"
+      state-on-color: "#30D158"
+      state-off-color: "#636366"
+      state-light-color: "#ff9300"
+      state-light-active-color: "#ff9300"
+      state-light-on-color: "#ff9300"
+      state-switch-color: "#0A84FF"
+      state-switch-active-color: "#0A84FF"
+      state-switch-on-color: "#0A84FF"
+      state-climate-cool-color: "#0A84FF"
+      state-climate-heat-color: "#ff2600"
+      state-climate-auto-color: "#ffd478"
+      state-climate-dry-color: "#0A84FF"
+      state-climate-fan_only-color: "#32ADE6"
+      state-climate-heat_cool-color: "#FFC107"
+      state-cover-color: "#0A84FF"
+      state-cover-active-color: "#929000"
+      state-cover-open-color: "#929000"
+      state-cover-closed-color: "#ff2600"
+      state-fan-color: "#0A84FF"
+      state-fan-active-color: "#0A84FF"
+      state-media_player-color: "#0A84FF"
+      state-media_player-active-color: "#0A84FF"
+      state-vacuum-color: "#0A84FF"
+      state-vacuum-active-color: "#0A84FF"
+      state-vacuum-error-color: "#FF453A"
+      state-lock-locked-color: "#ff2600"
+      state-lock-locking-color: "#ff2600"
+      state-lock-unlocked-color: "#929000"
+      state-lock-unlocking-color: "#929000"
+      state-lock-jammed-color: "#FF453A"
+      state-lock-open-color: "#FF453A"
+      state-lock-opening-color: "#0A84FF"
+      state-alarm_control_panel-triggered-color: "#ff2600"
+      state-alarm-triggered-color: "#ff2600"
+      state-alarm_control_panel-armed_home-color: "#ffd478"
+      state-alarm_control_panel-armed_away-color: "#ffd478"
+      state-alarm-armed-color: "#ffd478"
+      state-alarm_control_panel-disarmed-color: "#ff9300"
+      state-alarm-disarmed-color: "#ff9300"
+      state-alarm_control_panel-armed_custom_bypass-color: "#30D158"
+      state-alarm_control_panel-armed_night-color: "#30D158"
+      state-alarm_control_panel-armed_vacation-color: "#30D158"
+      state-alarm_control_panel-arming-color: "#0A84FF"
+      state-alarm_control_panel-disarming-color: "#0A84FF"
+      state-alarm_control_panel-pending-color: "#0A84FF"
+      state-alert-off-color: "#0A84FF"
+      state-alert-on-color: "#FF453A"
+      state-binary_sensor-active-color: "#FFC107"
+      state-binary_sensor-battery-on-color: "#FF453A"
+      state-binary_sensor-carbon_monoxide-on-color: "#FF453A"
+      state-binary_sensor-gas-on-color: "#FF453A"
+      state-binary_sensor-heat-on-color: "#FF453A"
+      state-binary_sensor-lock-on-color: "#FF453A"
+      state-binary_sensor-moisture-on-color: "#FF453A"
+      state-binary_sensor-problem-on-color: "#FF453A"
+      state-binary_sensor-safety-on-color: "#FF453A"
+      state-binary_sensor-smoke-on-color: "#FF453A"
+      state-binary_sensor-sound-on-color: "#FF453A"
+      state-binary_sensor-tamper-on-color: "#FF453A"
+      state-device_tracker-active-color: "#0A84FF"
+      state-device_tracker-home-color: "#30D158"
+      state-humidifier-on-color: "#0A84FF"
+      state-lawn_mower-active-color: "#009688"
+      state-lawn_mower-error-color: "#FF453A"
+      state-person-active-color: "#0A84FF"
+      state-person-home-color: "#30D158"
+      state-plant-active-color: "#FF453A"
+      state-siren-active-color: "#FF453A"
+      state-sun-above_horizon-color: "#FFC107"
+      state-sun-below_horizon-color: "#3F51B5"
+      state-update-active-color: "#0A84FF"
+      state-valve-active-color: "#0A84FF"
+      state-water_heater-eco-color: "#30D158"
+      state-water_heater-electric-color: "#0A84FF"
+      state-water_heater-gas-color: "#0A84FF"
+      state-water_heater-heat_pump-color: "#0A84FF"
+      state-water_heater-high_demand-color: "#FF6F22"
+      state-water_heater-performance-color: "#FF6F22"
+      state-weather-clear_night-color: "#6E41AB"
+      state-weather-cloudy-color: "#BDBDBD"
+      state-weather-exceptional-color: "#FF453A"
+      state-weather-fog-color: "#C7C7CC"
+      state-weather-hail-color: "#32ADE6"
+      state-weather-lightning_rainy-color: "#CDDC39"
+      state-weather-lightning-color: "#FFD60A"
+      state-weather-partlycloudy-color: "#607D8B"
+      state-weather-pouring-color: "#3F51B5"
+      state-weather-rainy-color: "#0A84FF"
+      state-weather-snowy_rainy-color: "#03A9F4"
+      state-weather-snowy-color: "#C0E0FF"
+      state-weather-sunny-color: "#FFC107"
+      state-weather-windy_variant-color: "#30D158"
+      state-weather-windy-color: "#30D158"
+      state-battery-low-color: "#ff2600"
+      state-sensor-battery-high-color: "#30D158"
+      state-sensor-battery-medium-color: "#0A84FF"
+      state-sensor-battery-low-color: "#FF453A"
+      label-badge-background-color: "#1C1C1E"
+      label-badge-text-color: "rgba(255, 255, 255, 0.8)"
+      label-badge-red: "#FF453A"
+      label-badge-blue: "#0A84FF"
+      label-badge-green: "#30D158"
+      label-badge-yellow: "#FFD60A"
+      state-battery-alert-color: "#ff2600"
+
+      # HA-Grundgerüst / Schalter, Toggle & Slider
+      ha-control-switch-color: "#ff9300"
+      ha-control-switch-checked-color: "#0A84FF"
+      ha-control-switch-unchecked-color: "#3A3A3C"
+      ha-switch-background-color: "#3A3A3C"
+      ha-switch-background-color-hover: "#3A3A3C"
+      ha-switch-border-color: "rgba(0,0,0,0)"
+      ha-switch-thumb-background-color: "#636366"
+      ha-switch-thumb-background-color-hover: "#636366"
+      ha-switch-thumb-border-color: "rgba(0,0,0,0)"
+      ha-switch-thumb-border-color-hover: "rgba(0,0,0,0)"
+      ha-switch-checked-background-color: "#BADDFF"
+      ha-switch-checked-background-color-hover: "#BADDFF"
+      ha-switch-checked-border-color: "rgba(0,0,0,0)"
+      ha-switch-checked-thumb-background-color: "#0A84FF"
+      ha-switch-checked-thumb-background-color-hover: "#0A84FF"
+      ha-switch-checked-thumb-border-color: "rgba(0,0,0,0)"
+      ha-switch-checked-thumb-border-color-hover: "rgba(0,0,0,0)"
+      control-slider-color: "#ff9300"
+      slider-color: "#0A84FF"
+      slider-secondary-color: "#1F3A5F"
+      slider-track-color: "#48484A"
+
+      # HA-Grundgerüst / Buttons & Chips
+      control-button-background-color: "#1C1C1E"
+      control-button-icon-color: "#0A84FF"
+      control-button-border-radius: "10px"
+
+      # HA-Grundgerüst / Eingaben & Auswahlfelder
+      input-background-color: "#1C1C1E"
+      input-fill-color: "#1C1C1E"
+      input-disabled-fill-color: "rgba(44, 44, 46, 0.50)"
+      input-disabled-ink-color: "rgba(255, 255, 255, 0.37)"
+      input-disabled-label-ink-color: "#636366"
+      input-disabled-line-color: "rgba(255, 255, 255, 0.06)"
+      input-dropdown-icon-color: "rgba(255, 255, 255, 0.54)"
+      input-hover-line-color: "rgba(255, 255, 255, 0.87)"
+      input-idle-line-color: "rgba(255, 255, 255, 0.42)"
+      input-ink-color: "rgba(255, 255, 255, 0.87)"
+      input-label-ink-color: "rgba(255, 255, 255, 0.6)"
+      input-outlined-disabled-border-color: "rgba(255, 255, 255, 0.06)"
+      mdc-select-idle-line-color: "#38383A"
+      mdc-select-dropdown-icon-color: "#C7C7CC"
+      mdc-select-hover-line-color: "#38383A"
+      mdc-text-field-idle-line-color: "#38383A"
+      mdc-text-field-hover-line-color: "#38383A"
+      ha-color-form-background: "#2C2C2E"
+      ha-color-form-background-hover: "#2C2C2E"
+      ha-color-form-background-disabled: "rgba(44, 44, 46, 0.50)"
+
+      # HA-Grundgerüst / Material, Paper & MDC
+      mdc-theme-primary: "#0A84FF"
+      mdc-theme-secondary: "#0A84FF"
+      mdc-theme-on-primary: "#000000"
+      md-sys-color-primary: "#0A84FF"
+      md-sys-color-on-primary: "#0A84FF"
+      md-sys-color-primary-container: "#1F3A5F"
+      md-sys-color-on-primary-container: "#000000"
+      md-sys-color-on-surface: "#feffff"
+      ha-on-surface-color: "#feffff"
+      md-radio-selected-icon-color: "#0A84FF"
+      mdc-radio-unchecked-color: "#C7C7CC"
+
+      # HA-Grundgerüst / HA 2026 / Web Awesome
+      ha-color-fill-primary-normal-resting: "rgba(10, 132, 255, 0.15)"
+      ha-color-fill-primary-normal-hover: "rgba(10, 132, 255, 0.25)"
+      ha-color-fill-primary-quiet-resting: "rgba(10, 132, 255, 0.08)"
+      ha-color-fill-primary-quiet-hover: "rgba(10, 132, 255, 0.15)"
+      ha-color-fill-disabled-normal-resting: "rgba(99, 99, 102, 0.08)"
+      ha-color-on-disabled-normal: "rgba(199, 199, 204, 0.50)"
+      ha-color-fill-disabled-loud-resting: "rgba(99, 99, 102, 0.22)"
+      ha-color-on-disabled-loud: "rgba(199, 199, 204, 0.55)"
+      ha-color-on-disabled-quiet: "rgba(199, 199, 204, 0.50)"
+      ha-color-fill-neutral-quiet-resting: "#1C1C1E"
+      ha-color-fill-neutral-quiet-hover: "#2C2C2E"
+      ha-color-fill-neutral-quiet-active: "#1C1C1E"
+      ha-color-fill-neutral-normal-resting: "#2C2C2E"
+      ha-color-fill-neutral-normal-hover: "#1C1C1E"
+      ha-color-fill-neutral-normal-active: "#2C2C2E"
+      ha-color-fill-danger-normal-resting: "rgba(255, 69, 58, 0.15)"
+      ha-color-fill-danger-normal-hover: "rgba(255, 69, 58, 0.22)"
+      ha-color-fill-danger-normal-active: "rgba(255, 69, 58, 0.28)"
+      ha-color-on-danger-normal: "#F2F2F7"
+      ha-color-fill-warning-normal-resting: "rgba(255, 214, 10, 0.15)"
+      ha-color-fill-warning-normal-hover: "rgba(255, 214, 10, 0.22)"
+      ha-color-fill-warning-normal-active: "rgba(255, 214, 10, 0.28)"
+      ha-color-on-warning-normal: "#F2F2F7"
+      ha-tooltip-background-color: "#2C2C2E"
+      ha-tooltip-text-color: "#F2F2F7"
+
+      # HA-Grundgerüst / Abstände, Rundungen, Schatten & Rahmen
+      border-color: "rgba(225, 225, 225, 0.12)"
+      border-radius: "14px"
+      box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
+      divider-color: "rgba(225, 225, 225, 0.12)"
+      outline-color: "rgba(225, 225, 225, 0.12)"
+      outline-variant-color: "#38383A"
+      outline-hover-color: "rgba(225, 225, 225, 0.24)"
+      ha-line-height-condensed: "1.25"
+      ha-line-height-expanded: "1.35"
+      ha-line-height-normal: "1.5"
+      ha-list-gap: "0px"
+      ha-list-padding: "0px"
+      ha-list-item-focus-radius: "12px"
+      ha-list-item-focus-background: "rgba(127, 127, 127, 0.12)"
+      ha-border-radius-circle: "50%"
+
+      # HA-Grundgerüst / Schrift & Typografie
+      primary-font-family: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', sans-serif"
+      ha-font-family-body: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', sans-serif"
+      ha-font-family-heading: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', sans-serif"
+      ha-font-family-longform: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', sans-serif"
+      ha-font-family-code: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', sans-serif"
+      mdc-typography-font-family: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', sans-serif"
+      ha-font-size-scale: "1"
+      ha-font-size-2xs: "8px"
+      ha-font-size-xs: "8px"
+      ha-font-size-s: "12px"
+      ha-font-size-m: "14px"
+      ha-font-size-l: "16px"
+      ha-font-size-xl: "18px"
+      ha-font-size-2xl: "20px"
+      ha-font-size-3xl: "22px"
+      ha-font-size-4xl: "24px"
+      ha-font-weight-light: "300"
+      ha-font-weight-normal: "400"
+      ha-font-weight-body: "400"
+      ha-font-weight-medium: "500"
+      ha-font-weight-heading: "500"
+      ha-font-weight-action: "500"
+      ha-font-weight-bold: "700"
+
+      # HA-Grundgerüst / RGB-Hilfswerte
+      rgb-primary-color: "10, 132, 255"
+      rgb-accent-color: "10, 132, 255"
+      rgb-primary-text-color: "255, 255, 255"
+      rgb-secondary-text-color: "235, 235, 245"
+      rgb-card-background-color: "28, 28, 30"
+      rgb-primary-background-color: "0, 0, 0"
+      rgb-blue-color: "10, 132, 255"
+      rgb-orange-color: "255, 159, 10"
+      rgb-state-switch-color: "255, 147, 0"
+      rgb-state-light-color: "10, 132, 255"
+      rgb-state-cover-color: "10, 132, 255"
+      rgb-state-fan-color: "10, 132, 255"
+      rgb-state-media_player-color: "10, 132, 255"
+
+      # HA-Grundgerüst / Graphen & Energie
+      graph-color-1: "#0A84FF"
+      graph-color-2: "#64D2FF"
+      graph-color-3: "#30D158"
+      graph-color-4: "#BF5AF2"
+      graph-color-5: "#FF453A"
+      graph-color-6: "#32ADE6"
+      graph-color-7: "#64D2FF"
+      graph-color-8: "#FF375F"
+      graph-color-9: "#FF9F0A"
+      graph-color-10: "#5E5CE6"
+      graph-color-11: "#A3D977"
+      graph-color-12: "#FFD60A"
+      graph-color-13: "#BF5AF2"
+      graph-color-14: "#A2845E"
+      color-1: "#0A84FF"
+      color-2: "#64D2FF"
+      color-3: "#30D158"
+      color-4: "#BF5AF2"
+      color-5: "#FF453A"
+      color-6: "#32ADE6"
+      color-7: "#64D2FF"
+      color-8: "#FF375F"
+      color-9: "#FF9F0A"
+      color-10: "#5E5CE6"
+      color-11: "#A3D977"
+      color-12: "#FFD60A"
+      color-13: "#BF5AF2"
+      color-14: "#A2845E"
+      energy-grid-consumption-color: "#0A84FF"
+      energy-grid-return-color: "#BF5AF2"
+      energy-solar-color: "#FF9F0A"
+      energy-non-fossil-color: "#30D158"
+      energy-battery-out-color: "#64D2FF"
+      energy-battery-in-color: "#BF5AF2"
+      energy-gas-color: "#FF453A"
+      energy-water-color: "#32ADE6"
+
+      # Bubble Card / Karten & Hintergründe
+      bubble-card-background-color: "#1C1C1E"
+      bubble-main-buttons-background-color: "#1C1C1E"
+      bubble-secondary-background-color: "#1C1C1E"
+      bubble-icon-background-color: "#2C2C2E"
+      bubble-icon-color: "#0A84FF"
+      bubble-name-color: "#FFFFFF"
+      bubble-state-color: "rgba(235, 235, 245, 0.6)"
+      bubble-accent-color: "#0A84FF"
+      bubble-active-color: "#0A84FF"
+      bubble-toggle-color: "#0A84FF"
+      bubble-line-background-color: "rgba(225, 225, 225, 0.12)"
+      bubble-border: "1px solid #38383A"
+      bubble-border-color: "rgba(225, 225, 225, 0.12)"
+      bubble-border-radius: "14px"
+      bubble-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
+      bubble-card-border-radius: "14px"
+      bubble-icon-border-radius: "999px"
+
+      # Bubble Card / Select (Auswahlkarte)
+      bubble-select-main-background-color: "#1C1C1E"
+      bubble-select-background-color: "#1C1C1E"
+      bubble-select-border-radius: "14px"
+      bubble-select-list-background-color: "#1C1C1E"
+      bubble-select-list-border-radius: "14px"
+      bubble-select-list-width: "220px"
+      bubble-select-list-item-accent-color: "#0A84FF"
+      bubble-select-arrow-background-color: "#1C1C1E"
+      bubble-select-button-border-radius: "10px"
+      bubble-select-icon-background-color: "#2C2C2E"
+      bubble-select-icon-border-radius: "999px"
+      bubble-select-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
+
+      # Bubble Card / Buttons
+      bubble-button-background-color: "#1C1C1E"
+      bubble-button-active-background-color: "#0A84FF"
+      bubble-button-icon-color: "#0A84FF"
+      bubble-button-active-icon-color: "#000000"
+      bubble-button-text-color: "#feffff"
+      bubble-button-active-text-color: "#000000"
+      bubble-button-border-radius: "14px"
+      bubble-button-card-background-color: "#1C1C1E"
+      bubble-button-main-background-color: "#1C1C1E"
+      bubble-button-active-color: "#0A84FF"
+      bubble-button-icon-border-radius: "999px"
+      bubble-button-icon-background-color: "#2C2C2E"
+      bubble-light-white-color: "#FFFFFF"
+      bubble-light-color: "#FFC107"
+      bubble-button-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
+
+      # Bubble Card / Sub-Buttons
+      bubble-sub-button-background-color: "#1C1C1E"
+      bubble-sub-button-active-background-color: "#0A84FF"
+      bubble-sub-button-icon-color: "#0A84FF"
+      bubble-sub-button-active-icon-color: "#000000"
+      bubble-sub-button-text-color: "#C7C7CC"
+      bubble-sub-button-active-text-color: "#000000"
+      bubble-sub-button-border-radius: "10px"
+      bubble-sub-button-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
+      bubble-sub-buttons-main-background-color: "#1C1C1E"
+      bubble-sub-slider-border-radius: "14px"
+      bubble-sub-slider-background-color: "#1C1C1E"
+      bubble-sub-slider-height: "48px"
+      bubble-sub-button-dark-text-color: "#1C1C1E"
+      bubble-footer-width: "320px"
+      bubble-footer-bottom: "16px"
+      bubble-footer-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
+
+      # Bubble Card / Separator
+      bubble-separator-background-color: "#1C1C1E"
+      bubble-separator-icon-background-color: "#2C2C2E"
+      bubble-separator-icon-color: "#0A84FF"
+      bubble-separator-line-color: "rgba(225, 225, 225, 0.12)"
+      bubble-separator-name-color: "#feffff"
+      bubble-separator-text-color: "#feffff"
+      bubble-separator-border-radius: "14px"
+
+      # Bubble Card / Popup & Dialog
+      bubble-pop-up-background-color: "#1C1C1E"
+      bubble-pop-up-backdrop-filter: "blur(18px)"
+      bubble-pop-up-border-radius: "20px"
+      bubble-pop-up-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
+      dialog-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
+      more-info-header-background: "#2C2C2E"
+      more-info-header-color: "#F2F2F7"
+      popup-border-radius: "20px"
+      ha-dialog-scrim-backdrop-filter: "blur(10px)"
+      ha-dialog-surface-background: "rgba(28, 28, 30, 0.92)"
+      mdc-dialog-scrim-color: "rgba(0, 0, 0, 0.60)"
+      bubble-pop-up-main-background-color: "#1C1C1E"
+      bubble-backdrop-background-color: "rgba(0, 0, 0, 0.55)"
+
+      # Bubble Card / Horizontal Buttons Stack
+      bubble-horizontal-buttons-stack-background-color: "#1C1C1E"
+      bubble-horizontal-buttons-stack-button-background-color: "#1C1C1E"
+      bubble-horizontal-buttons-stack-button-icon-color: "#C7C7CC"
+      bubble-horizontal-buttons-stack-button-text-color: "#F2F2F7"
+      bubble-horizontal-buttons-stack-border-radius: "14px"
+      bubble-horizontal-buttons-stack-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
+
+      # Bubble Card / Climate
+      bubble-climate-background-color: "#1C1C1E"
+      bubble-climate-main-background-color: "#1C1C1E"
+      bubble-climate-button-background-color: "#1C1C1E"
+      bubble-climate-button-icon-color: "#C7C7CC"
+      bubble-climate-border-radius: "14px"
+      bubble-climate-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
+      bubble-climate-icon-border-radius: "999px"
+      bubble-state-climate-fan-only-color: "#64D2FF"
+      bubble-state-climate-dry-color: "#FF9F0A"
+      bubble-state-climate-cool-color: "#0A84FF"
+      bubble-state-climate-heat-color: "#FF453A"
+      bubble-state-climate-auto-color: "#30D158"
+      bubble-state-climate-heat-cool-color: "#BF5AF2"
+      bubble-climate-accent-color: "#0A84FF"
+
+      # Bubble Card / Cover
+      bubble-cover-background-color: "#1C1C1E"
+      bubble-cover-main-background-color: "#1C1C1E"
+      bubble-cover-button-background-color: "#1C1C1E"
+      bubble-cover-button-icon-color: "#C7C7CC"
+      bubble-cover-border-radius: "14px"
+      bubble-cover-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
+      bubble-cover-icon-border-radius: "999px"
+      bubble-cover-icon-background-color: "#2C2C2E"
+
+      # Bubble Card / Media Player
+      bubble-media-player-background-color: "#1C1C1E"
+      bubble-media-player-main-background-color: "#1C1C1E"
+      bubble-media-player-button-background-color: "#1C1C1E"
+      bubble-media-player-button-icon-color: "#C7C7CC"
+      bubble-media-player-border-radius: "14px"
+      bubble-media-player-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
+      bubble-media-player-buttons-border-radius: "999px"
+      bubble-media-player-slider-background-color: "#1C1C1E"
+      bubble-media-player-icon-border-radius: "999px"
+      bubble-media-player-icon-background-color: "#2C2C2E"
+
+      # Bubble Card / Calendar
+      bubble-calendar-main-background-color: "#1C1C1E"
+      bubble-calendar-height: "56px"
+      bubble-calendar-mask-size: "16px"
+      bubble-calendar-border-radius: "14px"
+      bubble-event-background-color: "#1C1C1E"
+      bubble-event-background-image: "none"
+
+      # Mushroom / Karten & Hintergründe
+      mush-card-background: "#1C1C1E"
+      mush-control-background-color: "#1C1C1E"
+      mush-card-primary-color: "#FFFFFF"
+      mush-card-secondary-color: "rgba(235, 235, 245, 0.6)"
+      mush-title-color: "#FFFFFF"
+      mush-subtitle-color: "rgba(235, 235, 245, 0.6)"
+
+      # Mushroom / Icons
+      mush-icon-background-color: "#2C2C2E"
+      mush-icon-color: "#C7C7CC"
+      mush-icon-active-color: "#0A84FF"
+
+      # Mushroom / Toggle
+      mush-toggle-color: "#0A84FF"
+      mush-toggle-background-color: "#48484A"
+
+      # Mushroom / Slider
+      mush-slider-color: "#0A84FF"
+      mush-slider-track-color: "#48484A"
+      mush-slider-background-color: "#2C2C2E"
+
+      # Mushroom / Chips
+      mush-chip-background: "#2C2C2E"
+      mush-chip-active-background: "#1F3A5F"
+      mush-chip-color: "#F2F2F7"
+      mush-chip-icon-color: "#0A84FF"
+      mush-chip-active-color: "#0A84FF"
+      mush-chip-active-icon-color: "#0A84FF"
+      mush-chip-border-color: "#38383A"
+      mush-chip-border-radius: "999px"
+      mush-chip-font-size: "12px"
+
+      # Mushroom / RGB-Hilfswerte
+      mush-rgb-primary-text-color: "255, 255, 255"
+      mush-rgb-secondary-text-color: "235, 235, 245"
+      mush-rgb-state-switch: "255, 147, 0"
+      mush-rgb-state-light: "10, 132, 255"
+      mush-rgb-state-cover: "10, 132, 255"
+      mush-rgb-state-entity: "10, 132, 255"
+      mush-rgb-state-fan: "10, 132, 255"
+      mush-rgb-state-media-player: "10, 132, 255"
+      mush-rgb-state-vacuum: "10, 132, 255"
+      mush-rgb-success: "48, 209, 88"
+      mush-rgb-warning: "255, 214, 10"
+      mush-rgb-danger: "255, 69, 58"
+      mush-rgb-disabled: "99, 99, 102"
+      mush-rgb-info: "10, 132, 255"
+
+      # UIX & Generator / Glaslook
+      hatg-glas-blur-klein: "8px"
+      hatg-glas-blur: "18px"
+      hatg-glas-blur-gross: "32px"
+      hatg-glas-saettigung: "150%"
+      hatg-glas-fuellung-leicht: "rgba(255, 255, 255, 0.06)"
+      hatg-glas-fuellung: "rgba(255, 255, 255, 0.1)"
+      hatg-glas-fuellung-stark: "rgba(255, 255, 255, 0.16)"
+      hatg-glas-rand: "rgba(255, 255, 255, 0.14)"
+      hatg-glas-rand-hell: "rgba(255, 255, 255, 0.28)"
+      hatg-glas-kante-hell: "rgba(255, 255, 255, 0.28)"
+      hatg-glas-kante-dunkel: "rgba(0, 0, 0, 0.35)"
+      hatg-glas-schatten: "0 8px 28px -12px rgba(0, 0, 0, 0.7)"
+      hatg-glas-schatten-hoch: "0 22px 55px -22px rgba(0, 0, 0, 0.8)"
+      hatg-glas-reflex: "linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)"
+
+      # UIX & Generator / Generator & Eigenes
+      card-backdrop-blur: "none"
