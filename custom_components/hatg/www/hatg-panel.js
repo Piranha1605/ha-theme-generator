@@ -259,6 +259,8 @@ const HATG_TEXTE = {
   "Die runden Anzeigen oberhalb der Karten. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "The rounded indicators above the cards. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
   "Überschriften-Badges in Glas": "Heading badges in glass",
   "Die kleinen Anzeigen in Überschriften-Karten. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "The small indicators inside heading cards. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
+  "Kopfleiste des Dashboards in Glas": "Dashboard top bar in glass",
+  "Die Leiste über einem Dashboard heißt im Frontend .header und sitzt in hui-root - das Stilziel für die Kopfleiste erreicht sie nicht. Diese Vorlage setzt am Grundgerüst an und legt Weichzeichnung, Reflex und Kanten darauf. Die Farbe selbst kommt aus dem Theme-Feld app-header-background-color; steht dort ein deckender Wert, hilft der Knopf \"Auf Glas setzen\" über der Vorlagenliste.": "The bar above a dashboard is called .header and lives in hui-root - the top bar style target does not reach it. This preset works from the dashboard root and puts blur, sheen and edges on it. The colour itself comes from the theme field app-header-background-color; if that holds an opaque value, the button \"Set to glass\" above the preset list helps.",
   "Bubble Card in Glas": "Bubble Card in glass",
   "Bubble Card zeichnet seine Flächen selbst und liest dafür eigene Variablen - ohne diese Vorlage bleiben Bubble-Karten deckend, auch wenn die Karte darunter längst Glas ist. Setzt die Variablen auf die gemeinsamen Glaswerte und legt Weichzeichnung, Reflex und Kanten auf Karten, Icons, Sub-Buttons sowie Climate-, Cover-, Media-Player-, Select- und Kalender-Flächen. Die Variablennamen stammen aus Bubble Cards eigenem CSS und wurden in einer laufenden Instanz geprüft.": "Bubble Card paints its own surfaces and reads its own variables for them - without this preset, Bubble cards stay opaque even when the card beneath is already glass. It sets those variables to the shared glass values and puts blur, sheen and edges on cards, icons, sub-buttons and the climate, cover, media player, select and calendar surfaces. The variable names come from Bubble Card's own CSS and were verified in a running instance.",
   "Glance-Karten in Glas": "Glance cards in glass",
@@ -1549,6 +1551,15 @@ const HATG_VORLAGEN_ZIEL_ICONS = {
 };
 // Vorlagen koennen zu einem Paket gehoeren und gemeinsam geschaltet werden.
 const HATG_PAKETE = { glas: { label: "Glas-Paket", labelEn: "Glass package" } };
+// Diese Felder faerben Flaechen, die kein UIX-Stilziel zuverlaessig erreicht -
+// die Kopfleiste eines Dashboards etwa holt ihre Farbe immer aus dem Theme.
+// Steht dort ein deckender Wert, ist jede Glas-Vorlage wirkungslos.
+const HATG_GLAS_FLAECHENFELDER = [
+  { key: "card-background-color", quelle: "hatg-glas-fuellung" },
+  { key: "ha-card-background", quelle: "hatg-glas-fuellung" },
+  { key: "app-header-background-color", quelle: "hatg-glas-fuellung" },
+  { key: "sidebar-background-color", quelle: "hatg-glas-fuellung" },
+];
 function hatgVorlagenPaket(tpl) {
   const paket = tpl && tpl.paket;
   return paket && HATG_PAKETE[paket] ? paket : null;
@@ -1823,6 +1834,23 @@ ha-badge {
     inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
     inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
     var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+}`,
+  },
+  {
+    id: "glas-dashboard-kopfleiste",
+    paket: "glas",
+    label: "Kopfleiste des Dashboards in Glas",
+    desc: "Die Leiste über einem Dashboard heißt im Frontend .header und sitzt in hui-root - das Stilziel für die Kopfleiste erreicht sie nicht. Diese Vorlage setzt am Grundgerüst an und legt Weichzeichnung, Reflex und Kanten darauf. Die Farbe selbst kommt aus dem Theme-Feld app-header-background-color; steht dort ein deckender Wert, hilft der Knopf \"Auf Glas setzen\" über der Vorlagenliste.",
+    ziel: "uix-root",
+    css: `.header,
+.toolbar {
+  background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+  background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+  backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
+  -webkit-backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
+  box-shadow:
+    inset 0 -1px 0 var(--hatg-glas-rand, rgba(255, 255, 255, 0.55)),
+    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)) !important;
 }`,
   },
   {
@@ -4986,6 +5014,44 @@ class HATGPanel extends HTMLElement {
         : `${bezeichnung}: ${anzahl} Vorlagen aktiviert. Jetzt speichern und Themes neu laden.`
     );
   }
+  // Ist eine dieser Flaechenfarben noch deckend?
+  deckendeFlaechenfarben() {
+    const treffer = [];
+    HATG_GLAS_FLAECHENFELDER.forEach(({ key }) => {
+      const deckend = ["light", "dark"].some((mode) => {
+        const wert = String(this._state.values[mode][key] || "").trim();
+        if (!wert) return false;
+        const rgba = /^rgba\(\s*[\d.]+\s*,\s*[\d.]+\s*,\s*[\d.]+\s*,\s*([\d.]+)\s*\)$/.exec(wert);
+        if (rgba) return Number(rgba[1]) > 0.85;
+        return /^#([0-9A-Fa-f]{6}|[0-9A-Fa-f]{3})$/.test(wert);
+      });
+      if (deckend) treffer.push(key);
+    });
+    return treffer;
+  }
+  // Uebernimmt die Glasfuellung des jeweiligen Modus in diese Felder.
+  flaechenfarbenAufGlas() {
+    const currentMode = this._state.editorMode;
+    let anzahl = 0;
+    ["light", "dark"].forEach((mode) => {
+      this._state.editorMode = mode;
+      HATG_GLAS_FLAECHENFELDER.forEach(({ key, quelle }) => {
+        const glas = String(this._state.values[mode][quelle] || "").trim();
+        if (!glas) return;
+        if (String(this._state.values[mode][key] || "").trim() === glas) return;
+        this.commitField(key, glas);
+        if (mode === "light") anzahl++;
+      });
+    });
+    this._state.editorMode = currentMode;
+    this.render();
+    this.showToast(
+      anzahl
+        ? `${anzahl} Flächenfarben auf die Glasfüllung gesetzt. Jetzt speichern und Themes neu laden.`
+        : "Die Flächenfarben stehen bereits auf der Glasfüllung."
+    );
+  }
+
   paketStand(name) {
     const vorlagen = this.alleVorlagen().filter((t) => hatgVorlagenPaket(t) === name);
     const werte = this.currentValues();
@@ -5450,11 +5516,27 @@ uix:
           </button>
         </div>`
       : "";
+    const deckend = stand.aktiv ? this.deckendeFlaechenfarben() : [];
+    const farbHinweis = deckend.length
+      ? `
+        <div class="vorlage-veraltet-bar" data-roh>
+          <ha-icon icon="mdi:palette-outline"></ha-icon>
+          <span>${
+            this._sprache === "en"
+              ? `${deckend.length} surface colours are still opaque (${deckend.join(", ")}). Glass cannot show through them - the top bar of a dashboard always takes its colour from the theme.`
+              : `${deckend.length} Flächenfarben sind noch deckend (${deckend.join(", ")}). Dahinter kann kein Glas durchscheinen - die Kopfleiste eines Dashboards holt ihre Farbe immer aus dem Theme.`
+          }</span>
+          <button type="button" class="vorlage-veraltet-button" data-flaechenfarben-glas>
+            <ha-icon icon="mdi:auto-fix"></ha-icon><span>${this._sprache === "en" ? "Set to glass" : "Auf Glas setzen"}</span>
+          </button>
+        </div>`
+      : "";
     const leer = !cards && !eigeneKacheln;
     return `
       <section class="editor-section">
         <div class="section-heading">${kopf}</div>
         ${paketLeiste}
+        ${farbHinweis}
         ${hinweis}
         ${cards ? `<div class="plugin-grid vorlage-grid">${cards}</div>` : ""}
         ${nurEigene || !gruppe || eigene.length ? eigenerBlock : ""}
@@ -7706,6 +7788,7 @@ uix:
       });
       el.addEventListener("change", () => this.render());
     });
+    this.shadowRoot.querySelector("[data-flaechenfarben-glas]")?.addEventListener("click", () => this.flaechenfarbenAufGlas());
     this.shadowRoot.querySelectorAll("[data-schalte-paket]").forEach((el) => {
       el.addEventListener("click", () => this.schaltePaket(el.dataset.schaltePaket));
     });

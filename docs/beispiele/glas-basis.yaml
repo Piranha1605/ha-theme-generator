@@ -140,6 +140,18 @@ glas_basis:
     }
     /* HATG:UIX:glas-buttons-karten:END */
   uix-root: |
+    /* HATG:UIX:glas-dashboard-kopfleiste:START */
+    .header,
+    .toolbar {
+      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
+      -webkit-backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
+      box-shadow:
+        inset 0 -1px 0 var(--hatg-glas-rand, rgba(255, 255, 255, 0.55)),
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)) !important;
+    }
+    /* HATG:UIX:glas-dashboard-kopfleiste:END */
     /* HATG:UIX:glas-buttons-rahmen:START */
     ha-button,
     ha-icon-button,
@@ -711,16 +723,16 @@ glas_basis:
       disabled-text-color: "#8E8E93"
 
       # HA-Grundgerüst / Card
-      card-background-color: "#FFFFFF"
-      ha-card-background: "#FFFFFF"
-      ha-card-background-color: "#FFFFFF"
+      card-background-color: "rgba(255, 255, 255, 0.5)"
+      ha-card-background: "rgba(255, 255, 255, 0.5)"
+      ha-card-background-color: "rgba(255, 255, 255, 0.5)"
       wa-color-surface-raised: "#FFFFFF"
       ha-card-border-color: "rgba(0, 0, 0, 0.12)"
       ha-card-border-radius: "14px"
       ha-card-border-width: "1px"
       ha-card-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
       table-row-background-color: "#F9F9FB"
-      table-row-alternative-background-color: "#FFFFFF"
+      table-row-alternative-background-color: "rgba(255, 255, 255, 0.5)"
 
       # HA-Grundgerüst / Hintergründe
       primary-background-color: "#F2F2F7"
@@ -732,11 +744,11 @@ glas_basis:
 
       # HA-Grundgerüst / Theme
       mdc-theme-background: "#F2F2F7"
-      mdc-theme-surface: "#FFFFFF"
+      mdc-theme-surface: "rgba(255, 255, 255, 0.5)"
       mdc-theme-on-surface: "#000000"
 
       # HA-Grundgerüst / Header
-      app-header-background-color: "#FFFFFF"
+      app-header-background-color: "rgba(255, 255, 255, 0.5)"
       app-header-text-color: "#000000"
       app-header-backdrop-filter: "blur(8px) saturate(1.1)"
       app-header-edit-background-color: "rgba(30, 33, 54, 0.8)"
@@ -753,7 +765,7 @@ glas_basis:
       app-drawer-icon-color: "#007AFF"
 
       # HA-Grundgerüst / Sidebar
-      sidebar-background-color: "#FFFFFF"
+      sidebar-background-color: "rgba(255, 255, 255, 0.5)"
       sidebar-selected-background-color: "#E5F1FF"
       sidebar-text-color: "#000000"
       sidebar-icon-color: "rgba(0, 0, 0, 0.6)"
@@ -1058,8 +1070,8 @@ glas_basis:
       energy-water-color: "#5AC8FA"
 
       # Bubble Card / Karten & Hintergründe
-      bubble-card-background-color: "#FFFFFF"
-      bubble-main-buttons-background-color: "#FFFFFF"
+      bubble-card-background-color: "rgba(255, 255, 255, 0.5)"
+      bubble-main-buttons-background-color: "rgba(255, 255, 255, 0.5)"
       bubble-secondary-background-color: "#FFFFFF"
       bubble-icon-background-color: "#F9F9FB"
       bubble-icon-color: "#007AFF"
@@ -1077,29 +1089,29 @@ glas_basis:
       bubble-icon-border-radius: "999px"
 
       # Bubble Card / Select (Auswahlkarte)
-      bubble-select-main-background-color: "#FFFFFF"
-      bubble-select-background-color: "#FFFFFF"
+      bubble-select-main-background-color: "rgba(255, 255, 255, 0.5)"
+      bubble-select-background-color: "rgba(255, 255, 255, 0.5)"
       bubble-select-border-radius: "14px"
-      bubble-select-list-background-color: "#FFFFFF"
+      bubble-select-list-background-color: "rgba(255, 255, 255, 0.5)"
       bubble-select-list-border-radius: "14px"
       bubble-select-list-width: "220px"
       bubble-select-list-item-accent-color: "#007AFF"
-      bubble-select-arrow-background-color: "#FFFFFF"
+      bubble-select-arrow-background-color: "rgba(255, 255, 255, 0.5)"
       bubble-select-button-border-radius: "10px"
       bubble-select-icon-background-color: "#F9F9FB"
       bubble-select-icon-border-radius: "999px"
       bubble-select-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
 
       # Bubble Card / Buttons
-      bubble-button-background-color: "#FFFFFF"
+      bubble-button-background-color: "rgba(255, 255, 255, 0.5)"
       bubble-button-active-background-color: "#007AFF"
       bubble-button-icon-color: "#007AFF"
       bubble-button-active-icon-color: "#FFFFFF"
       bubble-button-text-color: "#1C1C1E"
       bubble-button-active-text-color: "#FFFFFF"
       bubble-button-border-radius: "14px"
-      bubble-button-card-background-color: "#FFFFFF"
-      bubble-button-main-background-color: "#FFFFFF"
+      bubble-button-card-background-color: "rgba(255, 255, 255, 0.5)"
+      bubble-button-main-background-color: "rgba(255, 255, 255, 0.5)"
       bubble-button-active-color: "#007AFF"
       bubble-button-icon-border-radius: "999px"
       bubble-button-icon-background-color: "#F9F9FB"
@@ -1108,7 +1120,7 @@ glas_basis:
       bubble-button-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
 
       # Bubble Card / Sub-Buttons
-      bubble-sub-button-background-color: "#FFFFFF"
+      bubble-sub-button-background-color: "rgba(255, 255, 255, 0.5)"
       bubble-sub-button-active-background-color: "#007AFF"
       bubble-sub-button-icon-color: "#007AFF"
       bubble-sub-button-active-icon-color: "#FFFFFF"
@@ -1116,9 +1128,9 @@ glas_basis:
       bubble-sub-button-active-text-color: "#FFFFFF"
       bubble-sub-button-border-radius: "10px"
       bubble-sub-button-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
-      bubble-sub-buttons-main-background-color: "#FFFFFF"
+      bubble-sub-buttons-main-background-color: "rgba(255, 255, 255, 0.5)"
       bubble-sub-slider-border-radius: "14px"
-      bubble-sub-slider-background-color: "#FFFFFF"
+      bubble-sub-slider-background-color: "rgba(255, 255, 255, 0.5)"
       bubble-sub-slider-height: "48px"
       bubble-sub-button-dark-text-color: "#1C1C1E"
       bubble-footer-width: "320px"
@@ -1126,7 +1138,7 @@ glas_basis:
       bubble-footer-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
 
       # Bubble Card / Separator
-      bubble-separator-background-color: "#FFFFFF"
+      bubble-separator-background-color: "rgba(255, 255, 255, 0.5)"
       bubble-separator-icon-background-color: "#F9F9FB"
       bubble-separator-icon-color: "#007AFF"
       bubble-separator-line-color: "rgba(0, 0, 0, 0.12)"
@@ -1135,7 +1147,7 @@ glas_basis:
       bubble-separator-border-radius: "14px"
 
       # Bubble Card / Popup & Dialog
-      bubble-pop-up-background-color: "#FFFFFF"
+      bubble-pop-up-background-color: "rgba(255, 255, 255, 0.5)"
       bubble-pop-up-backdrop-filter: "blur(18px)"
       bubble-pop-up-border-radius: "20px"
       bubble-pop-up-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
@@ -1146,21 +1158,21 @@ glas_basis:
       ha-dialog-scrim-backdrop-filter: "blur(10px)"
       ha-dialog-surface-background: "rgba(255, 255, 255, 0.92)"
       mdc-dialog-scrim-color: "rgba(0, 0, 0, 0.35)"
-      bubble-pop-up-main-background-color: "#FFFFFF"
+      bubble-pop-up-main-background-color: "rgba(255, 255, 255, 0.5)"
       bubble-backdrop-background-color: "rgba(0, 0, 0, 0.32)"
 
       # Bubble Card / Horizontal Buttons Stack
-      bubble-horizontal-buttons-stack-background-color: "#FFFFFF"
-      bubble-horizontal-buttons-stack-button-background-color: "#FFFFFF"
+      bubble-horizontal-buttons-stack-background-color: "rgba(255, 255, 255, 0.5)"
+      bubble-horizontal-buttons-stack-button-background-color: "rgba(255, 255, 255, 0.5)"
       bubble-horizontal-buttons-stack-button-icon-color: "#3C3C43"
       bubble-horizontal-buttons-stack-button-text-color: "#1C1C1E"
       bubble-horizontal-buttons-stack-border-radius: "14px"
       bubble-horizontal-buttons-stack-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
 
       # Bubble Card / Climate
-      bubble-climate-background-color: "#FFFFFF"
-      bubble-climate-main-background-color: "#FFFFFF"
-      bubble-climate-button-background-color: "#FFFFFF"
+      bubble-climate-background-color: "rgba(255, 255, 255, 0.5)"
+      bubble-climate-main-background-color: "rgba(255, 255, 255, 0.5)"
+      bubble-climate-button-background-color: "rgba(255, 255, 255, 0.5)"
       bubble-climate-button-icon-color: "#3C3C43"
       bubble-climate-border-radius: "14px"
       bubble-climate-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
@@ -1174,9 +1186,9 @@ glas_basis:
       bubble-climate-accent-color: "#007AFF"
 
       # Bubble Card / Cover
-      bubble-cover-background-color: "#FFFFFF"
-      bubble-cover-main-background-color: "#FFFFFF"
-      bubble-cover-button-background-color: "#FFFFFF"
+      bubble-cover-background-color: "rgba(255, 255, 255, 0.5)"
+      bubble-cover-main-background-color: "rgba(255, 255, 255, 0.5)"
+      bubble-cover-button-background-color: "rgba(255, 255, 255, 0.5)"
       bubble-cover-button-icon-color: "#3C3C43"
       bubble-cover-border-radius: "14px"
       bubble-cover-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
@@ -1184,27 +1196,27 @@ glas_basis:
       bubble-cover-icon-background-color: "#F9F9FB"
 
       # Bubble Card / Media Player
-      bubble-media-player-background-color: "#FFFFFF"
-      bubble-media-player-main-background-color: "#FFFFFF"
-      bubble-media-player-button-background-color: "#FFFFFF"
+      bubble-media-player-background-color: "rgba(255, 255, 255, 0.5)"
+      bubble-media-player-main-background-color: "rgba(255, 255, 255, 0.5)"
+      bubble-media-player-button-background-color: "rgba(255, 255, 255, 0.5)"
       bubble-media-player-button-icon-color: "#3C3C43"
       bubble-media-player-border-radius: "14px"
       bubble-media-player-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
       bubble-media-player-buttons-border-radius: "999px"
-      bubble-media-player-slider-background-color: "#FFFFFF"
+      bubble-media-player-slider-background-color: "rgba(255, 255, 255, 0.5)"
       bubble-media-player-icon-border-radius: "999px"
       bubble-media-player-icon-background-color: "#F9F9FB"
 
       # Bubble Card / Calendar
-      bubble-calendar-main-background-color: "#FFFFFF"
+      bubble-calendar-main-background-color: "rgba(255, 255, 255, 0.5)"
       bubble-calendar-height: "56px"
       bubble-calendar-mask-size: "16px"
       bubble-calendar-border-radius: "14px"
-      bubble-event-background-color: "#FFFFFF"
+      bubble-event-background-color: "rgba(255, 255, 255, 0.5)"
       bubble-event-background-image: "none"
 
       # Mushroom / Karten & Hintergründe
-      mush-card-background: "#FFFFFF"
+      mush-card-background: "rgba(255, 255, 255, 0.5)"
       mush-control-background-color: "#FFFFFF"
       mush-card-primary-color: "#000000"
       mush-card-secondary-color: "rgba(60, 60, 67, 0.6)"
@@ -1316,16 +1328,16 @@ glas_basis:
       disabled-text-color: "#636366"
 
       # HA-Grundgerüst / Card
-      card-background-color: "#1C1C1E"
-      ha-card-background: "#1C1C1E"
-      ha-card-background-color: "#1C1C1E"
+      card-background-color: "rgba(255, 255, 255, 0.1)"
+      ha-card-background: "rgba(255, 255, 255, 0.1)"
+      ha-card-background-color: "rgba(255, 255, 255, 0.1)"
       wa-color-surface-raised: "#1C1C1E"
       ha-card-border-color: "rgba(225, 225, 225, 0.12)"
       ha-card-border-radius: "14px"
       ha-card-border-width: "1px"
       ha-card-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
       table-row-background-color: "#2C2C2E"
-      table-row-alternative-background-color: "#1C1C1E"
+      table-row-alternative-background-color: "rgba(255, 255, 255, 0.1)"
 
       # HA-Grundgerüst / Hintergründe
       primary-background-color: "#000000"
@@ -1337,11 +1349,11 @@ glas_basis:
 
       # HA-Grundgerüst / Theme
       mdc-theme-background: "#000000"
-      mdc-theme-surface: "#1C1C1E"
+      mdc-theme-surface: "rgba(255, 255, 255, 0.1)"
       mdc-theme-on-surface: "#FFFFFF"
 
       # HA-Grundgerüst / Header
-      app-header-background-color: "#1C1C1E"
+      app-header-background-color: "rgba(255, 255, 255, 0.1)"
       app-header-text-color: "#FFFFFF"
       app-header-backdrop-filter: "blur(8px) saturate(1.1)"
       app-header-edit-background-color: "rgba(30, 33, 54, 0.8)"
@@ -1358,7 +1370,7 @@ glas_basis:
       app-drawer-icon-color: "#ff9300"
 
       # HA-Grundgerüst / Sidebar
-      sidebar-background-color: "#1C1C1E"
+      sidebar-background-color: "rgba(255, 255, 255, 0.1)"
       sidebar-selected-background-color: "#d5d5d5"
       sidebar-text-color: "#FFFFFF"
       sidebar-icon-color: "rgba(255, 255, 255, 0.6)"
@@ -1614,7 +1626,7 @@ glas_basis:
       rgb-accent-color: "10, 132, 255"
       rgb-primary-text-color: "255, 255, 255"
       rgb-secondary-text-color: "235, 235, 245"
-      rgb-card-background-color: "28, 28, 30"
+      rgb-card-background-color: "255, 255, 255"
       rgb-primary-background-color: "0, 0, 0"
       rgb-blue-color: "10, 132, 255"
       rgb-orange-color: "255, 159, 10"
@@ -1663,8 +1675,8 @@ glas_basis:
       energy-water-color: "#32ADE6"
 
       # Bubble Card / Karten & Hintergründe
-      bubble-card-background-color: "#1C1C1E"
-      bubble-main-buttons-background-color: "#1C1C1E"
+      bubble-card-background-color: "rgba(255, 255, 255, 0.1)"
+      bubble-main-buttons-background-color: "rgba(255, 255, 255, 0.1)"
       bubble-secondary-background-color: "#1C1C1E"
       bubble-icon-background-color: "#2C2C2E"
       bubble-icon-color: "#0A84FF"
@@ -1682,29 +1694,29 @@ glas_basis:
       bubble-icon-border-radius: "999px"
 
       # Bubble Card / Select (Auswahlkarte)
-      bubble-select-main-background-color: "#1C1C1E"
-      bubble-select-background-color: "#1C1C1E"
+      bubble-select-main-background-color: "rgba(255, 255, 255, 0.1)"
+      bubble-select-background-color: "rgba(255, 255, 255, 0.1)"
       bubble-select-border-radius: "14px"
-      bubble-select-list-background-color: "#1C1C1E"
+      bubble-select-list-background-color: "rgba(255, 255, 255, 0.1)"
       bubble-select-list-border-radius: "14px"
       bubble-select-list-width: "220px"
       bubble-select-list-item-accent-color: "#0A84FF"
-      bubble-select-arrow-background-color: "#1C1C1E"
+      bubble-select-arrow-background-color: "rgba(255, 255, 255, 0.1)"
       bubble-select-button-border-radius: "10px"
       bubble-select-icon-background-color: "#2C2C2E"
       bubble-select-icon-border-radius: "999px"
       bubble-select-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
 
       # Bubble Card / Buttons
-      bubble-button-background-color: "#1C1C1E"
+      bubble-button-background-color: "rgba(255, 255, 255, 0.1)"
       bubble-button-active-background-color: "#0A84FF"
       bubble-button-icon-color: "#0A84FF"
       bubble-button-active-icon-color: "#000000"
       bubble-button-text-color: "#feffff"
       bubble-button-active-text-color: "#000000"
       bubble-button-border-radius: "14px"
-      bubble-button-card-background-color: "#1C1C1E"
-      bubble-button-main-background-color: "#1C1C1E"
+      bubble-button-card-background-color: "rgba(255, 255, 255, 0.1)"
+      bubble-button-main-background-color: "rgba(255, 255, 255, 0.1)"
       bubble-button-active-color: "#0A84FF"
       bubble-button-icon-border-radius: "999px"
       bubble-button-icon-background-color: "#2C2C2E"
@@ -1713,7 +1725,7 @@ glas_basis:
       bubble-button-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
 
       # Bubble Card / Sub-Buttons
-      bubble-sub-button-background-color: "#1C1C1E"
+      bubble-sub-button-background-color: "rgba(255, 255, 255, 0.1)"
       bubble-sub-button-active-background-color: "#0A84FF"
       bubble-sub-button-icon-color: "#0A84FF"
       bubble-sub-button-active-icon-color: "#000000"
@@ -1721,9 +1733,9 @@ glas_basis:
       bubble-sub-button-active-text-color: "#000000"
       bubble-sub-button-border-radius: "10px"
       bubble-sub-button-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
-      bubble-sub-buttons-main-background-color: "#1C1C1E"
+      bubble-sub-buttons-main-background-color: "rgba(255, 255, 255, 0.1)"
       bubble-sub-slider-border-radius: "14px"
-      bubble-sub-slider-background-color: "#1C1C1E"
+      bubble-sub-slider-background-color: "rgba(255, 255, 255, 0.1)"
       bubble-sub-slider-height: "48px"
       bubble-sub-button-dark-text-color: "#1C1C1E"
       bubble-footer-width: "320px"
@@ -1731,7 +1743,7 @@ glas_basis:
       bubble-footer-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
 
       # Bubble Card / Separator
-      bubble-separator-background-color: "#1C1C1E"
+      bubble-separator-background-color: "rgba(255, 255, 255, 0.1)"
       bubble-separator-icon-background-color: "#2C2C2E"
       bubble-separator-icon-color: "#0A84FF"
       bubble-separator-line-color: "rgba(225, 225, 225, 0.12)"
@@ -1740,7 +1752,7 @@ glas_basis:
       bubble-separator-border-radius: "14px"
 
       # Bubble Card / Popup & Dialog
-      bubble-pop-up-background-color: "#1C1C1E"
+      bubble-pop-up-background-color: "rgba(255, 255, 255, 0.1)"
       bubble-pop-up-backdrop-filter: "blur(18px)"
       bubble-pop-up-border-radius: "20px"
       bubble-pop-up-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
@@ -1751,21 +1763,21 @@ glas_basis:
       ha-dialog-scrim-backdrop-filter: "blur(10px)"
       ha-dialog-surface-background: "rgba(28, 28, 30, 0.92)"
       mdc-dialog-scrim-color: "rgba(0, 0, 0, 0.60)"
-      bubble-pop-up-main-background-color: "#1C1C1E"
+      bubble-pop-up-main-background-color: "rgba(255, 255, 255, 0.1)"
       bubble-backdrop-background-color: "rgba(0, 0, 0, 0.55)"
 
       # Bubble Card / Horizontal Buttons Stack
-      bubble-horizontal-buttons-stack-background-color: "#1C1C1E"
-      bubble-horizontal-buttons-stack-button-background-color: "#1C1C1E"
+      bubble-horizontal-buttons-stack-background-color: "rgba(255, 255, 255, 0.1)"
+      bubble-horizontal-buttons-stack-button-background-color: "rgba(255, 255, 255, 0.1)"
       bubble-horizontal-buttons-stack-button-icon-color: "#C7C7CC"
       bubble-horizontal-buttons-stack-button-text-color: "#F2F2F7"
       bubble-horizontal-buttons-stack-border-radius: "14px"
       bubble-horizontal-buttons-stack-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
 
       # Bubble Card / Climate
-      bubble-climate-background-color: "#1C1C1E"
-      bubble-climate-main-background-color: "#1C1C1E"
-      bubble-climate-button-background-color: "#1C1C1E"
+      bubble-climate-background-color: "rgba(255, 255, 255, 0.1)"
+      bubble-climate-main-background-color: "rgba(255, 255, 255, 0.1)"
+      bubble-climate-button-background-color: "rgba(255, 255, 255, 0.1)"
       bubble-climate-button-icon-color: "#C7C7CC"
       bubble-climate-border-radius: "14px"
       bubble-climate-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
@@ -1779,9 +1791,9 @@ glas_basis:
       bubble-climate-accent-color: "#0A84FF"
 
       # Bubble Card / Cover
-      bubble-cover-background-color: "#1C1C1E"
-      bubble-cover-main-background-color: "#1C1C1E"
-      bubble-cover-button-background-color: "#1C1C1E"
+      bubble-cover-background-color: "rgba(255, 255, 255, 0.1)"
+      bubble-cover-main-background-color: "rgba(255, 255, 255, 0.1)"
+      bubble-cover-button-background-color: "rgba(255, 255, 255, 0.1)"
       bubble-cover-button-icon-color: "#C7C7CC"
       bubble-cover-border-radius: "14px"
       bubble-cover-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
@@ -1789,27 +1801,27 @@ glas_basis:
       bubble-cover-icon-background-color: "#2C2C2E"
 
       # Bubble Card / Media Player
-      bubble-media-player-background-color: "#1C1C1E"
-      bubble-media-player-main-background-color: "#1C1C1E"
-      bubble-media-player-button-background-color: "#1C1C1E"
+      bubble-media-player-background-color: "rgba(255, 255, 255, 0.1)"
+      bubble-media-player-main-background-color: "rgba(255, 255, 255, 0.1)"
+      bubble-media-player-button-background-color: "rgba(255, 255, 255, 0.1)"
       bubble-media-player-button-icon-color: "#C7C7CC"
       bubble-media-player-border-radius: "14px"
       bubble-media-player-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
       bubble-media-player-buttons-border-radius: "999px"
-      bubble-media-player-slider-background-color: "#1C1C1E"
+      bubble-media-player-slider-background-color: "rgba(255, 255, 255, 0.1)"
       bubble-media-player-icon-border-radius: "999px"
       bubble-media-player-icon-background-color: "#2C2C2E"
 
       # Bubble Card / Calendar
-      bubble-calendar-main-background-color: "#1C1C1E"
+      bubble-calendar-main-background-color: "rgba(255, 255, 255, 0.1)"
       bubble-calendar-height: "56px"
       bubble-calendar-mask-size: "16px"
       bubble-calendar-border-radius: "14px"
-      bubble-event-background-color: "#1C1C1E"
+      bubble-event-background-color: "rgba(255, 255, 255, 0.1)"
       bubble-event-background-image: "none"
 
       # Mushroom / Karten & Hintergründe
-      mush-card-background: "#1C1C1E"
+      mush-card-background: "rgba(255, 255, 255, 0.1)"
       mush-control-background-color: "#1C1C1E"
       mush-card-primary-color: "#FFFFFF"
       mush-card-secondary-color: "rgba(235, 235, 245, 0.6)"
