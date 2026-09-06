@@ -32,8 +32,8 @@
 # hatg-glas-blur und -gross verringern - Weichzeichnung kostet Rechenzeit.
 # ---------------------------------------------------------------------------
 
-# Erstellt mit HATG v1.1.0b15
-# Theme: Glas Basis – Grundfarbe #007AFF, Akzent #007AFF, Karten-Radius 14px
+# Erstellt mit HATG v1.1.0b16
+# Theme: Glas Basis – Grundfarbe #007AFF, Akzent #007AFF, Karten-Radius 16px
 # Generiert am 2026-09-06
 
 glas_basis:
@@ -49,7 +49,9 @@ glas_basis:
     ha-card {
       background-color: rgba(255, 255, 255, 0.5) !important;
       background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      background-image:
+        linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
+        var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
       backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
       -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
       /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
@@ -124,7 +126,9 @@ glas_basis:
     .bubble-sub-button {
       backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%)) !important;
       -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%)) !important;
-      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      background-image:
+        linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
+        var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
       box-shadow:
         inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.55)),
         inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
@@ -171,11 +175,11 @@ glas_basis:
     /* HATG:UIX:glas-dashboard-kopfleiste:START */
     /* Nur .header - .toolbar liegt darin und wuerde die Flaeche verdoppeln. */
     .header {
-      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+      background-color: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
       /* Kein Reflex: ueber die Breite einer Leiste wird der Glanz zum Farbverlauf. */
       background-image: none !important;
-      backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
-      -webkit-backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
+      backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
+      -webkit-backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
       box-shadow:
         inset 0 -1px 0 var(--hatg-glas-rand, rgba(255, 255, 255, 0.55)),
         inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)) !important;
@@ -218,7 +222,9 @@ glas_basis:
     ha-badge {
       background-color: rgba(255, 255, 255, 0.35) !important;
       background-color: var(--hatg-glas-fuellung-leicht, rgba(255, 255, 255, 0.35)) !important;
-      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      background-image:
+        linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
+        var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
       backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
       -webkit-backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
       /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
@@ -238,16 +244,16 @@ glas_basis:
     :host {
       /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
          deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-      --sidebar-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+      --sidebar-background-color: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
     }
     :host {
       background-color: rgba(255, 255, 255, 0.5) !important;
-      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+      background-color: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
       /* Kein Reflex auf langen Leisten: ein diagonaler Verlauf ueber 1200 Pixel
          Breite liest sich als Farbverlauf, nicht als Glanz. */
       background-image: none !important;
-      backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
-      -webkit-backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
+      backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
+      -webkit-backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
       /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
       box-shadow:
         inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
@@ -270,7 +276,9 @@ glas_basis:
       opacity: 1 !important;
       background-color: rgba(10, 132, 255, 0.28) !important;
       background-color: color-mix(in srgb, var(--sidebar-selected-icon-color, var(--primary-color)) 38%, transparent) !important;
-      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      background-image:
+        linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
+        var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
       box-shadow:
         inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
         inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
@@ -292,14 +300,16 @@ glas_basis:
       --ha-color-surface-default: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
       --wa-color-surface-raised: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
       --card-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-      --ha-dialog-surface-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%)) !important;
+      --ha-dialog-surface-backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%)) !important;
     }
     ha-card {
       background-color: rgba(255, 255, 255, 0.68) !important;
       background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-      backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-      -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+      background-image:
+        linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
+        var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
+      -webkit-backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
       /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
       border-radius: var(--ha-card-border-radius, 14px) !important;
       /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
@@ -335,16 +345,18 @@ glas_basis:
       --ha-color-surface-default: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
       --wa-color-surface-raised: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
       --card-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-      --ha-dialog-surface-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%)) !important;
+      --ha-dialog-surface-backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%)) !important;
     }
     ha-dialog,
     ha-adaptive-dialog,
     .mdc-dialog__surface {
       background-color: rgba(255, 255, 255, 0.68) !important;
       background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-      backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-      -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+      background-image:
+        linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
+        var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
+      -webkit-backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
       /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
       border-radius: var(--ha-card-border-radius, 14px) !important;
       /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
@@ -397,17 +409,17 @@ glas_basis:
     :host {
       /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
          deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-      --app-header-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      --sidebar-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+      --app-header-background-color: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
+      --sidebar-background-color: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
     }
     .mdc-drawer {
       background-color: rgba(255, 255, 255, 0.5) !important;
-      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+      background-color: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
       /* Kein Reflex auf langen Leisten: ein diagonaler Verlauf ueber 1200 Pixel
          Breite liest sich als Farbverlauf, nicht als Glanz. */
       background-image: none !important;
-      backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
-      -webkit-backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
+      backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
+      -webkit-backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
       /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
       box-shadow:
         inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
@@ -430,7 +442,9 @@ glas_basis:
     ha-card {
       background-color: rgba(255, 255, 255, 0.5) !important;
       background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      background-image:
+        linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
+        var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
       backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
       -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
       /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
@@ -467,7 +481,9 @@ glas_basis:
     :host {
       background-color: rgba(255, 255, 255, 0.35) !important;
       background-color: var(--hatg-glas-fuellung-leicht, rgba(255, 255, 255, 0.35)) !important;
-      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      background-image:
+        linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
+        var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
       backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
       -webkit-backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
       /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
@@ -515,7 +531,9 @@ glas_basis:
     ha-card {
       background-color: rgba(255, 255, 255, 0.5) !important;
       background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      background-image:
+        linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
+        var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
       backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
       -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
       /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
@@ -549,16 +567,16 @@ glas_basis:
     :host {
       /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
          deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-      --app-header-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+      --app-header-background-color: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
     }
     .mdc-top-app-bar {
       background-color: rgba(255, 255, 255, 0.5) !important;
-      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+      background-color: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
       /* Kein Reflex auf langen Leisten: ein diagonaler Verlauf ueber 1200 Pixel
          Breite liest sich als Farbverlauf, nicht als Glanz. */
       background-image: none !important;
-      backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
-      -webkit-backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
+      backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
+      -webkit-backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
       /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
       box-shadow:
         inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
@@ -572,13 +590,15 @@ glas_basis:
     :host {
       /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
          deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-      --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+      --ha-card-background: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
+      --card-background-color: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
     }
     .mdc-snackbar__surface {
       background-color: rgba(255, 255, 255, 0.5) !important;
-      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      background-color: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
+      background-image:
+        linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
+        var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
       backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
       -webkit-backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
       /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
@@ -604,7 +624,9 @@ glas_basis:
     ha-card {
       background-color: rgba(255, 255, 255, 0.5) !important;
       background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      background-image:
+        linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
+        var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
       backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
       -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
       /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
@@ -630,7 +652,9 @@ glas_basis:
     ha-card {
       background-color: rgba(255, 255, 255, 0.5) !important;
       background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      background-image:
+        linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
+        var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
       backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
       -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
       /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
@@ -656,7 +680,9 @@ glas_basis:
     ha-card {
       background-color: rgba(255, 255, 255, 0.5) !important;
       background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      background-image:
+        linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
+        var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
       backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
       -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
       /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
@@ -682,7 +708,9 @@ glas_basis:
     ha-card {
       background-color: rgba(255, 255, 255, 0.5) !important;
       background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      background-image:
+        linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
+        var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
       backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
       -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
       /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
@@ -708,7 +736,9 @@ glas_basis:
     ha-card {
       background-color: rgba(255, 255, 255, 0.5) !important;
       background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      background-image:
+        linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
+        var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
       backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
       -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
       /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
@@ -740,9 +770,9 @@ glas_basis:
       primary-color: "#007AFF"
       dark-primary-color: "#0053AD"
       light-primary-color: "#B8DAFF"
-      disabled-color: "#D1D1D6"
+      disabled-color: "rgba(60, 60, 67, 0.18)"
       error-color: "#FF3B30"
-      warning-color: "#FFCC00"
+      warning-color: "#FF9500"
       success-color: "#34C759"
       info-color: "#007AFF"
       red-color: "#FF3B30"
@@ -776,17 +806,17 @@ glas_basis:
       primary-text-color: "#000000"
       secondary-text-color: "rgba(60, 60, 67, 0.6)"
       text-primary-color: "#FFFFFF"
-      disabled-text-color: "#8E8E93"
+      disabled-text-color: "rgba(60, 60, 67, 0.3)"
 
       # HA-Grundgerüst / Card
       card-background-color: "#FFFFFF"
-      ha-card-background: "rgba(255, 255, 255, 0.5)"
+      ha-card-background: "var(--hatg-glas-fuellung)"
       ha-card-background-color: "#FFFFFF"
       wa-color-surface-raised: "#FFFFFF"
       ha-card-border-color: "rgba(0, 0, 0, 0.12)"
-      ha-card-border-radius: "14px"
-      ha-card-border-width: "1px"
-      ha-card-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
+      ha-card-border-radius: "16px"
+      ha-card-border-width: "0px"
+      ha-card-box-shadow: "0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 1px rgba(0, 0, 0, 0.04)"
       table-row-background-color: "#F9F9FB"
       table-row-alternative-background-color: "#FFFFFF"
 
@@ -804,7 +834,7 @@ glas_basis:
       mdc-theme-on-surface: "#000000"
 
       # HA-Grundgerüst / Header
-      app-header-background-color: "rgba(255, 255, 255, 0.5)"
+      app-header-background-color: "var(--hatg-glas-nav-fuellung)"
       app-header-text-color: "#000000"
       app-header-backdrop-filter: "blur(8px) saturate(1.1)"
       app-header-edit-background-color: "rgba(30, 33, 54, 0.8)"
@@ -821,7 +851,7 @@ glas_basis:
       app-drawer-icon-color: "#007AFF"
 
       # HA-Grundgerüst / Sidebar
-      sidebar-background-color: "rgba(255, 255, 255, 0.5)"
+      sidebar-background-color: "var(--hatg-glas-nav-fuellung)"
       sidebar-selected-background-color: "#E5F1FF"
       sidebar-text-color: "#000000"
       sidebar-icon-color: "rgba(0, 0, 0, 0.6)"
@@ -829,17 +859,17 @@ glas_basis:
       sidebar-selected-icon-color: "#007AFF"
 
       # HA-Grundgerüst / Status, Icons & Entitäten
-      state-icon-color: "#007AFF"
+      state-icon-color: "rgba(60, 60, 67, 0.6)"
       state-icon-active-color: "#007AFF"
       state-icon-unavailable-color: "#FFFFFF"
       state-active-color: "#007AFF"
-      state-inactive-color: "#FFFFFF"
+      state-inactive-color: "#8E8E93"
       state-unavailable-color: "#FFFFFF"
       state-on-color: "#34C759"
       state-off-color: "#FFFFFF"
       state-light-color: "#007AFF"
       state-light-active-color: "#007AFF"
-      state-light-on-color: "#ff9300"
+      state-light-on-color: "#FFCC00"
       state-switch-color: "#007AFF"
       state-switch-active-color: "#007AFF"
       state-switch-on-color: "#007AFF"
@@ -937,7 +967,7 @@ glas_basis:
       label-badge-red: "#FF3B30"
       label-badge-blue: "#007AFF"
       label-badge-green: "#34C759"
-      label-badge-yellow: "#FFCC00"
+      label-badge-yellow: "#FF9500"
       state-battery-alert-color: "#ff2600"
 
       # HA-Grundgerüst / Schalter, Toggle & Slider
@@ -964,9 +994,9 @@ glas_basis:
       slider-track-color: "#D1D1D6"
 
       # HA-Grundgerüst / Buttons & Chips
-      control-button-background-color: "rgba(255, 255, 255, 0.68)"
+      control-button-background-color: "var(--hatg-glas-fuellung-stark)"
       control-button-icon-color: "#007AFF"
-      control-button-border-radius: "10px"
+      control-button-border-radius: "16px"
 
       # HA-Grundgerüst / Eingaben & Auswahlfelder
       input-background-color: "#FFFFFF"
@@ -1023,19 +1053,19 @@ glas_basis:
       ha-color-fill-danger-normal-hover: "rgba(255, 59, 48, 0.22)"
       ha-color-fill-danger-normal-active: "rgba(255, 59, 48, 0.28)"
       ha-color-on-danger-normal: "#FF3B30"
-      ha-color-fill-warning-normal-resting: "rgba(255, 204, 0, 0.15)"
-      ha-color-fill-warning-normal-hover: "rgba(255, 204, 0, 0.22)"
-      ha-color-fill-warning-normal-active: "rgba(255, 204, 0, 0.28)"
+      ha-color-fill-warning-normal-resting: "rgba(255, 149, 0, 0.15)"
+      ha-color-fill-warning-normal-hover: "rgba(255, 149, 0, 0.22)"
+      ha-color-fill-warning-normal-active: "rgba(255, 149, 0, 0.28)"
       ha-color-on-warning-normal: "#8A5A00"
       ha-tooltip-background-color: "#F9F9FB"
       ha-tooltip-text-color: "#1C1C1E"
 
       # HA-Grundgerüst / Abstände, Rundungen, Schatten & Rahmen
-      border-color: "rgba(0, 0, 0, 0.12)"
-      border-radius: "14px"
-      box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
-      divider-color: "rgba(0, 0, 0, 0.12)"
-      outline-color: "rgba(0, 0, 0, 0.12)"
+      border-color: "rgba(60, 60, 67, 0.29)"
+      border-radius: "12px"
+      box-shadow: "0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 1px rgba(0, 0, 0, 0.04)"
+      divider-color: "rgba(60, 60, 67, 0.29)"
+      outline-color: "rgba(60, 60, 67, 0.29)"
       outline-variant-color: "#C6C6C8"
       outline-hover-color: "rgba(0, 0, 0, 0.24)"
       ha-line-height-condensed: "1.25"
@@ -1048,12 +1078,12 @@ glas_basis:
       ha-border-radius-circle: "50%"
 
       # HA-Grundgerüst / Schrift & Typografie
-      primary-font-family: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', sans-serif"
-      ha-font-family-body: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', sans-serif"
-      ha-font-family-heading: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', sans-serif"
-      ha-font-family-longform: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', sans-serif"
-      ha-font-family-code: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', sans-serif"
-      mdc-typography-font-family: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', sans-serif"
+      primary-font-family: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue', sans-serif"
+      ha-font-family-body: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue', sans-serif"
+      ha-font-family-heading: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif"
+      ha-font-family-longform: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue', sans-serif"
+      ha-font-family-code: "ui-monospace, 'SF Mono', Menlo, monospace"
+      mdc-typography-font-family: "ui-monospace, 'SF Mono', Menlo, monospace"
       ha-font-size-scale: "1"
       ha-font-size-2xs: "8px"
       ha-font-size-xs: "8px"
@@ -1126,113 +1156,113 @@ glas_basis:
       energy-water-color: "#5AC8FA"
 
       # Bubble Card / Karten & Hintergründe
-      bubble-card-background-color: "rgba(255, 255, 255, 0.5)"
-      bubble-main-buttons-background-color: "rgba(255, 255, 255, 0.5)"
-      bubble-secondary-background-color: "rgba(255, 255, 255, 0.68)"
-      bubble-icon-background-color: "rgba(255, 255, 255, 0.68)"
+      bubble-card-background-color: "var(--hatg-glas-fuellung)"
+      bubble-main-buttons-background-color: "var(--hatg-glas-fuellung)"
+      bubble-secondary-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-icon-background-color: "var(--hatg-glas-fuellung-stark)"
       bubble-icon-color: "#007AFF"
       bubble-name-color: "#000000"
       bubble-state-color: "rgba(60, 60, 67, 0.6)"
       bubble-accent-color: "#007AFF"
       bubble-active-color: "#007AFF"
       bubble-toggle-color: "#007AFF"
-      bubble-line-background-color: "rgba(0, 0, 0, 0.12)"
-      bubble-border: "1px solid #C6C6C8"
+      bubble-line-background-color: "rgba(60, 60, 67, 0.29)"
+      bubble-border: "0px solid #C6C6C8"
       bubble-border-color: "rgba(0, 0, 0, 0.12)"
-      bubble-border-radius: "14px"
-      bubble-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
-      bubble-card-border-radius: "14px"
-      bubble-icon-border-radius: "999px"
+      bubble-border-radius: "16px"
+      bubble-box-shadow: "0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 1px rgba(0, 0, 0, 0.04)"
+      bubble-card-border-radius: "16px"
+      bubble-icon-border-radius: "14px"
 
       # Bubble Card / Select (Auswahlkarte)
-      bubble-select-main-background-color: "rgba(255, 255, 255, 0.5)"
-      bubble-select-background-color: "rgba(255, 255, 255, 0.5)"
-      bubble-select-border-radius: "14px"
+      bubble-select-main-background-color: "var(--hatg-glas-fuellung)"
+      bubble-select-background-color: "var(--hatg-glas-fuellung)"
+      bubble-select-border-radius: "16px"
       bubble-select-list-background-color: "#FFFFFF"
-      bubble-select-list-border-radius: "14px"
+      bubble-select-list-border-radius: "18px"
       bubble-select-list-width: "220px"
       bubble-select-list-item-accent-color: "#007AFF"
       bubble-select-arrow-background-color: "#FFFFFF"
-      bubble-select-button-border-radius: "10px"
-      bubble-select-icon-background-color: "rgba(255, 255, 255, 0.68)"
-      bubble-select-icon-border-radius: "999px"
-      bubble-select-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
+      bubble-select-button-border-radius: "18px"
+      bubble-select-icon-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-select-icon-border-radius: "14px"
+      bubble-select-box-shadow: "0 10px 28px rgba(60,60,67,.14)"
 
       # Bubble Card / Buttons
-      bubble-button-background-color: "rgba(255, 255, 255, 0.68)"
+      bubble-button-background-color: "var(--hatg-glas-fuellung-stark)"
       bubble-button-active-background-color: "#007AFF"
       bubble-button-icon-color: "#007AFF"
       bubble-button-active-icon-color: "#FFFFFF"
       bubble-button-text-color: "#1C1C1E"
       bubble-button-active-text-color: "#FFFFFF"
-      bubble-button-border-radius: "14px"
-      bubble-button-card-background-color: "rgba(255, 255, 255, 0.5)"
-      bubble-button-main-background-color: "rgba(255, 255, 255, 0.5)"
+      bubble-button-border-radius: "16px"
+      bubble-button-card-background-color: "var(--hatg-glas-fuellung)"
+      bubble-button-main-background-color: "var(--hatg-glas-fuellung)"
       bubble-button-active-color: "#007AFF"
-      bubble-button-icon-border-radius: "999px"
-      bubble-button-icon-background-color: "rgba(255, 255, 255, 0.68)"
+      bubble-button-icon-border-radius: "14px"
+      bubble-button-icon-background-color: "var(--hatg-glas-fuellung-stark)"
       bubble-light-white-color: "#FFFFFF"
       bubble-light-color: "#FFC107"
-      bubble-button-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
+      bubble-button-box-shadow: "0 10px 28px rgba(60,60,67,.14)"
 
       # Bubble Card / Sub-Buttons
-      bubble-sub-button-background-color: "rgba(255, 255, 255, 0.68)"
+      bubble-sub-button-background-color: "var(--hatg-glas-fuellung-stark)"
       bubble-sub-button-active-background-color: "#007AFF"
       bubble-sub-button-icon-color: "#007AFF"
       bubble-sub-button-active-icon-color: "#FFFFFF"
       bubble-sub-button-text-color: "#3C3C43"
       bubble-sub-button-active-text-color: "#FFFFFF"
-      bubble-sub-button-border-radius: "10px"
-      bubble-sub-button-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
-      bubble-sub-buttons-main-background-color: "rgba(255, 255, 255, 0.5)"
-      bubble-sub-slider-border-radius: "14px"
-      bubble-sub-slider-background-color: "rgba(255, 255, 255, 0.68)"
+      bubble-sub-button-border-radius: "14px"
+      bubble-sub-button-box-shadow: "0 4px 10px rgba(60,60,67,.16)"
+      bubble-sub-buttons-main-background-color: "var(--hatg-glas-fuellung)"
+      bubble-sub-slider-border-radius: "18px"
+      bubble-sub-slider-background-color: "var(--hatg-glas-fuellung-stark)"
       bubble-sub-slider-height: "48px"
       bubble-sub-button-dark-text-color: "#1C1C1E"
       bubble-footer-width: "320px"
       bubble-footer-bottom: "16px"
-      bubble-footer-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
+      bubble-footer-box-shadow: "0 10px 28px rgba(60,60,67,.14)"
 
       # Bubble Card / Separator
-      bubble-separator-background-color: "rgba(255, 255, 255, 0.5)"
-      bubble-separator-icon-background-color: "rgba(255, 255, 255, 0.68)"
+      bubble-separator-background-color: "var(--hatg-glas-fuellung)"
+      bubble-separator-icon-background-color: "var(--hatg-glas-fuellung-stark)"
       bubble-separator-icon-color: "#007AFF"
-      bubble-separator-line-color: "rgba(0, 0, 0, 0.12)"
+      bubble-separator-line-color: "rgba(60, 60, 67, 0.29)"
       bubble-separator-name-color: "#1C1C1E"
       bubble-separator-text-color: "#1C1C1E"
-      bubble-separator-border-radius: "14px"
+      bubble-separator-border-radius: "16px"
 
       # Bubble Card / Popup & Dialog
-      bubble-pop-up-background-color: "rgba(255, 255, 255, 0.68)"
+      bubble-pop-up-background-color: "var(--hatg-glas-fuellung-stark)"
       bubble-pop-up-backdrop-filter: "blur(18px)"
-      bubble-pop-up-border-radius: "20px"
-      bubble-pop-up-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
-      dialog-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
+      bubble-pop-up-border-radius: "16px"
+      bubble-pop-up-box-shadow: "0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 1px rgba(0, 0, 0, 0.04)"
+      dialog-box-shadow: "0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 1px rgba(0, 0, 0, 0.04)"
       more-info-header-background: "#F9F9FB"
       more-info-header-color: "#1C1C1E"
-      popup-border-radius: "20px"
+      popup-border-radius: "12px"
       ha-dialog-scrim-backdrop-filter: "blur(10px)"
       ha-dialog-surface-background: "rgba(255, 255, 255, 0.92)"
       mdc-dialog-scrim-color: "rgba(0, 0, 0, 0.35)"
-      bubble-pop-up-main-background-color: "rgba(255, 255, 255, 0.68)"
+      bubble-pop-up-main-background-color: "var(--hatg-glas-fuellung-stark)"
       bubble-backdrop-background-color: "rgba(0, 0, 0, 0.32)"
 
       # Bubble Card / Horizontal Buttons Stack
-      bubble-horizontal-buttons-stack-background-color: "rgba(255, 255, 255, 0.5)"
-      bubble-horizontal-buttons-stack-button-background-color: "rgba(255, 255, 255, 0.68)"
+      bubble-horizontal-buttons-stack-background-color: "var(--hatg-glas-fuellung)"
+      bubble-horizontal-buttons-stack-button-background-color: "var(--hatg-glas-fuellung-stark)"
       bubble-horizontal-buttons-stack-button-icon-color: "#3C3C43"
       bubble-horizontal-buttons-stack-button-text-color: "#1C1C1E"
-      bubble-horizontal-buttons-stack-border-radius: "14px"
-      bubble-horizontal-buttons-stack-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
+      bubble-horizontal-buttons-stack-border-radius: "16px"
+      bubble-horizontal-buttons-stack-box-shadow: "0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 1px rgba(0, 0, 0, 0.04)"
 
       # Bubble Card / Climate
-      bubble-climate-background-color: "rgba(255, 255, 255, 0.5)"
-      bubble-climate-main-background-color: "rgba(255, 255, 255, 0.5)"
-      bubble-climate-button-background-color: "rgba(255, 255, 255, 0.68)"
+      bubble-climate-background-color: "var(--hatg-glas-fuellung)"
+      bubble-climate-main-background-color: "var(--hatg-glas-fuellung)"
+      bubble-climate-button-background-color: "var(--hatg-glas-fuellung-stark)"
       bubble-climate-button-icon-color: "#3C3C43"
-      bubble-climate-border-radius: "14px"
-      bubble-climate-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
-      bubble-climate-icon-border-radius: "999px"
+      bubble-climate-border-radius: "16px"
+      bubble-climate-box-shadow: "0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 1px rgba(0, 0, 0, 0.04)"
+      bubble-climate-icon-border-radius: "32px"
       bubble-state-climate-fan-only-color: "#32ADE6"
       bubble-state-climate-dry-color: "#FF9500"
       bubble-state-climate-cool-color: "#007AFF"
@@ -1242,32 +1272,32 @@ glas_basis:
       bubble-climate-accent-color: "#007AFF"
 
       # Bubble Card / Cover
-      bubble-cover-background-color: "rgba(255, 255, 255, 0.5)"
-      bubble-cover-main-background-color: "rgba(255, 255, 255, 0.5)"
-      bubble-cover-button-background-color: "rgba(255, 255, 255, 0.68)"
+      bubble-cover-background-color: "var(--hatg-glas-fuellung)"
+      bubble-cover-main-background-color: "var(--hatg-glas-fuellung)"
+      bubble-cover-button-background-color: "var(--hatg-glas-fuellung-stark)"
       bubble-cover-button-icon-color: "#3C3C43"
-      bubble-cover-border-radius: "14px"
-      bubble-cover-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
-      bubble-cover-icon-border-radius: "999px"
-      bubble-cover-icon-background-color: "rgba(255, 255, 255, 0.68)"
+      bubble-cover-border-radius: "16px"
+      bubble-cover-box-shadow: "0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 1px rgba(0, 0, 0, 0.04)"
+      bubble-cover-icon-border-radius: "14px"
+      bubble-cover-icon-background-color: "var(--hatg-glas-fuellung-stark)"
 
       # Bubble Card / Media Player
-      bubble-media-player-background-color: "rgba(255, 255, 255, 0.5)"
-      bubble-media-player-main-background-color: "rgba(255, 255, 255, 0.5)"
-      bubble-media-player-button-background-color: "rgba(255, 255, 255, 0.68)"
+      bubble-media-player-background-color: "var(--hatg-glas-fuellung)"
+      bubble-media-player-main-background-color: "var(--hatg-glas-fuellung)"
+      bubble-media-player-button-background-color: "var(--hatg-glas-fuellung-stark)"
       bubble-media-player-button-icon-color: "#3C3C43"
-      bubble-media-player-border-radius: "14px"
-      bubble-media-player-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08)"
-      bubble-media-player-buttons-border-radius: "999px"
-      bubble-media-player-slider-background-color: "rgba(255, 255, 255, 0.68)"
-      bubble-media-player-icon-border-radius: "999px"
-      bubble-media-player-icon-background-color: "rgba(255, 255, 255, 0.68)"
+      bubble-media-player-border-radius: "16px"
+      bubble-media-player-box-shadow: "0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 1px rgba(0, 0, 0, 0.04)"
+      bubble-media-player-buttons-border-radius: "14px"
+      bubble-media-player-slider-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-media-player-icon-border-radius: "14px"
+      bubble-media-player-icon-background-color: "var(--hatg-glas-fuellung-stark)"
 
       # Bubble Card / Calendar
-      bubble-calendar-main-background-color: "rgba(255, 255, 255, 0.5)"
+      bubble-calendar-main-background-color: "var(--hatg-glas-fuellung)"
       bubble-calendar-height: "56px"
       bubble-calendar-mask-size: "16px"
-      bubble-calendar-border-radius: "14px"
+      bubble-calendar-border-radius: "18px"
       bubble-event-background-color: "#FFFFFF"
       bubble-event-background-image: "none"
 
@@ -1301,7 +1331,7 @@ glas_basis:
       mush-chip-active-color: "#007AFF"
       mush-chip-active-icon-color: "#007AFF"
       mush-chip-border-color: "#C6C6C8"
-      mush-chip-border-radius: "999px"
+      mush-chip-border-radius: "16px"
       mush-chip-font-size: "12px"
 
       # Mushroom / RGB-Hilfswerte
@@ -1315,9 +1345,9 @@ glas_basis:
       mush-rgb-state-media-player: "0, 122, 255"
       mush-rgb-state-vacuum: "0, 122, 255"
       mush-rgb-success: "52, 199, 89"
-      mush-rgb-warning: "255, 204, 0"
+      mush-rgb-warning: "255, 149, 0"
       mush-rgb-danger: "255, 59, 48"
-      mush-rgb-disabled: "142, 142, 147"
+      mush-rgb-disabled: "60, 60, 67"
       mush-rgb-info: "0, 122, 255"
 
       # UIX & Generator / Glaslook
@@ -1336,6 +1366,9 @@ glas_basis:
       hatg-glas-schatten-hoch: "0 20px 50px -20px rgba(0, 0, 0, 0.35)"
       hatg-glas-reflex: "linear-gradient(135deg, rgba(255,255,255,0.42) 0%, rgba(255,255,255,0.08) 38%, rgba(255,255,255,0) 62%)"
       hatg-glas-menuegrund: "#FFFFFF"
+      hatg-glas-nav-fuellung: "rgba(255, 255, 255, 0.45)"
+      hatg-glas-nav-blur: "32px"
+      hatg-glas-abdunkeln: "0"
 
       # UIX & Generator / Generator & Eigenes
       card-backdrop-blur: "none"
@@ -1346,9 +1379,9 @@ glas_basis:
       primary-color: "#0A84FF"
       dark-primary-color: "#075AAD"
       light-primary-color: "#BADDFF"
-      disabled-color: "#464646"
+      disabled-color: "rgba(235, 235, 245, 0.16)"
       error-color: "#FF453A"
-      warning-color: "#FFD60A"
+      warning-color: "#FF9F0A"
       success-color: "#30D158"
       info-color: "#0A84FF"
       red-color: "#FF453A"
@@ -1382,17 +1415,17 @@ glas_basis:
       primary-text-color: "#FFFFFF"
       secondary-text-color: "rgba(235, 235, 245, 0.6)"
       text-primary-color: "#000000"
-      disabled-text-color: "#636366"
+      disabled-text-color: "rgba(235, 235, 245, 0.3)"
 
       # HA-Grundgerüst / Card
       card-background-color: "#1C1C1E"
-      ha-card-background: "rgba(255, 255, 255, 0.1)"
+      ha-card-background: "var(--hatg-glas-fuellung)"
       ha-card-background-color: "#1C1C1E"
       wa-color-surface-raised: "#1C1C1E"
       ha-card-border-color: "rgba(225, 225, 225, 0.12)"
-      ha-card-border-radius: "14px"
-      ha-card-border-width: "1px"
-      ha-card-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
+      ha-card-border-radius: "16px"
+      ha-card-border-width: "0px"
+      ha-card-box-shadow: "0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.3)"
       table-row-background-color: "#2C2C2E"
       table-row-alternative-background-color: "#1C1C1E"
 
@@ -1410,7 +1443,7 @@ glas_basis:
       mdc-theme-on-surface: "#FFFFFF"
 
       # HA-Grundgerüst / Header
-      app-header-background-color: "rgba(255, 255, 255, 0.1)"
+      app-header-background-color: "var(--hatg-glas-nav-fuellung)"
       app-header-text-color: "#FFFFFF"
       app-header-backdrop-filter: "blur(8px) saturate(1.1)"
       app-header-edit-background-color: "rgba(30, 33, 54, 0.8)"
@@ -1427,7 +1460,7 @@ glas_basis:
       app-drawer-icon-color: "#ff9300"
 
       # HA-Grundgerüst / Sidebar
-      sidebar-background-color: "rgba(255, 255, 255, 0.1)"
+      sidebar-background-color: "var(--hatg-glas-nav-fuellung)"
       sidebar-selected-background-color: "#d5d5d5"
       sidebar-text-color: "#FFFFFF"
       sidebar-icon-color: "rgba(255, 255, 255, 0.6)"
@@ -1435,17 +1468,17 @@ glas_basis:
       sidebar-selected-icon-color: "#ff9300"
 
       # HA-Grundgerüst / Status, Icons & Entitäten
-      state-icon-color: "#ff9300"
+      state-icon-color: "rgba(235, 235, 245, 0.6)"
       state-icon-active-color: "#0A84FF"
       state-icon-unavailable-color: "#929292"
-      state-active-color: "#ff9300"
-      state-inactive-color: "#929292"
+      state-active-color: "#0A84FF"
+      state-inactive-color: "#8E8E93"
       state-unavailable-color: "#929292"
       state-on-color: "#30D158"
       state-off-color: "#636366"
       state-light-color: "#ff9300"
       state-light-active-color: "#ff9300"
-      state-light-on-color: "#ff9300"
+      state-light-on-color: "#FFD60A"
       state-switch-color: "#0A84FF"
       state-switch-active-color: "#0A84FF"
       state-switch-on-color: "#0A84FF"
@@ -1543,7 +1576,7 @@ glas_basis:
       label-badge-red: "#FF453A"
       label-badge-blue: "#0A84FF"
       label-badge-green: "#30D158"
-      label-badge-yellow: "#FFD60A"
+      label-badge-yellow: "#FF9F0A"
       state-battery-alert-color: "#ff2600"
 
       # HA-Grundgerüst / Schalter, Toggle & Slider
@@ -1570,9 +1603,9 @@ glas_basis:
       slider-track-color: "#48484A"
 
       # HA-Grundgerüst / Buttons & Chips
-      control-button-background-color: "rgba(255, 255, 255, 0.16)"
+      control-button-background-color: "var(--hatg-glas-fuellung-stark)"
       control-button-icon-color: "#0A84FF"
-      control-button-border-radius: "10px"
+      control-button-border-radius: "16px"
 
       # HA-Grundgerüst / Eingaben & Auswahlfelder
       input-background-color: "#1C1C1E"
@@ -1629,19 +1662,19 @@ glas_basis:
       ha-color-fill-danger-normal-hover: "rgba(255, 69, 58, 0.22)"
       ha-color-fill-danger-normal-active: "rgba(255, 69, 58, 0.28)"
       ha-color-on-danger-normal: "#F2F2F7"
-      ha-color-fill-warning-normal-resting: "rgba(255, 214, 10, 0.15)"
-      ha-color-fill-warning-normal-hover: "rgba(255, 214, 10, 0.22)"
-      ha-color-fill-warning-normal-active: "rgba(255, 214, 10, 0.28)"
+      ha-color-fill-warning-normal-resting: "rgba(255, 159, 10, 0.15)"
+      ha-color-fill-warning-normal-hover: "rgba(255, 159, 10, 0.22)"
+      ha-color-fill-warning-normal-active: "rgba(255, 159, 10, 0.28)"
       ha-color-on-warning-normal: "#F2F2F7"
       ha-tooltip-background-color: "#2C2C2E"
       ha-tooltip-text-color: "#F2F2F7"
 
       # HA-Grundgerüst / Abstände, Rundungen, Schatten & Rahmen
-      border-color: "rgba(225, 225, 225, 0.12)"
-      border-radius: "14px"
-      box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
-      divider-color: "rgba(225, 225, 225, 0.12)"
-      outline-color: "rgba(225, 225, 225, 0.12)"
+      border-color: "rgba(84, 84, 88, 0.65)"
+      border-radius: "12px"
+      box-shadow: "0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.3)"
+      divider-color: "rgba(84, 84, 88, 0.65)"
+      outline-color: "rgba(84, 84, 88, 0.65)"
       outline-variant-color: "#38383A"
       outline-hover-color: "rgba(225, 225, 225, 0.24)"
       ha-line-height-condensed: "1.25"
@@ -1654,12 +1687,12 @@ glas_basis:
       ha-border-radius-circle: "50%"
 
       # HA-Grundgerüst / Schrift & Typografie
-      primary-font-family: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', sans-serif"
-      ha-font-family-body: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', sans-serif"
-      ha-font-family-heading: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', sans-serif"
-      ha-font-family-longform: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', sans-serif"
-      ha-font-family-code: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', sans-serif"
-      mdc-typography-font-family: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', sans-serif"
+      primary-font-family: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue', sans-serif"
+      ha-font-family-body: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue', sans-serif"
+      ha-font-family-heading: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif"
+      ha-font-family-longform: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue', sans-serif"
+      ha-font-family-code: "ui-monospace, 'SF Mono', Menlo, monospace"
+      mdc-typography-font-family: "ui-monospace, 'SF Mono', Menlo, monospace"
       ha-font-size-scale: "1"
       ha-font-size-2xs: "8px"
       ha-font-size-xs: "8px"
@@ -1732,113 +1765,113 @@ glas_basis:
       energy-water-color: "#32ADE6"
 
       # Bubble Card / Karten & Hintergründe
-      bubble-card-background-color: "rgba(255, 255, 255, 0.1)"
-      bubble-main-buttons-background-color: "rgba(255, 255, 255, 0.1)"
-      bubble-secondary-background-color: "rgba(255, 255, 255, 0.16)"
-      bubble-icon-background-color: "rgba(255, 255, 255, 0.16)"
+      bubble-card-background-color: "var(--hatg-glas-fuellung)"
+      bubble-main-buttons-background-color: "var(--hatg-glas-fuellung)"
+      bubble-secondary-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-icon-background-color: "var(--hatg-glas-fuellung-stark)"
       bubble-icon-color: "#0A84FF"
       bubble-name-color: "#FFFFFF"
       bubble-state-color: "rgba(235, 235, 245, 0.6)"
       bubble-accent-color: "#0A84FF"
       bubble-active-color: "#0A84FF"
       bubble-toggle-color: "#0A84FF"
-      bubble-line-background-color: "rgba(225, 225, 225, 0.12)"
-      bubble-border: "1px solid #38383A"
+      bubble-line-background-color: "rgba(84, 84, 88, 0.65)"
+      bubble-border: "0px solid #38383A"
       bubble-border-color: "rgba(225, 225, 225, 0.12)"
-      bubble-border-radius: "14px"
-      bubble-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
-      bubble-card-border-radius: "14px"
-      bubble-icon-border-radius: "999px"
+      bubble-border-radius: "16px"
+      bubble-box-shadow: "0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.3)"
+      bubble-card-border-radius: "16px"
+      bubble-icon-border-radius: "14px"
 
       # Bubble Card / Select (Auswahlkarte)
-      bubble-select-main-background-color: "rgba(255, 255, 255, 0.1)"
-      bubble-select-background-color: "rgba(255, 255, 255, 0.1)"
-      bubble-select-border-radius: "14px"
+      bubble-select-main-background-color: "var(--hatg-glas-fuellung)"
+      bubble-select-background-color: "var(--hatg-glas-fuellung)"
+      bubble-select-border-radius: "16px"
       bubble-select-list-background-color: "#1C1C1E"
-      bubble-select-list-border-radius: "14px"
+      bubble-select-list-border-radius: "18px"
       bubble-select-list-width: "220px"
       bubble-select-list-item-accent-color: "#0A84FF"
       bubble-select-arrow-background-color: "#1C1C1E"
-      bubble-select-button-border-radius: "10px"
-      bubble-select-icon-background-color: "rgba(255, 255, 255, 0.16)"
-      bubble-select-icon-border-radius: "999px"
-      bubble-select-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
+      bubble-select-button-border-radius: "18px"
+      bubble-select-icon-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-select-icon-border-radius: "14px"
+      bubble-select-box-shadow: "0 10px 30px rgba(0,0,0,.50)"
 
       # Bubble Card / Buttons
-      bubble-button-background-color: "rgba(255, 255, 255, 0.16)"
+      bubble-button-background-color: "var(--hatg-glas-fuellung-stark)"
       bubble-button-active-background-color: "#0A84FF"
       bubble-button-icon-color: "#0A84FF"
       bubble-button-active-icon-color: "#000000"
       bubble-button-text-color: "#feffff"
       bubble-button-active-text-color: "#000000"
-      bubble-button-border-radius: "14px"
-      bubble-button-card-background-color: "rgba(255, 255, 255, 0.1)"
-      bubble-button-main-background-color: "rgba(255, 255, 255, 0.1)"
+      bubble-button-border-radius: "16px"
+      bubble-button-card-background-color: "var(--hatg-glas-fuellung)"
+      bubble-button-main-background-color: "var(--hatg-glas-fuellung)"
       bubble-button-active-color: "#0A84FF"
-      bubble-button-icon-border-radius: "999px"
-      bubble-button-icon-background-color: "rgba(255, 255, 255, 0.16)"
+      bubble-button-icon-border-radius: "14px"
+      bubble-button-icon-background-color: "var(--hatg-glas-fuellung-stark)"
       bubble-light-white-color: "#FFFFFF"
       bubble-light-color: "#FFC107"
-      bubble-button-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
+      bubble-button-box-shadow: "0 10px 30px rgba(0,0,0,.50)"
 
       # Bubble Card / Sub-Buttons
-      bubble-sub-button-background-color: "rgba(255, 255, 255, 0.16)"
+      bubble-sub-button-background-color: "var(--hatg-glas-fuellung-stark)"
       bubble-sub-button-active-background-color: "#0A84FF"
       bubble-sub-button-icon-color: "#0A84FF"
       bubble-sub-button-active-icon-color: "#000000"
       bubble-sub-button-text-color: "#C7C7CC"
       bubble-sub-button-active-text-color: "#000000"
-      bubble-sub-button-border-radius: "10px"
-      bubble-sub-button-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
-      bubble-sub-buttons-main-background-color: "rgba(255, 255, 255, 0.1)"
-      bubble-sub-slider-border-radius: "14px"
-      bubble-sub-slider-background-color: "rgba(255, 255, 255, 0.16)"
+      bubble-sub-button-border-radius: "14px"
+      bubble-sub-button-box-shadow: "0 4px 11px rgba(0,0,0,.45)"
+      bubble-sub-buttons-main-background-color: "var(--hatg-glas-fuellung)"
+      bubble-sub-slider-border-radius: "18px"
+      bubble-sub-slider-background-color: "var(--hatg-glas-fuellung-stark)"
       bubble-sub-slider-height: "48px"
       bubble-sub-button-dark-text-color: "#1C1C1E"
       bubble-footer-width: "320px"
       bubble-footer-bottom: "16px"
-      bubble-footer-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
+      bubble-footer-box-shadow: "0 10px 30px rgba(0,0,0,.50)"
 
       # Bubble Card / Separator
-      bubble-separator-background-color: "rgba(255, 255, 255, 0.1)"
-      bubble-separator-icon-background-color: "rgba(255, 255, 255, 0.16)"
+      bubble-separator-background-color: "var(--hatg-glas-fuellung)"
+      bubble-separator-icon-background-color: "var(--hatg-glas-fuellung-stark)"
       bubble-separator-icon-color: "#0A84FF"
-      bubble-separator-line-color: "rgba(225, 225, 225, 0.12)"
+      bubble-separator-line-color: "rgba(84, 84, 88, 0.65)"
       bubble-separator-name-color: "#feffff"
       bubble-separator-text-color: "#feffff"
-      bubble-separator-border-radius: "14px"
+      bubble-separator-border-radius: "16px"
 
       # Bubble Card / Popup & Dialog
-      bubble-pop-up-background-color: "rgba(255, 255, 255, 0.16)"
+      bubble-pop-up-background-color: "var(--hatg-glas-fuellung-stark)"
       bubble-pop-up-backdrop-filter: "blur(18px)"
-      bubble-pop-up-border-radius: "20px"
-      bubble-pop-up-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
-      dialog-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
+      bubble-pop-up-border-radius: "16px"
+      bubble-pop-up-box-shadow: "0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.3)"
+      dialog-box-shadow: "0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.3)"
       more-info-header-background: "#2C2C2E"
       more-info-header-color: "#F2F2F7"
-      popup-border-radius: "20px"
+      popup-border-radius: "12px"
       ha-dialog-scrim-backdrop-filter: "blur(10px)"
       ha-dialog-surface-background: "rgba(28, 28, 30, 0.92)"
       mdc-dialog-scrim-color: "rgba(0, 0, 0, 0.60)"
-      bubble-pop-up-main-background-color: "rgba(255, 255, 255, 0.16)"
+      bubble-pop-up-main-background-color: "var(--hatg-glas-fuellung-stark)"
       bubble-backdrop-background-color: "rgba(0, 0, 0, 0.55)"
 
       # Bubble Card / Horizontal Buttons Stack
-      bubble-horizontal-buttons-stack-background-color: "rgba(255, 255, 255, 0.1)"
-      bubble-horizontal-buttons-stack-button-background-color: "rgba(255, 255, 255, 0.16)"
+      bubble-horizontal-buttons-stack-background-color: "var(--hatg-glas-fuellung)"
+      bubble-horizontal-buttons-stack-button-background-color: "var(--hatg-glas-fuellung-stark)"
       bubble-horizontal-buttons-stack-button-icon-color: "#C7C7CC"
       bubble-horizontal-buttons-stack-button-text-color: "#F2F2F7"
-      bubble-horizontal-buttons-stack-border-radius: "14px"
-      bubble-horizontal-buttons-stack-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
+      bubble-horizontal-buttons-stack-border-radius: "16px"
+      bubble-horizontal-buttons-stack-box-shadow: "0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.3)"
 
       # Bubble Card / Climate
-      bubble-climate-background-color: "rgba(255, 255, 255, 0.1)"
-      bubble-climate-main-background-color: "rgba(255, 255, 255, 0.1)"
-      bubble-climate-button-background-color: "rgba(255, 255, 255, 0.16)"
+      bubble-climate-background-color: "var(--hatg-glas-fuellung)"
+      bubble-climate-main-background-color: "var(--hatg-glas-fuellung)"
+      bubble-climate-button-background-color: "var(--hatg-glas-fuellung-stark)"
       bubble-climate-button-icon-color: "#C7C7CC"
-      bubble-climate-border-radius: "14px"
-      bubble-climate-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
-      bubble-climate-icon-border-radius: "999px"
+      bubble-climate-border-radius: "16px"
+      bubble-climate-box-shadow: "0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.3)"
+      bubble-climate-icon-border-radius: "32px"
       bubble-state-climate-fan-only-color: "#64D2FF"
       bubble-state-climate-dry-color: "#FF9F0A"
       bubble-state-climate-cool-color: "#0A84FF"
@@ -1848,32 +1881,32 @@ glas_basis:
       bubble-climate-accent-color: "#0A84FF"
 
       # Bubble Card / Cover
-      bubble-cover-background-color: "rgba(255, 255, 255, 0.1)"
-      bubble-cover-main-background-color: "rgba(255, 255, 255, 0.1)"
-      bubble-cover-button-background-color: "rgba(255, 255, 255, 0.16)"
+      bubble-cover-background-color: "var(--hatg-glas-fuellung)"
+      bubble-cover-main-background-color: "var(--hatg-glas-fuellung)"
+      bubble-cover-button-background-color: "var(--hatg-glas-fuellung-stark)"
       bubble-cover-button-icon-color: "#C7C7CC"
-      bubble-cover-border-radius: "14px"
-      bubble-cover-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
-      bubble-cover-icon-border-radius: "999px"
-      bubble-cover-icon-background-color: "rgba(255, 255, 255, 0.16)"
+      bubble-cover-border-radius: "16px"
+      bubble-cover-box-shadow: "0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.3)"
+      bubble-cover-icon-border-radius: "14px"
+      bubble-cover-icon-background-color: "var(--hatg-glas-fuellung-stark)"
 
       # Bubble Card / Media Player
-      bubble-media-player-background-color: "rgba(255, 255, 255, 0.1)"
-      bubble-media-player-main-background-color: "rgba(255, 255, 255, 0.1)"
-      bubble-media-player-button-background-color: "rgba(255, 255, 255, 0.16)"
+      bubble-media-player-background-color: "var(--hatg-glas-fuellung)"
+      bubble-media-player-main-background-color: "var(--hatg-glas-fuellung)"
+      bubble-media-player-button-background-color: "var(--hatg-glas-fuellung-stark)"
       bubble-media-player-button-icon-color: "#C7C7CC"
-      bubble-media-player-border-radius: "14px"
-      bubble-media-player-box-shadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
-      bubble-media-player-buttons-border-radius: "999px"
-      bubble-media-player-slider-background-color: "rgba(255, 255, 255, 0.16)"
-      bubble-media-player-icon-border-radius: "999px"
-      bubble-media-player-icon-background-color: "rgba(255, 255, 255, 0.16)"
+      bubble-media-player-border-radius: "16px"
+      bubble-media-player-box-shadow: "0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.3)"
+      bubble-media-player-buttons-border-radius: "14px"
+      bubble-media-player-slider-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-media-player-icon-border-radius: "14px"
+      bubble-media-player-icon-background-color: "var(--hatg-glas-fuellung-stark)"
 
       # Bubble Card / Calendar
-      bubble-calendar-main-background-color: "rgba(255, 255, 255, 0.1)"
+      bubble-calendar-main-background-color: "var(--hatg-glas-fuellung)"
       bubble-calendar-height: "56px"
       bubble-calendar-mask-size: "16px"
-      bubble-calendar-border-radius: "14px"
+      bubble-calendar-border-radius: "18px"
       bubble-event-background-color: "#1C1C1E"
       bubble-event-background-image: "none"
 
@@ -1907,7 +1940,7 @@ glas_basis:
       mush-chip-active-color: "#0A84FF"
       mush-chip-active-icon-color: "#0A84FF"
       mush-chip-border-color: "#38383A"
-      mush-chip-border-radius: "999px"
+      mush-chip-border-radius: "16px"
       mush-chip-font-size: "12px"
 
       # Mushroom / RGB-Hilfswerte
@@ -1921,9 +1954,9 @@ glas_basis:
       mush-rgb-state-media-player: "10, 132, 255"
       mush-rgb-state-vacuum: "10, 132, 255"
       mush-rgb-success: "48, 209, 88"
-      mush-rgb-warning: "255, 214, 10"
+      mush-rgb-warning: "255, 159, 10"
       mush-rgb-danger: "255, 69, 58"
-      mush-rgb-disabled: "99, 99, 102"
+      mush-rgb-disabled: "235, 235, 245"
       mush-rgb-info: "10, 132, 255"
 
       # UIX & Generator / Glaslook
@@ -1942,6 +1975,9 @@ glas_basis:
       hatg-glas-schatten-hoch: "0 22px 55px -22px rgba(0, 0, 0, 0.8)"
       hatg-glas-reflex: "linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)"
       hatg-glas-menuegrund: "#1C1C1E"
+      hatg-glas-nav-fuellung: "rgba(255, 255, 255, 0.12)"
+      hatg-glas-nav-blur: "32px"
+      hatg-glas-abdunkeln: "0"
 
       # UIX & Generator / Generator & Eigenes
       card-backdrop-blur: "none"
