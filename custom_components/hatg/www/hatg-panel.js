@@ -1605,8 +1605,8 @@ const HATG_VORLAGEN = [
     css: `:host {
   /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
      deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --ha-card-background: transparent !important;
-  --card-background-color: transparent !important;
+  --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+  --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
 }
 ha-card {
   background-color: rgba(255, 255, 255, 0.5) !important;
@@ -1646,10 +1646,10 @@ ha-card.text-only {
     css: `:host {
   /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
      deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --ha-dialog-surface-background: transparent !important;
-  --ha-color-surface-default: transparent !important;
-  --wa-color-surface-raised: transparent !important;
-  --card-background-color: transparent !important;
+  --ha-dialog-surface-background: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
+  --ha-color-surface-default: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
+  --wa-color-surface-raised: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
+  --card-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
   --ha-dialog-surface-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%)) !important;
 }
 ha-card {
@@ -1679,10 +1679,10 @@ ha-card {
     css: `:host {
   /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
      deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --ha-dialog-surface-background: transparent !important;
-  --ha-color-surface-default: transparent !important;
-  --wa-color-surface-raised: transparent !important;
-  --card-background-color: transparent !important;
+  --ha-dialog-surface-background: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
+  --ha-color-surface-default: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
+  --wa-color-surface-raised: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
+  --card-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
   --ha-dialog-surface-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%)) !important;
 }
 ha-dialog,
@@ -1714,8 +1714,8 @@ ha-adaptive-dialog,
     css: `:host {
   /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
      deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --ha-card-background: transparent !important;
-  --card-background-color: transparent !important;
+  --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+  --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
 }
 .mdc-snackbar__surface {
   background-color: rgba(255, 255, 255, 0.5) !important;
@@ -1744,8 +1744,8 @@ ha-adaptive-dialog,
     css: `:host {
   /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
      deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --ha-card-background: transparent !important;
-  --card-background-color: transparent !important;
+  --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+  --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
 }
 ha-card {
   background-color: rgba(255, 255, 255, 0.5) !important;
@@ -1774,8 +1774,8 @@ ha-card {
     css: `:host {
   /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
      deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --ha-card-background: transparent !important;
-  --card-background-color: transparent !important;
+  --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+  --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
 }
 ha-badge {
   background-color: rgba(255, 255, 255, 0.35) !important;
@@ -1804,8 +1804,8 @@ ha-badge {
     css: `:host {
   /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
      deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --ha-card-background: transparent !important;
-  --card-background-color: transparent !important;
+  --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+  --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
 }
 :host {
   background-color: rgba(255, 255, 255, 0.35) !important;
@@ -1882,8 +1882,8 @@ ha-badge {
     css: `:host {
   /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
      deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --ha-card-background: transparent !important;
-  --card-background-color: transparent !important;
+  --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+  --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
 }
 ha-card {
   background-color: rgba(255, 255, 255, 0.5) !important;
@@ -1923,8 +1923,8 @@ ha-card.text-only {
     css: `:host {
   /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
      deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --ha-section-background-color: transparent !important;
-  --section-background-color: transparent !important;
+  --ha-section-background-color: var(--hatg-glas-fuellung-leicht, rgba(255, 255, 255, 0.35)) !important;
+  --section-background-color: var(--hatg-glas-fuellung-leicht, rgba(255, 255, 255, 0.35)) !important;
 }
 .container {
   background-color: rgba(255, 255, 255, 0.35) !important;
@@ -1953,8 +1953,8 @@ ha-card.text-only {
     css: `:host {
   /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
      deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --ha-card-background: transparent !important;
-  --card-background-color: transparent !important;
+  --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+  --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
 }
 ha-card {
   background-color: rgba(255, 255, 255, 0.5) !important;
@@ -1983,8 +1983,8 @@ ha-card {
     css: `:host {
   /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
      deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --ha-card-background: transparent !important;
-  --card-background-color: transparent !important;
+  --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+  --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
 }
 ha-card {
   background-color: rgba(255, 255, 255, 0.5) !important;
@@ -2013,8 +2013,8 @@ ha-card {
     css: `:host {
   /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
      deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --ha-card-background: transparent !important;
-  --card-background-color: transparent !important;
+  --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+  --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
 }
 ha-card {
   background-color: rgba(255, 255, 255, 0.5) !important;
@@ -2043,8 +2043,8 @@ ha-card {
     css: `:host {
   /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
      deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --ha-card-background: transparent !important;
-  --card-background-color: transparent !important;
+  --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+  --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
 }
 ha-card {
   background-color: rgba(255, 255, 255, 0.5) !important;
@@ -2073,8 +2073,8 @@ ha-card {
     css: `:host {
   /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
      deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --ha-card-background: transparent !important;
-  --card-background-color: transparent !important;
+  --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+  --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
 }
 ha-card {
   background-color: rgba(255, 255, 255, 0.5) !important;
@@ -2220,7 +2220,7 @@ ha-control-slider {
     css: `:host {
   /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
      deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --sidebar-background-color: transparent !important;
+  --sidebar-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
 }
 :host {
   background-color: rgba(255, 255, 255, 0.5) !important;
@@ -2277,8 +2277,8 @@ ha-list-item-button::before {
     css: `:host {
   /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
      deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --app-header-background-color: transparent !important;
-  --sidebar-background-color: transparent !important;
+  --app-header-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+  --sidebar-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
 }
 .mdc-drawer {
   background-color: rgba(255, 255, 255, 0.5) !important;
@@ -2331,7 +2331,7 @@ ha-adaptive-dialog {
     css: `:host {
   /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
      deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --app-header-background-color: transparent !important;
+  --app-header-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
 }
 .mdc-top-app-bar {
   background-color: rgba(255, 255, 255, 0.5) !important;
