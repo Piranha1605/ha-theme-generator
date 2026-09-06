@@ -232,7 +232,7 @@ const HATG_TEXTE = {
   "Einstellungsseiten: luftige Liste": "Settings pages: airier list",
   "Gibt den Einträgen auf den Einstellungsseiten Abstand zueinander, rundet die Hervorhebung beim Antippen im Kartenradius ab und macht aus den runden Icon-Kreisen abgerundete Quadrate. Setzt nur Variablen an der Wurzel, kommt also ohne Shadow-DOM-Pfade aus und übersteht Umbauten im Frontend.": "Puts space between the entries on the settings pages, rounds the tap highlight to your card radius and turns the round icon circles into rounded squares. Only sets variables at the root, so it needs no shadow DOM paths and survives frontend rebuilds.",
   "Einstellungsseiten im iOS-Stil": "Settings pages in iOS style",
-  "Macht aus den runden Farbkreisen abgerundete Quadrate, wie iOS sie in seinen Einstellungen zeigt - mit Lichtverlauf, feiner Kante und kurzem Schatten. Dazu kräftigere Überschriften, zurückgenommene Untertitel und leisere Pfeile am Zeilenende. Alle Werte stehen als eigene Felder im Bereich Glaslook; wer etwas davon nicht will, setzt den betreffenden Wert auf den Ausgangszustand zurück. Der Shadow-DOM-Pfad wurde mit uix_style_path in einer laufenden Instanz geprüft.": "Turns the round colour circles into rounded squares, the way iOS shows them in its settings - with a light gradient, a fine edge and a short shadow. Plus heavier headlines, quieter supporting text and paler chevrons at the end of each row. Every value is a field of its own under Glass look; anything you don't want, you set back to its starting value. The shadow DOM path was verified with uix_style_path in a running instance.",
+  "Macht aus den runden Farbkreisen abgerundete Quadrate, wie iOS sie in seinen Einstellungen zeigt - mit Lichtverlauf, feiner Kante und kurzem Schatten. Dazu kräftigere Überschriften, zurückgenommene Untertitel und leisere Pfeile am Zeilenende. Gilt für beide Navigationslisten der Einstellungen: die Startseite und die Seite System. Alle Werte stehen als eigene Felder im Bereich Glaslook; wer etwas davon nicht will, setzt den betreffenden Wert auf den Ausgangszustand zurück. Die Shadow-DOM-Pfade wurden mit uix_style_path in einer laufenden Instanz geprüft.": "Turns the round colour circles into rounded squares, the way iOS shows them in its settings - with a light gradient, a fine edge and a short shadow. Plus heavier headlines, quieter supporting text and paler chevrons at the end of each row. Covers both settings navigation lists: the start page and the System page. Every value is a field of its own under Glass look; anything you don't want, you set back to its starting value. The shadow DOM paths were verified with uix_style_path in a running instance.",
   "Glas: eigene Ebene unter der Karte": "Glass: its own layer beneath the card",
   "Milchiges Glas, das den Weichzeichner nicht auf die Karte selbst legt, sondern auf eine Ebene darunter. Anders als der einfache Glas-Effekt bleibt der Kartenhintergrund dadurch mit Hintergrundbildern und Verläufen verträglich. Hüllen-Karten (Überschriften, Mushroom-Titel und -Chips, reine Textkarten) sind bewusst ausgenommen, damit sie nicht plötzlich als Kachel erscheinen.": "Frosted glass that puts the blur on a layer beneath the card instead of on the card itself. Unlike the plain glass effect, the card background stays compatible with background images and gradients. Wrapper cards (headings, Mushroom titles and chips, text-only cards) are deliberately excluded so they do not suddenly show up as tiles.",
   "Seitenleiste: aktiver Eintrag als Glaskörper": "Sidebar: active entry as a glass body",
@@ -1705,6 +1705,49 @@ function hatgVorlagenZieleAlle(vorlagen) {
   return [...ziele];
 }
 
+// Dieselben Zeilenregeln fuer jede Navigationsliste der Einstellungen.
+// Die Pfade stehen einzeln darunter, weil jede Seite ihren eigenen
+// Panel-Namen hat - mit uix_style_path in einer laufenden Instanz geprueft.
+const HATG_EINSTELLUNGEN_ZEILEN = `  ha-list-nav ha-list-item-button div.icon-background {
+    width: var(--hatg-icon-groesse, 34px) !important;
+    height: var(--hatg-icon-groesse, 34px) !important;
+    /* iOS setzt abgerundete Quadrate statt Kreise */
+    border-radius: var(--hatg-icon-radius, 28%) !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    background-image: var(--hatg-icon-glanz, linear-gradient(160deg, rgba(255,255,255,0.34) 0%, rgba(255,255,255,0.06) 52%, rgba(255,255,255,0) 78%)) !important;
+    box-shadow:
+      inset 0 0 0 1px var(--hatg-icon-rand, rgba(255, 255, 255, 0.16)),
+      inset 0 1px 0 rgba(255, 255, 255, 0.34),
+      var(--hatg-icon-schatten, 0 1px 2px rgba(0, 0, 0, 0.35)) !important;
+  }
+  ha-list-nav ha-list-item-button div.icon-background ha-svg-icon {
+    padding: 0 !important;
+    width: 20px;
+    height: 20px;
+  }
+  ha-list-nav ha-list-item-button span[slot="headline"] {
+    font-size: var(--hatg-liste-titel-groesse, 15px);
+    font-weight: var(--hatg-liste-titel-gewicht, 600);
+  }
+  ha-list-nav ha-list-item-button span[slot="supporting-text"] {
+    font-size: var(--hatg-liste-untertitel-groesse, 12.5px);
+    opacity: var(--hatg-liste-untertitel-deckkraft, 0.68);
+  }
+  ha-list-nav ha-list-item-button ha-icon-next {
+    width: var(--hatg-liste-pfeil-groesse, 18px);
+    height: var(--hatg-liste-pfeil-groesse, 18px);
+    opacity: var(--hatg-liste-pfeil-deckkraft, 0.4);
+  }`;
+const HATG_EINSTELLUNGEN_PFADE = [
+  "ha-config-dashboard $$ ha-config-navigation-list $",
+  "ha-config-system-navigation $ ha-config-navigation-list $",
+];
+const HATG_EINSTELLUNGEN_CSS = HATG_EINSTELLUNGEN_PFADE.map(
+  (pfad) => `"${pfad}": |\n${HATG_EINSTELLUNGEN_ZEILEN}`
+).join("\n");
+
 const HATG_VORLAGEN = [
   {
     id: "kartenfarben-verlauf",
@@ -2649,41 +2692,9 @@ ha-adaptive-dialog {
   {
     id: "einstellungen-icons-gross",
     label: "Einstellungsseiten im iOS-Stil",
-    desc: "Macht aus den runden Farbkreisen abgerundete Quadrate, wie iOS sie in seinen Einstellungen zeigt - mit Lichtverlauf, feiner Kante und kurzem Schatten. Dazu kräftigere Überschriften, zurückgenommene Untertitel und leisere Pfeile am Zeilenende. Alle Werte stehen als eigene Felder im Bereich Glaslook; wer etwas davon nicht will, setzt den betreffenden Wert auf den Ausgangszustand zurück. Der Shadow-DOM-Pfad wurde mit uix_style_path in einer laufenden Instanz geprüft.",
+    desc: "Macht aus den runden Farbkreisen abgerundete Quadrate, wie iOS sie in seinen Einstellungen zeigt - mit Lichtverlauf, feiner Kante und kurzem Schatten. Dazu kräftigere Überschriften, zurückgenommene Untertitel und leisere Pfeile am Zeilenende. Gilt für beide Navigationslisten der Einstellungen: die Startseite und die Seite System. Alle Werte stehen als eigene Felder im Bereich Glaslook; wer etwas davon nicht will, setzt den betreffenden Wert auf den Ausgangszustand zurück. Die Shadow-DOM-Pfade wurden mit uix_style_path in einer laufenden Instanz geprüft.",
     ziel: "uix-config-yaml",
-    css: `ha-config-dashboard $$ ha-config-navigation-list $: |
-  ha-list-nav ha-list-item-button div.icon-background {
-    width: var(--hatg-icon-groesse, 34px) !important;
-    height: var(--hatg-icon-groesse, 34px) !important;
-    /* iOS setzt abgerundete Quadrate statt Kreise */
-    border-radius: var(--hatg-icon-radius, 28%) !important;
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    background-image: var(--hatg-icon-glanz, linear-gradient(160deg, rgba(255,255,255,0.34) 0%, rgba(255,255,255,0.06) 52%, rgba(255,255,255,0) 78%)) !important;
-    box-shadow:
-      inset 0 0 0 1px var(--hatg-icon-rand, rgba(255, 255, 255, 0.16)),
-      inset 0 1px 0 rgba(255, 255, 255, 0.34),
-      var(--hatg-icon-schatten, 0 1px 2px rgba(0, 0, 0, 0.35)) !important;
-  }
-  ha-list-nav ha-list-item-button div.icon-background ha-svg-icon {
-    padding: 0 !important;
-    width: 20px;
-    height: 20px;
-  }
-  ha-list-nav ha-list-item-button span[slot="headline"] {
-    font-size: var(--hatg-liste-titel-groesse, 15px);
-    font-weight: var(--hatg-liste-titel-gewicht, 600);
-  }
-  ha-list-nav ha-list-item-button span[slot="supporting-text"] {
-    font-size: var(--hatg-liste-untertitel-groesse, 12.5px);
-    opacity: var(--hatg-liste-untertitel-deckkraft, 0.68);
-  }
-  ha-list-nav ha-list-item-button ha-icon-next {
-    width: var(--hatg-liste-pfeil-groesse, 18px);
-    height: var(--hatg-liste-pfeil-groesse, 18px);
-    opacity: var(--hatg-liste-pfeil-deckkraft, 0.4);
-  }`,
+    css: HATG_EINSTELLUNGEN_CSS,
   },
 ];
 
