@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.1.0b8";
+const HATG_VERSION = "1.1.0b9";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -237,6 +237,16 @@ const HATG_TEXTE = {
   "Milchiges Glas, das den Weichzeichner nicht auf die Karte selbst legt, sondern auf eine Ebene darunter. Anders als der einfache Glas-Effekt bleibt der Kartenhintergrund dadurch mit Hintergrundbildern und Verläufen verträglich. Hüllen-Karten (Überschriften, Mushroom-Titel und -Chips, reine Textkarten) sind bewusst ausgenommen, damit sie nicht plötzlich als Kachel erscheinen.": "Frosted glass that puts the blur on a layer beneath the card instead of on the card itself. Unlike the plain glass effect, the card background stays compatible with background images and gradients. Wrapper cards (headings, Mushroom titles and chips, text-only cards) are deliberately excluded so they do not suddenly show up as tiles.",
   "Seitenleiste: aktiver Eintrag als Glaskörper": "Sidebar: active entry as a glass body",
   "Der markierte Eintrag wird zum Glaskörper statt zur flachen Farbfläche: Verlauf in der Auswahlfarbe, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Home Assistant zeichnet diese Fläche als Overlay mit fester Deckkraft - die Vorlage hebt sie auf und ersetzt sie durch die Schichten.": "The highlighted entry becomes a glass body instead of a flat colour patch: a gradient in the selection colour, a light edge at the top, a shadow edge at the bottom, a fine border and a soft drop shadow. Home Assistant draws that surface as an overlay with fixed opacity - the preset lifts it and replaces it with the layers.",
+  "Bedienelemente in Glas: Karten": "Glass controls: cards",
+  "Bedienelemente in Glas: Kopfleiste und Rahmen": "Glass controls: top bar and frame",
+  "Bedienelemente in Glas: Dialoge": "Glass controls: dialogs",
+  "Bedienelemente in Glas: Einstellungsseiten": "Glass controls: settings pages",
+  "Bedienelemente in Glas: Glanz": "Glass controls: sheen",
+  "Gibt Schaltflächen denselben Aufbau wie dem aktiven Eintrag der Seitenleiste: Eckenradius der Karten, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Betrifft die Bedienelemente in Karten: Tile-Regler, Buttons in Entities- und Glance-Karten, Assist-Chips. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.": "Gives buttons the same build as the active sidebar entry: your card corner radius, a light edge at the top, a shadow edge at the bottom, a fine border and a soft drop shadow. Applies to the controls inside cards: tile controls, buttons in entities and glance cards, assist chips. It only sets variables Home Assistant provides itself, so it needs no shadow DOM paths.",
+  "Gibt Schaltflächen denselben Aufbau wie dem aktiven Eintrag der Seitenleiste: Eckenradius der Karten, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Betrifft die Icon-Buttons der Kopfleiste - Suche, Assist, Bearbeiten, Benachrichtigungen - und alles Übrige am Dashboard-Rahmen. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.": "Gives buttons the same build as the active sidebar entry: your card corner radius, a light edge at the top, a shadow edge at the bottom, a fine border and a soft drop shadow. Applies to the icon buttons in the top bar - search, assist, edit, notifications - and everything else on the dashboard frame. It only sets variables Home Assistant provides itself, so it needs no shadow DOM paths.",
+  "Gibt Schaltflächen denselben Aufbau wie dem aktiven Eintrag der Seitenleiste: Eckenradius der Karten, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Betrifft die Schaltflächen in Dialogen, also Abbrechen, Speichern und das Schließen-Kreuz. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.": "Gives buttons the same build as the active sidebar entry: your card corner radius, a light edge at the top, a shadow edge at the bottom, a fine border and a soft drop shadow. Applies to the buttons in dialogs, meaning cancel, save and the close cross. It only sets variables Home Assistant provides itself, so it needs no shadow DOM paths.",
+  "Gibt Schaltflächen denselben Aufbau wie dem aktiven Eintrag der Seitenleiste: Eckenradius der Karten, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Betrifft die Schaltflächen auf den Einstellungsseiten, inklusive der Aktionsknöpfe in den Listen. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.": "Gives buttons the same build as the active sidebar entry: your card corner radius, a light edge at the top, a shadow edge at the bottom, a fine border and a soft drop shadow. Applies to the buttons on the settings pages, including the action buttons in the lists. It only sets variables Home Assistant provides itself, so it needs no shadow DOM paths.",
+  "Der Feinschliff zu den Glas-Bedienelementen: legt den hellen Lichtverlauf und die Weichzeichnung auf die Fläche der Schaltflächen in Karten. Braucht dafür einen Shadow-DOM-Pfad in ha-button - wirkt nur zusammen mit der Vorlage für Karten und sollte nach einem größeren Update von Home Assistant nachgeprüft werden.": "The finishing touch for the glass controls: puts the bright sheen and the blur onto the surface of the buttons in cards. It needs a shadow DOM path into ha-button, only works together with the cards preset, and should be checked after a major Home Assistant update.",
   "Seitenleiste in Glas": "Sidebar in glass",
   "Die Seitenleiste wird durchscheinend und weichgezeichnet, die Einträge übernehmen den Eckenradius deiner Karten. Wirkt nur, wenn hinter der Seitenleiste etwas zu sehen ist - also mit Hintergrundbild oder einem farbigen Verlauf.": "The sidebar becomes translucent and blurred, and its entries take on your card corner radius. Only visible when there is something behind the sidebar - a background image or a coloured gradient.",
   "App Drawer in Glas": "App drawer in glass",
@@ -1585,6 +1595,123 @@ ha-card.text-only {
 ha-card.text-only::before {
   content: none !important;
 }`,
+  },
+  {
+    id: "glas-buttons-karten",
+    label: "Bedienelemente in Glas: Karten",
+    desc: "Gibt Schaltflächen denselben Aufbau wie dem aktiven Eintrag der Seitenleiste: Eckenradius der Karten, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Betrifft die Bedienelemente in Karten: Tile-Regler, Buttons in Entities- und Glance-Karten, Assist-Chips. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.",
+    ziel: "uix-card",
+    css: `ha-button,
+ha-icon-button,
+ha-assist-chip {
+  --ha-button-border-radius: var(--ha-card-border-radius, 14px);
+  --ha-button-box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.22),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 4px 10px -6px rgba(0, 0, 0, 0.55);
+}
+ha-control-button,
+ha-control-select,
+ha-control-slider {
+  --control-button-border-radius: var(--ha-card-border-radius, 14px);
+  --control-select-border-radius: var(--ha-card-border-radius, 14px);
+  --control-slider-border-radius: var(--ha-card-border-radius, 14px);
+  --control-button-background-color: var(--primary-color);
+  --control-button-background-opacity: 0.22;
+}`,
+  },
+  {
+    id: "glas-buttons-rahmen",
+    label: "Bedienelemente in Glas: Kopfleiste und Rahmen",
+    desc: "Gibt Schaltflächen denselben Aufbau wie dem aktiven Eintrag der Seitenleiste: Eckenradius der Karten, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Betrifft die Icon-Buttons der Kopfleiste - Suche, Assist, Bearbeiten, Benachrichtigungen - und alles Übrige am Dashboard-Rahmen. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.",
+    ziel: "uix-root",
+    css: `ha-button,
+ha-icon-button,
+ha-assist-chip {
+  --ha-button-border-radius: var(--ha-card-border-radius, 14px);
+  --ha-button-box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.22),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 4px 10px -6px rgba(0, 0, 0, 0.55);
+}
+ha-control-button,
+ha-control-select,
+ha-control-slider {
+  --control-button-border-radius: var(--ha-card-border-radius, 14px);
+  --control-select-border-radius: var(--ha-card-border-radius, 14px);
+  --control-slider-border-radius: var(--ha-card-border-radius, 14px);
+  --control-button-background-color: var(--primary-color);
+  --control-button-background-opacity: 0.22;
+}`,
+  },
+  {
+    id: "glas-buttons-dialoge",
+    label: "Bedienelemente in Glas: Dialoge",
+    desc: "Gibt Schaltflächen denselben Aufbau wie dem aktiven Eintrag der Seitenleiste: Eckenradius der Karten, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Betrifft die Schaltflächen in Dialogen, also Abbrechen, Speichern und das Schließen-Kreuz. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.",
+    ziel: "uix-dialog",
+    css: `ha-button,
+ha-icon-button,
+ha-assist-chip {
+  --ha-button-border-radius: var(--ha-card-border-radius, 14px);
+  --ha-button-box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.22),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 4px 10px -6px rgba(0, 0, 0, 0.55);
+}
+ha-control-button,
+ha-control-select,
+ha-control-slider {
+  --control-button-border-radius: var(--ha-card-border-radius, 14px);
+  --control-select-border-radius: var(--ha-card-border-radius, 14px);
+  --control-slider-border-radius: var(--ha-card-border-radius, 14px);
+  --control-button-background-color: var(--primary-color);
+  --control-button-background-opacity: 0.22;
+}`,
+  },
+  {
+    id: "glas-buttons-einstellungen",
+    label: "Bedienelemente in Glas: Einstellungsseiten",
+    desc: "Gibt Schaltflächen denselben Aufbau wie dem aktiven Eintrag der Seitenleiste: Eckenradius der Karten, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Betrifft die Schaltflächen auf den Einstellungsseiten, inklusive der Aktionsknöpfe in den Listen. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.",
+    ziel: "uix-config",
+    css: `ha-button,
+ha-icon-button,
+ha-assist-chip {
+  --ha-button-border-radius: var(--ha-card-border-radius, 14px);
+  --ha-button-box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.22),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 4px 10px -6px rgba(0, 0, 0, 0.55);
+}
+ha-control-button,
+ha-control-select,
+ha-control-slider {
+  --control-button-border-radius: var(--ha-card-border-radius, 14px);
+  --control-select-border-radius: var(--ha-card-border-radius, 14px);
+  --control-slider-border-radius: var(--ha-card-border-radius, 14px);
+  --control-button-background-color: var(--primary-color);
+  --control-button-background-opacity: 0.22;
+}`,
+  },
+  {
+    id: "glas-buttons-glanz",
+    label: "Bedienelemente in Glas: Glanz",
+    desc: "Der Feinschliff zu den Glas-Bedienelementen: legt den hellen Lichtverlauf und die Weichzeichnung auf die Fläche der Schaltflächen in Karten. Braucht dafür einen Shadow-DOM-Pfad in ha-button - wirkt nur zusammen mit der Vorlage für Karten und sollte nach einem größeren Update von Home Assistant nachgeprüft werden.",
+    ziel: "uix-card-yaml",
+    css: `ha-button $: |
+  .button {
+    background-image: linear-gradient(
+      160deg,
+      rgba(255, 255, 255, 0.26) 0%,
+      rgba(255, 255, 255, 0.05) 46%,
+      rgba(255, 255, 255, 0) 72%
+    );
+    backdrop-filter: blur(6px) saturate(160%);
+    -webkit-backdrop-filter: blur(6px) saturate(160%);
+  }`,
   },
   {
     id: "seitenleiste-glas",
