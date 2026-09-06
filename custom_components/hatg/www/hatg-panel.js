@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.1.0b11";
+const HATG_VERSION = "1.1.0b12";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -1608,8 +1608,11 @@ const HATG_VORLAGEN = [
   -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
-  border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
+  /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
+     Layout um seine Breite verschieben - bei eigenen Panels rutscht damit der
+     gesamte Inhalt nach unten. */
   box-shadow:
+    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
     inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
     inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
     var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
@@ -1640,8 +1643,11 @@ ha-card.text-only {
   -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
-  border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
+  /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
+     Layout um seine Breite verschieben - bei eigenen Panels rutscht damit der
+     gesamte Inhalt nach unten. */
   box-shadow:
+    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
     inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
     inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
     var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
@@ -1663,8 +1669,11 @@ ha-adaptive-dialog,
   -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
-  border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
+  /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
+     Layout um seine Breite verschieben - bei eigenen Panels rutscht damit der
+     gesamte Inhalt nach unten. */
   box-shadow:
+    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
     inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
     inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
     var(--hatg-glas-schatten-hoch, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
@@ -1684,8 +1693,11 @@ ha-adaptive-dialog,
   -webkit-backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
-  border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
+  /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
+     Layout um seine Breite verschieben - bei eigenen Panels rutscht damit der
+     gesamte Inhalt nach unten. */
   box-shadow:
+    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
     inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
     inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
     var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
@@ -1705,8 +1717,11 @@ ha-adaptive-dialog,
   -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
-  border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
+  /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
+     Layout um seine Breite verschieben - bei eigenen Panels rutscht damit der
+     gesamte Inhalt nach unten. */
   box-shadow:
+    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
     inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
     inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
     var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
@@ -1726,8 +1741,11 @@ ha-adaptive-dialog,
   -webkit-backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
-  border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
+  /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
+     Layout um seine Breite verschieben - bei eigenen Panels rutscht damit der
+     gesamte Inhalt nach unten. */
   box-shadow:
+    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
     inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
     inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
     var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
@@ -1747,8 +1765,11 @@ ha-adaptive-dialog,
   -webkit-backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
-  border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
+  /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
+     Layout um seine Breite verschieben - bei eigenen Panels rutscht damit der
+     gesamte Inhalt nach unten. */
   box-shadow:
+    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
     inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
     inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
     var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
@@ -1768,8 +1789,11 @@ ha-adaptive-dialog,
   -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
-  border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
+  /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
+     Layout um seine Breite verschieben - bei eigenen Panels rutscht damit der
+     gesamte Inhalt nach unten. */
   box-shadow:
+    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
     inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
     inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
     var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
@@ -1800,8 +1824,11 @@ ha-card.text-only {
   -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
-  border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
+  /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
+     Layout um seine Breite verschieben - bei eigenen Panels rutscht damit der
+     gesamte Inhalt nach unten. */
   box-shadow:
+    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
     inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
     inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
     var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
@@ -1821,8 +1848,11 @@ ha-card.text-only {
   -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
-  border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
+  /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
+     Layout um seine Breite verschieben - bei eigenen Panels rutscht damit der
+     gesamte Inhalt nach unten. */
   box-shadow:
+    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
     inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
     inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
     var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
@@ -1842,8 +1872,11 @@ ha-card.text-only {
   -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
-  border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
+  /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
+     Layout um seine Breite verschieben - bei eigenen Panels rutscht damit der
+     gesamte Inhalt nach unten. */
   box-shadow:
+    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
     inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
     inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
     var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
@@ -1863,8 +1896,11 @@ ha-card.text-only {
   -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
-  border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
+  /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
+     Layout um seine Breite verschieben - bei eigenen Panels rutscht damit der
+     gesamte Inhalt nach unten. */
   box-shadow:
+    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
     inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
     inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
     var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
@@ -1884,8 +1920,11 @@ ha-card.text-only {
   -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
-  border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
+  /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
+     Layout um seine Breite verschieben - bei eigenen Panels rutscht damit der
+     gesamte Inhalt nach unten. */
   box-shadow:
+    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
     inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
     inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
     var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
@@ -1905,8 +1944,11 @@ ha-card.text-only {
   -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
-  border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
+  /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
+     Layout um seine Breite verschieben - bei eigenen Panels rutscht damit der
+     gesamte Inhalt nach unten. */
   box-shadow:
+    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
     inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
     inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
     var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
@@ -2042,8 +2084,8 @@ ha-control-slider {
   backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
   -webkit-backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
-  border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
   box-shadow:
+    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
     inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
     inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
     var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
@@ -2094,8 +2136,8 @@ ha-list-item-button::before {
   backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
   -webkit-backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
-  border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
   box-shadow:
+    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
     inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
     inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
     var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
@@ -2142,8 +2184,8 @@ ha-adaptive-dialog {
   backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
   -webkit-backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
-  border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
   box-shadow:
+    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
     inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
     inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
     var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
