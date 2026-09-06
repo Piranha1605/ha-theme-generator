@@ -1894,15 +1894,21 @@ ha-badge {
     label: "Kopfleiste des Dashboards in Glas",
     desc: "Die Leiste über einem Dashboard heißt im Frontend .header und sitzt in hui-root - das Stilziel für die Kopfleiste erreicht sie nicht. Diese Vorlage setzt am Grundgerüst an und legt Weichzeichnung, Reflex und Kanten darauf. Die Farbe selbst kommt aus dem Theme-Feld app-header-background-color; steht dort ein deckender Wert, hilft der Knopf \"Auf Glas setzen\" über der Vorlagenliste.",
     ziel: "uix-root",
-    css: `.header,
-.toolbar {
+    css: `/* Nur .header - .toolbar liegt darin und wuerde die Flaeche verdoppeln. */
+.header {
   background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-  background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+  /* Kein Reflex: ueber die Breite einer Leiste wird der Glanz zum Farbverlauf. */
+  background-image: none !important;
   backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
   -webkit-backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
   box-shadow:
     inset 0 -1px 0 var(--hatg-glas-rand, rgba(255, 255, 255, 0.55)),
     inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)) !important;
+}
+.toolbar {
+  background: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }`,
   },
   {
@@ -2332,7 +2338,9 @@ ha-control-slider {
 :host {
   background-color: rgba(255, 255, 255, 0.5) !important;
   background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-  background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+  /* Kein Reflex auf langen Leisten: ein diagonaler Verlauf ueber 1200 Pixel
+     Breite liest sich als Farbverlauf, nicht als Glanz. */
+  background-image: none !important;
   backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
   -webkit-backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
@@ -2390,7 +2398,9 @@ ha-list-item-button::before {
 .mdc-drawer {
   background-color: rgba(255, 255, 255, 0.5) !important;
   background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-  background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+  /* Kein Reflex auf langen Leisten: ein diagonaler Verlauf ueber 1200 Pixel
+     Breite liest sich als Farbverlauf, nicht als Glanz. */
+  background-image: none !important;
   backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
   -webkit-backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
@@ -2443,7 +2453,9 @@ ha-adaptive-dialog {
 .mdc-top-app-bar {
   background-color: rgba(255, 255, 255, 0.5) !important;
   background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-  background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+  /* Kein Reflex auf langen Leisten: ein diagonaler Verlauf ueber 1200 Pixel
+     Breite liest sich als Farbverlauf, nicht als Glanz. */
+  background-image: none !important;
   backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
   -webkit-backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
