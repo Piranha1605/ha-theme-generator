@@ -1672,6 +1672,18 @@ function hatgVorlagenPaket(tpl) {
   const paket = tpl && tpl.paket;
   return paket && HATG_PAKETE[paket] ? paket : null;
 }
+// In einem -yaml-Feld ist jeder Pfad ein YAML-Schluessel. Zwei Vorlagen mit
+// demselben Pfad im selben Ziel loeschen sich gegenseitig aus: YAML behaelt den
+// letzten, der Rest verschwindet ohne Fehlermeldung.
+function hatgVorlagenPfade(tpl) {
+  if (!hatgIstYamlZiel(hatgVorlagenZiel(tpl))) return [];
+  const treffer = [];
+  for (const m of String((tpl && tpl.css) || "").matchAll(/^\s*(?:"([^"]+)"|([^\s#][^\n:]*(?:\$[^\n:]*)?)):\s*\|\s*$/gm)) {
+    const pfad = (m[1] || m[2] || "").trim();
+    if (pfad && !treffer.includes(pfad)) treffer.push(pfad);
+  }
+  return treffer;
+}
 function hatgVorlagenFelder(tpl) {
   const treffer = new Set();
   const text = String((tpl && tpl.css) || "");
@@ -5446,6 +5458,25 @@ class HATGPanel extends HTMLElement {
     );
   }
 
+  // Aktive -yaml-Vorlagen, die sich denselben Pfad teilen.
+  pfadKollisionen() {
+    const werte = this.currentValues();
+    const belegt = new Map();
+    this.alleVorlagen().forEach((tpl) => {
+      const ziel = hatgVorlagenZiel(tpl);
+      if (!hatgIstYamlZiel(ziel)) return;
+      if (!hatgVorlagenBlockActive(String(werte[ziel] || ""), tpl.id)) return;
+      hatgVorlagenPfade(tpl).forEach((pfad) => {
+        const schluessel = `${ziel} → ${pfad}`;
+        if (!belegt.has(schluessel)) belegt.set(schluessel, []);
+        belegt.get(schluessel).push(tpl);
+      });
+    });
+    return [...belegt.entries()]
+      .filter(([, vorlagen]) => vorlagen.length > 1)
+      .map(([schluessel, vorlagen]) => ({ schluessel, vorlagen }));
+  }
+
   // Aktive Vorlagen, die dem Glas-Paket ins Gehege kommen.
   kollidierendeVorlagen() {
     const werte = this.currentValues();
@@ -6059,11 +6090,26 @@ uix:
           </button>
         </div>`
       : "";
+    const pfadDoppelt = this.pfadKollisionen();
+    const pfadHinweis = pfadDoppelt.length
+      ? `
+        <div class="vorlage-veraltet-bar">
+          <ha-icon icon="mdi:alert-octagon-outline"></ha-icon>
+          <span data-roh>${pfadDoppelt
+            .map((k) =>
+              this._sprache === "en"
+                ? `${k.vorlagen.map((t) => t.label).join(" and ")} both write the path <code>${hatgEscape(k.schluessel)}</code>. In YAML a key exists only once — only the last one survives, the others vanish without a message.`
+                : `${k.vorlagen.map((t) => t.label).join(" und ")} schreiben beide den Pfad <code>${hatgEscape(k.schluessel)}</code>. In YAML gibt es jeden Schlüssel nur einmal — es bleibt nur die letzte übrig, die anderen verschwinden ohne Meldung.`
+            )
+            .join(" ")}</span>
+        </div>`
+      : "";
     const leer = !cards && !eigeneKacheln;
     return `
       <section class="editor-section">
         <div class="section-heading">${kopf}</div>
         ${paketLeiste}
+        ${pfadHinweis}
         ${kollisionsHinweis}
         ${glasRegler}
         ${farbHinweis}
