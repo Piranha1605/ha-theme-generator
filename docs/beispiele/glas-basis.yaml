@@ -32,7 +32,7 @@
 # hatg-glas-blur und -gross verringern - Weichzeichnung kostet Rechenzeit.
 # ---------------------------------------------------------------------------
 
-# Erstellt mit HATG v1.1.0b10
+# Erstellt mit HATG v1.1.0b11
 # Theme: Glas Basis – Grundfarbe #007AFF, Akzent #007AFF, Karten-Radius 14px
 # Generiert am 2026-09-06
 
@@ -41,16 +41,18 @@ glas_basis:
   uix-card: |
     /* HATG:UIX:glas-ebene:START */
     ha-card {
-      background-color: rgba(255, 255, 255, 0.12) !important;
-      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.12)) !important;
+      background-color: rgba(255, 255, 255, 0.5) !important;
+      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
       background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
       backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
       -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
+      border-radius: var(--ha-card-border-radius, 14px) !important;
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
       box-shadow:
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
+        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
     }
     :host(hui-heading-card) ha-card,
     :host(mushroom-title-card) ha-card,
@@ -109,33 +111,35 @@ glas_basis:
     /* HATG:UIX:glas-buttons-rahmen:END */
   uix-badge: |
     /* HATG:UIX:glas-badges:START */
-    :host,
     ha-badge {
-      background-color: rgba(255, 255, 255, 0.12) !important;
-      background-color: var(--hatg-glas-fuellung-leicht, rgba(255, 255, 255, 0.12)) !important;
+      background-color: rgba(255, 255, 255, 0.35) !important;
+      background-color: var(--hatg-glas-fuellung-leicht, rgba(255, 255, 255, 0.35)) !important;
       background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
       backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
       -webkit-backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
-      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
+      border-radius: var(--ha-card-border-radius, 14px) !important;
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
       box-shadow:
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
+        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
     }
     /* HATG:UIX:glas-badges:END */
   uix-sidebar: |
     /* HATG:UIX:seitenleiste-glas:START */
     :host {
-      background-color: rgba(255, 255, 255, 0.12) !important;
-      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.12)) !important;
+      background-color: rgba(255, 255, 255, 0.5) !important;
+      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
       background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
       backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
       -webkit-backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
-      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
       box-shadow:
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
+        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
     }
     ha-md-list-item,
     ha-md-list-item.selected::before,
@@ -167,35 +171,38 @@ glas_basis:
     /* HATG:UIX:seitenleiste-aktiv-liquid:END */
   uix-more-info: |
     /* HATG:UIX:glas-more-info:START */
-    :host,
     ha-card {
-      background-color: rgba(255, 255, 255, 0.18) !important;
-      background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.18)) !important;
+      background-color: rgba(255, 255, 255, 0.68) !important;
+      background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
       background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
       backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
       -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
+      border-radius: var(--ha-card-border-radius, 14px) !important;
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
       box-shadow:
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
+        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
     }
     /* HATG:UIX:glas-more-info:END */
   uix-dialog: |
     /* HATG:UIX:glas-dialoge:START */
-    :host,
     ha-dialog,
-    ha-adaptive-dialog {
-      background-color: rgba(255, 255, 255, 0.18) !important;
-      background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.18)) !important;
+    ha-adaptive-dialog,
+    .mdc-dialog__surface {
+      background-color: rgba(255, 255, 255, 0.68) !important;
+      background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
       background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
       backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
       -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
+      border-radius: var(--ha-card-border-radius, 14px) !important;
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
       box-shadow:
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-        var(--hatg-glas-schatten-hoch, 0 22px 55px -22px rgba(0, 0, 0, 0.8)) !important;
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
+        var(--hatg-glas-schatten-hoch, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
     }
     /* HATG:UIX:glas-dialoge:END */
     /* HATG:UIX:glas-buttons-dialoge:START */
@@ -222,16 +229,17 @@ glas_basis:
   uix-drawer: |
     /* HATG:UIX:drawer-glas:START */
     .mdc-drawer {
-      background-color: rgba(255, 255, 255, 0.12) !important;
-      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.12)) !important;
+      background-color: rgba(255, 255, 255, 0.5) !important;
+      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
       background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
       backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
       -webkit-backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
-      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
       box-shadow:
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
+        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
     }
     .sidebar-shell {
       background-color: transparent !important;
@@ -239,18 +247,19 @@ glas_basis:
     /* HATG:UIX:drawer-glas:END */
   uix-glance: |
     /* HATG:UIX:glas-glance:START */
-    :host,
     ha-card {
-      background-color: rgba(255, 255, 255, 0.12) !important;
-      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.12)) !important;
+      background-color: rgba(255, 255, 255, 0.5) !important;
+      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
       background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
       backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
       -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
+      border-radius: var(--ha-card-border-radius, 14px) !important;
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
       box-shadow:
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
+        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
     }
     :host(hui-heading-card) ha-card,
     :host(mushroom-title-card) ha-card,
@@ -267,16 +276,18 @@ glas_basis:
   uix-heading-badge: |
     /* HATG:UIX:glas-heading-badges:START */
     :host {
-      background-color: rgba(255, 255, 255, 0.12) !important;
-      background-color: var(--hatg-glas-fuellung-leicht, rgba(255, 255, 255, 0.12)) !important;
+      background-color: rgba(255, 255, 255, 0.35) !important;
+      background-color: var(--hatg-glas-fuellung-leicht, rgba(255, 255, 255, 0.35)) !important;
       background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
       backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
       -webkit-backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
-      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
+      border-radius: var(--ha-card-border-radius, 14px) !important;
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
       box-shadow:
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
+        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
     }
     /* HATG:UIX:glas-heading-badges:END */
   uix-config: |
@@ -303,146 +314,154 @@ glas_basis:
     /* HATG:UIX:glas-buttons-einstellungen:END */
   uix-panel-custom: |
     /* HATG:UIX:glas-panels:START */
-    :host,
     ha-card {
-      background-color: rgba(255, 255, 255, 0.12) !important;
-      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.12)) !important;
+      background-color: rgba(255, 255, 255, 0.5) !important;
+      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
       background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
       backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
       -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
+      border-radius: var(--ha-card-border-radius, 14px) !important;
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
       box-shadow:
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
+        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
     }
     /* HATG:UIX:glas-panels:END */
   uix-top-app-bar-fixed: |
     /* HATG:UIX:kopfleiste-glas:START */
-    :host,
     .mdc-top-app-bar {
-      background-color: rgba(255, 255, 255, 0.12) !important;
-      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.12)) !important;
+      background-color: rgba(255, 255, 255, 0.5) !important;
+      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
       background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
       backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
       -webkit-backdrop-filter: blur(var(--hatg-glas-blur-gross, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
-      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
       box-shadow:
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
+        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
     }
     /* HATG:UIX:kopfleiste-glas:END */
   uix-toast: |
     /* HATG:UIX:glas-toast:START */
-    :host,
     .mdc-snackbar__surface {
-      background-color: rgba(255, 255, 255, 0.12) !important;
-      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.12)) !important;
+      background-color: rgba(255, 255, 255, 0.5) !important;
+      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
       background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
       backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
       -webkit-backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
-      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
+      border-radius: var(--ha-card-border-radius, 14px) !important;
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
       box-shadow:
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
+        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
     }
     /* HATG:UIX:glas-toast:END */
   uix-grid-section: |
     /* HATG:UIX:glas-abschnitte:START */
-    :host,
     .container {
-      background-color: rgba(255, 255, 255, 0.12) !important;
-      background-color: var(--hatg-glas-fuellung-leicht, rgba(255, 255, 255, 0.12)) !important;
+      background-color: rgba(255, 255, 255, 0.35) !important;
+      background-color: var(--hatg-glas-fuellung-leicht, rgba(255, 255, 255, 0.35)) !important;
       background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
       backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
       -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
+      border-radius: var(--ha-card-border-radius, 14px) !important;
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
       box-shadow:
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
+        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
     }
     /* HATG:UIX:glas-abschnitte:END */
   uix-calendar: |
     /* HATG:UIX:glas-kalender:START */
-    :host,
     ha-card {
-      background-color: rgba(255, 255, 255, 0.12) !important;
-      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.12)) !important;
+      background-color: rgba(255, 255, 255, 0.5) !important;
+      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
       background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
       backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
       -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
+      border-radius: var(--ha-card-border-radius, 14px) !important;
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
       box-shadow:
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
+        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
     }
     /* HATG:UIX:glas-kalender:END */
   uix-todo: |
     /* HATG:UIX:glas-todo:START */
-    :host,
     ha-card {
-      background-color: rgba(255, 255, 255, 0.12) !important;
-      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.12)) !important;
+      background-color: rgba(255, 255, 255, 0.5) !important;
+      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
       background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
       backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
       -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
+      border-radius: var(--ha-card-border-radius, 14px) !important;
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
       box-shadow:
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
+        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
     }
     /* HATG:UIX:glas-todo:END */
   uix-history: |
     /* HATG:UIX:glas-verlauf:START */
-    :host,
     ha-card {
-      background-color: rgba(255, 255, 255, 0.12) !important;
-      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.12)) !important;
+      background-color: rgba(255, 255, 255, 0.5) !important;
+      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
       background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
       backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
       -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
+      border-radius: var(--ha-card-border-radius, 14px) !important;
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
       box-shadow:
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
+        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
     }
     /* HATG:UIX:glas-verlauf:END */
   uix-states-history-charts: |
     /* HATG:UIX:glas-verlaufsdiagramme:START */
-    :host,
     ha-card {
-      background-color: rgba(255, 255, 255, 0.12) !important;
-      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.12)) !important;
+      background-color: rgba(255, 255, 255, 0.5) !important;
+      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
       background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
       backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
       -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
+      border-radius: var(--ha-card-border-radius, 14px) !important;
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
       box-shadow:
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
+        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
     }
     /* HATG:UIX:glas-verlaufsdiagramme:END */
   uix-persistent-notification-item: |
     /* HATG:UIX:glas-benachrichtigungen:START */
-    :host,
     ha-card {
-      background-color: rgba(255, 255, 255, 0.12) !important;
-      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.12)) !important;
+      background-color: rgba(255, 255, 255, 0.5) !important;
+      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
       background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
       backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
       -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
+      /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
+      border-radius: var(--ha-card-border-radius, 14px) !important;
+      border: 1px solid var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)) !important;
       box-shadow:
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
+        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
     }
     /* HATG:UIX:glas-benachrichtigungen:END */
   uix-card-yaml: |
@@ -1047,11 +1066,11 @@ glas_basis:
       hatg-glas-blur: "18px"
       hatg-glas-blur-gross: "32px"
       hatg-glas-saettigung: "150%"
-      hatg-glas-fuellung-leicht: "rgba(255, 255, 255, 0.12)"
-      hatg-glas-fuellung: "rgba(255, 255, 255, 0.2)"
-      hatg-glas-fuellung-stark: "rgba(255, 255, 255, 0.3)"
-      hatg-glas-rand: "rgba(255, 255, 255, 0.25)"
-      hatg-glas-rand-hell: "rgba(255, 255, 255, 0.5)"
+      hatg-glas-fuellung-leicht: "rgba(255, 255, 255, 0.35)"
+      hatg-glas-fuellung: "rgba(255, 255, 255, 0.5)"
+      hatg-glas-fuellung-stark: "rgba(255, 255, 255, 0.68)"
+      hatg-glas-rand: "rgba(255, 255, 255, 0.55)"
+      hatg-glas-rand-hell: "rgba(255, 255, 255, 0.75)"
       hatg-glas-kante-hell: "rgba(255, 255, 255, 0.5)"
       hatg-glas-kante-dunkel: "rgba(0, 0, 0, 0.12)"
       hatg-glas-schatten: "0 8px 26px -12px rgba(0, 0, 0, 0.28)"
