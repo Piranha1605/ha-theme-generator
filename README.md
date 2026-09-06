@@ -179,7 +179,7 @@ Für alle, die Werte lieber tippen: sämtliche Felder als Text mit Syntax-Färbu
 
 ## UIX-Vorlagen — globale Effekte per Klick
 
-Fertige UIX-Bausteine, die per Klick **global ins Theme** übernommen werden — für Light und Dark gleichzeitig, jederzeit einzeln wieder entfernbar. Dreizehn Vorlagen, die nicht nur Karten treffen: Glas und Verläufe für `uix-card`, Glas für Seitenleiste, App Drawer und Kopfleiste, Eckenradius und Schleier für Dialoge, ein Hintergrundbild über die ganze Oberfläche und zwei für die Einstellungsseiten. Jede Kachel nennt ihr Stilziel; eigene Vorlagen können jedes der 25 Ziele ansteuern. Kein Kopieren, kein Einfügen in einzelne Karten.
+Fertige UIX-Bausteine, die per Klick **global ins Theme** übernommen werden — für Light und Dark gleichzeitig, jederzeit einzeln wieder entfernbar. Zweiunddreißig Vorlagen, die nicht nur Karten treffen — darunter das **Glas-Paket**, das mit einem Klick jede Fläche des Systems auf Glas umstellt: Glas und Verläufe für `uix-card`, Glas für Seitenleiste, App Drawer und Kopfleiste, Eckenradius und Schleier für Dialoge, ein Hintergrundbild über die ganze Oberfläche und zwei für die Einstellungsseiten. Jede Kachel nennt ihr Stilziel; eigene Vorlagen können jedes der 25 Ziele ansteuern. Kein Kopieren, kein Einfügen in einzelne Karten.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/cardmod-vorlagen.png" alt="UIX-Vorlagen mit Werksvorlagen und eigenen Vorlagen" width="80%" />
