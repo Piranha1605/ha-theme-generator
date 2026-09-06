@@ -277,6 +277,8 @@ const HATG_TEXTE = {
   "Die Diagrammflächen im Verlauf und in Verlaufskarten. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "The chart surfaces in the history panel and in history cards. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
   "Eigene Panels in Glas": "Custom panels in glass",
   "Panels von Erweiterungen in der Seitenleiste - auch HATG selbst. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "Panels from add-ons in the sidebar - including HATG itself. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
+   "Benutzer-Icon wie die Systemicons": "User icon like the system icons",
+   "Gibt dem runden Benutzerbild unten in der Seitenleiste dieselbe Form wie den Icons auf den Einstellungsseiten: abgerundetes Quadrat, Lichtverlauf, feine Kante, kurzer Schatten. Nutzt dieselben Felder wie die Einstellungsvorlage, bleibt also automatisch im Gleichklang. Die Größe bleibt, wie Home Assistant sie setzt. Der Shadow-DOM-Pfad wurde mit uix_style_path in einer laufenden Instanz geprüft.": "Gives the round user picture at the bottom of the sidebar the same shape as the icons on the settings pages: rounded square, light gradient, fine edge, short shadow. It uses the same fields as the settings preset, so the two stay in step. The size stays as Home Assistant sets it. The shadow DOM path was verified with uix_style_path in a running instance.",
   "Glaslook": "Glass look",
   "Eigener Titel in der Seitenleiste": "Custom title in the sidebar",
   "Ersetzt das \"Home Assistant\" oben in der Seitenleiste durch einen eigenen Text. Der Text steht im Feld hatg-sidebar-titel im Bereich Glaslook - mit Anführungszeichen, so verlangt es CSS. Home Assistant selbst bietet dafür keine Einstellung.": "Replaces the \"Home Assistant\" at the top of the sidebar with a text of your own. The text lives in the field hatg-sidebar-titel under Glass look - in quotation marks, as CSS requires. Home Assistant itself offers no setting for this.",
@@ -2530,6 +2532,27 @@ ha-control-slider {
   font-weight: var(--ha-font-weight-normal, 400);
   color: var(--sidebar-text-color, var(--primary-text-color));
 }`,
+  },
+  {
+    id: "benutzer-icon-ios",
+    label: "Benutzer-Icon wie die Systemicons",
+    desc: "Gibt dem runden Benutzerbild unten in der Seitenleiste dieselbe Form wie den Icons auf den Einstellungsseiten: abgerundetes Quadrat, Lichtverlauf, feine Kante, kurzer Schatten. Nutzt dieselben Felder wie die Einstellungsvorlage, bleibt also automatisch im Gleichklang. Die Größe bleibt, wie Home Assistant sie setzt. Der Shadow-DOM-Pfad wurde mit uix_style_path in einer laufenden Instanz geprüft.",
+    ziel: "uix-sidebar-yaml",
+    css: `"ha-user-badge $": |
+  div.initials,
+  div.picture {
+    border-radius: var(--hatg-icon-radius, 28%) !important;
+    box-shadow:
+      inset 0 0 0 1px var(--hatg-icon-rand, rgba(255, 255, 255, 0.16)),
+      inset 0 1px 0 rgba(255, 255, 255, 0.34),
+      var(--hatg-icon-schatten, 0 1px 2px rgba(0, 0, 0, 0.35));
+  }
+  div.initials {
+    /* Nur die Initialen bekommen den Lichtverlauf. Ein gesetztes Benutzerbild
+       steht als background-image im style-Attribut - dort wuerde der Verlauf
+       das Bild verdecken oder gar nicht erst durchkommen. */
+    background-image: var(--hatg-icon-glanz, linear-gradient(160deg, rgba(255,255,255,0.34) 0%, rgba(255,255,255,0.06) 52%, rgba(255,255,255,0) 78%));
+  }`,
   },
   {
     id: "seitenleiste-glas",
