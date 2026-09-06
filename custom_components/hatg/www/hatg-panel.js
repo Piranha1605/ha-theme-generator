@@ -1599,8 +1599,9 @@ const HATG_GLAS_FLAECHENFELDER = [
   // card-background-color bleibt bewusst aussen vor: Home Assistant faerbt damit
   // auch ha-dropdown, also jedes Auswahlfeld. Halbtransparent wird die Liste unlesbar.
   { key: "ha-card-background", quelle: "hatg-glas-fuellung" },
-  { key: "app-header-background-color", quelle: "hatg-glas-fuellung" },
-  { key: "sidebar-background-color", quelle: "hatg-glas-fuellung" },
+  // Kopfleiste und Seitenleiste gehoeren zur Navigationsebene.
+  { key: "app-header-background-color", quelle: "hatg-glas-nav-fuellung" },
+  { key: "sidebar-background-color", quelle: "hatg-glas-nav-fuellung" },
   // Die Flaechen INNERHALB einer Karte: Bedienknoepfe der Tile-Karte und alles,
   // was eigene Karten darauf aufbauen. Ohne dieses Feld glasiert das Paket nur
   // den Kartenkoerper, und die Knoepfe darin bleiben als deckende Bloecke stehen -
@@ -1661,6 +1662,10 @@ function hatgFelderNennen(felder, rest) {
   if (felder.length <= 4) return felder.join(", ");
   return `${felder.slice(0, 3).join(", ")} +${felder.length - 3} ${rest}`;
 }
+// Diese Vorlagen setzen dieselben Eigenschaften wie das Glas-Paket, aber mit
+// festen Werten. Liegen sie im selben Feld hinter einer Glas-Vorlage, gewinnen
+// sie - und die Regler bewegen nichts mehr.
+const HATG_GLAS_KOLLISIONEN = ["glas-effekt", "relief-tiefe", "kartenfarben-verlauf", "rahmen-akzent", "glow-schatten"];
 function hatgVorlagenPaket(tpl) {
   const paket = tpl && tpl.paket;
   return paket && HATG_PAKETE[paket] ? paket : null;
@@ -3632,6 +3637,9 @@ function hatgValidateValue(format, value, key) {
   const v = String(value ?? "").trim();
   if (v === "") return "empty";
   if (key && HATG_CSS_BACKGROUND_KEYS.has(key) && hatgIsCssBackground(v)) return "ok";
+  // Verweise auf andere Variablen sind gueltige Theme-Werte - so bleiben Felder
+  // an einem Regler haengen, statt seinen Wert einmalig zu kopieren.
+  if (/^var\(\s*--[a-z0-9-]+/i.test(v)) return "ok";
   if (format === "hex" && !HATG_HEX_RE.test(v) && !HATG_RGBA_RE.test(v) && !hatgIsGradient(v)) return "invalid";
   if (format === "rgba" && !HATG_RGBA_RE.test(v) && !HATG_HEX_RE.test(v)) return "invalid";
   if (format === "rgb_triplet" && !HATG_RGB_TRIPLET_RE.test(v)) return "invalid";
@@ -5323,7 +5331,7 @@ class HATGPanel extends HTMLElement {
     HATG_GLAS_FLAECHENFELDER.forEach(({ key }) => {
       const deckend = ["light", "dark"].some((mode) => {
         const wert = String(this._state.values[mode][key] || "").trim();
-        if (!wert) return false;
+        if (!wert || wert.startsWith("var(")) return false;
         const rgba = /^rgba\(\s*[\d.]+\s*,\s*[\d.]+\s*,\s*[\d.]+\s*,\s*([\d.]+)\s*\)$/.exec(wert);
         if (rgba) return Number(rgba[1]) > 0.85;
         return /^#([0-9A-Fa-f]{6}|[0-9A-Fa-f]{3})$/.test(wert);
@@ -5377,10 +5385,11 @@ class HATGPanel extends HTMLElement {
     ["light", "dark"].forEach((mode) => {
       this._state.editorMode = mode;
       HATG_GLAS_FLAECHENFELDER.forEach(({ key, quelle }) => {
-        const glas = String(this._state.values[mode][quelle] || "").trim();
-        if (!glas) return;
-        if (String(this._state.values[mode][key] || "").trim() === glas) return;
-        this.commitField(key, glas);
+        // Als Verweis, nicht als Kopie: sonst friert der Wert ein und der
+        // Regler bewegt spaeter nur noch die Flaechen, die die Variable nutzen.
+        const verweis = `var(--${quelle})`;
+        if (String(this._state.values[mode][key] || "").trim() === verweis) return;
+        this.commitField(key, verweis);
         if (mode === "light") anzahl++;
       });
     });
@@ -5390,6 +5399,26 @@ class HATGPanel extends HTMLElement {
       anzahl
         ? `${anzahl} Flächenfarben auf die Glasfüllung gesetzt. Jetzt speichern und Themes neu laden.`
         : "Die Flächenfarben stehen bereits auf der Glasfüllung."
+    );
+  }
+
+  // Aktive Vorlagen, die dem Glas-Paket ins Gehege kommen.
+  kollidierendeVorlagen() {
+    const werte = this.currentValues();
+    return this.alleVorlagen().filter(
+      (tpl) =>
+        HATG_GLAS_KOLLISIONEN.includes(tpl.id) &&
+        hatgVorlagenBlockActive(String(werte[hatgVorlagenZiel(tpl)] || ""), tpl.id)
+    );
+  }
+  entferneKollisionen() {
+    const treffer = this.kollidierendeVorlagen();
+    treffer.forEach((tpl) => this.schalteVorlage(tpl.id, { still: true }));
+    this.render();
+    this.showToast(
+      treffer.length
+        ? `${treffer.length} ältere Vorlage${treffer.length === 1 ? "" : "n"} entfernt. Die Karten folgen jetzt den Glaswerten.`
+        : "Keine älteren Vorlagen aktiv."
     );
   }
 
@@ -5936,11 +5965,27 @@ uix:
           </div>
         </div>`
       : "";
+    const kollisionen = stand.aktiv ? this.kollidierendeVorlagen() : [];
+    const kollisionsHinweis = kollisionen.length
+      ? `
+        <div class="vorlage-veraltet-bar">
+          <ha-icon icon="mdi:layers-triple-outline"></ha-icon>
+          <span data-roh>${
+            this._sprache === "en"
+              ? `${kollisionen.map((t) => t.label).join(", ")} set the same properties with fixed values and sit after the glass presets in the same field — the later rule wins, so the sliders no longer move these surfaces.`
+              : `${kollisionen.map((t) => t.label).join(", ")} setzen dieselben Eigenschaften mit festen Werten und stehen im selben Feld hinter den Glas-Vorlagen — die spätere Regel gewinnt, deshalb bewegen die Regler diese Flächen nicht mehr.`
+          }</span>
+          <button type="button" class="vorlage-veraltet-button" data-kollisionen-entfernen>
+            <ha-icon icon="mdi:close-circle-outline"></ha-icon><span>${this._sprache === "en" ? "Remove older" : "Ältere entfernen"}</span>
+          </button>
+        </div>`
+      : "";
     const leer = !cards && !eigeneKacheln;
     return `
       <section class="editor-section">
         <div class="section-heading">${kopf}</div>
         ${paketLeiste}
+        ${kollisionsHinweis}
         ${glasRegler}
         ${farbHinweis}
         ${duennHinweis}
@@ -8247,6 +8292,7 @@ uix:
     }
     this.shadowRoot.querySelector("[data-flaechenfarben-glas]")?.addEventListener("click", () => this.flaechenfarbenAufGlas());
     this.shadowRoot.querySelector("[data-grundfarben-deckend]")?.addEventListener("click", () => this.grundfarbenDeckendSetzen());
+    this.shadowRoot.querySelector("[data-kollisionen-entfernen]")?.addEventListener("click", () => this.entferneKollisionen());
     this.shadowRoot.querySelectorAll("[data-schalte-paket]").forEach((el) => {
       el.addEventListener("click", () => this.schaltePaket(el.dataset.schaltePaket));
     });
