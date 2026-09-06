@@ -1600,7 +1600,13 @@ const HATG_VORLAGEN = [
     label: "Glas: eigene Ebene unter der Karte",
     desc: "Milchiges Glas, das den Weichzeichner nicht auf die Karte selbst legt, sondern auf eine Ebene darunter. Anders als der einfache Glas-Effekt bleibt der Kartenhintergrund dadurch mit Hintergrundbildern und Verläufen verträglich. Hüllen-Karten (Überschriften, Mushroom-Titel und -Chips, reine Textkarten) sind bewusst ausgenommen, damit sie nicht plötzlich als Kachel erscheinen.",
     ziel: "uix-card",
-    css: `ha-card {
+    css: `:host {
+  /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+     deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+  --ha-card-background: transparent !important;
+  --card-background-color: transparent !important;
+}
+ha-card {
   background-color: rgba(255, 255, 255, 0.5) !important;
   background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
   background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
@@ -1635,7 +1641,16 @@ ha-card.text-only {
     label: "Info-Dialog in Glas",
     desc: "Der Dialog, der beim Antippen einer Entität aufgeht - die am häufigsten geöffnete Fläche im ganzen System. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.",
     ziel: "uix-more-info",
-    css: `ha-card {
+    css: `:host {
+  /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+     deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+  --ha-dialog-surface-background: transparent !important;
+  --ha-color-surface-default: transparent !important;
+  --wa-color-surface-raised: transparent !important;
+  --card-background-color: transparent !important;
+  --ha-dialog-surface-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%)) !important;
+}
+ha-card {
   background-color: rgba(255, 255, 255, 0.68) !important;
   background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
   background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
@@ -1659,7 +1674,16 @@ ha-card.text-only {
     label: "Dialoge in Glas",
     desc: "Die Fläche der Dialoge selbst. Ergänzt die Vorlage für Kartenradius und Schleier, die nur Variablen setzt. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.",
     ziel: "uix-dialog",
-    css: `ha-dialog,
+    css: `:host {
+  /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+     deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+  --ha-dialog-surface-background: transparent !important;
+  --ha-color-surface-default: transparent !important;
+  --wa-color-surface-raised: transparent !important;
+  --card-background-color: transparent !important;
+  --ha-dialog-surface-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%)) !important;
+}
+ha-dialog,
 ha-adaptive-dialog,
 .mdc-dialog__surface {
   background-color: rgba(255, 255, 255, 0.68) !important;
@@ -1685,7 +1709,13 @@ ha-adaptive-dialog,
     label: "Toast-Meldungen in Glas",
     desc: "Die kurzen Einblendungen am unteren Rand, etwa nach dem Speichern. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.",
     ziel: "uix-toast",
-    css: `.mdc-snackbar__surface {
+    css: `:host {
+  /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+     deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+  --ha-card-background: transparent !important;
+  --card-background-color: transparent !important;
+}
+.mdc-snackbar__surface {
   background-color: rgba(255, 255, 255, 0.5) !important;
   background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
   background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
@@ -1709,7 +1739,13 @@ ha-adaptive-dialog,
     label: "Benachrichtigungen in Glas",
     desc: "Die Einträge in der Benachrichtigungsliste der Seitenleiste. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.",
     ziel: "uix-persistent-notification-item",
-    css: `ha-card {
+    css: `:host {
+  /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+     deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+  --ha-card-background: transparent !important;
+  --card-background-color: transparent !important;
+}
+ha-card {
   background-color: rgba(255, 255, 255, 0.5) !important;
   background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
   background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
@@ -1733,7 +1769,13 @@ ha-adaptive-dialog,
     label: "Badges in Glas",
     desc: "Die runden Anzeigen oberhalb der Karten. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.",
     ziel: "uix-badge",
-    css: `ha-badge {
+    css: `:host {
+  /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+     deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+  --ha-card-background: transparent !important;
+  --card-background-color: transparent !important;
+}
+ha-badge {
   background-color: rgba(255, 255, 255, 0.35) !important;
   background-color: var(--hatg-glas-fuellung-leicht, rgba(255, 255, 255, 0.35)) !important;
   background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
@@ -1758,6 +1800,12 @@ ha-adaptive-dialog,
     desc: "Die kleinen Anzeigen in Überschriften-Karten. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.",
     ziel: "uix-heading-badge",
     css: `:host {
+  /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+     deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+  --ha-card-background: transparent !important;
+  --card-background-color: transparent !important;
+}
+:host {
   background-color: rgba(255, 255, 255, 0.35) !important;
   background-color: var(--hatg-glas-fuellung-leicht, rgba(255, 255, 255, 0.35)) !important;
   background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
@@ -1781,7 +1829,13 @@ ha-adaptive-dialog,
     label: "Glance-Karten in Glas",
     desc: "Glance-Karten bringen ihre eigene Fläche mit und brauchen deshalb einen eigenen Eintrag. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.",
     ziel: "uix-glance",
-    css: `ha-card {
+    css: `:host {
+  /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+     deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+  --ha-card-background: transparent !important;
+  --card-background-color: transparent !important;
+}
+ha-card {
   background-color: rgba(255, 255, 255, 0.5) !important;
   background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
   background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
@@ -1816,7 +1870,13 @@ ha-card.text-only {
     label: "Grid-Abschnitte in Glas",
     desc: "Die Flächen hinter Abschnitten in Sections-Dashboards. Wirkt nur, wenn im Abschnitt ein Hintergrund eingeschaltet ist. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.",
     ziel: "uix-grid-section",
-    css: `.container {
+    css: `:host {
+  /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+     deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+  --ha-section-background-color: transparent !important;
+  --section-background-color: transparent !important;
+}
+.container {
   background-color: rgba(255, 255, 255, 0.35) !important;
   background-color: var(--hatg-glas-fuellung-leicht, rgba(255, 255, 255, 0.35)) !important;
   background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
@@ -1840,7 +1900,13 @@ ha-card.text-only {
     label: "Kalender in Glas",
     desc: "Das Kalender-Panel in der Seitenleiste. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.",
     ziel: "uix-calendar",
-    css: `ha-card {
+    css: `:host {
+  /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+     deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+  --ha-card-background: transparent !important;
+  --card-background-color: transparent !important;
+}
+ha-card {
   background-color: rgba(255, 255, 255, 0.5) !important;
   background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
   background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
@@ -1864,7 +1930,13 @@ ha-card.text-only {
     label: "To-do-Listen in Glas",
     desc: "Das Listen-Panel in der Seitenleiste. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.",
     ziel: "uix-todo",
-    css: `ha-card {
+    css: `:host {
+  /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+     deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+  --ha-card-background: transparent !important;
+  --card-background-color: transparent !important;
+}
+ha-card {
   background-color: rgba(255, 255, 255, 0.5) !important;
   background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
   background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
@@ -1888,7 +1960,13 @@ ha-card.text-only {
     label: "Verlauf in Glas",
     desc: "Das Verlaufs-Panel mit seinen Zeitleisten. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.",
     ziel: "uix-history",
-    css: `ha-card {
+    css: `:host {
+  /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+     deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+  --ha-card-background: transparent !important;
+  --card-background-color: transparent !important;
+}
+ha-card {
   background-color: rgba(255, 255, 255, 0.5) !important;
   background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
   background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
@@ -1912,7 +1990,13 @@ ha-card.text-only {
     label: "Verlaufs-Diagramme in Glas",
     desc: "Die Diagrammflächen im Verlauf und in Verlaufskarten. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.",
     ziel: "uix-states-history-charts",
-    css: `ha-card {
+    css: `:host {
+  /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+     deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+  --ha-card-background: transparent !important;
+  --card-background-color: transparent !important;
+}
+ha-card {
   background-color: rgba(255, 255, 255, 0.5) !important;
   background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
   background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
@@ -1936,7 +2020,13 @@ ha-card.text-only {
     label: "Eigene Panels in Glas",
     desc: "Panels von Erweiterungen in der Seitenleiste - auch HATG selbst. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.",
     ziel: "uix-panel-custom",
-    css: `ha-card {
+    css: `:host {
+  /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+     deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+  --ha-card-background: transparent !important;
+  --card-background-color: transparent !important;
+}
+ha-card {
   background-color: rgba(255, 255, 255, 0.5) !important;
   background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
   background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
@@ -2078,6 +2168,11 @@ ha-control-slider {
     desc: "Die Seitenleiste wird durchscheinend und weichgezeichnet, die Einträge übernehmen den Eckenradius deiner Karten. Wirkt nur, wenn hinter der Seitenleiste etwas zu sehen ist - also mit Hintergrundbild oder einem farbigen Verlauf.",
     ziel: "uix-sidebar",
     css: `:host {
+  /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+     deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+  --sidebar-background-color: transparent !important;
+}
+:host {
   background-color: rgba(255, 255, 255, 0.5) !important;
   background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
   background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
@@ -2129,7 +2224,13 @@ ha-list-item-button::before {
     label: "App Drawer in Glas",
     desc: "Das ausklappbare Menü auf schmalen Bildschirmen bekommt dieselbe Glasfläche wie die Seitenleiste. Sinnvoll zusammen mit der Vorlage für die Seitenleiste, sonst wirken beide unterschiedlich.",
     ziel: "uix-drawer",
-    css: `.mdc-drawer {
+    css: `:host {
+  /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+     deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+  --app-header-background-color: transparent !important;
+  --sidebar-background-color: transparent !important;
+}
+.mdc-drawer {
   background-color: rgba(255, 255, 255, 0.5) !important;
   background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
   background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
@@ -2177,7 +2278,12 @@ ha-adaptive-dialog {
     label: "Kopfleiste in Glas",
     desc: "Die obere Leiste wird durchscheinend und weichgezeichnet, passend zu Seitenleiste und App Drawer. Zusammen ergeben die drei eine durchgehende Glasfläche um das Dashboard herum.",
     ziel: "uix-top-app-bar-fixed",
-    css: `.mdc-top-app-bar {
+    css: `:host {
+  /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+     deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+  --app-header-background-color: transparent !important;
+}
+.mdc-top-app-bar {
   background-color: rgba(255, 255, 255, 0.5) !important;
   background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
   background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
