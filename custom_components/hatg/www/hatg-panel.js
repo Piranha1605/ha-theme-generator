@@ -2645,9 +2645,13 @@ ha-adaptive-dialog {
     css: `:host {
   /* Nimmt das Bild, das unter "Hintergrund" auf der Startseite eingestellt ist,
      und legt es hinter alles - auch hinter Einstellungsseiten, HACS und Verlauf.
-     Ist dort nichts gesetzt, passiert nichts. */
-  --uix-view-background: var(--lovelace-background);
-  --uix-view-background-cover: full;
+     ha-drawer umschliesst alle Panels und ist selbst durchsichtig, die Panels
+     darin ebenso; die graue Flaeche kommt sonst von html. Ist nichts gesetzt,
+     greift der Rueckfall und es passiert nichts.
+     --lovelace-background ist ein background-Kurzwert (Bild, Position, Groesse),
+     deshalb background und nicht background-image. Live geprueft. */
+  background: var(--lovelace-background, transparent) !important;
+  background-attachment: fixed !important;
 }`,
   },
   {
