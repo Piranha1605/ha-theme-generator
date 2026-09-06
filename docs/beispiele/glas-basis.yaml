@@ -511,32 +511,6 @@ glas_basis:
         var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
     }
     /* HATG:UIX:glas-toast:END */
-  uix-grid-section: |
-    /* HATG:UIX:glas-abschnitte:START */
-    :host {
-      /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
-         deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-      --ha-section-background-color: var(--hatg-glas-fuellung-leicht, rgba(255, 255, 255, 0.35)) !important;
-      --section-background-color: var(--hatg-glas-fuellung-leicht, rgba(255, 255, 255, 0.35)) !important;
-    }
-    .container {
-      background-color: rgba(255, 255, 255, 0.35) !important;
-      background-color: var(--hatg-glas-fuellung-leicht, rgba(255, 255, 255, 0.35)) !important;
-      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-      backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-      -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-      /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
-      border-radius: var(--ha-card-border-radius, 14px) !important;
-      /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
-         Layout um seine Breite verschieben - bei eigenen Panels rutscht damit der
-         gesamte Inhalt nach unten. */
-      box-shadow:
-        inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
-    }
-    /* HATG:UIX:glas-abschnitte:END */
   uix-calendar: |
     /* HATG:UIX:glas-kalender:START */
     :host {

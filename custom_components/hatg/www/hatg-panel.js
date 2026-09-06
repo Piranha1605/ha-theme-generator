@@ -266,7 +266,7 @@ const HATG_TEXTE = {
   "Glance-Karten in Glas": "Glance cards in glass",
   "Glance-Karten bringen ihre eigene Fläche mit und brauchen deshalb einen eigenen Eintrag. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "Glance cards bring their own surface and therefore need an entry of their own. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
   "Grid-Abschnitte in Glas": "Grid sections in glass",
-  "Die Flächen hinter Abschnitten in Sections-Dashboards. Wirkt nur, wenn im Abschnitt ein Hintergrund eingeschaltet ist. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "The surfaces behind sections in section dashboards. Only takes effect when a background is switched on in the section. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
+  "Legt eine Glasfläche hinter jeden Abschnitt eines Sections-Dashboards. Achtung: Diese Fläche zeichnet Home Assistant von sich aus nicht - die Vorlage erzeugt sie. Auf einem Dashboard mit Hintergrundbild wirkt das schnell wie ein zweiter Kasten hinter den Karten. Deshalb gehört sie nicht zum Glas-Paket und wird nur aktiv, wenn du sie einzeln einschaltest.": "Puts a glass surface behind every section of a section dashboard. Note: Home Assistant does not draw that surface by itself - this preset creates it. On a dashboard with a background image it quickly reads as a second box behind the cards. That is why it is not part of the glass package and only applies when you switch it on yourself.",
   "Kalender in Glas": "Calendar in glass",
   "Das Kalender-Panel in der Seitenleiste. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "The calendar panel in the sidebar. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
   "To-do-Listen in Glas": "To-do lists in glass",
@@ -1944,9 +1944,8 @@ ha-card.text-only {
   },
   {
     id: "glas-abschnitte",
-    paket: "glas",
     label: "Grid-Abschnitte in Glas",
-    desc: "Die Flächen hinter Abschnitten in Sections-Dashboards. Wirkt nur, wenn im Abschnitt ein Hintergrund eingeschaltet ist. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.",
+    desc: "Legt eine Glasfläche hinter jeden Abschnitt eines Sections-Dashboards. Achtung: Diese Fläche zeichnet Home Assistant von sich aus nicht - die Vorlage erzeugt sie. Auf einem Dashboard mit Hintergrundbild wirkt das schnell wie ein zweiter Kasten hinter den Karten. Deshalb gehört sie nicht zum Glas-Paket und wird nur aktiv, wenn du sie einzeln einschaltest.",
     ziel: "uix-grid-section",
     css: `:host {
   /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
