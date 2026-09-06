@@ -259,6 +259,8 @@ const HATG_TEXTE = {
   "Die runden Anzeigen oberhalb der Karten. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "The rounded indicators above the cards. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
   "Überschriften-Badges in Glas": "Heading badges in glass",
   "Die kleinen Anzeigen in Überschriften-Karten. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "The small indicators inside heading cards. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
+  "Bubble Card in Glas": "Bubble Card in glass",
+  "Bubble Card zeichnet seine Flächen selbst und liest dafür eigene Variablen - ohne diese Vorlage bleiben Bubble-Karten deckend, auch wenn die Karte darunter längst Glas ist. Setzt die Variablen auf die gemeinsamen Glaswerte und legt Weichzeichnung, Reflex und Kanten auf Karten, Icons, Sub-Buttons sowie Climate-, Cover-, Media-Player-, Select- und Kalender-Flächen. Die Variablennamen stammen aus Bubble Cards eigenem CSS und wurden in einer laufenden Instanz geprüft.": "Bubble Card paints its own surfaces and reads its own variables for them - without this preset, Bubble cards stay opaque even when the card beneath is already glass. It sets those variables to the shared glass values and puts blur, sheen and edges on cards, icons, sub-buttons and the climate, cover, media player, select and calendar surfaces. The variable names come from Bubble Card's own CSS and were verified in a running instance.",
   "Glance-Karten in Glas": "Glance cards in glass",
   "Glance-Karten bringen ihre eigene Fläche mit und brauchen deshalb einen eigenen Eintrag. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "Glance cards bring their own surface and therefore need an entry of their own. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
   "Grid-Abschnitte in Glas": "Grid sections in glass",
@@ -1818,6 +1820,54 @@ ha-badge {
      gesamte Inhalt nach unten. */
   box-shadow:
     inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
+    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
+    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
+    var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+}`,
+  },
+  {
+    id: "glas-bubble",
+    paket: "glas",
+    label: "Bubble Card in Glas",
+    desc: "Bubble Card zeichnet seine Flächen selbst und liest dafür eigene Variablen - ohne diese Vorlage bleiben Bubble-Karten deckend, auch wenn die Karte darunter längst Glas ist. Setzt die Variablen auf die gemeinsamen Glaswerte und legt Weichzeichnung, Reflex und Kanten auf Karten, Icons, Sub-Buttons sowie Climate-, Cover-, Media-Player-, Select- und Kalender-Flächen. Die Variablennamen stammen aus Bubble Cards eigenem CSS und wurden in einer laufenden Instanz geprüft.",
+    ziel: "uix-card",
+    css: `:host {
+  /* Bubble Card faerbt seine Flaechen ueber eigene Variablen. Ohne diese Zeilen
+     bleibt jede Bubble-Karte deckend, egal wie transparent ha-card ist.
+     Die Namen stammen aus den Regeln im Shadow-Root von bubble-card. */
+  --bubble-main-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+  --bubble-button-main-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+  --bubble-climate-main-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+  --bubble-separator-main-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+  --bubble-button-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+  --bubble-secondary-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
+  --bubble-icon-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
+  --bubble-button-icon-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
+  --bubble-climate-icon-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
+  --bubble-separator-icon-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
+  --bubble-sub-button-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
+  --bubble-main-buttons-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
+  --bubble-climate-button-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
+}
+.bubble-container,
+.bubble-button-container,
+.bubble-climate-container,
+.bubble-cover-container,
+.bubble-media-player-container,
+.bubble-select-container,
+.bubble-calendar-container,
+.bubble-horizontal-buttons-stack-container,
+.bubble-temperature-container,
+.bubble-low-temp-container,
+.bubble-high-temp-container,
+.bubble-icon-container,
+.bubble-main-icon-container,
+.bubble-sub-button {
+  backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%)) !important;
+  -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%)) !important;
+  background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+  box-shadow:
+    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.55)),
     inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
     inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
     var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
