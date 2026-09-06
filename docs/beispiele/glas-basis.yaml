@@ -32,7 +32,7 @@
 # hatg-glas-blur und -gross verringern - Weichzeichnung kostet Rechenzeit.
 # ---------------------------------------------------------------------------
 
-# Erstellt mit HATG v1.1.0b12
+# Erstellt mit HATG v1.1.0b13
 # Theme: Glas Basis – Grundfarbe #007AFF, Akzent #007AFF, Karten-Radius 14px
 # Generiert am 2026-09-06
 
@@ -40,6 +40,12 @@ glas_basis:
   # UIX (theme-global; muss auf Theme-Ebene stehen, nicht unter modes.light/dark)
   uix-card: |
     /* HATG:UIX:glas-ebene:START */
+    :host {
+      /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+         deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+      --ha-card-background: transparent !important;
+      --card-background-color: transparent !important;
+    }
     ha-card {
       background-color: rgba(255, 255, 255, 0.5) !important;
       background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
@@ -69,6 +75,49 @@ glas_basis:
       -webkit-backdrop-filter: none !important;
     }
     /* HATG:UIX:glas-ebene:END */
+    /* HATG:UIX:glas-bubble:START */
+    :host {
+      /* Bubble Card faerbt seine Flaechen ueber eigene Variablen. Ohne diese Zeilen
+         bleibt jede Bubble-Karte deckend, egal wie transparent ha-card ist.
+         Die Namen stammen aus den Regeln im Shadow-Root von bubble-card. */
+      --bubble-main-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+      --bubble-button-main-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+      --bubble-climate-main-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+      --bubble-separator-main-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+      --bubble-button-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
+      --bubble-secondary-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
+      --bubble-icon-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
+      --bubble-button-icon-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
+      --bubble-climate-icon-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
+      --bubble-separator-icon-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
+      --bubble-sub-button-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
+      --bubble-main-buttons-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
+      --bubble-climate-button-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
+    }
+    .bubble-container,
+    .bubble-button-container,
+    .bubble-climate-container,
+    .bubble-cover-container,
+    .bubble-media-player-container,
+    .bubble-select-container,
+    .bubble-calendar-container,
+    .bubble-horizontal-buttons-stack-container,
+    .bubble-temperature-container,
+    .bubble-low-temp-container,
+    .bubble-high-temp-container,
+    .bubble-icon-container,
+    .bubble-main-icon-container,
+    .bubble-sub-button {
+      backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%)) !important;
+      -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%)) !important;
+      background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+      box-shadow:
+        inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.55)),
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
+        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+    }
+    /* HATG:UIX:glas-bubble:END */
     /* HATG:UIX:glas-buttons-karten:START */
     ha-button,
     ha-icon-button,
@@ -114,6 +163,12 @@ glas_basis:
     /* HATG:UIX:glas-buttons-rahmen:END */
   uix-badge: |
     /* HATG:UIX:glas-badges:START */
+    :host {
+      /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+         deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+      --ha-card-background: transparent !important;
+      --card-background-color: transparent !important;
+    }
     ha-badge {
       background-color: rgba(255, 255, 255, 0.35) !important;
       background-color: var(--hatg-glas-fuellung-leicht, rgba(255, 255, 255, 0.35)) !important;
@@ -134,6 +189,11 @@ glas_basis:
     /* HATG:UIX:glas-badges:END */
   uix-sidebar: |
     /* HATG:UIX:seitenleiste-glas:START */
+    :host {
+      /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+         deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+      --sidebar-background-color: transparent !important;
+    }
     :host {
       background-color: rgba(255, 255, 255, 0.5) !important;
       background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
@@ -177,6 +237,15 @@ glas_basis:
     /* HATG:UIX:seitenleiste-aktiv-liquid:END */
   uix-more-info: |
     /* HATG:UIX:glas-more-info:START */
+    :host {
+      /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+         deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+      --ha-dialog-surface-background: transparent !important;
+      --ha-color-surface-default: transparent !important;
+      --wa-color-surface-raised: transparent !important;
+      --card-background-color: transparent !important;
+      --ha-dialog-surface-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%)) !important;
+    }
     ha-card {
       background-color: rgba(255, 255, 255, 0.68) !important;
       background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
@@ -197,6 +266,15 @@ glas_basis:
     /* HATG:UIX:glas-more-info:END */
   uix-dialog: |
     /* HATG:UIX:glas-dialoge:START */
+    :host {
+      /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+         deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+      --ha-dialog-surface-background: transparent !important;
+      --ha-color-surface-default: transparent !important;
+      --wa-color-surface-raised: transparent !important;
+      --card-background-color: transparent !important;
+      --ha-dialog-surface-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%)) !important;
+    }
     ha-dialog,
     ha-adaptive-dialog,
     .mdc-dialog__surface {
@@ -240,6 +318,12 @@ glas_basis:
     /* HATG:UIX:glas-buttons-dialoge:END */
   uix-drawer: |
     /* HATG:UIX:drawer-glas:START */
+    :host {
+      /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+         deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+      --app-header-background-color: transparent !important;
+      --sidebar-background-color: transparent !important;
+    }
     .mdc-drawer {
       background-color: rgba(255, 255, 255, 0.5) !important;
       background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
@@ -259,6 +343,12 @@ glas_basis:
     /* HATG:UIX:drawer-glas:END */
   uix-glance: |
     /* HATG:UIX:glas-glance:START */
+    :host {
+      /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+         deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+      --ha-card-background: transparent !important;
+      --card-background-color: transparent !important;
+    }
     ha-card {
       background-color: rgba(255, 255, 255, 0.5) !important;
       background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
@@ -290,6 +380,12 @@ glas_basis:
     /* HATG:UIX:glas-glance:END */
   uix-heading-badge: |
     /* HATG:UIX:glas-heading-badges:START */
+    :host {
+      /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+         deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+      --ha-card-background: transparent !important;
+      --card-background-color: transparent !important;
+    }
     :host {
       background-color: rgba(255, 255, 255, 0.35) !important;
       background-color: var(--hatg-glas-fuellung-leicht, rgba(255, 255, 255, 0.35)) !important;
@@ -332,6 +428,12 @@ glas_basis:
     /* HATG:UIX:glas-buttons-einstellungen:END */
   uix-panel-custom: |
     /* HATG:UIX:glas-panels:START */
+    :host {
+      /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+         deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+      --ha-card-background: transparent !important;
+      --card-background-color: transparent !important;
+    }
     ha-card {
       background-color: rgba(255, 255, 255, 0.5) !important;
       background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
@@ -352,6 +454,11 @@ glas_basis:
     /* HATG:UIX:glas-panels:END */
   uix-top-app-bar-fixed: |
     /* HATG:UIX:kopfleiste-glas:START */
+    :host {
+      /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+         deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+      --app-header-background-color: transparent !important;
+    }
     .mdc-top-app-bar {
       background-color: rgba(255, 255, 255, 0.5) !important;
       background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
@@ -368,6 +475,12 @@ glas_basis:
     /* HATG:UIX:kopfleiste-glas:END */
   uix-toast: |
     /* HATG:UIX:glas-toast:START */
+    :host {
+      /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+         deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+      --ha-card-background: transparent !important;
+      --card-background-color: transparent !important;
+    }
     .mdc-snackbar__surface {
       background-color: rgba(255, 255, 255, 0.5) !important;
       background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
@@ -388,6 +501,12 @@ glas_basis:
     /* HATG:UIX:glas-toast:END */
   uix-grid-section: |
     /* HATG:UIX:glas-abschnitte:START */
+    :host {
+      /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+         deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+      --ha-section-background-color: transparent !important;
+      --section-background-color: transparent !important;
+    }
     .container {
       background-color: rgba(255, 255, 255, 0.35) !important;
       background-color: var(--hatg-glas-fuellung-leicht, rgba(255, 255, 255, 0.35)) !important;
@@ -408,6 +527,12 @@ glas_basis:
     /* HATG:UIX:glas-abschnitte:END */
   uix-calendar: |
     /* HATG:UIX:glas-kalender:START */
+    :host {
+      /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+         deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+      --ha-card-background: transparent !important;
+      --card-background-color: transparent !important;
+    }
     ha-card {
       background-color: rgba(255, 255, 255, 0.5) !important;
       background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
@@ -428,6 +553,12 @@ glas_basis:
     /* HATG:UIX:glas-kalender:END */
   uix-todo: |
     /* HATG:UIX:glas-todo:START */
+    :host {
+      /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+         deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+      --ha-card-background: transparent !important;
+      --card-background-color: transparent !important;
+    }
     ha-card {
       background-color: rgba(255, 255, 255, 0.5) !important;
       background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
@@ -448,6 +579,12 @@ glas_basis:
     /* HATG:UIX:glas-todo:END */
   uix-history: |
     /* HATG:UIX:glas-verlauf:START */
+    :host {
+      /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+         deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+      --ha-card-background: transparent !important;
+      --card-background-color: transparent !important;
+    }
     ha-card {
       background-color: rgba(255, 255, 255, 0.5) !important;
       background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
@@ -468,6 +605,12 @@ glas_basis:
     /* HATG:UIX:glas-verlauf:END */
   uix-states-history-charts: |
     /* HATG:UIX:glas-verlaufsdiagramme:START */
+    :host {
+      /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+         deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+      --ha-card-background: transparent !important;
+      --card-background-color: transparent !important;
+    }
     ha-card {
       background-color: rgba(255, 255, 255, 0.5) !important;
       background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
@@ -488,6 +631,12 @@ glas_basis:
     /* HATG:UIX:glas-verlaufsdiagramme:END */
   uix-persistent-notification-item: |
     /* HATG:UIX:glas-benachrichtigungen:START */
+    :host {
+      /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
+         deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
+      --ha-card-background: transparent !important;
+      --card-background-color: transparent !important;
+    }
     ha-card {
       background-color: rgba(255, 255, 255, 0.5) !important;
       background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
