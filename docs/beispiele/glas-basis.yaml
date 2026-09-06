@@ -32,7 +32,7 @@
 # hatg-glas-blur und -gross verringern - Weichzeichnung kostet Rechenzeit.
 # ---------------------------------------------------------------------------
 
-# Erstellt mit HATG v1.1.0b13
+# Erstellt mit HATG v1.1.0b14
 # Theme: Glas Basis – Grundfarbe #007AFF, Akzent #007AFF, Karten-Radius 14px
 # Generiert am 2026-09-06
 
@@ -952,7 +952,7 @@ glas_basis:
       slider-track-color: "#D1D1D6"
 
       # HA-Grundgerüst / Buttons & Chips
-      control-button-background-color: "#FFFFFF"
+      control-button-background-color: "rgba(255, 255, 255, 0.68)"
       control-button-icon-color: "#007AFF"
       control-button-border-radius: "10px"
 
@@ -1558,7 +1558,7 @@ glas_basis:
       slider-track-color: "#48484A"
 
       # HA-Grundgerüst / Buttons & Chips
-      control-button-background-color: "#1C1C1E"
+      control-button-background-color: "rgba(255, 255, 255, 0.16)"
       control-button-icon-color: "#0A84FF"
       control-button-border-radius: "10px"
 

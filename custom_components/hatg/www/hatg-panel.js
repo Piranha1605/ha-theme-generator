@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.1.0b13";
+const HATG_VERSION = "1.1.0b14";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -1560,6 +1560,15 @@ const HATG_GLAS_FLAECHENFELDER = [
   { key: "ha-card-background", quelle: "hatg-glas-fuellung" },
   { key: "app-header-background-color", quelle: "hatg-glas-fuellung" },
   { key: "sidebar-background-color", quelle: "hatg-glas-fuellung" },
+  // Die Flaechen INNERHALB einer Karte: Bedienknoepfe der Tile-Karte und alles,
+  // was eigene Karten darauf aufbauen. Ohne dieses Feld glasiert das Paket nur
+  // den Kartenkoerper, und die Knoepfe darin bleiben als deckende Bloecke stehen -
+  // in einer dunklen Basis schwarz, in einer hellen weiss.
+  // Bewusst die STARKE Fuellung: die Karte traegt schon die normale, eine zweite
+  // Lage derselben Staerke waere darauf nicht zu sehen.
+  // Die ha-color-fill-neutral-Familie gehoert NICHT hierher - die faerbt in Home
+  // Assistant auch Menues und Listen, dieselbe Falle wie card-background-color.
+  { key: "control-button-background-color", quelle: "hatg-glas-fuellung-stark" },
 ];
 function hatgVorlagenPaket(tpl) {
   const paket = tpl && tpl.paket;
@@ -5593,8 +5602,8 @@ uix:
           <ha-icon icon="mdi:palette-outline"></ha-icon>
           <span>${
             this._sprache === "en"
-              ? `${deckend.length} surface colours are still opaque (${deckend.join(", ")}). Glass cannot show through them - the top bar of a dashboard always takes its colour from the theme.`
-              : `${deckend.length} Flächenfarben sind noch deckend (${deckend.join(", ")}). Dahinter kann kein Glas durchscheinen - die Kopfleiste eines Dashboards holt ihre Farbe immer aus dem Theme.`
+              ? `${deckend.length} surface colours are still opaque (${deckend.join(", ")}). Glass cannot show through them - a dashboard's top bar and the control buttons inside the cards always take their colour from the theme.`
+              : `${deckend.length} Flächenfarben sind noch deckend (${deckend.join(", ")}). Dahinter kann kein Glas durchscheinen - die Kopfleiste eines Dashboards und die Bedienknöpfe in den Karten holen ihre Farbe immer aus dem Theme.`
           }</span>
           <button type="button" class="vorlage-veraltet-button" data-flaechenfarben-glas>
             <ha-icon icon="mdi:auto-fix"></ha-icon><span>${this._sprache === "en" ? "Set to glass" : "Auf Glas setzen"}</span>
