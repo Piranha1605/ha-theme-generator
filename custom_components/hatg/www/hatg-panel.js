@@ -1569,7 +1569,57 @@ const HATG_GLAS_FLAECHENFELDER = [
   // Die ha-color-fill-neutral-Familie gehoert NICHT hierher - die faerbt in Home
   // Assistant auch Menues und Listen, dieselbe Falle wie card-background-color.
   { key: "control-button-background-color", quelle: "hatg-glas-fuellung-stark" },
+  // Bubble Card liest seine Flaechen aus eigenen Theme-Variablen. Bleiben die
+  // auf den deckenden Werten der Basis stehen, sitzt neben glaesernen HA-Karten
+  // eine sichtbar dunklere Bubble-Karte - derselbe Bruch wie bei den Knoepfen.
+  // Kartenkoerper: dieselbe Fuellung wie ha-card.
+  { key: "bubble-card-background-color", quelle: "hatg-glas-fuellung" },
+  { key: "bubble-main-buttons-background-color", quelle: "hatg-glas-fuellung" },
+  { key: "bubble-button-card-background-color", quelle: "hatg-glas-fuellung" },
+  { key: "bubble-button-main-background-color", quelle: "hatg-glas-fuellung" },
+  { key: "bubble-climate-background-color", quelle: "hatg-glas-fuellung" },
+  { key: "bubble-climate-main-background-color", quelle: "hatg-glas-fuellung" },
+  { key: "bubble-cover-background-color", quelle: "hatg-glas-fuellung" },
+  { key: "bubble-cover-main-background-color", quelle: "hatg-glas-fuellung" },
+  { key: "bubble-media-player-background-color", quelle: "hatg-glas-fuellung" },
+  { key: "bubble-media-player-main-background-color", quelle: "hatg-glas-fuellung" },
+  { key: "bubble-select-background-color", quelle: "hatg-glas-fuellung" },
+  { key: "bubble-select-main-background-color", quelle: "hatg-glas-fuellung" },
+  { key: "bubble-separator-background-color", quelle: "hatg-glas-fuellung" },
+  { key: "bubble-horizontal-buttons-stack-background-color", quelle: "hatg-glas-fuellung" },
+  { key: "bubble-calendar-main-background-color", quelle: "hatg-glas-fuellung" },
+  { key: "bubble-sub-buttons-main-background-color", quelle: "hatg-glas-fuellung" },
+  // Flaechen INNERHALB einer Bubble-Karte - Knoepfe, Symbolplatten, Regler,
+  // dazu das Popup: die starke Fuellung, sonst waeren sie auf der Karte
+  // nicht zu sehen.
+  { key: "bubble-button-background-color", quelle: "hatg-glas-fuellung-stark" },
+  { key: "bubble-sub-button-background-color", quelle: "hatg-glas-fuellung-stark" },
+  { key: "bubble-icon-background-color", quelle: "hatg-glas-fuellung-stark" },
+  { key: "bubble-button-icon-background-color", quelle: "hatg-glas-fuellung-stark" },
+  { key: "bubble-cover-icon-background-color", quelle: "hatg-glas-fuellung-stark" },
+  { key: "bubble-media-player-icon-background-color", quelle: "hatg-glas-fuellung-stark" },
+  { key: "bubble-select-icon-background-color", quelle: "hatg-glas-fuellung-stark" },
+  { key: "bubble-separator-icon-background-color", quelle: "hatg-glas-fuellung-stark" },
+  { key: "bubble-climate-button-background-color", quelle: "hatg-glas-fuellung-stark" },
+  { key: "bubble-cover-button-background-color", quelle: "hatg-glas-fuellung-stark" },
+  { key: "bubble-media-player-button-background-color", quelle: "hatg-glas-fuellung-stark" },
+  { key: "bubble-horizontal-buttons-stack-button-background-color", quelle: "hatg-glas-fuellung-stark" },
+  { key: "bubble-sub-slider-background-color", quelle: "hatg-glas-fuellung-stark" },
+  { key: "bubble-media-player-slider-background-color", quelle: "hatg-glas-fuellung-stark" },
+  { key: "bubble-secondary-background-color", quelle: "hatg-glas-fuellung-stark" },
+  { key: "bubble-pop-up-background-color", quelle: "hatg-glas-fuellung-stark" },
+  { key: "bubble-pop-up-main-background-color", quelle: "hatg-glas-fuellung-stark" },
+  // Aussen vor bleiben: bubble-select-list-background-color (Aufklappliste,
+  // dieselbe Falle wie ha-dropdown), die beiden *-active-Farben (die tragen
+  // den Zustand), bubble-backdrop (die Abdunklung hinter dem Popup) und
+  // bubble-line (Trennlinie).
 ];
+// Aus einer langen Feldliste eine lesbare Aufzaehlung machen: drei Namen und
+// ein Rest. Ohne das stuenden drei Dutzend Variablennamen in einem Hinweis.
+function hatgFelderNennen(felder, rest) {
+  if (felder.length <= 4) return felder.join(", ");
+  return `${felder.slice(0, 3).join(", ")} +${felder.length - 3} ${rest}`;
+}
 function hatgVorlagenPaket(tpl) {
   const paket = tpl && tpl.paket;
   return paket && HATG_PAKETE[paket] ? paket : null;
@@ -5105,6 +5155,33 @@ class HATGPanel extends HTMLElement {
         : `${bezeichnung}: ${anzahl} Vorlagen aktiviert. Jetzt speichern und Themes neu laden.`
     );
   }
+  // Der Glaslook laesst sich aus drei Angaben ableiten: Farbton, Deckkraft und
+  // Weichzeichnung. Die uebrigen Werte sind Abstufungen davon.
+  glasReglerStand() {
+    const werte = this.currentValues();
+    const fuellung = hatgParseRgba(String(werte["hatg-glas-fuellung"] || "rgba(255, 255, 255, 0.5)"));
+    const blur = parseInt(String(werte["hatg-glas-blur"] || "18px"), 10) || 0;
+    return {
+      ton: fuellung.hex || "#FFFFFF",
+      deckkraft: Math.round((fuellung.alpha ?? 0.5) * 100),
+      blur,
+    };
+  }
+  setzeGlasWerte({ ton, deckkraft, blur }) {
+    const stand = this.glasReglerStand();
+    const farbe = ton || stand.ton;
+    const alpha = (deckkraft === undefined ? stand.deckkraft : deckkraft) / 100;
+    const px = blur === undefined ? stand.blur : blur;
+    const mit = (faktor) => hatgComposeRgba(farbe, Math.max(0, Math.min(1, Number((alpha * faktor).toFixed(2)))));
+    this.commitField("hatg-glas-fuellung-leicht", mit(0.7));
+    this.commitField("hatg-glas-fuellung", mit(1));
+    this.commitField("hatg-glas-fuellung-stark", mit(1.36));
+    this.commitField("hatg-glas-blur-klein", `${Math.round(px * 0.45)}px`);
+    this.commitField("hatg-glas-blur", `${px}px`);
+    this.commitField("hatg-glas-blur-gross", `${Math.round(px * 1.8)}px`);
+    this.applyPreviewTheme?.();
+  }
+
   // Ist eine dieser Flaechenfarben noch deckend?
   deckendeFlaechenfarben() {
     const treffer = [];
@@ -5652,8 +5729,8 @@ uix:
           <ha-icon icon="mdi:palette-outline"></ha-icon>
           <span>${
             this._sprache === "en"
-              ? `${deckend.length} surface colours are still opaque (${deckend.join(", ")}). Glass cannot show through them - a dashboard's top bar and the control buttons inside the cards always take their colour from the theme.`
-              : `${deckend.length} Flächenfarben sind noch deckend (${deckend.join(", ")}). Dahinter kann kein Glas durchscheinen - die Kopfleiste eines Dashboards und die Bedienknöpfe in den Karten holen ihre Farbe immer aus dem Theme.`
+              ? `${deckend.length} surface colours are still opaque (${hatgFelderNennen(deckend, "more")}). Glass cannot show through them - a dashboard's top bar, the control buttons inside the cards and the surfaces of Bubble Card always take their colour from the theme.`
+              : `${deckend.length} Flächenfarben sind noch deckend (${hatgFelderNennen(deckend, "weitere")}). Dahinter kann kein Glas durchscheinen - die Kopfleiste eines Dashboards, die Bedienknöpfe in den Karten und die Flächen von Bubble Card holen ihre Farbe immer aus dem Theme.`
           }</span>
           <button type="button" class="vorlage-veraltet-button" data-flaechenfarben-glas>
             <ha-icon icon="mdi:auto-fix"></ha-icon><span>${this._sprache === "en" ? "Set to glass" : "Auf Glas setzen"}</span>
@@ -5675,11 +5752,40 @@ uix:
           </button>
         </div>`
       : "";
+    const glas = this.glasReglerStand();
+    const glasRegler = stand.gesamt
+      ? `
+        <div class="glas-regler">
+          <div class="glas-regler-kopf" data-roh>
+            <strong>${this._sprache === "en" ? "Glass values" : "Glaswerte"}</strong>
+            <span>${
+              this._sprache === "en"
+                ? `Applies to every glass preset at once, in the ${this._state.editorMode === "dark" ? "dark" : "light"} mode you are editing.`
+                : `Wirkt auf alle Glas-Vorlagen gleichzeitig, im gerade bearbeiteten ${this._state.editorMode === "dark" ? "Dark" : "Light"}-Modus.`
+            }</span>
+          </div>
+          <div class="glas-regler-reihe">
+            <div class="generator-control">
+              <label data-roh>${this._sprache === "en" ? "Opacity" : "Deckkraft"} <span class="generator-value" data-glas-deckkraft-wert>${glas.deckkraft} %</span></label>
+              <input type="range" min="0" max="100" step="1" value="${glas.deckkraft}" data-glas-deckkraft />
+            </div>
+            <div class="generator-control">
+              <label data-roh>${this._sprache === "en" ? "Blur" : "Weichzeichnung"} <span class="generator-value" data-glas-blur-wert>${glas.blur} px</span></label>
+              <input type="range" min="0" max="40" step="1" value="${glas.blur}" data-glas-blur />
+            </div>
+            <div class="generator-control glas-regler-farbe">
+              <label data-roh>${this._sprache === "en" ? "Tint" : "Farbton"} <span class="generator-value" data-roh>${hatgEscape(glas.ton)}</span></label>
+              <input type="color" value="${hatgEscape(glas.ton)}" data-glas-ton />
+            </div>
+          </div>
+        </div>`
+      : "";
     const leer = !cards && !eigeneKacheln;
     return `
       <section class="editor-section">
         <div class="section-heading">${kopf}</div>
         ${paketLeiste}
+        ${glasRegler}
         ${farbHinweis}
         ${duennHinweis}
         ${hinweis}
@@ -7280,6 +7386,13 @@ uix:
         .plugin-toggle-button.is-active:hover { border-color: #ff453a; background: rgba(255,69,58,.14); color: #ff453a; }
         .vorlage-card { min-height: 0; }
         .nav-anzahl { margin-left: auto; font-size: 10px; font-weight: 600; color: var(--hatg-muted); background: var(--hatg-field); border-radius: 999px; padding: 1px 7px; }
+        .glas-regler { margin-bottom: 16px; padding: 14px 16px; border: 1px solid var(--hatg-border); border-radius: 12px; background: var(--hatg-field); }
+        .glas-regler-kopf { display: flex; flex-direction: column; gap: 3px; margin-bottom: 12px; }
+        .glas-regler-kopf strong { font-size: 14px; font-weight: 650; color: var(--hatg-text); }
+        .glas-regler-kopf span { font-size: 12px; line-height: 1.5; color: var(--hatg-text-dim); }
+        .glas-regler-reihe { display: grid; grid-template-columns: 1fr 1fr auto; gap: 18px; align-items: end; }
+        .glas-regler-farbe input[type="color"] { width: 52px; height: 34px; padding: 0; border: 1px solid var(--hatg-border); border-radius: 9px; background: transparent; cursor: pointer; }
+        @media (max-width: 700px) { .glas-regler-reihe { grid-template-columns: 1fr; } }
         .paket-leiste { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; padding: 14px 16px; border: 1px solid var(--hatg-border); border-radius: 12px; background: var(--hatg-field); }
         .paket-text { flex: 1 1 auto; display: flex; flex-direction: column; gap: 3px; }
         .paket-text strong { font-size: 14px; font-weight: 650; color: var(--hatg-text); }
@@ -7933,6 +8046,32 @@ uix:
       });
       el.addEventListener("change", () => this.render());
     });
+    const glasDeckkraft = this.shadowRoot.querySelector("[data-glas-deckkraft]");
+    const glasBlur = this.shadowRoot.querySelector("[data-glas-blur]");
+    const glasTon = this.shadowRoot.querySelector("[data-glas-ton]");
+    if (glasDeckkraft || glasBlur || glasTon) {
+      const anzeigen = () => {
+        const d = this.shadowRoot.querySelector("[data-glas-deckkraft-wert]");
+        const b = this.shadowRoot.querySelector("[data-glas-blur-wert]");
+        if (d && glasDeckkraft) d.textContent = `${glasDeckkraft.value} %`;
+        if (b && glasBlur) b.textContent = `${glasBlur.value} px`;
+      };
+      const uebernehmen = () => {
+        this.setzeGlasWerte({
+          ton: glasTon ? glasTon.value.toUpperCase() : undefined,
+          deckkraft: glasDeckkraft ? Number(glasDeckkraft.value) : undefined,
+          blur: glasBlur ? Number(glasBlur.value) : undefined,
+        });
+        anzeigen();
+      };
+      // Waehrend des Ziehens nur die Anzeige, beim Loslassen schreiben -
+      // sonst laeuft die Ableitung bei jedem Pixel durch alle Felder.
+      glasDeckkraft?.addEventListener("input", anzeigen);
+      glasBlur?.addEventListener("input", anzeigen);
+      glasDeckkraft?.addEventListener("change", uebernehmen);
+      glasBlur?.addEventListener("change", uebernehmen);
+      glasTon?.addEventListener("change", uebernehmen);
+    }
     this.shadowRoot.querySelector("[data-flaechenfarben-glas]")?.addEventListener("click", () => this.flaechenfarbenAufGlas());
     this.shadowRoot.querySelector("[data-grundfarben-deckend]")?.addEventListener("click", () => this.grundfarbenDeckendSetzen());
     this.shadowRoot.querySelectorAll("[data-schalte-paket]").forEach((el) => {
