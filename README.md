@@ -5,7 +5,7 @@
 <p align="center">
   <img src="https://img.shields.io/github/v/release/Piranha1605/ha-theme-generator?label=Version&color=2F80ED" alt="Version" />
   <img src="https://img.shields.io/badge/HACS-Custom%20Repository-2F80ED?logo=home-assistant&logoColor=white" alt="HACS" />
-  <img src="https://img.shields.io/badge/Variablen-515%20gepr%C3%BCft-2F80ED" alt="515 geprüfte Variablen" />
+  <img src="https://img.shields.io/badge/Variablen-538%20gepr%C3%BCft-2F80ED" alt="538 geprüfte Variablen" />
   <img src="https://img.shields.io/github/stars/Piranha1605/ha-theme-generator?color=2F80ED" alt="Stars" />
   <img src="https://img.shields.io/github/issues/Piranha1605/ha-theme-generator?color=2F80ED" alt="Issues" />
 </p>
@@ -22,9 +22,9 @@
 
 **Ein Theme, jede Karte im Griff.**
 
-HATG ist ein eigenes Panel in deiner Home-Assistant-Seitenleiste, mit dem du komplette Themes visuell aufbaust — für Home Assistant selbst, für **Bubble Card**, für **Mushroom** und für globale Anpassungen per **card-mod**. Kein Springen zwischen YAML-Dateien, kein Raten, welche Variable welche Karte trifft: Du stellst Farben, Formen und Zustände an einer Stelle ein, HATG verteilt sie an alle drei Welten und zeigt dir das Ergebnis live — auf Wunsch direkt in deinem echten Dashboard.
+HATG ist ein eigenes Panel in deiner Home-Assistant-Seitenleiste, mit dem du komplette Themes visuell aufbaust — für Home Assistant selbst, für **Bubble Card**, für **Mushroom** und für globale Anpassungen per **UI eXtension (UIX)**. Kein Springen zwischen YAML-Dateien, kein Raten, welche Variable welche Karte trifft: Du stellst Farben, Formen und Zustände an einer Stelle ein, HATG verteilt sie an alle drei Welten und zeigt dir das Ergebnis live — auf Wunsch direkt in deinem echten Dashboard.
 
-Jedes der 515 Felder wurde gegen den echten Quellcode von Home Assistant, Bubble Card und Mushroom geprüft. Es sind ausschließlich real existierende Variablen enthalten — was du einstellst, kommt auch an.
+Jedes der 538 Felder wurde gegen den echten Quellcode von Home Assistant, Bubble Card und Mushroom beziehungsweise gegen die UIX-Dokumentation geprüft. Es sind ausschließlich real existierende Variablen enthalten — was du einstellst, kommt auch an.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/unified-theme-demo.png" alt="Ein Theme, gleichzeitig angewendet auf HA-Karten, Mushroom und Bubble Card" width="85%" />
@@ -34,7 +34,7 @@ Jedes der 515 Felder wurde gegen den echten Quellcode von Home Assistant, Bubble
 
 ## Inhalt
 
-[Installation](#installation) · [In fünf Minuten zum ersten Theme](#in-fünf-minuten-zum-ersten-theme) · [Die Startseite](#die-startseite--vom-groben-ins-feine) · [Alle Bereiche](#alle-bereiche-im-überblick) · [Cardmod-Vorlagen](#cardmod-vorlagen--globale-effekte-per-klick) · [HA Live](#ha-live--dein-echtes-dashboard-als-vorschau) · [Speichern & Import](#speichern-laden-import) · [Gut zu wissen](#gut-zu-wissen) · [FAQ](#faq)
+[Installation](#installation) · [In fünf Minuten zum ersten Theme](#in-fünf-minuten-zum-ersten-theme) · [Die Startseite](#die-startseite--vom-groben-ins-feine) · [Alle Bereiche](#alle-bereiche-im-überblick) · [UIX-Vorlagen](#uix-vorlagen--globale-effekte-per-klick) · [HA Live](#ha-live--dein-echtes-dashboard-als-vorschau) · [Speichern & Import](#speichern-laden-import) · [Gut zu wissen](#gut-zu-wissen) · [FAQ](#faq)
 
 ---
 
@@ -56,19 +56,20 @@ HATG erscheint danach als eigener Eintrag in der Seitenleiste. Fertig — weiter
 2. Home Assistant neu starten
 3. **Einstellungen → Geräte & Dienste → Integration hinzufügen** → „HATG"
 
-### Optional, aber empfohlen: card-mod
+### Optional, aber empfohlen: UI eXtension (UIX)
 
-Die Seite **Cardmod-Vorlagen** und die Felder `card-mod-card` / `card-mod-root` entfalten ihre Wirkung erst mit installiertem [card-mod](https://github.com/thomasloven/lovelace-card-mod) (ebenfalls über HACS erhältlich). Ohne card-mod funktioniert HATG vollständig — nur diese Bausteine bleiben dann stumm.
+Die Seite **UIX-Vorlagen** und die Stilziele (`uix-card`, `uix-root`, `uix-view` und 22 weitere) entfalten ihre Wirkung erst mit installiertem [UI eXtension](https://github.com/Lint-Free-Technology/uix) (ebenfalls über HACS erhältlich). Ohne UIX funktioniert HATG vollständig — nur diese Bausteine bleiben dann stumm.
 
-**Tipp für Fortgeschrittene:** Damit card-mod-Styles auch außerhalb von Dashboards greifen (etwa in der Seitenleiste auf den Einstellungsseiten), card-mod zusätzlich als Frontend-Modul einbinden. Die genaue Ressourcen-URL steht unter **Einstellungen → Dashboards → ⋮ → Ressourcen**:
+UIX muss nach dem Download **als Gerät hinzugefügt** werden: **Einstellungen → Geräte & Dienste → Integration hinzufügen → UI eXtension**. Dieser Schritt wird am häufigsten übersehen.
 
-```yaml
-frontend:
-  extra_module_url:
-    - /hacsfiles/lovelace-card-mod/card-mod.js?hacstag=DEINE_NUMMER
-```
+**Du kommst von card-mod?** card-mod lädt seit Home Assistant 2026.8 die Theme-Abschnitte nicht mehr zuverlässig, und ein Fix ist [angekündigterweise nicht mehr zu erwarten](https://github.com/thomasloven/lovelace-card-mod/issues/606). UIX ist der Nachfolger desselben Entwicklers und versteht die alte Schreibweise weiter: bestehende `card-mod-*`-Felder und `card_mod:`-Blöcke funktionieren unverändert. Zu beachten:
 
-Danach Home Assistant neu starten. Nach jedem card-mod-Update die Nummer nachziehen.
+1. card-mod deinstallieren — beide gleichzeitig gehen nicht
+2. Eine etwaige `extra_module_url`-Zeile für card-mod aus der `configuration.yaml` entfernen; UIX braucht sie nicht
+3. UIX über HACS laden, Home Assistant neu starten, UIX als Gerät hinzufügen
+4. Theme in HATG einmal neu speichern — dabei werden die Felder auf `uix-` umgestellt
+
+Der Bereich **UIX-Hilfe** im Panel führt durch dieselben Schritte und erklärt die Stilziele im Einzelnen. Wer noch bei card-mod bleiben muss, stellt im Zahnrad-Menü das **Ausgabeformat** auf `card-mod` zurück; HATG schreibt die Theme-Datei dann wieder mit den alten Feldnamen.
 
 ---
 
@@ -140,7 +141,7 @@ Neben Verläufen (Sonnenaufgang, Nachthimmel, Radial) kannst du ein **eigenes Bi
 
 ## Alle Bereiche im Überblick
 
-Die Seitenleiste gliedert alle 515 Felder in thematische Sektionen — Bubble Card mit eigenen Unterseiten pro Kartentyp:
+Die Seitenleiste gliedert alle 538 Felder in thematische Sektionen — Bubble Card mit eigenen Unterseiten pro Kartentyp:
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/nav-sections.png" alt="Navigation mit allen Sektionen" width="25%" />
@@ -154,12 +155,13 @@ Die Seitenleiste gliedert alle 515 Felder in thematische Sektionen — Bubble Ca
 | **Mushroom** | Karten, Icons, Chips, Slider, Toggles, Zustandsfarben |
 | **Alle Felder** | Die komplette Liste mit Volltextsuche, Farb-, Typ- und Wortbaustein-Filtern sowie Mehrfachauswahl für Sammel-Änderungen |
 | **Code-Editor** | Alle Werte als Text — tippen statt klicken, Änderungen greifen sofort |
-| **Cardmod-Vorlagen** | Globale card-mod-Bausteine per Klick, plus eigene Vorlagen |
+| **UIX-Vorlagen** | Globale UIX-Bausteine per Klick, plus eigene Vorlagen |
 | **Plugins** | Kopiervorlagen für einzelne Karten (Bubble-Slider, Glas-Effekte, zustandsabhängiges Design) |
+| **UIX-Hilfe** | Umstieg von card-mod, alle Stilziele im Überblick, häufige Fehlerquellen |
 
 ### Alle Felder — finden statt suchen
 
-Der **Wortbaustein-Filter** kombiniert Bausteine wie `color`, `background` oder `button` mit einschränkenden Zusatz-Tags (`bubble`, `climate`, `stack`) — so ist auch unter 515 Variablen die richtige in Sekunden gefunden. Mit der Mehrfachauswahl bekommen ganze Feldgruppen in einem Schritt denselben Wert.
+Der **Wortbaustein-Filter** kombiniert Bausteine wie `color`, `background` oder `button` mit einschränkenden Zusatz-Tags (`bubble`, `climate`, `stack`) — so ist auch unter 538 Variablen die richtige in Sekunden gefunden. Mit der Mehrfachauswahl bekommen ganze Feldgruppen in einem Schritt denselben Wert.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/all-fields-filter.png" alt="Alle Felder mit Wortbaustein-Filter" width="80%" />
@@ -167,7 +169,7 @@ Der **Wortbaustein-Filter** kombiniert Bausteine wie `color`, `background` oder 
 
 ### Code-Editor
 
-Für alle, die Werte lieber tippen: sämtliche Felder als Text mit Syntax-Färbung, gruppiert nach Bereichen. Dazu die freien card-mod-Felder (`card-mod-card`, `card-mod-root`) und ein **Freifeld für eigene Theme-Einträge**, die HATG nicht kennt — sie überleben Speichern und Export unverändert.
+Für alle, die Werte lieber tippen: sämtliche Felder als Text mit Syntax-Färbung, gruppiert nach Bereichen. Dazu die freien UIX-Stilziele (`uix-card`, `uix-root` und die übrigen) und ein **Freifeld für eigene Theme-Einträge**, die HATG nicht kennt — sie überleben Speichern und Export unverändert.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/code-editor.png" alt="Code-Editor mit allen Feldern als Text" width="80%" />
@@ -175,12 +177,12 @@ Für alle, die Werte lieber tippen: sämtliche Felder als Text mit Syntax-Färbu
 
 ---
 
-## Cardmod-Vorlagen — globale Effekte per Klick
+## UIX-Vorlagen — globale Effekte per Klick
 
-Fertige card-mod-Bausteine, die per Klick **global ins Theme** übernommen werden — markiert in `card-mod-card`, für Light und Dark gleichzeitig, jederzeit einzeln wieder entfernbar. Kein Kopieren, kein Einfügen in einzelne Karten.
+Fertige UIX-Bausteine, die per Klick **global ins Theme** übernommen werden — für Light und Dark gleichzeitig, jederzeit einzeln wieder entfernbar. Zweiunddreißig Vorlagen, die nicht nur Karten treffen — darunter das **Glas-Paket**, das mit einem Klick jede Fläche des Systems auf Glas umstellt: Glas und Verläufe für `uix-card`, Glas für Seitenleiste, App Drawer und Kopfleiste, Eckenradius und Schleier für Dialoge, ein Hintergrundbild über die ganze Oberfläche und zwei für die Einstellungsseiten. Jede Kachel nennt ihr Stilziel; eigene Vorlagen können jedes der 25 Ziele ansteuern. Kein Kopieren, kein Einfügen in einzelne Karten.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/cardmod-vorlagen.png" alt="Cardmod-Vorlagen mit Werksvorlagen und eigenen Vorlagen" width="80%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/cardmod-vorlagen.png" alt="UIX-Vorlagen mit Werksvorlagen und eigenen Vorlagen" width="80%" />
 </p>
 
 Fünf Werksvorlagen sind enthalten: **Kartenfarben-Verlauf**, **Glow / Leucht-Schatten**, **Rahmen mit Leuchtkante**, **Glas-Effekt (Blur)** und **Relief**. Alle decken native HA-Karten und sämtliche Bubble-Kartentypen ab (Climate, Cover, Media Player, Select, Kalender, Popup, Horizontal Buttons Stack); Mushroom ist über die Theme-Variablen bereits versorgt. Hüllen-Karten wie Überschriften, Mushroom-Chips und Bubble-Sub-Buttons bleiben bewusst rahmenlos.
@@ -219,10 +221,10 @@ Die eingebaute Demo-Vorschau reagiert sofort auf jede Änderung — mit pixelgen
 - **Speichern** schreibt das Theme als YAML-Datei nach `config/themes/` und stößt `frontend.reload_themes` an — das Ergebnis ist sofort unter **Einstellungen → Profil** wählbar
 - **Zwischenstand sichern** legt eine Arbeitskopie an; dein Stand bleibt auch beim Verlassen des Panels erhalten
 - **Öffnen** listet alle Themes aus `config/themes/` zum direkten Weiterbearbeiten
-- **Import** liest jedes bestehende Theme ein — auch flache Themes ohne `light:`/`dark:`-Aufteilung. Unbekannte Felder werden aufbewahrt und beim Export wieder angehängt, alte card-mod-Feldnamen automatisch migriert
+- **Import** liest jedes bestehende Theme ein — auch flache Themes ohne `light:`/`dark:`-Aufteilung. Unbekannte Felder werden aufbewahrt und beim Export wieder angehängt, alte `card-mod-*`-Felder (auch die `-yaml`-Varianten) automatisch auf `uix-*` gehoben
 - **Ableitungen neu anwenden** (im Speichern-Menü) setzt Felder, deren Wert ohnehin der Ableitung entspricht, zurück auf „automatisch" — sie folgen dann wieder ihrer Grundfarbe
 
-Der Export ist gültiges YAML (geprüft mit demselben Parser, den Home Assistant verwendet), mit korrekt flach liegenden card-mod-Feldern.
+Der Export ist gültiges YAML (geprüft mit demselben Parser, den Home Assistant verwendet), mit korrekt flach liegenden UIX-Feldern auf Theme-Ebene.
 
 ---
 
@@ -249,10 +251,13 @@ Ja. Über den Import liest HATG jedes Theme ein. Unbekannte Felder gehen nicht v
 Die drei häufigsten Gründe: (1) Unter **Einstellungen → Profil** ist ein anderes Theme aktiv. (2) Du hast im anderen Modus (Light/Dark) eingestellt als dem, den dein Gerät verwendet. (3) Der Browser hält eine alte Version im Cache — einmal hart neu laden.
 
 **Was passiert bei einem HATG-Update mit meinen Themes?**
-Nichts — Themes liegen in `config/themes/`, eigene Cardmod-Vorlagen in `config/themes/hatg-cardmod-vorlagen.json`, Hintergrundbilder in `config/themes/Wallpaper/`. Alles außerhalb des Integrationsordners, alles update-sicher, alles im Backup.
+Nichts — Themes liegen in `config/themes/`, eigene UIX-Vorlagen in `config/themes/hatg/hatg-uix-vorlagen.json`, Hintergrundbilder in `config/themes/Wallpaper/`. Alles außerhalb des Integrationsordners, alles update-sicher, alles im Backup.
 
-**Die Cardmod-Vorlagen zeigen keine Wirkung.**
-Dafür muss [card-mod](https://github.com/thomasloven/lovelace-card-mod) installiert sein. Außerdem muss das aktive Theme das von HATG gespeicherte sein — das CSS steht in der Theme-Datei.
+**Die UIX-Vorlagen zeigen keine Wirkung.**
+Dafür muss [UI eXtension](https://github.com/Lint-Free-Technology/uix) installiert **und als Gerät hinzugefügt** sein. Außerdem muss das aktive Theme das von HATG gespeicherte sein — das CSS steht in der Theme-Datei.
+
+**Ich nutze noch card-mod. Kann ich HATG weiter verwenden?**
+Ja. Im Zahnrad-Menü lässt sich das Ausgabeformat auf `card-mod` stellen, dann schreibt HATG die alten Feldnamen. Zehn der 25 Stilziele kennt card-mod allerdings nicht; sind sie belegt, weist HATG im Bereich **UIX & Generator** darauf hin. Auf Dauer führt kein Weg an UIX vorbei.
 
 **Kann ich HATG wieder entfernen?**
 Jederzeit. Die erzeugten Themes sind normale YAML-Dateien und funktionieren ohne HATG weiter.
