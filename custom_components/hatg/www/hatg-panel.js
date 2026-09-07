@@ -277,8 +277,10 @@ const HATG_TEXTE = {
   "Die Diagrammflächen im Verlauf und in Verlaufskarten. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "The chart surfaces in the history panel and in history cards. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
   "Eigene Panels in Glas": "Custom panels in glass",
   "Panels von Erweiterungen in der Seitenleiste - auch HATG selbst. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "Panels from add-ons in the sidebar - including HATG itself. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
-   "Benutzer-Icon wie die Systemicons": "User icon like the system icons",
-   "Gibt dem runden Benutzerbild unten in der Seitenleiste dieselbe Form wie den Icons auf den Einstellungsseiten: abgerundetes Quadrat, feine Kante, kurzer Schatten. Nutzt dieselben Felder wie die Einstellungsvorlage, bleibt also automatisch im Gleichklang. Die Größe bleibt, wie Home Assistant sie setzt. Kommt ohne Shadow-DOM-Pfad aus: Home Assistant nimmt den Radius des Bildes aus einer Variablen. Nur der Lichtverlauf fehlt - der liegt im Inneren des Bausteins und wäre ohne Pfad nicht erreichbar.": "Gives the round user picture at the bottom of the sidebar the same shape as the icons on the settings pages: rounded square, fine edge, short shadow. It uses the same fields as the settings preset, so the two stay in step. The size stays as Home Assistant sets it. It needs no shadow DOM path: Home Assistant takes the picture's radius from a variable. Only the light gradient is missing - it sits inside the building block and would not be reachable without a path.",
+  "Benutzer-Icon wie die Systemicons": "User icon like the system icons",
+  "Gibt dem runden Benutzerbild unten in der Seitenleiste dieselbe Form wie den Icons auf den Einstellungsseiten: abgerundetes Quadrat, feine Kante, kurzer Schatten. Nutzt dieselben Felder wie die Einstellungsvorlage, bleibt also automatisch im Gleichklang. Die Größe bleibt, wie Home Assistant sie setzt. Kommt ohne Shadow-DOM-Pfad aus: Home Assistant nimmt den Radius des Bildes aus einer Variablen. Nur der Lichtverlauf fehlt - der liegt im Inneren des Bausteins und wäre ohne Pfad nicht erreichbar.": "Gives the round user picture at the bottom of the sidebar the same shape as the icons on the settings pages: rounded square, fine edge, short shadow. It uses the same fields as the settings preset, so the two stay in step. The size stays as Home Assistant sets it. It needs no shadow DOM path: Home Assistant takes the picture's radius from a variable. Only the light gradient is missing - it sits inside the building block and would not be reachable without a path.",
+  "Einstellungsseiten für das Hintergrundbild öffnen": "Open the settings pages for the background image",
+  "Die Einstellungs-Unterseiten - Geräte & Dienste, Automationen, Helfer und die anderen Listen - malen eine eigene deckende Fläche und decken das Hintergrundbild ab. Diese Vorlage nimmt ihnen die Grundfarbe, sodass das Bild aus der Vorlage \"Hintergrundbild über die ganze Oberfläche\" auch dort durchkommt. Wirkt nur innerhalb der Einstellungen; Karten, Dialoge und Tabellen behalten ihre eigenen Farben. Ohne Hintergrundbild bewirkt sie nichts außer einer durchsichtigen Grundfläche.": "The settings subpages - Devices & Services, Automations, Helpers and the other lists - paint an opaque surface of their own and hide the background image. This preset takes their base colour away so the image from \"Background image across the whole interface\" comes through there as well. It only applies inside Settings; cards, dialogs and tables keep their own colours. Without a background image it does nothing beyond a transparent base surface.",
   "Glaslook": "Glass look",
   "Eigener Titel in der Seitenleiste": "Custom title in the sidebar",
   "Ersetzt das \"Home Assistant\" oben in der Seitenleiste durch einen eigenen Text. Der Text steht im Feld hatg-sidebar-titel im Bereich Glaslook - mit Anführungszeichen, so verlangt es CSS. Home Assistant selbst bietet dafür keine Einstellung.": "Replaces the \"Home Assistant\" at the top of the sidebar with a text of your own. The text lives in the field hatg-sidebar-titel under Glass look - in quotation marks, as CSS requires. Home Assistant itself offers no setting for this.",
@@ -1700,9 +1702,16 @@ function hatgVorlagenZiel(tpl) {
   if (!ziel || ziel === HATG_UIX_THEME_KEY) return HATG_VORLAGEN_STANDARDZIEL;
   return hatgIstStilzielKey(ziel) ? ziel : HATG_VORLAGEN_STANDARDZIEL;
 }
-// Alle Ziele, in denen Vorlagenbloecke stecken koennen - fuer Suche und Aufraeumen.
+// Alle Ziele, in denen Vorlagenbloecke stecken koennen - fuer Suche und
+// Aufraeumen. Es reicht nicht, die Ziele der heutigen Vorlagen zu nehmen: Zieht
+// eine Vorlage um, bleibt ihr Block in einem Feld liegen, das dann niemand mehr
+// als Ziel fuehrt. Deshalb alle Stilziele samt ihrer -yaml-Varianten.
 function hatgVorlagenZieleAlle(vorlagen) {
   const ziele = new Set([HATG_VORLAGEN_STANDARDZIEL, ...HATG_VORLAGEN_STILLGELEGT_ZIELE]);
+  HATG_STILZIELE.forEach((z) => {
+    ziele.add(`uix-${z.id}`);
+    ziele.add(`uix-${z.id}-yaml`);
+  });
   (vorlagen || []).forEach((t) => ziele.add(hatgVorlagenZiel(t)));
   return [...ziele];
 }
@@ -2672,6 +2681,20 @@ ha-adaptive-dialog {
      deshalb background und nicht background-image. Live geprueft. */
   background: var(--lovelace-background, transparent) !important;
   background-attachment: fixed !important;
+}`,
+  },
+  {
+    id: "einstellungen-hintergrund-frei",
+    label: "Einstellungsseiten für das Hintergrundbild öffnen",
+    desc: "Die Einstellungs-Unterseiten - Geräte & Dienste, Automationen, Helfer und die anderen Listen - malen eine eigene deckende Fläche und decken das Hintergrundbild ab. Diese Vorlage nimmt ihnen die Grundfarbe, sodass das Bild aus der Vorlage \"Hintergrundbild über die ganze Oberfläche\" auch dort durchkommt. Wirkt nur innerhalb der Einstellungen; Karten, Dialoge und Tabellen behalten ihre eigenen Farben. Ohne Hintergrundbild bewirkt sie nichts außer einer durchsichtigen Grundfläche.",
+    ziel: "uix-config",
+    css: `:host,
+ha-panel-config,
+partial-panel-resolver {
+  /* hass-tabs-subpage setzt background-color: var(--primary-background-color)
+     auf sich selbst und liegt damit ueber dem Bild im ha-drawer. Die Variable
+     erbt bis dorthin, deshalb reicht sie hier - ohne Shadow-DOM-Pfad. */
+  --primary-background-color: transparent;
 }`,
   },
   {
@@ -5543,9 +5566,17 @@ class HATGPanel extends HTMLElement {
 
   veralteteVorlagen() {
     const werte = this.currentValues();
-    return this.alleVorlagen().filter((tpl) => {
-      const text = String(werte[hatgVorlagenZiel(tpl)] || "");
-      const vorhanden = hatgLeseVorlagenBlock(text, tpl.id);
+    const vorlagen = this.alleVorlagen();
+    const ziele = hatgVorlagenZieleAlle(vorlagen);
+    return vorlagen.filter((tpl) => {
+      const ziel = hatgVorlagenZiel(tpl);
+      // Ein Block im falschen Feld zaehlt genauso als veraltet wie ein Block
+      // mit altem Inhalt - sonst bleibt der Rest unbemerkt im Theme liegen.
+      const verwaist = ziele
+        .filter((k) => k !== ziel)
+        .some((fremd) => hatgLeseVorlagenBlock(String(werte[fremd] || ""), tpl.id) !== null);
+      if (verwaist) return true;
+      const vorhanden = hatgLeseVorlagenBlock(String(werte[ziel] || ""), tpl.id);
       return vorhanden !== null && vorhanden !== String(tpl.css).trim();
     }).map((tpl) => tpl.id);
   }
@@ -5571,21 +5602,39 @@ class HATGPanel extends HTMLElement {
     return anzahl;
   }
 
-  frischeVorlagenAuf(options = {}) {
+  // Wechselt eine Vorlage ihr Stilziel, bleibt der alte Block im alten Feld
+  // stehen und wandert bei jedem Speichern mit ins Theme. Ein solcher Rest hat
+  // schon einmal UIX zum Absturz gebracht, deshalb raeumt das Speichern selbst
+  // auf und nicht erst der Knopf "Vorlagen auffrischen".
+  entferneVerwaisteVorlagen() {
     const vorlagen = this.alleVorlagen();
     const ziele = hatgVorlagenZieleAlle(vorlagen);
     const currentMode = this._state.editorMode;
-    let anzahl = this.entferneStillgelegteVorlagen();
+    let anzahl = 0;
     ["light", "dark"].forEach((mode) => {
       this._state.editorMode = mode;
       vorlagen.forEach((tpl) => {
         const ziel = hatgVorlagenZiel(tpl);
-        // Hat eine Vorlage ihr Ziel gewechselt, bleibt sonst ein Block im alten stehen.
         ziele.filter((k) => k !== ziel).forEach((fremd) => {
           const fremdText = String(this.currentValues()[fremd] || "");
           if (hatgLeseVorlagenBlock(fremdText, tpl.id) === null) return;
           this.commitField(fremd, hatgEntferneVorlagenBlock(fremdText, tpl.id));
+          if (mode === "light") anzahl++;
         });
+      });
+    });
+    this._state.editorMode = currentMode;
+    return anzahl;
+  }
+
+  frischeVorlagenAuf(options = {}) {
+    const vorlagen = this.alleVorlagen();
+    const currentMode = this._state.editorMode;
+    let anzahl = this.entferneStillgelegteVorlagen() + this.entferneVerwaisteVorlagen();
+    ["light", "dark"].forEach((mode) => {
+      this._state.editorMode = mode;
+      vorlagen.forEach((tpl) => {
+        const ziel = hatgVorlagenZiel(tpl);
         const text = String(this.currentValues()[ziel] || "");
         const vorhanden = hatgLeseVorlagenBlock(text, tpl.id);
         if (vorhanden === null || vorhanden === String(tpl.css).trim()) return;
@@ -9385,6 +9434,7 @@ uix:
       return;
     }
     const name = hatgSlugTheme(this._state.themeName);
+    const verwaist = this.entferneVerwaisteVorlagen();
     const yamlText = this.buildYamlText();
     this._state.saving = true;
     this.render();
@@ -9399,7 +9449,11 @@ uix:
       if (result && result.saved) {
         this._state.saveDialog = null;
         this.render();
-        this.showToast(`Theme gespeichert: ${result.path}`);
+        this.showToast(
+          verwaist
+            ? `Theme gespeichert: ${result.path} - dabei ${verwaist} Rest${verwaist === 1 ? "" : "e"} einer umgezogenen Vorlage entfernt.`
+            : `Theme gespeichert: ${result.path}`
+        );
         this.scheduleHaLiveRefresh();
       } else if (result && result.reason === "exists") {
         this._state.saveDialog = { stage: "confirm", name };
