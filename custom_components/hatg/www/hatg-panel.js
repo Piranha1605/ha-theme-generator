@@ -278,7 +278,7 @@ const HATG_TEXTE = {
   "Eigene Panels in Glas": "Custom panels in glass",
   "Panels von Erweiterungen in der Seitenleiste - auch HATG selbst. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "Panels from add-ons in the sidebar - including HATG itself. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
    "Benutzer-Icon wie die Systemicons": "User icon like the system icons",
-   "Gibt dem runden Benutzerbild unten in der Seitenleiste dieselbe Form wie den Icons auf den Einstellungsseiten: abgerundetes Quadrat, Lichtverlauf, feine Kante, kurzer Schatten. Nutzt dieselben Felder wie die Einstellungsvorlage, bleibt also automatisch im Gleichklang. Die Größe bleibt, wie Home Assistant sie setzt. Der Shadow-DOM-Pfad wurde mit uix_style_path in einer laufenden Instanz geprüft.": "Gives the round user picture at the bottom of the sidebar the same shape as the icons on the settings pages: rounded square, light gradient, fine edge, short shadow. It uses the same fields as the settings preset, so the two stay in step. The size stays as Home Assistant sets it. The shadow DOM path was verified with uix_style_path in a running instance.",
+   "Gibt dem runden Benutzerbild unten in der Seitenleiste dieselbe Form wie den Icons auf den Einstellungsseiten: abgerundetes Quadrat, feine Kante, kurzer Schatten. Nutzt dieselben Felder wie die Einstellungsvorlage, bleibt also automatisch im Gleichklang. Die Größe bleibt, wie Home Assistant sie setzt. Kommt ohne Shadow-DOM-Pfad aus: Home Assistant nimmt den Radius des Bildes aus einer Variablen. Nur der Lichtverlauf fehlt - der liegt im Inneren des Bausteins und wäre ohne Pfad nicht erreichbar.": "Gives the round user picture at the bottom of the sidebar the same shape as the icons on the settings pages: rounded square, fine edge, short shadow. It uses the same fields as the settings preset, so the two stay in step. The size stays as Home Assistant sets it. It needs no shadow DOM path: Home Assistant takes the picture's radius from a variable. Only the light gradient is missing - it sits inside the building block and would not be reachable without a path.",
   "Glaslook": "Glass look",
   "Eigener Titel in der Seitenleiste": "Custom title in the sidebar",
   "Ersetzt das \"Home Assistant\" oben in der Seitenleiste durch einen eigenen Text. Der Text steht im Feld hatg-sidebar-titel im Bereich Glaslook - mit Anführungszeichen, so verlangt es CSS. Home Assistant selbst bietet dafür keine Einstellung.": "Replaces the \"Home Assistant\" at the top of the sidebar with a text of your own. The text lives in the field hatg-sidebar-titel under Glass look - in quotation marks, as CSS requires. Home Assistant itself offers no setting for this.",
@@ -1745,6 +1745,7 @@ const HATG_EINSTELLUNGEN_ZEILEN = `  ha-list-nav ha-list-item-button div.icon-ba
 const HATG_EINSTELLUNGEN_PFADE = [
   "ha-config-dashboard $$ ha-config-navigation-list $",
   "ha-config-system-navigation $ ha-config-navigation-list $",
+  "ha-config-connectivity $ ha-config-navigation $ ha-config-navigation-list $",
 ];
 const HATG_EINSTELLUNGEN_CSS = HATG_EINSTELLUNGEN_PFADE.map(
   (pfad) => `"${pfad}": |\n${HATG_EINSTELLUNGEN_ZEILEN}`
@@ -2536,23 +2537,19 @@ ha-control-slider {
   {
     id: "benutzer-icon-ios",
     label: "Benutzer-Icon wie die Systemicons",
-    desc: "Gibt dem runden Benutzerbild unten in der Seitenleiste dieselbe Form wie den Icons auf den Einstellungsseiten: abgerundetes Quadrat, Lichtverlauf, feine Kante, kurzer Schatten. Nutzt dieselben Felder wie die Einstellungsvorlage, bleibt also automatisch im Gleichklang. Die Größe bleibt, wie Home Assistant sie setzt. Der Shadow-DOM-Pfad wurde mit uix_style_path in einer laufenden Instanz geprüft.",
-    ziel: "uix-sidebar-yaml",
-    css: `"ha-user-badge $": |
-  div.initials,
-  div.picture {
-    border-radius: var(--hatg-icon-radius, 28%) !important;
-    box-shadow:
-      inset 0 0 0 1px var(--hatg-icon-rand, rgba(255, 255, 255, 0.16)),
-      inset 0 1px 0 rgba(255, 255, 255, 0.34),
-      var(--hatg-icon-schatten, 0 1px 2px rgba(0, 0, 0, 0.35));
-  }
-  div.initials {
-    /* Nur die Initialen bekommen den Lichtverlauf. Ein gesetztes Benutzerbild
-       steht als background-image im style-Attribut - dort wuerde der Verlauf
-       das Bild verdecken oder gar nicht erst durchkommen. */
-    background-image: var(--hatg-icon-glanz, linear-gradient(160deg, rgba(255,255,255,0.34) 0%, rgba(255,255,255,0.06) 52%, rgba(255,255,255,0) 78%));
-  }`,
+    desc: "Gibt dem runden Benutzerbild unten in der Seitenleiste dieselbe Form wie den Icons auf den Einstellungsseiten: abgerundetes Quadrat, feine Kante, kurzer Schatten. Nutzt dieselben Felder wie die Einstellungsvorlage, bleibt also automatisch im Gleichklang. Die Größe bleibt, wie Home Assistant sie setzt. Kommt ohne Shadow-DOM-Pfad aus: Home Assistant nimmt den Radius des Bildes aus einer Variablen. Nur der Lichtverlauf fehlt - der liegt im Inneren des Bausteins und wäre ohne Pfad nicht erreichbar.",
+    ziel: "uix-sidebar",
+    css: `ha-user-badge {
+  /* Initialen und Bild nehmen ihren Radius aus --ha-border-radius-circle. Ueber
+     diese Variable bekommt das Icon seine Form, ganz ohne Shadow-DOM-Pfad. */
+  --ha-border-radius-circle: var(--hatg-icon-radius, 28%);
+  border-radius: var(--hatg-icon-radius, 28%);
+  /* Die Kante als outline: die Flaeche im Baustein ist deckend, ein
+     inset-Schatten laege darunter. Outlines zeichnet der Browser darueber. */
+  outline: 1px solid var(--hatg-icon-rand, rgba(255, 255, 255, 0.16));
+  outline-offset: -1px;
+  box-shadow: var(--hatg-icon-schatten, 0 1px 2px rgba(0, 0, 0, 0.35));
+}`,
   },
   {
     id: "seitenleiste-glas",
