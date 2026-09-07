@@ -437,16 +437,18 @@ async def ws_list_wallpapers(hass: HomeAssistant, connection, msg):
 @websocket_api.async_response
 async def ws_list_uix_templates(hass: HomeAssistant, connection, msg):
     """Liest die selbst angelegten UIX-Vorlagen."""
-    ziel = Path(hass.config.path(THEMES_SUBDIR, VORLAGEN_SUBDIR, VORLAGEN_FILE))
+    # Nicht "ziel" nennen: Die Schleife unten setzt ein gleichnamiges Stilziel,
+    # damit wird der Name in _read lokal und der Zugriff hier oben scheitert.
+    vorlagen_datei = Path(hass.config.path(THEMES_SUBDIR, VORLAGEN_SUBDIR, VORLAGEN_FILE))
     alte_orte = [
         Path(hass.config.path(THEMES_SUBDIR, VORLAGEN_SUBDIR, VORLAGEN_FILE_ALT)),
         Path(hass.config.path(THEMES_SUBDIR, VORLAGEN_FILE_ALT)),
     ]
 
     def _read():
-        quelle = ziel
+        quelle = vorlagen_datei
         if not quelle.is_file():
-            quelle = next((p for p in alte_orte if p.is_file()), ziel)
+            quelle = next((p for p in alte_orte if p.is_file()), vorlagen_datei)
         if not quelle.is_file():
             return []
         try:
