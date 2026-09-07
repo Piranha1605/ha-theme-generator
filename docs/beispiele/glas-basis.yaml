@@ -1,40 +1,6 @@
-# ---------------------------------------------------------------------------
-# HATG Glas-Basis - Testtheme fuer den vollstaendigen Glaslook mit UI eXtension
-#
-# Voraussetzung: UI eXtension (UIX) ist ueber HACS installiert UND unter
-# Einstellungen > Geraete & Dienste als Integration hinzugefuegt. card-mod muss
-# deinstalliert sein, beide gleichzeitig funktionieren nicht.
-#
-# Einbauen:
-#   1. Diese Datei nach config/themes/glas-basis.yaml kopieren
-#   2. Entwicklerwerkzeuge > Aktionen > frontend.reload_themes ausfuehren
-#      (oder Home Assistant neu starten)
-#   3. Profil > Theme > "glas_basis" waehlen
-#   4. Im Browser einmal hart neu laden (Strg/Cmd+Shift+R)
-#
-# Was drinsteckt:
-#   - Grundfarben und Formen der Basis-Vorlage "iOS / Apple-Stil"
-#   - ein Farbverlauf als Hintergrund, damit das Glas etwas zum Durchscheinen hat.
-#     Eigenes Bild? lovelace-background unter modes.light/dark ersetzen durch:
-#       url("/hatg_wallpaper/DEIN-BILD.jpg") center / cover no-repeat
-#   - 21 UIX-Stilziele auf Theme-Ebene: Karten, Seitenleiste, Kopfleiste,
-#     App Drawer, Dialoge, Info-Dialog, Toasts, Benachrichtigungen, Badges,
-#     Glance, Grid-Abschnitte, Kalender, To-do, Verlauf, Diagramme, eigene Panels
-#     und saemtliche Schaltflaechen
-#   - 14 Glaswerte unter modes.light/dark (hatg-glas-*). Das sind die Stellschrauben:
-#     hatg-glas-blur         Weichzeichnung der Karten
-#     hatg-glas-blur-gross   Seitenleiste, Kopfleiste, App Drawer
-#     hatg-glas-fuellung     Deckkraft der Flaechen
-#     hatg-glas-reflex       der Lichtverlauf auf jeder Flaeche
-#     Eine Zahl aendern wirkt auf alle Flaechen gleichzeitig.
-#
-# Zu blass? hatg-glas-fuellung erhoehen. Zu unruhig auf Tablets?
-# hatg-glas-blur und -gross verringern - Weichzeichnung kostet Rechenzeit.
-# ---------------------------------------------------------------------------
-
-# Erstellt mit HATG v1.1.0b16
+# Erstellt mit HATG v1.1.0b21
 # Theme: Glas Basis – Grundfarbe #007AFF, Akzent #007AFF, Karten-Radius 16px
-# Generiert am 2026-09-06
+# Generiert am 2026-09-07
 
 glas_basis:
   # UIX (theme-global; muss auf Theme-Ebene stehen, nicht unter modes.light/dark)
@@ -405,6 +371,27 @@ glas_basis:
     }
     /* HATG:UIX:glas-buttons-dialoge:END */
   uix-drawer: |
+    /* HATG:UIX:glas-buttons-einstellungen:START */
+    ha-button,
+    ha-icon-button,
+    ha-assist-chip {
+      --ha-button-border-radius: var(--ha-card-border-radius, 14px);
+      --ha-button-box-shadow:
+        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
+        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
+        inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)),
+        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7));
+    }
+    ha-control-button,
+    ha-control-select,
+    ha-control-slider {
+      --control-button-border-radius: var(--ha-card-border-radius, 14px);
+      --control-select-border-radius: var(--ha-card-border-radius, 14px);
+      --control-slider-border-radius: var(--ha-card-border-radius, 14px);
+      --control-button-background-color: var(--primary-color);
+      --control-button-background-opacity: 0.22;
+    }
+    /* HATG:UIX:glas-buttons-einstellungen:END */
     /* HATG:UIX:drawer-glas:START */
     :host {
       /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
@@ -498,28 +485,6 @@ glas_basis:
         var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
     }
     /* HATG:UIX:glas-heading-badges:END */
-  uix-config: |
-    /* HATG:UIX:glas-buttons-einstellungen:START */
-    ha-button,
-    ha-icon-button,
-    ha-assist-chip {
-      --ha-button-border-radius: var(--ha-card-border-radius, 14px);
-      --ha-button-box-shadow:
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-        inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)),
-        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7));
-    }
-    ha-control-button,
-    ha-control-select,
-    ha-control-slider {
-      --control-button-border-radius: var(--ha-card-border-radius, 14px);
-      --control-select-border-radius: var(--ha-card-border-radius, 14px);
-      --control-slider-border-radius: var(--ha-card-border-radius, 14px);
-      --control-button-background-color: var(--primary-color);
-      --control-button-background-opacity: 0.22;
-    }
-    /* HATG:UIX:glas-buttons-einstellungen:END */
   uix-panel-custom: |
     /* HATG:UIX:glas-panels:START */
     :host {
@@ -1369,6 +1334,20 @@ glas_basis:
       hatg-glas-nav-fuellung: "rgba(255, 255, 255, 0.45)"
       hatg-glas-nav-blur: "32px"
       hatg-glas-abdunkeln: "0"
+      hatg-sidebar-titel: "\"Home Assistant\""
+      hatg-icon-groesse: "34px"
+      hatg-icon-radius: "28%"
+      hatg-icon-glanz: "linear-gradient(160deg, rgba(255,255,255,0.34) 0%, rgba(255,255,255,0.06) 52%, rgba(255,255,255,0) 78%)"
+      hatg-icon-rand: "rgba(255, 255, 255, 0.16)"
+      hatg-icon-schatten: "0 1px 2px rgba(0, 0, 0, 0.35)"
+      hatg-liste-abstand: "6px"
+      hatg-liste-innenrand: "8px"
+      hatg-liste-titel-groesse: "15px"
+      hatg-liste-titel-gewicht: "600"
+      hatg-liste-untertitel-groesse: "12.5px"
+      hatg-liste-untertitel-deckkraft: "0.68"
+      hatg-liste-pfeil-groesse: "18px"
+      hatg-liste-pfeil-deckkraft: "0.4"
 
       # UIX & Generator / Generator & Eigenes
       card-backdrop-blur: "none"
@@ -1978,6 +1957,20 @@ glas_basis:
       hatg-glas-nav-fuellung: "rgba(255, 255, 255, 0.12)"
       hatg-glas-nav-blur: "32px"
       hatg-glas-abdunkeln: "0"
+      hatg-sidebar-titel: "\"Home Assistant\""
+      hatg-icon-groesse: "34px"
+      hatg-icon-radius: "28%"
+      hatg-icon-glanz: "linear-gradient(160deg, rgba(255,255,255,0.34) 0%, rgba(255,255,255,0.06) 52%, rgba(255,255,255,0) 78%)"
+      hatg-icon-rand: "rgba(255, 255, 255, 0.16)"
+      hatg-icon-schatten: "0 1px 2px rgba(0, 0, 0, 0.35)"
+      hatg-liste-abstand: "6px"
+      hatg-liste-innenrand: "8px"
+      hatg-liste-titel-groesse: "15px"
+      hatg-liste-titel-gewicht: "600"
+      hatg-liste-untertitel-groesse: "12.5px"
+      hatg-liste-untertitel-deckkraft: "0.68"
+      hatg-liste-pfeil-groesse: "18px"
+      hatg-liste-pfeil-deckkraft: "0.4"
 
       # UIX & Generator / Generator & Eigenes
       card-backdrop-blur: "none"
