@@ -85,7 +85,7 @@ Der Bereich **UIX-Hilfe** im Panel führt durch dieselben Schritte und erklärt 
 8. Unter **Einstellungen → Profil** das neue Theme auswählen
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-start.png" alt="Die Startseite: Name, Grundwerte, Basis-Block, Zustände und Hintergrund" width="62%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-start.jpg" alt="Die Startseite: Name, Grundwerte, Basis-Block, Zustände und Hintergrund" width="62%" />
 </p>
 
 ---
@@ -169,7 +169,7 @@ Fertige UIX-Bausteine, die per Klick **global ins Theme** übernommen werden —
 In der Seitenleiste steht jedes Stilziel als eigene Unterseite, mit der Anzahl seiner Vorlagen daneben. Die **Listenansicht** zeigt Name, Beschreibung und Ziel untereinander; ein Klick auf die Zeile klappt genau die Werte auf, die diese Vorlage steuert — ändern ohne Umweg über die Feldliste. Wer lieber Kacheln mag, schaltet oben um.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-uix-vorlagen.png" alt="Alle UIX-Vorlagen in der Listenansicht" width="62%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-uix-vorlagen.jpg" alt="Alle UIX-Vorlagen in der Listenansicht" width="62%" />
 </p>
 
 ### Das Glas-Paket
@@ -186,11 +186,9 @@ Alle 24 hängen an denselben **Glaswerten**, die über der Liste stehen:
 | **Apple-Richtlinie / Glas überall** | nach Apples Vorgabe liegt Glas nur auf der Bedienebene — Navigation und Schaltflächen. „Glas überall" nimmt auch die Inhaltsflächen dazu |
 | **Abdunkeln hinter Glas** | die von Apple geforderten 35 % Abdunkelung für helle Hintergründe |
 
-<!-- wartet auf docs/screenshots/panel-glaswerte.png
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-glaswerte.png" alt="Die Glaswerte über der Vorlagenliste, daneben die Live-Vorschau" width="62%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-glaswerte.jpg" alt="Die Glaswerte über der Vorlagenliste, daneben die Live-Vorschau" width="62%" />
 </p>
--->
 
 ### Was außerhalb der Karten möglich ist
 
@@ -226,34 +224,28 @@ Manche Effekte gehören nicht global ins Theme, sondern auf genau eine Karte: Sl
 Die eingebaute Demo-Vorschau reagiert sofort auf jede Änderung — mit pixelgenauen Nachbauten echter HA-Karten, jede Komponente gegen den originalen Frontend-Quellcode geprüft. Wenn das nicht reicht: **HA Live** zeigt dein *echtes* Home-Assistant-Dashboard direkt im Panel — kein Mockup, sondern die echte Oberfläche, wahlweise im Handy-, Tablet- oder Desktop-Rahmen. „Zwischenstand sichern" lädt die Themes automatisch neu, ein Klick auf „Aktualisieren" zeigt die neue Farbgebung.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-ha-live.png" alt="HA Live zeigt das echte Dashboard im Panel" width="62%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-ha-live.jpg" alt="HA Live zeigt das echte Dashboard im Panel" width="62%" />
 </p>
 
 ---
-
-<!-- Galerie wartet auf die Bilder in docs/screenshots/:
-     glas-dashboard.png, glas-einstellungen.png, glas-kalender.png,
-     glas-profil.png, glas-cloud.png
 
 ## Der Glaslook im ganzen System
 
 Das Glas-Paket hört nicht am Dashboard auf. Dieselben Werte tragen die Einstellungsseiten, den Kalender, das Profil und jedes Panel aus der Seitenleiste:
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-dashboard.png" alt="Dashboard mit Glas-Karten und Hintergrundbild" width="62%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-dashboard.jpg" alt="Dashboard mit Glas-Karten und Hintergrundbild" width="62%" />
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-einstellungen.png" alt="Einstellungsseite mit Icons im iOS-Stil und durchscheinendem Hintergrund" width="45%" />
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-kalender.png" alt="Kalender-Panel in Glas" width="45%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-einstellungen.jpg" alt="Einstellungsseite mit Icons im iOS-Stil und durchscheinendem Hintergrund" width="45%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-kalender.jpg" alt="Kalender-Panel in Glas" width="45%" />
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-profil.png" alt="Profilseite mit Glasflächen" width="45%" />
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-cloud.png" alt="Home Assistant Cloud mit Glasflächen" width="45%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-profil.jpg" alt="Profilseite mit Glasflächen" width="45%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-cloud.jpg" alt="Home Assistant Cloud mit Glasflächen" width="45%" />
 </p>
-
--->
 
 ---
 
