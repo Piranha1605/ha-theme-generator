@@ -6481,6 +6481,12 @@ uix:
           ${tile("night", defs.night.label, defs.night.sub, `background: ${defs.night.css};`, false)}
           ${tile("radial", defs.radial.label, defs.radial.sub, `background: ${defs.radial.css};`, false)}
           ${tile("bild", "Bild", active === "bild" ? "Eigenes Bild" : "Eigenes Hochladen", bildPreview, false)}
+          <!-- Absichtlich hatgIsGradient und nicht hatgIsCssBackground: currentBg
+               geht hier unescaped in ein style-Attribut. Die weitere Pruefung
+               laesst url(...) durch, die Vorschau wuerde dann externe Ressourcen
+               nachladen. Mehrschichtige Werte zeigen deshalb die neutrale Flaeche
+               statt des echten Hintergrunds - das ist der Preis dafuer. Wer das
+               aendert, muss den url()-Teil vorher absichern. -->
           ${tile("custom", "Eigene", "Direkt im Code", `background: ${hatgIsGradient(currentBg) ? currentBg : "var(--hatg-bg-2, rgba(127,140,160,.12))"};`, false)}
         </div>
         ${customField}
