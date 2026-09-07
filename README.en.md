@@ -1,11 +1,11 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/banner.png" alt="HATG – Home Assistant Theme Generator" width="100%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/banner-en.png" alt="HATG – Home Assistant Theme Generator" width="100%" />
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/github/v/release/Piranha1605/ha-theme-generator?label=Version&color=2F80ED" alt="Version" />
+  <img src="https://img.shields.io/github/v/release/Piranha1605/ha-theme-generator?include_prereleases&label=Version&color=2F80ED" alt="Version" />
   <img src="https://img.shields.io/badge/HACS-Custom%20Repository-2F80ED?logo=home-assistant&logoColor=white" alt="HACS" />
-  <img src="https://img.shields.io/badge/Variables-515%20verified-2F80ED" alt="515 verified variables" />
+  <img src="https://img.shields.io/badge/Variables-601%20verified-2F80ED" alt="601 verified variables" />
   <img src="https://img.shields.io/github/stars/Piranha1605/ha-theme-generator?color=2F80ED" alt="Stars" />
   <img src="https://img.shields.io/github/issues/Piranha1605/ha-theme-generator?color=2F80ED" alt="Issues" />
 </p>
@@ -22,21 +22,21 @@
 
 **One theme, every card under control.**
 
-HATG is a dedicated panel in your Home Assistant sidebar for building complete themes visually — for Home Assistant itself, for **Bubble Card**, for **Mushroom** and for global tweaks via **card-mod**. No jumping between YAML files, no guessing which variable hits which card: you set colours, shapes and states in one place, HATG distributes them across all three worlds and shows you the result live — optionally right inside your real dashboard.
+HATG is a dedicated panel in your Home Assistant sidebar for building complete themes visually — for Home Assistant itself, for **Bubble Card**, for **Mushroom** and for global tweaks via **UI eXtension (UIX)**. No jumping between YAML files, no guessing which variable hits which card: you set colours, shapes and states in one place, HATG distributes them across all three worlds and shows you the result live — optionally right inside your real dashboard.
 
-Every one of the 515 fields was verified against the actual source code of Home Assistant, Bubble Card and Mushroom. Only variables that genuinely exist are included — what you set is what arrives.
+Every one of the 601 fields was verified against the actual source code of Home Assistant, Bubble Card and Mushroom, or against the UIX documentation. Only variables that genuinely exist are included — what you set is what arrives.
 
 > **Language:** HATG speaks English and German. The interface follows your Home Assistant language automatically and can be switched at any time under the gear icon.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/unified-theme-demo.png" alt="One theme applied simultaneously to HA cards, Mushroom and Bubble Card" width="85%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/unified-theme-demo.png" alt="One theme applied simultaneously to HA cards, Mushroom and Bubble Card" width="70%" />
 </p>
 
 ---
 
 ## Contents
 
-[Installation](#installation) · [Your first theme in five minutes](#your-first-theme-in-five-minutes) · [The start page](#the-start-page--from-broad-to-fine) · [All sections](#all-sections-at-a-glance) · [Card-mod presets](#card-mod-presets--global-effects-in-one-click) · [HA Live](#ha-live--your-real-dashboard-as-a-preview) · [Saving & import](#saving-loading-importing) · [Good to know](#good-to-know) · [FAQ](#faq)
+[Installation](#installation) · [Your first theme in five minutes](#your-first-theme-in-five-minutes) · [The start page](#the-start-page--from-broad-to-fine) · [All sections](#all-sections-at-a-glance) · [UIX presets](#uix-presets--global-effects-in-one-click) · [HA Live](#ha-live--your-real-dashboard-as-a-preview) · [Saving & import](#saving-loading-importing) · [Good to know](#good-to-know) · [FAQ](#faq)
 
 ---
 
@@ -58,19 +58,20 @@ HATG then appears as its own entry in the sidebar. That's it — no further conf
 2. Restart Home Assistant
 3. **Settings → Devices & Services → Add integration** → "HATG"
 
-### Optional but recommended: card-mod
+### Optional but recommended: UI eXtension (UIX)
 
-The **Card-mod presets** page and the `card-mod-card` / `card-mod-root` fields only take effect with [card-mod](https://github.com/thomasloven/lovelace-card-mod) installed (also available through HACS). HATG works fully without card-mod — those building blocks simply stay silent.
+The **UIX presets** page and the style targets (`uix-card`, `uix-root`, `uix-view` and 22 more) only take effect with [UI eXtension](https://github.com/Lint-Free-Technology/uix) installed (also available through HACS). HATG works fully without UIX — those building blocks simply stay silent.
 
-**Tip for advanced users:** to make card-mod styles apply outside dashboards too (in the sidebar on settings pages, for instance), register card-mod as a frontend module as well. The exact resource URL is listed under **Settings → Dashboards → ⋮ → Resources**:
+After downloading, UIX has to be **added as a device**: **Settings → Devices & Services → Add integration → UI eXtension**. This is the step most people miss.
 
-```yaml
-frontend:
-  extra_module_url:
-    - /hacsfiles/lovelace-card-mod/card-mod.js?hacstag=YOUR_NUMBER
-```
+**Coming from card-mod?** Since Home Assistant 2026.8 card-mod no longer loads theme sections reliably, and [a fix is not going to arrive](https://github.com/thomasloven/lovelace-card-mod/issues/606). UIX is the successor by the same developer and still understands the old notation: existing `card-mod-*` fields and `card_mod:` blocks keep working. What to do:
 
-Restart Home Assistant afterwards, and update the number after every card-mod update.
+1. Uninstall card-mod — running both is not possible
+2. Remove any `extra_module_url` line for card-mod from `configuration.yaml`; UIX does not need it
+3. Download UIX through HACS, restart Home Assistant, add UIX as a device
+4. Save your theme once in HATG — the fields are switched to `uix-` in the process
+
+The **UIX help** section in the panel walks through the same steps and explains the style targets one by one. If you have to stay on card-mod for now, switch the **output format** back to `card-mod` in the gear menu; HATG then writes the theme file with the old field names again.
 
 ---
 
@@ -86,7 +87,7 @@ Restart Home Assistant afterwards, and update the number after every card-mod up
 8. Select the new theme under **Settings → Profile**
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/start-page.png" alt="The start page: name, base values, Basis block, states and background" width="80%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-start.jpg" alt="The start page: name, base values, Basis block, states and background" width="62%" />
 </p>
 
 ---
@@ -99,10 +100,6 @@ The start page is built as a guided entry point: the few values that shape a the
 
 Five colours and one radius — that's all the beginning needs. Every colour field offers a **hex/RGB/RGBA switch**, a native colour wheel and a text field for the raw value. Small rows of dots beside them show which derived fields will follow along.
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/grundfarben.png" alt="Base colours with hex/RGB/RGBA switch" width="65%" />
-</p>
-
 ### Basis: border, radius, shadow
 
 Three rows define the basic shape of **all** cards and pass it on to Bubble Card (including every card type) and Mushroom:
@@ -112,10 +109,6 @@ Three rows define the basic shape of **all** cards and pass it on to Bubble Card
 | **Border colour** | 5 | also rebuilds the composite `bubble-border` |
 | **Radius** | 26 | separate inputs for **outer** and **inner** — nested elements such as icons and sub-buttons automatically get 4 px less, keeping the roundings concentric |
 | **Shadow** | 13 | one value for all card shadows, sub-buttons included |
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/basis-block.png" alt="Basis block with border colour, outer/inner radius and shadow" width="65%" />
-</p>
 
 ### States: on / off / unavailable / icon background
 
@@ -142,10 +135,10 @@ Besides gradients (sunrise, night sky, radial) you can set your **own image**. T
 
 ## All sections at a glance
 
-The sidebar organises all 515 fields into thematic sections — Bubble Card with its own subpage per card type:
+The sidebar organises all 601 fields into thematic sections — Bubble Card with its own subpage per card type, the UIX presets with one subpage per style target:
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/nav-sections.png" alt="Navigation with all sections" width="25%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-navigation.png" alt="Navigation with all sections" width="22%" />
 </p>
 
 | Section | Contents |
@@ -156,48 +149,75 @@ The sidebar organises all 515 fields into thematic sections — Bubble Card with
 | **Mushroom** | Cards, icons, chips, sliders, toggles, state colours |
 | **All fields** | The complete list with full-text search, colour, type and word-fragment filters plus multi-select for bulk changes |
 | **Code editor** | Every value as text — type instead of click, changes apply instantly |
-| **Card-mod presets** | Global card-mod building blocks in one click, plus your own presets |
+| **UIX & generator** | The 25 style targets including their shadow DOM variants, the glass values and a free field for your own theme entries |
+| **UIX presets** | Global UIX building blocks in one click, split into one subpage per style target — the number beside it names that target's presets |
 | **Plugins** | Copy-and-paste snippets for individual cards (Bubble slider, glass effects, state-dependent design) |
+| **UIX help** | Migrating from card-mod, every style target at a glance, common pitfalls |
 
 ### All fields — finding instead of searching
 
-The **word-fragment filter** combines building blocks such as `color`, `background` or `button` with narrowing tags (`bubble`, `climate`, `stack`) — so even among 515 variables the right one is found in seconds. With multi-select, entire groups of fields get the same value in a single step.
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/all-fields-filter.png" alt="All fields with word-fragment filter" width="80%" />
-</p>
+The **word-fragment filter** combines building blocks such as `color`, `background` or `button` with narrowing tags (`bubble`, `climate`, `stack`) — so even among 601 variables the right one is found in seconds. With multi-select, entire groups of fields get the same value in a single step.
 
 ### Code editor
 
-For everyone who prefers typing: all fields as text with syntax highlighting, grouped by section. Plus the free-form card-mod fields (`card-mod-card`, `card-mod-root`) and a **free field for your own theme entries** that HATG doesn't know — they survive saving and export unchanged.
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/code-editor.png" alt="Code editor with all fields as text" width="80%" />
-</p>
+For everyone who prefers typing: all fields as text with syntax highlighting, grouped by section. Plus the free-form UIX style targets (`uix-card`, `uix-root` and the rest) and a **free field for your own theme entries** that HATG doesn't know — they survive saving and export unchanged.
 
 ---
 
-## Card-mod presets — global effects in one click
+## UIX presets — global effects in one click
 
-Ready-made card-mod building blocks applied **globally to the theme** with a single click — marked inside `card-mod-card`, for light and dark simultaneously, individually removable at any time. No copying, no pasting into individual cards.
+Ready-made UIX building blocks applied **globally to the theme** with a single click — for light and dark simultaneously, individually removable at any time. **36 presets** that go well beyond cards: sidebar, app drawer, top bar, dialogs, badges, calendar, to-do lists, history, custom panels and the settings pages.
+
+In the sidebar every style target has its own subpage, with the number of its presets beside it. The **list view** shows name, description and target one below the other; clicking a row expands exactly the values that preset controls, so you can edit them without detouring through the field list. If you prefer tiles, switch at the top.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/cardmod-vorlagen.png" alt="Card-mod presets with built-in and custom presets" width="80%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-uix-vorlagen.jpg" alt="UIX presets in list view" width="62%" />
 </p>
 
-Five built-in presets are included: **card colour gradient**, **glow shadow**, **border with glowing edge**, **glass effect (blur)** and **relief**. All of them cover native HA cards and every Bubble card type (climate, cover, media player, select, calendar, popup, horizontal buttons stack); Mushroom is already served through the theme variables. Wrapper cards such as headings, Mushroom chips and Bubble sub-buttons deliberately stay frameless.
+### The glass package
 
-**Your own presets:** via "New preset" you can create your own CSS blocks — with a name, a description and bracket validation on save. They are stored in `config/themes/hatg-cardmod-vorlagen.json`, so they survive theme and browser changes and are part of your backup. Activating, combining and the automatic refresh detection all work just like the built-in ones.
+One click on **Activate all** switches every surface of the system to glass with 24 presets: cards, sidebar, app drawer, top bar, dialogs and the more-info dialog, badges and heading badges, toast messages, notifications, glance cards, calendar, to-do lists, history including its charts, custom panels — and the controls in cards, top bar, dialogs and settings.
 
-**Refresh instead of going stale:** the preset CSS lives in your theme file, not in the panel. When a HATG update ships newer versions, a notice bar appears — one click on "Refresh" brings all active blocks up to date. Hand-written CSS is left untouched.
+All 24 hang on the same **glass values** shown above the list:
+
+| Control | Effect |
+|---|---|
+| **Opacity** | how much surface the glass has — one value from which HATG derives three grades (light, normal, strong) |
+| **Blur** | the blur behind the glass, graded the same way |
+| **Tint light / dark** | separate base colours for light and dark |
+| **Apple guideline / glass everywhere** | Apple puts glass on the functional layer only — navigation and controls. "Glass everywhere" adds the content surfaces |
+| **Dim behind glass** | the 35 % dimming Apple asks for over bright backgrounds |
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-glaswerte.jpg" alt="The glass values above the preset list, with the live preview beside them" width="62%" />
+</p>
+
+### What is possible beyond cards
+
+A few presets you would not expect at first glance:
+
+- **Background image across the whole interface** — puts the image from the start page behind Settings, HACS, History and every other panel. The companion preset **Open the settings pages for the background image** removes the opaque base surface from the settings subpages so the image comes through there as well
+- **Custom title in the sidebar** — replaces the "Home Assistant" in the top left with your own text
+- **Settings pages in iOS style** — turns the round colour circles into rounded squares with a light gradient, a fine edge and a shadow, plus row spacing, font sizes and quieter chevrons. It applies to all three navigation lists: start page, System and Connectivity
+- **User icon like the system icons** — gives the picture at the bottom of the sidebar the same shape
+- **Controls in glass** — four presets give buttons the same build as the active sidebar entry, separately for cards, top bar, dialogs and the rest of the interface
+
+### Your own presets
+
+Via "New preset" you can create your own CSS blocks — with a name, a description, a style target and bracket validation on save. They are stored in `config/themes/hatg/hatg-uix-vorlagen.json`, so they survive theme and browser changes and are part of your backup. Activating, combining and the refresh detection all work just like the built-in ones.
+
+Every one of the 25 style targets can be addressed, each in two forms: as plain CSS (`uix-card`) and as YAML with shadow DOM paths (`uix-card-yaml`) when a building block sits deep inside a component.
+
+### Warnings that save you time
+
+- **Colliding presets:** if two active presets write into the same field and overwrite each other, a notice appears above the list — with a button that removes the older one
+- **Duplicate shadow DOM paths:** in a `-yaml` field every path is a YAML key. Two presets sharing a path cancel each other out — YAML keeps only the last. HATG names both presets and the path before you go hunting in the dashboard
+- **Leftovers from relocated presets:** when an update moves a preset to a different style target, saving clears the old block on its own and says so in the message
+- **Outdated blocks:** the preset CSS lives in your theme file, not in the panel. When an update ships newer versions, a notice bar appears — one click on "Refresh" brings all active blocks up to date. Hand-written CSS is left untouched
 
 ### Plugins — building blocks for individual cards
 
 Some effects don't belong in the theme globally but on exactly one card: slider shapes, glass variants, state-dependent card design (traffic-light effect), sub-button glow states. The plugins page provides them as copy-and-paste snippets with a preview image and an explanation — several can be selected and copied as one combined snippet.
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/plugins.png" alt="Plugins page with copy-and-paste snippets" width="80%" />
-</p>
 
 ---
 
@@ -206,12 +226,27 @@ Some effects don't belong in the theme globally but on exactly one card: slider 
 The built-in demo preview reacts instantly to every change — with pixel-accurate recreations of real HA cards, every component verified against the original frontend source. When that isn't enough: **HA Live** shows your *actual* Home Assistant dashboard right inside the panel — not a mockup but the real interface, in a phone, tablet or desktop frame. "Save draft" reloads the themes automatically, and one click on "Refresh" reveals the new colours.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/ha-live-tablet.png" alt="HA Live in the tablet frame" width="80%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-ha-live.jpg" alt="HA Live in the tablet frame" width="62%" />
+</p>
+
+---
+
+## The glass look across the whole system
+
+The glass package does not stop at the dashboard. The same values carry the settings pages, the calendar, your profile and every panel in the sidebar:
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-dashboard.jpg" alt="Dashboard with glass cards and background image" width="62%" />
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/ha-live-phone.png" alt="HA Live in the phone frame" width="40%" />
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/ha-live-desktop.png" alt="HA Live in the desktop frame" width="40%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-einstellungen.jpg" alt="Settings page with iOS style icons and a translucent background" width="45%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-kalender.jpg" alt="Calendar panel in glass" width="45%" />
+</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-profil.jpg" alt="Profile page with glass surfaces" width="45%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-cloud.jpg" alt="Home Assistant Cloud with glass surfaces" width="45%" />
 </p>
 
 ---
@@ -221,10 +256,10 @@ The built-in demo preview reacts instantly to every change — with pixel-accura
 - **Save** writes the theme as a YAML file to `config/themes/` and triggers `frontend.reload_themes` — the result is immediately selectable under **Settings → Profile**
 - **Save draft** creates a working copy; your progress survives leaving the panel
 - **Open** lists every theme in `config/themes/` for direct editing
-- **Import** reads any existing theme — including flat themes without a `light:`/`dark:` split. Unknown fields are preserved and re-attached on export, and old card-mod field names are migrated automatically
+- **Import** reads any existing theme — including flat themes without a `light:`/`dark:` split. Unknown fields are preserved and re-attached on export, and old `card-mod-*` fields (including the `-yaml` variants) are lifted to `uix-*` automatically
 - **Reapply derivations** (in the save menu) resets fields whose value already matches the derivation back to "automatic" — they then follow their base colour again
 
-The export is valid YAML (verified with the same parser Home Assistant uses), with card-mod fields correctly placed at the flat level.
+The export is valid YAML (verified with the same parser Home Assistant uses), with UIX fields correctly placed at theme level.
 
 ---
 
@@ -236,6 +271,7 @@ The export is valid YAML (verified with the same parser Home Assistant uses), wi
 - **Validation before export** checks every value against its expected format and flags outliers before they end up in the theme
 - **Language:** HATG speaks German and English. The interface follows your Home Assistant language automatically and can be switched at any time via the gear icon
 - **After a HATG update**, do one hard reload (Ctrl/Cmd+Shift+R) so the browser picks up the new panel version
+- **UIX only styles what is created after it.** Hard-reloading straight onto a `/config` page leaves the elements that already exist untouched — go to a dashboard and back once and everything sits
 
 ---
 
@@ -251,10 +287,16 @@ Yes. HATG reads any theme via import. Unknown fields aren't lost; they're re-att
 The three most common reasons: (1) a different theme is active under **Settings → Profile**. (2) You edited the other mode (light/dark) than the one your device uses. (3) The browser is holding an old version in cache — do one hard reload.
 
 **What happens to my themes during a HATG update?**
-Nothing — themes live in `config/themes/`, custom card-mod presets in `config/themes/hatg-cardmod-vorlagen.json`, background images in `config/themes/Wallpaper/`. All outside the integration folder, all update-safe, all covered by your backup.
+Nothing — themes live in `config/themes/`, custom UIX presets in `config/themes/hatg/hatg-uix-vorlagen.json`, background images in `config/themes/Wallpaper/`. All outside the integration folder, all update-safe, all covered by your backup.
 
-**The card-mod presets have no effect.**
-[card-mod](https://github.com/thomasloven/lovelace-card-mod) needs to be installed for that. The active theme also has to be the one saved by HATG — the CSS lives in the theme file.
+**The UIX presets have no effect.**
+[UI eXtension](https://github.com/Lint-Free-Technology/uix) needs to be installed **and added as a device** for that. The active theme also has to be the one saved by HATG — the CSS lives in the theme file.
+
+**One particular preset has no effect — why?**
+Not every style target reaches every surface. `ha-panel-config`, for instance, has no shadow root at all, so a `:host` block never arrives there — presets like that sit on the app drawer instead or work with shadow DOM paths. When building your own: in the browser console, `uix_style_path($0)` prints the path UIX expects for the selected element.
+
+**I am still on card-mod. Can I keep using HATG?**
+Yes. The gear menu lets you set the output format to `card-mod`, and HATG writes the old field names. Ten of the 25 style targets do not exist in card-mod though; if they are filled, HATG points that out in the **UIX & generator** section. In the long run there is no way around UIX.
 
 **Can I remove HATG again?**
 Any time. The generated themes are ordinary YAML files and keep working without HATG.
