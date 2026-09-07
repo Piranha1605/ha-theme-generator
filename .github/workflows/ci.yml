@@ -19,3 +19,15 @@ jobs:
         run: |
           python -m json.tool custom_components/hatg/manifest.json >/dev/null
           python -m json.tool hacs.json >/dev/null
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Panel-Syntax prüfen
+        run: node --check custom_components/hatg/www/hatg-panel.js
+      - name: Tests
+        run: |
+          for t in tests/*.test.js; do
+            echo "== $t"
+            node "$t"
+          done
