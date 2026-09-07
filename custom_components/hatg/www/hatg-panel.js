@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.1.0b20";
+const HATG_VERSION = "1.1.0b21";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -280,7 +280,7 @@ const HATG_TEXTE = {
   "Benutzer-Icon wie die Systemicons": "User icon like the system icons",
   "Gibt dem runden Benutzerbild unten in der Seitenleiste dieselbe Form wie den Icons auf den Einstellungsseiten: abgerundetes Quadrat, feine Kante, kurzer Schatten. Nutzt dieselben Felder wie die Einstellungsvorlage, bleibt also automatisch im Gleichklang. Die Größe bleibt, wie Home Assistant sie setzt. Kommt ohne Shadow-DOM-Pfad aus: Home Assistant nimmt den Radius des Bildes aus einer Variablen. Nur der Lichtverlauf fehlt - der liegt im Inneren des Bausteins und wäre ohne Pfad nicht erreichbar.": "Gives the round user picture at the bottom of the sidebar the same shape as the icons on the settings pages: rounded square, fine edge, short shadow. It uses the same fields as the settings preset, so the two stay in step. The size stays as Home Assistant sets it. It needs no shadow DOM path: Home Assistant takes the picture's radius from a variable. Only the light gradient is missing - it sits inside the building block and would not be reachable without a path.",
   "Einstellungsseiten für das Hintergrundbild öffnen": "Open the settings pages for the background image",
-  "Die Einstellungs-Unterseiten - Geräte & Dienste, Automationen, Helfer und die anderen Listen - malen eine eigene deckende Fläche und decken das Hintergrundbild ab. Diese Vorlage nimmt ihnen die Grundfarbe, sodass das Bild aus der Vorlage \"Hintergrundbild über die ganze Oberfläche\" auch dort durchkommt. Wirkt nur innerhalb der Einstellungen; Karten, Dialoge und Tabellen behalten ihre eigenen Farben. Ohne Hintergrundbild bewirkt sie nichts außer einer durchsichtigen Grundfläche.": "The settings subpages - Devices & Services, Automations, Helpers and the other lists - paint an opaque surface of their own and hide the background image. This preset takes their base colour away so the image from \"Background image across the whole interface\" comes through there as well. It only applies inside Settings; cards, dialogs and tables keep their own colours. Without a background image it does nothing beyond a transparent base surface.",
+  "Die Unterseiten der Einstellungen - Geräte & Dienste, Entitäten, Automationen, Helfer - malen mit hass-tabs-subpage eine eigene deckende Fläche und legen sie über das Hintergrundbild. Diese Vorlage nimmt der Grundfarbe im App Drawer die Deckung, damit das Bild aus der Vorlage \"Hintergrundbild über die ganze Oberfläche\" auch dort durchkommt. Karten, Tabellenzeilen und Dialoge bringen ihre eigenen Farben mit und bleiben lesbar - in der laufenden Instanz auf Integrationen und der Entitätentabelle geprüft. Ohne Hintergrundbild bewirkt sie nichts.": "The settings subpages - Devices & Services, Entities, Automations, Helpers - paint an opaque surface of their own through hass-tabs-subpage and put it over the background image. This preset removes the opacity from the base colour in the app drawer so the image from \"Background image across the whole interface\" comes through there as well. Cards, table rows and dialogs bring their own colours and stay legible - verified in the running instance on Integrations and the entities table. Without a background image it does nothing.",
   "Glaslook": "Glass look",
   "Eigener Titel in der Seitenleiste": "Custom title in the sidebar",
   "Ersetzt das \"Home Assistant\" oben in der Seitenleiste durch einen eigenen Text. Der Text steht im Feld hatg-sidebar-titel im Bereich Glaslook - mit Anführungszeichen, so verlangt es CSS. Home Assistant selbst bietet dafür keine Einstellung.": "Replaces the \"Home Assistant\" at the top of the sidebar with a text of your own. The text lives in the field hatg-sidebar-titel under Glass look - in quotation marks, as CSS requires. Home Assistant itself offers no setting for this.",
@@ -2686,14 +2686,14 @@ ha-adaptive-dialog {
   {
     id: "einstellungen-hintergrund-frei",
     label: "Einstellungsseiten für das Hintergrundbild öffnen",
-    desc: "Die Einstellungs-Unterseiten - Geräte & Dienste, Automationen, Helfer und die anderen Listen - malen eine eigene deckende Fläche und decken das Hintergrundbild ab. Diese Vorlage nimmt ihnen die Grundfarbe, sodass das Bild aus der Vorlage \"Hintergrundbild über die ganze Oberfläche\" auch dort durchkommt. Wirkt nur innerhalb der Einstellungen; Karten, Dialoge und Tabellen behalten ihre eigenen Farben. Ohne Hintergrundbild bewirkt sie nichts außer einer durchsichtigen Grundfläche.",
-    ziel: "uix-config",
-    css: `:host,
-ha-panel-config,
-partial-panel-resolver {
+    desc: "Die Unterseiten der Einstellungen - Geräte & Dienste, Entitäten, Automationen, Helfer - malen mit hass-tabs-subpage eine eigene deckende Fläche und legen sie über das Hintergrundbild. Diese Vorlage nimmt der Grundfarbe im App Drawer die Deckung, damit das Bild aus der Vorlage \"Hintergrundbild über die ganze Oberfläche\" auch dort durchkommt. Karten, Tabellenzeilen und Dialoge bringen ihre eigenen Farben mit und bleiben lesbar - in der laufenden Instanz auf Integrationen und der Entitätentabelle geprüft. Ohne Hintergrundbild bewirkt sie nichts.",
+    ziel: "uix-drawer",
+    css: `:host {
   /* hass-tabs-subpage setzt background-color: var(--primary-background-color)
-     auf sich selbst und liegt damit ueber dem Bild im ha-drawer. Die Variable
-     erbt bis dorthin, deshalb reicht sie hier - ohne Shadow-DOM-Pfad. */
+     auf sich selbst und liegt damit ueber dem Bild. Die Variable muss also
+     oberhalb der Unterseiten sitzen - ha-drawer umschliesst sie alle und erbt
+     bis dorthin. Ueber uix-config geht es nicht: ha-panel-config hat gar keinen
+     Shadow Root, dort kommt ein :host-Block nicht an (nachgemessen). */
   --primary-background-color: transparent;
 }`,
   },
