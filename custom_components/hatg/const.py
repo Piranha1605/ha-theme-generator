@@ -1,12 +1,12 @@
 DOMAIN = "hatg"
 NAME = "HATG"
-VERSION = "1.1.0b22"
+VERSION = "1.1.0b23"
 
 PANEL_URL = "hatg"
 PANEL_TITLE = "HATG"
 PANEL_ICON = "mdi:palette-swatch"
 PANEL_TAG = "hatg-panel"
 STATIC_PATH = "/hatg_static"
-FRONTEND_MODULE = "/hatg_static/hatg-panel.js?v=1.1.0b22"
+FRONTEND_MODULE = "/hatg_static/hatg-panel.js?v=1.1.0b23"
 
 WALLPAPER_STATIC_PATH = "/hatg_wallpaper"
