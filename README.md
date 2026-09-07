@@ -27,7 +27,7 @@ HATG ist ein eigenes Panel in deiner Home-Assistant-Seitenleiste, mit dem du kom
 Jedes der 601 Felder wurde gegen den echten Quellcode von Home Assistant, Bubble Card und Mushroom beziehungsweise gegen die UIX-Dokumentation geprüft. Es sind ausschließlich real existierende Variablen enthalten — was du einstellst, kommt auch an.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/unified-theme-demo.png" alt="Ein Theme, gleichzeitig angewendet auf HA-Karten, Mushroom und Bubble Card" width="85%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/unified-theme-demo.png" alt="Ein Theme, gleichzeitig angewendet auf HA-Karten, Mushroom und Bubble Card" width="70%" />
 </p>
 
 ---
@@ -85,7 +85,7 @@ Der Bereich **UIX-Hilfe** im Panel führt durch dieselben Schritte und erklärt 
 8. Unter **Einstellungen → Profil** das neue Theme auswählen
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/start-page.png" alt="Die Startseite: Name, Grundwerte, Basis-Block, Zustände und Hintergrund" width="80%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-start.png" alt="Die Startseite: Name, Grundwerte, Basis-Block, Zustände und Hintergrund" width="62%" />
 </p>
 
 ---
@@ -98,10 +98,6 @@ Die Startseite ist als geführter Einstieg gebaut: oben die wenigen Werte, die e
 
 Fünf Farben und ein Radius — mehr braucht der Anfang nicht. Jedes Farbfeld bietet einen **Hex/RGB/RGBA-Umschalter**, ein natives Farbrad und ein Textfeld für den direkten Wert. Kleine Punktreihen daneben zeigen, welche abgeleiteten Felder mitziehen.
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/grundfarben.png" alt="Grundfarben mit Hex/RGB/RGBA-Umschalter" width="65%" />
-</p>
-
 ### Basis: Rahmen, Radius, Schatten
 
 Drei Zeilen geben die Grundform **aller** Karten vor und reichen sie an Bubble Card (inklusive aller Kartentypen) und Mushroom weiter:
@@ -111,10 +107,6 @@ Drei Zeilen geben die Grundform **aller** Karten vor und reichen sie an Bubble C
 | **Rahmenfarbe** | 5 | setzt auch den zusammengesetzten `bubble-border` neu |
 | **Radius** | 26 | getrennte Eingaben für **außen** und **innen** — innen liegende Elemente wie Icons und Sub-Buttons bekommen automatisch 4 px weniger, damit die Rundungen konzentrisch bleiben |
 | **Schatten** | 13 | ein Wert für alle Kartenschatten, Sub-Buttons inklusive |
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/basis-block.png" alt="Basis-Block mit Rahmenfarbe, Radius außen/innen und Schatten" width="65%" />
-</p>
 
 ### Zustände: An / Aus / Nicht verfügbar / Icon-Hintergrund
 
@@ -144,7 +136,7 @@ Neben Verläufen (Sonnenaufgang, Nachthimmel, Radial) kannst du ein **eigenes Bi
 Die Seitenleiste gliedert alle 601 Felder in thematische Sektionen — Bubble Card mit eigenen Unterseiten pro Kartentyp, die UIX-Vorlagen mit einer Unterseite pro Stilziel:
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/nav-sections.png" alt="Navigation mit allen Sektionen" width="25%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-navigation.png" alt="Die Navigation des Panels mit allen Bereichen" width="22%" />
 </p>
 
 | Bereich | Inhalt |
@@ -164,17 +156,9 @@ Die Seitenleiste gliedert alle 601 Felder in thematische Sektionen — Bubble Ca
 
 Der **Wortbaustein-Filter** kombiniert Bausteine wie `color`, `background` oder `button` mit einschränkenden Zusatz-Tags (`bubble`, `climate`, `stack`) — so ist auch unter 601 Variablen die richtige in Sekunden gefunden. Mit der Mehrfachauswahl bekommen ganze Feldgruppen in einem Schritt denselben Wert.
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/all-fields-filter.png" alt="Alle Felder mit Wortbaustein-Filter" width="80%" />
-</p>
-
 ### Code-Editor
 
 Für alle, die Werte lieber tippen: sämtliche Felder als Text mit Syntax-Färbung, gruppiert nach Bereichen. Dazu die freien UIX-Stilziele (`uix-card`, `uix-root` und die übrigen) und ein **Freifeld für eigene Theme-Einträge**, die HATG nicht kennt — sie überleben Speichern und Export unverändert.
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/code-editor.png" alt="Code-Editor mit allen Feldern als Text" width="80%" />
-</p>
 
 ---
 
@@ -185,7 +169,7 @@ Fertige UIX-Bausteine, die per Klick **global ins Theme** übernommen werden —
 In der Seitenleiste steht jedes Stilziel als eigene Unterseite, mit der Anzahl seiner Vorlagen daneben. Die **Listenansicht** zeigt Name, Beschreibung und Ziel untereinander; ein Klick auf die Zeile klappt genau die Werte auf, die diese Vorlage steuert — ändern ohne Umweg über die Feldliste. Wer lieber Kacheln mag, schaltet oben um.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/cardmod-vorlagen.png" alt="UIX-Vorlagen in der Listenansicht" width="80%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-uix-vorlagen.png" alt="Alle UIX-Vorlagen in der Listenansicht" width="62%" />
 </p>
 
 ### Das Glas-Paket
@@ -201,6 +185,12 @@ Alle 24 hängen an denselben **Glaswerten**, die über der Liste stehen:
 | **Farbton hell / dunkel** | getrennte Grundfarben für Light und Dark |
 | **Apple-Richtlinie / Glas überall** | nach Apples Vorgabe liegt Glas nur auf der Bedienebene — Navigation und Schaltflächen. „Glas überall" nimmt auch die Inhaltsflächen dazu |
 | **Abdunkeln hinter Glas** | die von Apple geforderten 35 % Abdunkelung für helle Hintergründe |
+
+<!-- wartet auf docs/screenshots/panel-glaswerte.png
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-glaswerte.png" alt="Die Glaswerte über der Vorlagenliste, daneben die Live-Vorschau" width="62%" />
+</p>
+-->
 
 ### Was außerhalb der Karten möglich ist
 
@@ -229,10 +219,6 @@ Jedes der 25 Stilziele lässt sich ansteuern, jeweils in zwei Formen: als reines
 
 Manche Effekte gehören nicht global ins Theme, sondern auf genau eine Karte: Slider-Formen, Glas-Varianten, zustandsabhängiges Kartendesign (Ampel-Effekt), Sub-Button-Leuchtzustände. Die Plugins-Seite liefert sie als Kopiervorlagen mit Vorschaubild und Erklärung — mehrere lassen sich auswählen und als eine kombinierte Vorlage kopieren.
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/plugins.png" alt="Plugins-Seite mit Kopiervorlagen" width="80%" />
-</p>
-
 ---
 
 ## HA Live — dein echtes Dashboard als Vorschau
@@ -240,12 +226,7 @@ Manche Effekte gehören nicht global ins Theme, sondern auf genau eine Karte: Sl
 Die eingebaute Demo-Vorschau reagiert sofort auf jede Änderung — mit pixelgenauen Nachbauten echter HA-Karten, jede Komponente gegen den originalen Frontend-Quellcode geprüft. Wenn das nicht reicht: **HA Live** zeigt dein *echtes* Home-Assistant-Dashboard direkt im Panel — kein Mockup, sondern die echte Oberfläche, wahlweise im Handy-, Tablet- oder Desktop-Rahmen. „Zwischenstand sichern" lädt die Themes automatisch neu, ein Klick auf „Aktualisieren" zeigt die neue Farbgebung.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/ha-live-tablet.png" alt="HA Live im Tablet-Rahmen" width="80%" />
-</p>
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/ha-live-phone.png" alt="HA Live im Handy-Rahmen" width="40%" />
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/ha-live-desktop.png" alt="HA Live im Desktop-Rahmen" width="40%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-ha-live.png" alt="HA Live zeigt das echte Dashboard im Panel" width="62%" />
 </p>
 
 ---
@@ -259,17 +240,17 @@ Die eingebaute Demo-Vorschau reagiert sofort auf jede Änderung — mit pixelgen
 Das Glas-Paket hört nicht am Dashboard auf. Dieselben Werte tragen die Einstellungsseiten, den Kalender, das Profil und jedes Panel aus der Seitenleiste:
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-dashboard.png" alt="Dashboard mit Glas-Karten und Hintergrundbild" width="80%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-dashboard.png" alt="Dashboard mit Glas-Karten und Hintergrundbild" width="62%" />
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-einstellungen.png" alt="Einstellungsseite mit Icons im iOS-Stil und durchscheinendem Hintergrund" width="49%" />
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-kalender.png" alt="Kalender-Panel in Glas" width="49%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-einstellungen.png" alt="Einstellungsseite mit Icons im iOS-Stil und durchscheinendem Hintergrund" width="45%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-kalender.png" alt="Kalender-Panel in Glas" width="45%" />
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-profil.png" alt="Profilseite mit Glasflächen" width="49%" />
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-cloud.png" alt="Home Assistant Cloud mit Glasflächen" width="49%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-profil.png" alt="Profilseite mit Glasflächen" width="45%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-cloud.png" alt="Home Assistant Cloud mit Glasflächen" width="45%" />
 </p>
 
 -->

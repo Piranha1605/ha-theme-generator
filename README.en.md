@@ -29,7 +29,7 @@ Every one of the 601 fields was verified against the actual source code of Home 
 > **Language:** HATG speaks English and German. The interface follows your Home Assistant language automatically and can be switched at any time under the gear icon.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/unified-theme-demo.png" alt="One theme applied simultaneously to HA cards, Mushroom and Bubble Card" width="85%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/unified-theme-demo.png" alt="One theme applied simultaneously to HA cards, Mushroom and Bubble Card" width="70%" />
 </p>
 
 ---
@@ -87,7 +87,7 @@ The **UIX help** section in the panel walks through the same steps and explains 
 8. Select the new theme under **Settings → Profile**
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/start-page.png" alt="The start page: name, base values, Basis block, states and background" width="80%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-start.png" alt="The start page: name, base values, Basis block, states and background" width="62%" />
 </p>
 
 ---
@@ -100,10 +100,6 @@ The start page is built as a guided entry point: the few values that shape a the
 
 Five colours and one radius — that's all the beginning needs. Every colour field offers a **hex/RGB/RGBA switch**, a native colour wheel and a text field for the raw value. Small rows of dots beside them show which derived fields will follow along.
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/grundfarben.png" alt="Base colours with hex/RGB/RGBA switch" width="65%" />
-</p>
-
 ### Basis: border, radius, shadow
 
 Three rows define the basic shape of **all** cards and pass it on to Bubble Card (including every card type) and Mushroom:
@@ -113,10 +109,6 @@ Three rows define the basic shape of **all** cards and pass it on to Bubble Card
 | **Border colour** | 5 | also rebuilds the composite `bubble-border` |
 | **Radius** | 26 | separate inputs for **outer** and **inner** — nested elements such as icons and sub-buttons automatically get 4 px less, keeping the roundings concentric |
 | **Shadow** | 13 | one value for all card shadows, sub-buttons included |
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/basis-block.png" alt="Basis block with border colour, outer/inner radius and shadow" width="65%" />
-</p>
 
 ### States: on / off / unavailable / icon background
 
@@ -146,7 +138,7 @@ Besides gradients (sunrise, night sky, radial) you can set your **own image**. T
 The sidebar organises all 601 fields into thematic sections — Bubble Card with its own subpage per card type, the UIX presets with one subpage per style target:
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/nav-sections.png" alt="Navigation with all sections" width="25%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-navigation.png" alt="Navigation with all sections" width="22%" />
 </p>
 
 | Section | Contents |
@@ -166,17 +158,9 @@ The sidebar organises all 601 fields into thematic sections — Bubble Card with
 
 The **word-fragment filter** combines building blocks such as `color`, `background` or `button` with narrowing tags (`bubble`, `climate`, `stack`) — so even among 601 variables the right one is found in seconds. With multi-select, entire groups of fields get the same value in a single step.
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/all-fields-filter.png" alt="All fields with word-fragment filter" width="80%" />
-</p>
-
 ### Code editor
 
 For everyone who prefers typing: all fields as text with syntax highlighting, grouped by section. Plus the free-form UIX style targets (`uix-card`, `uix-root` and the rest) and a **free field for your own theme entries** that HATG doesn't know — they survive saving and export unchanged.
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/code-editor.png" alt="Code editor with all fields as text" width="80%" />
-</p>
 
 ---
 
@@ -187,7 +171,7 @@ Ready-made UIX building blocks applied **globally to the theme** with a single c
 In the sidebar every style target has its own subpage, with the number of its presets beside it. The **list view** shows name, description and target one below the other; clicking a row expands exactly the values that preset controls, so you can edit them without detouring through the field list. If you prefer tiles, switch at the top.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/cardmod-vorlagen.png" alt="UIX presets in list view" width="80%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-uix-vorlagen.png" alt="UIX presets in list view" width="62%" />
 </p>
 
 ### The glass package
@@ -203,6 +187,12 @@ All 24 hang on the same **glass values** shown above the list:
 | **Tint light / dark** | separate base colours for light and dark |
 | **Apple guideline / glass everywhere** | Apple puts glass on the functional layer only — navigation and controls. "Glass everywhere" adds the content surfaces |
 | **Dim behind glass** | the 35 % dimming Apple asks for over bright backgrounds |
+
+<!-- wartet auf docs/screenshots/panel-glaswerte.png
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-glaswerte.png" alt="The glass values above the preset list, with the live preview beside them" width="62%" />
+</p>
+-->
 
 ### What is possible beyond cards
 
@@ -231,10 +221,6 @@ Every one of the 25 style targets can be addressed, each in two forms: as plain 
 
 Some effects don't belong in the theme globally but on exactly one card: slider shapes, glass variants, state-dependent card design (traffic-light effect), sub-button glow states. The plugins page provides them as copy-and-paste snippets with a preview image and an explanation — several can be selected and copied as one combined snippet.
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/plugins.png" alt="Plugins page with copy-and-paste snippets" width="80%" />
-</p>
-
 ---
 
 ## HA Live — your real dashboard as a preview
@@ -242,12 +228,7 @@ Some effects don't belong in the theme globally but on exactly one card: slider 
 The built-in demo preview reacts instantly to every change — with pixel-accurate recreations of real HA cards, every component verified against the original frontend source. When that isn't enough: **HA Live** shows your *actual* Home Assistant dashboard right inside the panel — not a mockup but the real interface, in a phone, tablet or desktop frame. "Save draft" reloads the themes automatically, and one click on "Refresh" reveals the new colours.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/ha-live-tablet.png" alt="HA Live in the tablet frame" width="80%" />
-</p>
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/ha-live-phone.png" alt="HA Live in the phone frame" width="40%" />
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/ha-live-desktop.png" alt="HA Live in the desktop frame" width="40%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-ha-live.png" alt="HA Live in the tablet frame" width="62%" />
 </p>
 
 ---
@@ -261,17 +242,17 @@ The built-in demo preview reacts instantly to every change — with pixel-accura
 The glass package does not stop at the dashboard. The same values carry the settings pages, the calendar, your profile and every panel in the sidebar:
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-dashboard.png" alt="Dashboard with glass cards and background image" width="80%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-dashboard.png" alt="Dashboard with glass cards and background image" width="62%" />
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-einstellungen.png" alt="Settings page with iOS style icons and a translucent background" width="49%" />
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-kalender.png" alt="Calendar panel in glass" width="49%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-einstellungen.png" alt="Settings page with iOS style icons and a translucent background" width="45%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-kalender.png" alt="Calendar panel in glass" width="45%" />
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-profil.png" alt="Profile page with glass surfaces" width="49%" />
-  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-cloud.png" alt="Home Assistant Cloud with glass surfaces" width="49%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-profil.png" alt="Profile page with glass surfaces" width="45%" />
+  <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/glas-cloud.png" alt="Home Assistant Cloud with glass surfaces" width="45%" />
 </p>
 
 -->
