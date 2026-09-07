@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/github/v/release/Piranha1605/ha-theme-generator?label=Version&color=2F80ED" alt="Version" />
+  <img src="https://img.shields.io/github/v/release/Piranha1605/ha-theme-generator?include_prereleases&label=Version&color=2F80ED" alt="Version" />
   <img src="https://img.shields.io/badge/HACS-Custom%20Repository-2F80ED?logo=home-assistant&logoColor=white" alt="HACS" />
   <img src="https://img.shields.io/badge/Variablen-601%20gepr%C3%BCft-2F80ED" alt="601 geprüfte Variablen" />
   <img src="https://img.shields.io/github/stars/Piranha1605/ha-theme-generator?color=2F80ED" alt="Stars" />
