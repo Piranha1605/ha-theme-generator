@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1600px; height: 520px; overflow: hidden; }
+  body {
+    font-family: -apple-system, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+    background: #E9F1FA;
+    position: relative;
+  }
+
+  /* --- Hintergrund: weiche Farbwolken plus ein Lichtband, wie das Wallpaper --- */
+  .wolke { position: absolute; border-radius: 50%; filter: blur(90px); }
+  .w1 { width: 860px; height: 660px; left: -260px; top: -240px; background: #86B6EE; opacity: .9; }
+  .w2 { width: 720px; height: 560px; left: 620px; top: 220px; background: #C7AEEA; opacity: .85; }
+  .w3 { width: 720px; height: 540px; right: -120px; top: -200px; background: #F7CDB2; opacity: .8; }
+  .w4 { width: 640px; height: 520px; right: 60px; bottom: -230px; background: #7FD8E4; opacity: .7; }
+  .w5 { width: 520px; height: 420px; right: 380px; top: 60px; background: #A9D2F6; opacity: .75; }
+
+  .band { position: absolute; inset: 0; }
+  .band svg { width: 100%; height: 100%; display: block; }
+
+  .koerner {
+    position: absolute; inset: 0; opacity: .16; mix-blend-mode: overlay;
+    background-image: radial-gradient(circle at 1px 1px, #fff 1px, transparent 0);
+    background-size: 3px 3px;
+  }
+
+  /* --- Inhalt --- */
+  .buehne {
+    position: absolute; inset: 0;
+    display: grid; grid-template-columns: 1fr 640px;
+    align-items: center; gap: 56px; padding: 0 64px;
+  }
+
+  .marke { display: flex; align-items: center; gap: 18px; margin-bottom: 30px; }
+  .zeichen {
+    width: 72px; height: 72px; border-radius: 21px;
+    background: linear-gradient(150deg, #5EE08A 0%, #22B457 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.75),
+      inset 0 0 0 1px rgba(255,255,255,.35),
+      0 12px 26px -10px rgba(16,80,45,.65);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .zeichen span {
+    display: block; width: 30px; height: 38px; border-radius: 7px;
+    background: #fff; transform: rotate(-16deg);
+    box-shadow: -9px 4px 0 -2px rgba(255,255,255,.5);
+  }
+  .wortmarke { line-height: 1; }
+  .wortmarke b {
+    display: block; font-size: 54px; font-weight: 800; letter-spacing: -1.6px; color: #0C1B2E;
+  }
+  .wortmarke b i { font-style: normal; color: #22B457; }
+  .wortmarke small {
+    display: block; margin-top: 7px; font-size: 13.5px; font-weight: 600;
+    letter-spacing: 2.6px; text-transform: uppercase; color: #58697E;
+  }
+
+  h1 {
+    font-size: 46px; line-height: 1.12; font-weight: 700; letter-spacing: -1.1px;
+    color: #0C1B2E; text-wrap: balance; max-width: 660px;
+  }
+  h1 em { font-style: normal; color: #0A6CD8; }
+  p.unter {
+    margin-top: 16px; font-size: 19px; line-height: 1.5; color: #4A5B70; max-width: 600px;
+  }
+
+  .zahlen { display: flex; gap: 12px; margin-top: 30px; }
+  .zahl {
+    padding: 13px 20px 14px; border-radius: 16px;
+    background: rgba(255,255,255,.4);
+    backdrop-filter: blur(16px) saturate(170%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.85),
+      inset 0 -1px 0 rgba(12,27,46,.06),
+      inset 0 0 0 1px rgba(255,255,255,.5),
+      0 10px 24px -14px rgba(12,27,46,.5);
+  }
+  .zahl b { display: block; font-size: 23px; font-weight: 700; color: #0C1B2E; letter-spacing: -.4px; }
+  .zahl span { display: block; margin-top: 2px; font-size: 12.5px; font-weight: 600; color: #5A6B80; letter-spacing: .2px; }
+
+  /* --- Glasflaechen rechts --- */
+  .stapel { position: relative; height: 400px; }
+  .glas {
+    position: absolute; border-radius: 22px;
+    background: rgba(255,255,255,.34);
+    backdrop-filter: blur(22px) saturate(180%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.9),
+      inset 0 -1px 0 rgba(12,27,46,.07),
+      inset 0 0 0 1px rgba(255,255,255,.45),
+      0 26px 50px -26px rgba(12,27,46,.55);
+    padding: 18px 20px;
+  }
+  .karte-a { width: 360px; left: 4px; top: -6px; z-index: 3; }
+  .karte-b { width: 340px; right: -6px; top: 158px; z-index: 2; }
+  .karte-c { width: 292px; left: 0; bottom: -4px; z-index: 4; }
+
+  .titel { font-size: 12px; font-weight: 700; letter-spacing: 1.6px; text-transform: uppercase; color: #6A7B90; }
+  .wert { margin-top: 6px; font-size: 34px; font-weight: 700; color: #0C1B2E; letter-spacing: -.8px; }
+  .wert i { font-style: normal; font-size: 17px; font-weight: 600; color: #5A6B80; margin-left: 3px; }
+
+  .zeile { display: flex; align-items: center; gap: 11px; padding: 9px 0; }
+  .zeile + .zeile { border-top: 1px solid rgba(12,27,46,.07); }
+  .icon {
+    width: 30px; height: 30px; border-radius: 9px; flex: none;
+    background: linear-gradient(160deg, rgba(255,255,255,.5), rgba(255,255,255,.06));
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.5), 0 1px 2px rgba(12,27,46,.28);
+  }
+  .i-blau { background-color: #2F7FE8; }
+  .i-gruen { background-color: #2CB35B; }
+  .i-lila { background-color: #8E6FE0; }
+  .i-orange { background-color: #EE9A3A; }
+  .beschriftung { font-size: 14.5px; font-weight: 600; color: #17293E; }
+  .beschriftung small { display: block; font-size: 12px; font-weight: 500; color: #6A7B90; margin-top: 1px; }
+  .haken { margin-left: auto; width: 34px; height: 20px; border-radius: 10px; background: #2F7FE8; position: relative; }
+  .haken::after { content: ""; position: absolute; right: 2px; top: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; }
+  .regler { margin-top: 10px; height: 7px; border-radius: 4px; background: rgba(12,27,46,.12); position: relative; }
+  .regler::after { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 62%; border-radius: 4px; background: #2F7FE8; }
+</style>
+</head>
+<body>
+  <div class="wolke w1"></div>
+  <div class="wolke w2"></div>
+  <div class="wolke w3"></div>
+  <div class="wolke w4"></div>
+  <div class="wolke w5"></div>
+
+  <div class="band">
+    <svg viewBox="0 0 1600 520" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="schimmer" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity=".95" />
+          <stop offset="38%" stop-color="#C2DCFA" stop-opacity=".85" />
+          <stop offset="68%" stop-color="#E4CDF2" stop-opacity=".8" />
+          <stop offset="100%" stop-color="#FBD9C2" stop-opacity=".75" />
+        </linearGradient>
+        <filter id="weich"><feGaussianBlur stdDeviation="4" /></filter>
+      </defs>
+      <path filter="url(#weich)" fill="url(#schimmer)"
+        d="M-40,392 C240,300 300,150 640,168 C980,186 1080,392 1400,330 C1520,306 1580,258 1660,232 L1660,520 L-40,520 Z" />
+      <path filter="url(#weich)" fill="url(#schimmer)" opacity=".7"
+        d="M-40,470 C260,392 420,300 720,318 C1020,336 1180,452 1660,372 L1660,520 L-40,520 Z" />
+      <path filter="url(#weich)" fill="#ffffff" opacity=".5"
+        d="M-40,120 C260,60 420,206 760,180 C1100,154 1300,42 1660,84 L1660,-20 L-40,-20 Z" />
+      <path filter="url(#weich)" fill="none" stroke="url(#schimmer)" stroke-width="46" opacity=".8"
+        d="M-60,300 C220,180 420,430 780,362 C1140,294 1300,120 1700,178" />
+      <path filter="url(#weich)" fill="none" stroke="#ffffff" stroke-width="14" opacity=".55"
+        d="M-60,330 C230,214 430,462 790,392 C1150,322 1320,150 1700,210" />
+    </svg>
+  </div>
+  <div class="koerner"></div>
+
+  <div class="buehne">
+    <div>
+      <div class="marke">
+        <div class="zeichen"><span></span></div>
+        <div class="wortmarke">
+          <b>HATG<i>.</i></b>
+          <small>Home Assistant Theme Generator</small>
+        </div>
+      </div>
+
+      <h1>One theme, <em>every surface</em> under control.</h1>
+      <p class="unter">Colours, shapes and states in one place — distributed to Home&nbsp;Assistant, Bubble&nbsp;Card, Mushroom and the glass look of the whole system.</p>
+
+      <div class="zahlen">
+        <div class="zahl"><b>601</b><span>verified variables</span></div>
+        <div class="zahl"><b>36</b><span>UIX presets</span></div>
+        <div class="zahl"><b>25</b><span>style targets</span></div>
+        <div class="zahl"><b>Live</b><span>your real dashboard</span></div>
+      </div>
+    </div>
+
+    <div class="stapel">
+      <div class="glas karte-a">
+        <div class="titel">Glass values</div>
+        <div class="zeile" style="padding-top:12px">
+          <div class="beschriftung">Opacity<small>applies to every glass preset</small></div>
+          <div style="margin-left:auto;font-size:14px;font-weight:700;color:#0C1B2E">70%</div>
+        </div>
+        <div class="regler"></div>
+        <div class="zeile" style="margin-top:6px">
+          <div class="beschriftung">Blur<small>graded three ways</small></div>
+          <div style="margin-left:auto;font-size:14px;font-weight:700;color:#0C1B2E">6&nbsp;px</div>
+        </div>
+      </div>
+
+      <div class="glas karte-b">
+        <div class="titel">Presets</div>
+        <div class="zeile">
+          <div class="icon i-blau"></div>
+          <div class="beschriftung">Cards in glass<small>uix-card</small></div>
+          <div class="haken"></div>
+        </div>
+        <div class="zeile">
+          <div class="icon i-lila"></div>
+          <div class="beschriftung">Sidebar<small>uix-sidebar</small></div>
+          <div class="haken"></div>
+        </div>
+        <div class="zeile">
+          <div class="icon i-gruen"></div>
+          <div class="beschriftung">Settings in iOS style<small>uix-config-yaml</small></div>
+          <div class="haken"></div>
+        </div>
+      </div>
+
+      <div class="glas karte-c">
+        <div class="titel">Living room</div>
+        <div class="wert">23.4<i>°C</i></div>
+        <div class="zeile" style="border:0;padding-bottom:0">
+          <div class="icon i-orange"></div>
+          <div class="beschriftung">Floor lamp<small>On · 62%</small></div>
+          <div class="haken"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
