@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.2.1";
+const HATG_VERSION = "1.3.0b1";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -99,7 +99,7 @@ const HATG_TEXTE = {
   "abgelegt und bleiben damit über Theme- und Browserwechsel hinweg erhalten.": "and therefore survive theme and browser changes.",
   "Fertige UIX-Bausteine, die per Klick global im Theme aktiviert werden (landen markiert im jeweiligen Stilziel, für Light und Dark gleichzeitig) - kein Kopieren/Einfügen nötig.": "Ready-made UIX blocks activated globally in the theme with one click - written and marked into their style target, for light and dark at once. No copy and paste needed.",
   ", für Light und Dark gleichzeitig) - kein Kopieren/Einfügen nötig. Decken native HA-, Mushroom- und Bubble-Karten ab, in": ", for light and dark at the same time) – no copy and paste needed. They cover native HA, Mushroom and Bubble cards, in",
-  "Eigene(r) CSS-Wert für background-image": "Custom CSS value for background-image",
+  "Eigener CSS-Wert für background (letzte Ebene darf eine Farbe sein)": "Custom CSS value for background (the last layer may be a colour)",
   "Deckkraft des Bildes": "Image opacity",
   "Bei 0 % bleibt nur die Hintergrundfarbe stehen, bei 100 % das Bild in voller Stärke.": "At 0 % only the background colour remains, at 100 % the image is shown at full strength.",
   "Ordner wird gelesen …": "Reading folder …",
@@ -262,7 +262,7 @@ const HATG_TEXTE = {
   "Kopfleiste des Dashboards in Glas": "Dashboard top bar in glass",
   "Die Leiste über einem Dashboard heißt im Frontend .header und sitzt in hui-root - das Stilziel für die Kopfleiste erreicht sie nicht. Diese Vorlage setzt am Grundgerüst an und legt Weichzeichnung, Reflex und Kanten darauf. Die Farbe selbst kommt aus dem Theme-Feld app-header-background-color; steht dort ein deckender Wert, hilft der Knopf \"Auf Glas setzen\" über der Vorlagenliste.": "The bar above a dashboard is called .header and lives in hui-root - the top bar style target does not reach it. This preset works from the dashboard root and puts blur, sheen and edges on it. The colour itself comes from the theme field app-header-background-color; if that holds an opaque value, the button \"Set to glass\" above the preset list helps.",
   "Bubble Card in Glas": "Bubble Card in glass",
-  "Bubble Card zeichnet seine Flächen selbst und liest dafür eigene Variablen - ohne diese Vorlage bleiben Bubble-Karten deckend, auch wenn die Karte darunter längst Glas ist. Setzt die Variablen auf die gemeinsamen Glaswerte und legt Weichzeichnung, Reflex und Kanten auf Karten, Icons, Sub-Buttons sowie Climate-, Cover-, Media-Player-, Select- und Kalender-Flächen. Die Variablennamen stammen aus Bubble Cards eigenem CSS und wurden in einer laufenden Instanz geprüft.": "Bubble Card paints its own surfaces and reads its own variables for them - without this preset, Bubble cards stay opaque even when the card beneath is already glass. It sets those variables to the shared glass values and puts blur, sheen and edges on cards, icons, sub-buttons and the climate, cover, media player, select and calendar surfaces. The variable names come from Bubble Card's own CSS and were verified in a running instance.",
+  "Bubble Card zeichnet seine Flächen selbst und liest dafür eigene Variablen - ohne diese Vorlage bleiben Bubble-Karten deckend, auch wenn die Karte darunter längst Glas ist. Setzt die Variablen auf die gemeinsamen Glaswerte und legt Weichzeichnung, Reflex und Kanten auf Karten, Icons, Sub-Buttons sowie Climate-, Cover-, Media-Player-, Select- und Kalender-Flächen. Schaltet außerdem den Rahmen ab, den Bubble Card aus dem Theme-Feld bubble-border zieht: Er ist deckend und liegt genau auf der Lichtkante, die diese Vorlage als inneren Ring zeichnet - ohne ihn steuern die Regler im Bereich Glaslook auch die Kante. Die Variablennamen stammen aus Bubble Cards eigenem CSS und wurden in einer laufenden Instanz geprüft.": "Bubble Card paints its own surfaces and reads its own variables for them - without this preset, Bubble cards stay opaque even when the card beneath is already glass. It sets those variables to the shared glass values and puts blur, sheen and edges on cards, icons, sub-buttons and the climate, cover, media player, select and calendar surfaces. It also switches off the border Bubble Card draws from the theme field bubble-border: that border is opaque and sits exactly on the light edge this preset draws as an inner ring - without it, the sliders under Glass look control the edge as well. The variable names come from Bubble Card's own CSS and were verified in a running instance.",
   "Glance-Karten in Glas": "Glance cards in glass",
   "Glance-Karten bringen ihre eigene Fläche mit und brauchen deshalb einen eigenen Eintrag. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "Glance cards bring their own surface and therefore need an entry of their own. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
   "Grid-Abschnitte in Glas": "Grid sections in glass",
@@ -2129,7 +2129,7 @@ ha-badge {
     id: "glas-bubble",
     paket: "glas",
     label: "Bubble Card in Glas",
-    desc: "Bubble Card zeichnet seine Flächen selbst und liest dafür eigene Variablen - ohne diese Vorlage bleiben Bubble-Karten deckend, auch wenn die Karte darunter längst Glas ist. Setzt die Variablen auf die gemeinsamen Glaswerte und legt Weichzeichnung, Reflex und Kanten auf Karten, Icons, Sub-Buttons sowie Climate-, Cover-, Media-Player-, Select- und Kalender-Flächen. Die Variablennamen stammen aus Bubble Cards eigenem CSS und wurden in einer laufenden Instanz geprüft.",
+    desc: "Bubble Card zeichnet seine Flächen selbst und liest dafür eigene Variablen - ohne diese Vorlage bleiben Bubble-Karten deckend, auch wenn die Karte darunter längst Glas ist. Setzt die Variablen auf die gemeinsamen Glaswerte und legt Weichzeichnung, Reflex und Kanten auf Karten, Icons, Sub-Buttons sowie Climate-, Cover-, Media-Player-, Select- und Kalender-Flächen. Schaltet außerdem den Rahmen ab, den Bubble Card aus dem Theme-Feld bubble-border zieht: Er ist deckend und liegt genau auf der Lichtkante, die diese Vorlage als inneren Ring zeichnet - ohne ihn steuern die Regler im Bereich Glaslook auch die Kante. Die Variablennamen stammen aus Bubble Cards eigenem CSS und wurden in einer laufenden Instanz geprüft.",
     ziel: "uix-card",
     css: `:host {
   /* Bubble Card faerbt seine Flaechen ueber eigene Variablen. Ohne diese Zeilen
@@ -2148,6 +2148,14 @@ ha-badge {
   --bubble-sub-button-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
   --bubble-main-buttons-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
   --bubble-climate-button-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
+  /* Aus --bubble-border zieht Bubble Card einen echten border - auf
+     .bubble-container jeder Karte, auf .bubble-pop-up, auf die Schliessen-
+     Knoepfe der Pop-ups und auf das Menueleisten-Panel. Der Wert aus dem
+     Theme-Feld ist deckend und liegt genau auf der Lichtkante, die diese
+     Vorlage weiter unten als inneren Ring in den box-shadow legt. Er wuerde
+     sie also ueberdecken. Bubbles eigener Standard ist ohnehin none - mit
+     dieser Zeile kommt die Kante wieder aus dem Bereich Glaslook. */
+  --bubble-border: none !important;
 }
 .bubble-container,
 .bubble-button-container,
@@ -2162,7 +2170,11 @@ ha-badge {
 .bubble-high-temp-container,
 .bubble-icon-container,
 .bubble-main-icon-container,
-.bubble-sub-button {
+.bubble-sub-button,
+/* Das Klappfeld der Menueleiste faerbt sich ueber --bubble-main-background-color
+   schon mit, bekam aber weder Weichzeichnung noch Kante - seine einzige Kontur
+   war der Rahmen, den diese Vorlage oben abschaltet. */
+.bubble-menu-bar-panel {
   backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%)) !important;
   -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%)) !important;
   background-image:
@@ -3581,6 +3593,75 @@ function hatgSuggestNextVersion(slug) {
   return `${slug}_v2`;
 }
 
+// UIX loest je Stilziel exklusiv auf: existiert "uix-<typ>-yaml", wird
+// "uix-<typ>" nie mehr gelesen. Beide Felder nebeneinander zu schreiben laesst
+// das einfache CSS also spurlos verschwinden - die Datei sieht vollstaendig
+// aus, im Browser kommt nichts an. Deshalb wandert das einfache CSS als
+// "."-Eintrag in dieselbe YAML-Karte. Genau diese Form baut UIX intern aus
+// einem einfachen Feld, der Weg ist also derselbe, nur eben in der Karte, die
+// tatsaechlich gelesen wird.
+function hatgMergeStilzielYaml(einfachesCss, yamlKarte) {
+  const css = String(einfachesCss ?? "").replace(/\s+$/, "");
+  const karte = String(yamlKarte ?? "").replace(/\s+$/, "");
+  if (!css) return karte;
+  const eingerueckt = css
+    .split("\n")
+    .map((zeile) => (zeile.trim().length ? "  " + zeile.trimEnd() : ""))
+    .join("\n");
+  const punktEintrag = `".": |\n${eingerueckt}`;
+  return karte ? `${punktEintrag}\n${karte}` : punktEintrag;
+}
+
+// Gegenstueck dazu. Beim Import muss der "."-Eintrag zurueck ins einfache Feld,
+// sonst findet HATG seine Vorlagenmarken dort nicht wieder und haelt jede
+// Kartenvorlage fuer abgeschaltet.
+function hatgTeileStilzielYaml(yamlKarte) {
+  const zeilen = String(yamlKarte ?? "").replace(/\r\n?/g, "\n").split("\n");
+  const punkt = [];
+  const rest = [];
+  let imPunkt = false;
+  for (const zeile of zeilen) {
+    if (imPunkt) {
+      if (zeile.trim() === "") {
+        punkt.push("");
+        continue;
+      }
+      const einzug = zeile.length - zeile.replace(/^\s+/, "").length;
+      if (einzug > 0) {
+        punkt.push(zeile.slice(2));
+        continue;
+      }
+      imPunkt = false;
+    }
+    if (/^(?:"\."|\.):\s*\|-?\s*$/.test(zeile)) {
+      imPunkt = true;
+      continue;
+    }
+    rest.push(zeile);
+  }
+  while (punkt.length && punkt[punkt.length - 1] === "") punkt.pop();
+  while (rest.length && rest[rest.length - 1] === "") rest.pop();
+  return { punkt: punkt.join("\n"), rest: rest.join("\n") };
+}
+
+// Nach dem Parsen jedes "-yaml"-Feld wieder aufteilen. Ohne das waere der
+// Rundlauf Export -> Import nicht mehr verlustfrei.
+function hatgEntflechteStilzieleImBag(bag) {
+  if (!bag) return 0;
+  let geteilt = 0;
+  Object.keys(bag).forEach((key) => {
+    if (!hatgIstYamlZiel(key)) return;
+    const { punkt, rest } = hatgTeileStilzielYaml(bag[key]);
+    if (!punkt) return;
+    const basis = key.replace(/-yaml$/, "");
+    if (!String(bag[basis] ?? "").trim()) bag[basis] = punkt;
+    if (rest) bag[key] = rest;
+    else delete bag[key];
+    geteilt++;
+  });
+  return geteilt;
+}
+
 function hatgParseThemeYaml(text, knownKeys) {
   const lines = String(text || "").replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
   let i = 0;
@@ -3698,6 +3779,8 @@ function hatgParseThemeYaml(text, knownKeys) {
       if (result.extra.dark[key] === undefined) result.extra.dark[key] = flatExtra[key];
     });
   }
+  hatgEntflechteStilzieleImBag(result.light);
+  hatgEntflechteStilzieleImBag(result.dark);
   return result;
 }
 
@@ -3736,13 +3819,39 @@ function hatgSplitTopLevelCommas(value) {
   return teile.map((t) => t.trim()).filter((t) => t.length > 0);
 }
 
+// Farbfunktionen, die im background-color-Slot stehen duerfen. Absichtlich
+// grosszuegiger als HATG_RGBA_RE: dort zaehlt nur, dass eine Farbe gemeint ist.
+const HATG_COLOR_FN_RE = /^(rgba?|hsla?|hwb|lab|lch|oklab|oklch|color|color-mix)\(.+\)$/i;
+const HATG_NAMED_COLORS = new Set(
+  ("transparent,currentcolor,aliceblue,antiquewhite,aqua,aquamarine,azure,beige,bisque,black,blanchedalmond,blue,blueviolet,brown,burlywood,cadetblue,chartreuse,chocolate,coral,cornflowerblue,cornsilk,crimson,cyan,darkblue,darkcyan,darkgoldenrod,darkgray,darkgreen,darkgrey,darkkhaki,darkmagenta,darkolivegreen,darkorange,darkorchid,darkred,darksalmon,darkseagreen,darkslateblue,darkslategray,darkslategrey,darkturquoise,darkviolet,deeppink,deepskyblue,dimgray,dimgrey,dodgerblue,firebrick,floralwhite,forestgreen,fuchsia,gainsboro,ghostwhite,gold,goldenrod,gray,green,greenyellow,grey,honeydew,hotpink,indianred,indigo,ivory,khaki,lavender,lavenderblush,lawngreen,lemonchiffon,lightblue,lightcoral,lightcyan,lightgoldenrodyellow,lightgray,lightgreen,lightgrey,lightpink,lightsalmon,lightseagreen,lightskyblue,lightslategray,lightslategrey,lightsteelblue,lightyellow,lime,limegreen,linen,magenta,maroon,mediumaquamarine,mediumblue,mediumorchid,mediumpurple,mediumseagreen,mediumslateblue,mediumspringgreen,mediumturquoise,mediumvioletred,midnightblue,mintcream,mistyrose,moccasin,navajowhite,navy,oldlace,olive,olivedrab,orange,orangered,orchid,palegoldenrod,palegreen,paleturquoise,palevioletred,papayawhip,peachpuff,peru,pink,plum,powderblue,purple,rebeccapurple,red,rosybrown,royalblue,saddlebrown,salmon,sandybrown,seagreen,seashell,sienna,silver,skyblue,slateblue,slategray,slategrey,snow,springgreen,steelblue,tan,teal,thistle,tomato,turquoise,violet,wheat,white,whitesmoke,yellow,yellowgreen").split(",")
+);
+
+function hatgIsColorValue(value) {
+  const v = String(value ?? "").trim();
+  if (!v) return false;
+  if (HATG_HEX_RE.test(v)) return true;
+  if (HATG_COLOR_FN_RE.test(v)) return true;
+  if (/^var\(\s*--[a-z0-9-]+/i.test(v)) return true;
+  return HATG_NAMED_COLORS.has(v.toLowerCase());
+}
+
+function hatgIsCssBackgroundLayer(teil) {
+  return /^url\(/i.test(teil) || HATG_GRADIENT_RE.test(teil);
+}
+
 function hatgIsCssBackground(value) {
   const v = String(value ?? "").trim();
   if (!v) return false;
-  if (!/url\(/i.test(v) && !HATG_GRADIENT_RE.test(v)) return false;
   const teile = hatgSplitTopLevelCommas(v);
   if (!teile.length) return false;
-  return teile.every((teil) => /^url\(/i.test(teil) || HATG_GRADIENT_RE.test(teil));
+  const letztes = teile[teile.length - 1];
+  // Die CSS-Kurzform background erlaubt als letzte Ebene eine Farbe - das ist
+  // der background-color-Slot, etwa "radial-gradient(...), #E8F0FA". Nur das
+  // letzte Stueck darf eine Farbe sein, sonst ginge auch echter Unsinn durch.
+  const ebenen = hatgIsCssBackgroundLayer(letztes) ? teile : teile.slice(0, -1);
+  if (!ebenen.length) return false;
+  if (ebenen.length < teile.length && !hatgIsColorValue(letztes)) return false;
+  return ebenen.every(hatgIsCssBackgroundLayer);
 }
 
 function hatgGetKeyFormats() {
@@ -6352,8 +6461,8 @@ uix:
     const customField = active === "custom"
       ? `
         <label class="style-custom-field">
-          <span>Eigene(r) CSS-Wert für background-image</span>
-          <input type="text" class="text-input" spellcheck="false" value="${hatgEscape(currentBg)}" data-text-field="lovelace-background" placeholder="linear-gradient(135deg, #7F77DD, #1D9E75)" />
+          <span>Eigener CSS-Wert für background (letzte Ebene darf eine Farbe sein)</span>
+          <input type="text" class="text-input" spellcheck="false" value="${hatgEscape(currentBg)}" data-text-field="lovelace-background" placeholder="linear-gradient(135deg, #7F77DD, #1D9E75), #E8F0FA" />
         </label>`
       : "";
 
@@ -6372,6 +6481,12 @@ uix:
           ${tile("night", defs.night.label, defs.night.sub, `background: ${defs.night.css};`, false)}
           ${tile("radial", defs.radial.label, defs.radial.sub, `background: ${defs.radial.css};`, false)}
           ${tile("bild", "Bild", active === "bild" ? "Eigenes Bild" : "Eigenes Hochladen", bildPreview, false)}
+          <!-- Absichtlich hatgIsGradient und nicht hatgIsCssBackground: currentBg
+               geht hier unescaped in ein style-Attribut. Die weitere Pruefung
+               laesst url(...) durch, die Vorschau wuerde dann externe Ressourcen
+               nachladen. Mehrschichtige Werte zeigen deshalb die neutrale Flaeche
+               statt des echten Hintergrunds - das ist der Preis dafuer. Wer das
+               aendert, muss den url()-Teil vorher absichern. -->
           ${tile("custom", "Eigene", "Direkt im Code", `background: ${hatgIsGradient(currentBg) ? currentBg : "var(--hatg-bg-2, rgba(127,140,160,.12))"};`, false)}
         </div>
         ${customField}
@@ -6777,6 +6892,16 @@ uix:
     };
     const lightText = modeBlock("light");
     const darkText = modeBlock("dark");
+    // Ein Ziel, das ein "-yaml"-Feld bekommt, verdeckt sein einfaches Feld
+    // vollstaendig (siehe hatgMergeStilzielYaml). Beide zusammenlegen, bevor
+    // sie als Geschwister in die Datei geraten.
+    Object.keys(flatZiele).forEach((yamlName) => {
+      if (!/-yaml$/.test(yamlName)) return;
+      const basis = yamlName.replace(/-yaml$/, "");
+      if (!String(flatZiele[basis] ?? "").trim()) return;
+      flatZiele[yamlName] = hatgMergeStilzielYaml(flatZiele[basis], flatZiele[yamlName]);
+      delete flatZiele[basis];
+    });
     const flatKeys = Object.keys(flatZiele);
     const flatUeberschrift =
       format === HATG_AUSGABE_CARDMOD
