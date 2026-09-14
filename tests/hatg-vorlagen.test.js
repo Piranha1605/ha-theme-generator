@@ -257,6 +257,15 @@ pruefe("Kartenmarker in Glas: Flaeche auf .marker, Ring bleibt", () => {
   assert.ok(!/\bborder(-color)?:/.test(c), "Vorlage ueberschreibt den farbigen Ring");
 });
 
+pruefe("glas-bubble toent eingeschaltete Karten statt sie deckend zu fuellen", () => {
+  // Bubble malt .bubble-background eingeschaltet deckend in der Akzentfarbe.
+  // Neben Glaskarten stand das als volle Farbflaeche, das Icon verschwand darauf.
+  const c = ohneKommentare(css(vorlagen.find((x) => x.id === "glas-bubble").block));
+  const regel = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)].find((m) => m[1].trim() === ".bubble-background");
+  assert.ok(regel, "keine Regel fuer .bubble-background");
+  assert.ok(/color-mix\(in srgb, var\(--bubble-button-background-color[^)]*\) \d+%, transparent\)/.test(regel[2]), "Aktivflaeche wird nicht getoent");
+});
+
 function vorlage(id) {
   const v = vorlagen.find((x) => x.id === id);
   assert.ok(v, `Vorlage ${id} fehlt`);
