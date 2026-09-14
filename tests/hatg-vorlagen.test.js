@@ -106,6 +106,24 @@ pruefe("Vorlagen-IDs sind eindeutig", () => {
   assert.deepEqual(doppelt, []);
 });
 
+pruefe("Kein backdrop-filter auf dem Host von Bubble-Karten", () => {
+  // Ein backdrop-filter am Host macht ihn zum Bezugsrahmen fuer position: fixed.
+  // Bubble-Pop-ups sind fixed und liegen im Shadow Root von bubble-card - mit
+  // Filter am Host fielen sie an einer laufenden Instanz auf Hoehe 0 zusammen.
+  const fehlend = [];
+  for (const v of mitCss) {
+    const ziel = feld(v.block, "ziel") || "uix-card";
+    if (ziel !== "uix-card") continue;
+    const c = ohneKommentare(css(v.block));
+    const regeln = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)];
+    const filterAmHost = regeln.some((m) => m[1].split(",").some((sel) => sel.trim() === ":host") && /backdrop-filter:\s*(?!none)\S/.test(m[2]));
+    if (!filterAmHost) continue;
+    const ausnahme = regeln.some((m) => m[1].split(",").some((sel) => sel.trim() === ":host(.type-custom-bubble-card)") && /(^|[;\s])backdrop-filter:\s*none/.test(m[2]));
+    if (!ausnahme) fehlend.push(v.id);
+  }
+  assert.deepEqual(fehlend, [], `backdrop-filter auf :host ohne Ausnahme fuer Bubble: ${fehlend.join(", ")}`);
+});
+
 function vorlage(id) {
   const v = vorlagen.find((x) => x.id === id);
   assert.ok(v, `Vorlage ${id} fehlt`);
