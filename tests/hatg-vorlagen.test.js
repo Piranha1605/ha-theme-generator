@@ -160,6 +160,27 @@ pruefe("glas-bubble legt den Reflex nur auf Icons und Sub-Buttons", () => {
   assert.deepEqual(mitReflex.sort(), [".bubble-icon-container", ".bubble-main-icon-container", ".bubble-sub-button"]);
 });
 
+pruefe("Aktiver Seitenleisten-Eintrag ohne Schlagschatten", () => {
+  // ha-list-nav hat overflow: hidden auto und schneidet einen Aussenschatten
+  // ab - an einer laufenden Instanz blieb ein dunkles Rechteck hinter der Pille.
+  const c = ohneKommentare(css(vorlagen.find((x) => x.id === "seitenleiste-aktiv-liquid").block));
+  const regel = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)].find((m) => m[1].trim() === "ha-list-item-button.selected::before");
+  assert.ok(regel, "Regel fuer den aktiven Eintrag fehlt");
+  const schatten = (regel[2].match(/box-shadow:([^;]*);/) || [])[1] || "";
+  assert.ok(!/--hatg-glas-schatten/.test(schatten), "Schlagschatten steht wieder im box-shadow");
+  // An Kommas nur ausserhalb von Klammern trennen - var(--x, rgba(...)) ist verschachtelt.
+  const teile = [];
+  let tiefe = 0, aktuell = "";
+  for (const z of schatten.replace(/!important/, "")) {
+    if (z === "(") tiefe++;
+    if (z === ")") tiefe--;
+    if (z === "," && tiefe === 0) { teile.push(aktuell.trim()); aktuell = ""; } else aktuell += z;
+  }
+  teile.push(aktuell.trim());
+  teile.splice(0, teile.length, ...teile.filter(Boolean));
+  assert.ok(teile.length > 0 && teile.every((s) => s.startsWith("inset")), `nicht jede Ebene ist inset: ${JSON.stringify(teile)}`);
+});
+
 function vorlage(id) {
   const v = vorlagen.find((x) => x.id === id);
   assert.ok(v, `Vorlage ${id} fehlt`);

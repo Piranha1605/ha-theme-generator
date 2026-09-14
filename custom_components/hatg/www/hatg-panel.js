@@ -236,7 +236,7 @@ const HATG_TEXTE = {
   "Glas: eigene Ebene unter der Karte": "Glass: its own layer beneath the card",
   "Milchiges Glas, das den Weichzeichner nicht auf die Karte selbst legt, sondern auf eine Ebene darunter. Anders als der einfache Glas-Effekt bleibt der Kartenhintergrund dadurch mit Hintergrundbildern und Verläufen verträglich. Hüllen-Karten (Überschriften, Mushroom-Titel und -Chips, reine Textkarten) sind bewusst ausgenommen, damit sie nicht plötzlich als Kachel erscheinen.": "Frosted glass that puts the blur on a layer beneath the card instead of on the card itself. Unlike the plain glass effect, the card background stays compatible with background images and gradients. Wrapper cards (headings, Mushroom titles and chips, text-only cards) are deliberately excluded so they do not suddenly show up as tiles.",
   "Seitenleiste: aktiver Eintrag als Glaskörper": "Sidebar: active entry as a glass body",
-  "Der markierte Eintrag wird zum Glaskörper statt zur flachen Farbfläche: Verlauf in der Auswahlfarbe, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Home Assistant zeichnet diese Fläche als Overlay mit fester Deckkraft - die Vorlage hebt sie auf und ersetzt sie durch die Schichten.": "The highlighted entry becomes a glass body instead of a flat colour patch: a gradient in the selection colour, a light edge at the top, a shadow edge at the bottom, a fine border and a soft drop shadow. Home Assistant draws that surface as an overlay with fixed opacity - the preset lifts it and replaces it with the layers.",
+  "Der markierte Eintrag wird zum Glaskörper statt zur flachen Farbfläche: Verlauf in der Auswahlfarbe, Lichtkante oben, Schattenkante unten und ein feiner Rand. Einen Schlagschatten gibt es bewusst nicht - die Liste der Seitenleiste schneidet ihn ab, übrig bliebe ein dunkles Rechteck. Home Assistant zeichnet diese Fläche als Overlay mit fester Deckkraft - die Vorlage hebt sie auf und ersetzt sie durch die Schichten.": "The highlighted entry becomes a glass body instead of a flat colour patch: a gradient in the selection colour, a light edge at the top, a shadow edge at the bottom and a fine border. There is deliberately no drop shadow - the sidebar list clips it, leaving only a dark rectangle. Home Assistant draws that surface as an overlay with fixed opacity - the preset lifts it and replaces it with the layers.",
   "Bedienelemente in Glas: Karten": "Glass controls: cards",
   "Bedienelemente in Glas: Kopfleiste und Rahmen": "Glass controls: top bar and frame",
   "Bedienelemente in Glas: Dialoge": "Glass controls: dialogs",
@@ -2657,7 +2657,7 @@ ha-list-item-button.selected::before {
     id: "seitenleiste-aktiv-liquid",
     paket: "glas",
     label: "Seitenleiste: aktiver Eintrag als Glaskörper",
-    desc: "Der markierte Eintrag wird zum Glaskörper statt zur flachen Farbfläche: Verlauf in der Auswahlfarbe, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Home Assistant zeichnet diese Fläche als Overlay mit fester Deckkraft - die Vorlage hebt sie auf und ersetzt sie durch die Schichten.",
+    desc: "Der markierte Eintrag wird zum Glaskörper statt zur flachen Farbfläche: Verlauf in der Auswahlfarbe, Lichtkante oben, Schattenkante unten und ein feiner Rand. Einen Schlagschatten gibt es bewusst nicht - die Liste der Seitenleiste schneidet ihn ab, übrig bliebe ein dunkles Rechteck. Home Assistant zeichnet diese Fläche als Overlay mit fester Deckkraft - die Vorlage hebt sie auf und ersetzt sie durch die Schichten.",
     ziel: "uix-sidebar",
     css: `ha-list-item-button.selected::before {
   border-radius: var(--ha-card-border-radius, 14px) !important;
@@ -2669,11 +2669,13 @@ ha-list-item-button.selected::before {
   background-image:
     linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
     var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+  /* Kein Schlagschatten: Die Liste der Seitenleiste schneidet alles ab, was
+     ueber den Eintrag hinausragt. Von einem weichen Schatten blieb an einer
+     laufenden Instanz nur ein dunkles Rechteck hinter der Pille. */
   box-shadow:
     inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
     inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)),
-    var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
+    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)) !important;
   backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
   -webkit-backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
 }
