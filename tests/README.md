@@ -5,9 +5,15 @@ Abhängigkeitsfreie Node-Tests gegen den ausgelieferten Panel-Code
 npm-Pakete – die Helfer werden direkt aus der Quelldatei ausgeschnitten und
 ausgeführt, damit der Test genau das prüft, was HATG ausliefert.
 
-Ausführen:
+Alle ausführen, genau wie die CI:
 
-    node tests/hatg-validate-value.test.js
+    for t in tests/*.test.js; do node "$t"; done
+
+| Datei | Prüft |
+|---|---|
+| `hatg-validate-value.test.js` | Theme-Validierung, etwa mehrschichtige `background`-Werte |
+| `hatg-stilziel-yaml.test.js` | Zusammenlegen und Auftrennen von `uix-<typ>` und `uix-<typ>-yaml` |
+| `hatg-vorlagen.test.js` | Alle UIX-Vorlagen: Übersetzung von Label und Beschreibung, Klammern, eindeutige IDs, dazu Einzelprüfungen |
 
 ---
 

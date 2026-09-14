@@ -294,6 +294,8 @@ const HATG_TEXTE = {
   "Dialoge übernehmen den Eckenradius deiner Karten, bekommen etwas Abstand nach oben und einen kräftigeren Schleier dahinter, damit sie sich klarer vom Dashboard abheben. Setzt nur Variablen an der Dialog-Wurzel - für tiefere Eingriffe in Dialoge braucht es das Feld uix-dialog-yaml im Freitext.": "Dialogs take on your card corner radius, get some space at the top and a stronger scrim behind them so they stand out from the dashboard. Only sets variables at the dialog root - deeper changes to dialogs need the uix-dialog-yaml field in the free-text area.",
   "Hintergrundbild über die ganze Oberfläche": "Background image across the whole interface",
   "Übernimmt das Hintergrundbild von der Startseite und legt es hinter die ganze Oberfläche - auch hinter Einstellungsseiten, HACS, Verlauf und alle anderen Panels, wo das Dashboard-Hintergrundbild nicht hinreicht. Es muss nichts doppelt eingetragen werden: Die Vorlage greift auf das zu, was unter Hintergrund eingestellt ist, samt Abdunkelung. Ohne gesetztes Bild bewirkt sie nichts.": "Takes the background image from the start page and puts it behind the entire interface - including settings pages, HACS, history and every other panel the dashboard background never reaches. Nothing has to be entered twice: the preset reads whatever is set under Background, dimming included. With no image set it does nothing.",
+  "Bubble-Pop-ups mit Hintergrundbild": "Bubble pop-ups with background image",
+  "Legt ein Hintergrundbild in die Pop-ups von Bubble Card. Ohne weitere Angabe ist es das Bild, das unter Hintergrund auf der Startseite eingestellt ist. Soll ein Pop-up ein anderes Bild zeigen, einen eigenen Theme-Eintrag popup-custom-wallpaper setzen - getrennt für Light und Dark möglich. Bubble Card färbt die Pop-up-Fläche nur über Farbvariablen, ein Bild geht deshalb nur über diese Vorlage. Die Kopfzeile des Pop-ups wird durchsichtig, damit das Bild bis oben reicht. Die Deckkraft, die in Bubble Card für den Pop-up-Hintergrund eingestellt ist, wirkt mit dieser Vorlage nicht mehr - das Bild deckt die Fläche ganz.": "Puts a background image into Bubble Card pop-ups. By default it is the image set under Background on the start page. For a different image in pop-ups, add your own theme entry popup-custom-wallpaper - separately for light and dark if you like. Bubble Card colours the pop-up surface through colour variables only, so an image needs this preset. The pop-up header becomes transparent so the image reaches the top. The background opacity set in Bubble Card no longer applies with this preset - the image covers the surface completely.",
   "Wirkt auf": "Applies to",
   "Das CSS landet beim Aktivieren markiert im gewählten Stilziel - genau wie die mitgelieferten Vorlagen, für Light und Dark gleichzeitig.": "When activated, the CSS is written and marked into the chosen style target - just like the built-in presets, for light and dark at the same time.",
   "Kartenfarben: Sanfter Verlauf": "Card colours: soft gradient",
@@ -2710,15 +2712,30 @@ ha-adaptive-dialog {
     desc: "Übernimmt das Hintergrundbild von der Startseite und legt es hinter die ganze Oberfläche - auch hinter Einstellungsseiten, HACS, Verlauf und alle anderen Panels, wo das Dashboard-Hintergrundbild nicht hinreicht. Es muss nichts doppelt eingetragen werden: Die Vorlage greift auf das zu, was unter Hintergrund eingestellt ist, samt Abdunkelung. Ohne gesetztes Bild bewirkt sie nichts.",
     ziel: "uix-drawer",
     css: `:host {
-  /* Nimmt das Bild, das unter "Hintergrund" auf der Startseite eingestellt ist,
-     und legt es hinter alles - auch hinter Einstellungsseiten, HACS und Verlauf.
-     ha-drawer umschliesst alle Panels und ist selbst durchsichtig, die Panels
-     darin ebenso; die graue Flaeche kommt sonst von html. Ist nichts gesetzt,
-     greift der Rueckfall und es passiert nichts.
+  /* ha-drawer umschliesst alle Panels und ist selbst durchsichtig, die Panels
+     darin ebenso; die graue Flaeche kommt sonst von html. Der Host bleibt
+     durchsichtig, das Bild sitzt auf einer eigenen Ebene darunter. */
+  background: transparent !important;
+}
+:host::before {
+  /* Frueher lag das Bild mit background-attachment: fixed direkt auf dem Host.
+     Das zwingt den Browser, bei jedem Scrollschritt die ganze Flaeche neu zu
+     malen - es ruckelte ueberall, nicht nur in den Einstellungen. Ausserdem ist
+     ha-drawer nur so hoch wie das Fenster: wurde eine Seite laenger, riss das
+     Bild nach einer Bildschirmhoehe ab.
+     Eine fest stehende Ebene mit eigener GPU-Schicht behebt beides - sie bewegt
+     sich beim Scrollen nicht und muss nicht neu gemalt werden.
      --lovelace-background ist ein background-Kurzwert (Bild, Position, Groesse),
-     deshalb background und nicht background-image. Live geprueft. */
+     deshalb background und nicht background-image. attachment danach auf
+     scroll, falls ein eigener Wert fixed mitbringt - die Ebene steht ohnehin. */
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
   background: var(--lovelace-background, transparent) !important;
-  background-attachment: fixed !important;
+  background-attachment: scroll !important;
+  will-change: transform;
 }`,
   },
   {
@@ -2733,6 +2750,32 @@ ha-adaptive-dialog {
      bis dorthin. Ueber uix-config geht es nicht: ha-panel-config hat gar keinen
      Shadow Root, dort kommt ein :host-Block nicht an (nachgemessen). */
   --primary-background-color: transparent;
+}`,
+  },
+  {
+    id: "bubble-popup-hintergrundbild",
+    label: "Bubble-Pop-ups mit Hintergrundbild",
+    desc: "Legt ein Hintergrundbild in die Pop-ups von Bubble Card. Ohne weitere Angabe ist es das Bild, das unter Hintergrund auf der Startseite eingestellt ist. Soll ein Pop-up ein anderes Bild zeigen, einen eigenen Theme-Eintrag popup-custom-wallpaper setzen - getrennt für Light und Dark möglich. Bubble Card färbt die Pop-up-Fläche nur über Farbvariablen, ein Bild geht deshalb nur über diese Vorlage. Die Kopfzeile des Pop-ups wird durchsichtig, damit das Bild bis oben reicht. Die Deckkraft, die in Bubble Card für den Pop-up-Hintergrund eingestellt ist, wirkt mit dieser Vorlage nicht mehr - das Bild deckt die Fläche ganz.",
+    ziel: "uix-card",
+    css: `.bubble-pop-up-background {
+  /* Bubble Card faerbt diese Flaeche ausschliesslich ueber background-color:
+     --bubble-pop-up-main-background-color, dahinter Rueckfaelle. Die
+     eingestellte Deckkraft steckt als Alphawert in dieser Farbe. Eine Variable
+     kann kein Bild tragen - es braucht diese Regel, und der Kurzwert
+     background ersetzt dabei auch die Farbe.
+     --lovelace-background ist ein background-Kurzwert (Bild, Position,
+     Groesse), deshalb background und nicht background-image. Ein eigener
+     Theme-Eintrag popup-custom-wallpaper geht vor. */
+  background: var(--popup-custom-wallpaper, var(--lovelace-background, none)) !important;
+  background-attachment: scroll !important;
+}
+.bubble-pop-up .bubble-header-container,
+.bubble-pop-up .bubble-header {
+  /* bubble-header vergibt Bubble Card nur im Aufbau des Pop-ups - andere
+     Kopfzeilen im Dashboard bleiben unberuehrt. Nachgesehen in v3.3.0. */
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }`,
   },
   {
