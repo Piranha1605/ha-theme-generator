@@ -235,7 +235,7 @@ const HATG_TEXTE = {
   "Macht aus den runden Farbkreisen abgerundete Quadrate, wie iOS sie in seinen Einstellungen zeigt - mit Lichtverlauf, feiner Kante und kurzem Schatten. Dazu kräftigere Überschriften, zurückgenommene Untertitel und leisere Pfeile am Zeilenende. Gilt für beide Navigationslisten der Einstellungen: die Startseite und die Seite System. Alle Werte stehen als eigene Felder im Bereich Glaslook; wer etwas davon nicht will, setzt den betreffenden Wert auf den Ausgangszustand zurück. Die Shadow-DOM-Pfade wurden mit uix_style_path in einer laufenden Instanz geprüft.": "Turns the round colour circles into rounded squares, the way iOS shows them in its settings - with a light gradient, a fine edge and a short shadow. Plus heavier headlines, quieter supporting text and paler chevrons at the end of each row. Covers both settings navigation lists: the start page and the System page. Every value is a field of its own under Glass look; anything you don't want, you set back to its starting value. The shadow DOM paths were verified with uix_style_path in a running instance.",
   "Glas: eigene Ebene unter der Karte": "Glass: its own layer beneath the card",
   "Glas: nur Weichzeichnung unter der Karte": "Glass: blur only beneath the card",
-  "Legt nur den Weichzeichner unter die Karte - ohne eigene Füllung, Glanz oder Kanten. Die Abdunkelung hinter Glas zieht sie mit. Für Karten, die ihre Fläche selbst malen, etwa HA-Karten, Proxmox- oder Shelly-Karten: Ohne Weichzeichnung liegt das Hintergrundbild scharf dahinter, und sie wirken neben Bubble-Karten durchsichtiger. Bubble-Karten, Überschriften, Mushroom-Titel und -Chips sowie reine Textkarten sind ausgenommen. Nicht zusammen mit „Glas: eigene Ebene unter der Karte“ nötig, die bringt die Weichzeichnung schon mit.": "Puts only the blur beneath the card - no fill, sheen or edges of its own. It follows the dimming behind glass. For cards that paint their own surface, such as HA-Karten, Proxmox or Shelly cards: without blur the background image sits sharp behind them, and next to Bubble cards they look more transparent. Bubble cards, headings, Mushroom titles and chips, and text-only cards are left out. Not needed together with \"Glass: its own layer beneath the card\", which already brings the blur.",
+  "Legt nur den Weichzeichner unter die Karte - ohne eigene Füllung, Glanz oder Kanten. Für Karten, die ihre Fläche selbst malen, etwa HA-Karten, Proxmox- oder Shelly-Karten: Ohne Weichzeichnung liegt das Hintergrundbild scharf dahinter, und sie wirken neben Bubble-Karten durchsichtiger. Bubble-Karten, Überschriften, Mushroom-Titel und -Chips sowie reine Textkarten sind ausgenommen. Nicht zusammen mit „Glas: eigene Ebene unter der Karte“ nötig, die bringt die Weichzeichnung schon mit.": "Puts only the blur beneath the card - no fill, sheen or edges of its own. For cards that paint their own surface, such as HA-Karten, Proxmox or Shelly cards: without blur the background image sits sharp behind them, and next to Bubble cards they look more transparent. Bubble cards, headings, Mushroom titles and chips, and text-only cards are left out. Not needed together with \"Glass: its own layer beneath the card\", which already brings the blur.",
   "Milchiges Glas, das den Weichzeichner nicht auf die Karte selbst legt, sondern auf eine Ebene darunter. Anders als der einfache Glas-Effekt bleibt der Kartenhintergrund dadurch mit Hintergrundbildern und Verläufen verträglich. Hüllen-Karten (Überschriften, Mushroom-Titel und -Chips, reine Textkarten) sind bewusst ausgenommen, damit sie nicht plötzlich als Kachel erscheinen.": "Frosted glass that puts the blur on a layer beneath the card instead of on the card itself. Unlike the plain glass effect, the card background stays compatible with background images and gradients. Wrapper cards (headings, Mushroom titles and chips, text-only cards) are deliberately excluded so they do not suddenly show up as tiles.",
   "Seitenleiste: aktiver Eintrag als Glaskörper": "Sidebar: active entry as a glass body",
   "Der markierte Eintrag wird zum Glaskörper statt zur flachen Farbfläche: Verlauf in der Auswahlfarbe, Lichtkante oben, Schattenkante unten und ein feiner Rand. Einen Schlagschatten gibt es bewusst nicht - die Liste der Seitenleiste schneidet ihn ab, übrig bliebe ein dunkles Rechteck. Home Assistant zeichnet diese Fläche als Overlay mit fester Deckkraft - die Vorlage hebt sie auf und ersetzt sie durch die Schichten.": "The highlighted entry becomes a glass body instead of a flat colour patch: a gradient in the selection colour, a light edge at the top, a shadow edge at the bottom and a fine border. There is deliberately no drop shadow - the sidebar list clips it, leaving only a dark rectangle. Home Assistant draws that surface as an overlay with fixed opacity - the preset lifts it and replaces it with the layers.",
@@ -1901,7 +1901,7 @@ ha-select.bubble-dropdown-select {
   {
     id: "glas-weichzeichnung-karten",
     label: "Glas: nur Weichzeichnung unter der Karte",
-    desc: "Legt nur den Weichzeichner unter die Karte - ohne eigene Füllung, Glanz oder Kanten. Die Abdunkelung hinter Glas zieht sie mit. Für Karten, die ihre Fläche selbst malen, etwa HA-Karten, Proxmox- oder Shelly-Karten: Ohne Weichzeichnung liegt das Hintergrundbild scharf dahinter, und sie wirken neben Bubble-Karten durchsichtiger. Bubble-Karten, Überschriften, Mushroom-Titel und -Chips sowie reine Textkarten sind ausgenommen. Nicht zusammen mit „Glas: eigene Ebene unter der Karte“ nötig, die bringt die Weichzeichnung schon mit.",
+    desc: "Legt nur den Weichzeichner unter die Karte - ohne eigene Füllung, Glanz oder Kanten. Für Karten, die ihre Fläche selbst malen, etwa HA-Karten, Proxmox- oder Shelly-Karten: Ohne Weichzeichnung liegt das Hintergrundbild scharf dahinter, und sie wirken neben Bubble-Karten durchsichtiger. Bubble-Karten, Überschriften, Mushroom-Titel und -Chips sowie reine Textkarten sind ausgenommen. Nicht zusammen mit „Glas: eigene Ebene unter der Karte“ nötig, die bringt die Weichzeichnung schon mit.",
     ziel: "uix-card",
     css: `/* Nur die Karte selbst, nicht ihr Wirt: Ein backdrop-filter auf dem Wirt
    macht ihn zum Bezugsrahmen fuer position: fixed. */
@@ -1913,9 +1913,6 @@ ha-card {
      Flaeche tiefer liegt (HA-Karten), runden ihre leere ha-card sonst mit
      16 px, die Flaeche darin mit 24 px - die Ecken lagen dann ausserhalb. */
   border-radius: var(--ha-card-border-radius, 12px) !important;
-  /* Nur die Abdunkelung hinter Glas, keine Flaeche - sonst bleiben diese
-     Karten hell, waehrend Bubble-Karten sie tragen. */
-  background-image: linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))) !important;
 }
 /* Die Menueleiste der HA-Karten ist eine Pille. */
 ha-card:has(.menue-leiste) {
@@ -1930,7 +1927,6 @@ ha-card:has(.menue-leiste) {
 :host(mushroom-chips-card) ha-card,
 :host(.text-only),
 ha-card.text-only {
-  background-image: none !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }`,
@@ -5664,27 +5660,6 @@ class HATGPanel extends HTMLElement {
         : "Glas überall: auch Karten und Badges bleiben durchscheinend."
     );
   }
-  // Die Abdunkelung haelt helle Schrift auf hellen Hintergruenden lesbar - sie
-  // gehoert in den dunklen Modus. Im hellen Modus mit dunkler Schrift machte sie
-  // die Glasflaechen nur grau, deshalb bleibt sie dort immer 0.
-  glasAbdunkeln(an) {
-    const vorher = this._state.editorMode;
-    ["light", "dark"].forEach((mode) => {
-      this._state.editorMode = mode;
-      this.commitField("hatg-glas-abdunkeln", an && mode === "dark" ? "0.35" : "0");
-    });
-    this._state.editorMode = vorher;
-    this.render();
-    this.showToast(
-      an
-        ? "Abdunkelung an: 35 Prozent hinter dem Glas im dunklen Modus, wie Apple es für helle Hintergründe empfiehlt."
-        : "Abdunkelung aus."
-    );
-  }
-  abdunkelungAn() {
-    const dunkel = (this._state.values && this._state.values.dark) || {};
-    return Number(String(dunkel["hatg-glas-abdunkeln"] || "0")) > 0;
-  }
 
   // Der Glaslook laesst sich aus drei Angaben ableiten: Farbton, Deckkraft und
   // Weichzeichnung. Die uebrigen Werte sind Abstufungen davon.
@@ -6407,10 +6382,6 @@ uix:
               <button type="button" class="${this.aktivesGlasProfil() === "richtlinie" ? "active" : ""}" data-glas-profil="richtlinie">${this._sprache === "en" ? "Apple guideline" : "Apple-Richtlinie"}</button>
               <button type="button" class="${this.aktivesGlasProfil() === "ueberall" ? "active" : ""}" data-glas-profil="ueberall">${this._sprache === "en" ? "Glass everywhere" : "Glas überall"}</button>
             </div>
-            <label class="glas-schalter">
-              <input type="checkbox" data-glas-abdunkeln ${this.abdunkelungAn() ? "checked" : ""} />
-              <span>${this._sprache === "en" ? "Dim behind glass in dark mode (35 %, for light backgrounds)" : "Abdunkeln hinter Glas im dunklen Modus (35 %, für helle Hintergründe)"}</span>
-            </label>
           </div>
           <div class="glas-regler-reihe">
             <div class="generator-control">
@@ -8096,8 +8067,6 @@ uix:
         .glas-regler-kopf span { font-size: 12px; line-height: 1.5; color: var(--hatg-text-dim); }
         .glas-regler-reihe { display: grid; grid-template-columns: 1fr 1fr auto; gap: 18px; align-items: end; }
         .glas-profile { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; margin-bottom: 12px; }
-        .glas-schalter { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--hatg-text-dim); cursor: pointer; }
-        .glas-schalter input { accent-color: var(--hatg-blue); }
         .glas-toene { display: flex; gap: 10px; }
         .glas-ton { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; }
         .glas-ton span { font-size: 10px; letter-spacing: .03em; color: var(--hatg-muted); }
@@ -8773,9 +8742,7 @@ uix:
     });
     this.shadowRoot.querySelectorAll("[data-glas-profil]").forEach((el) => {
       el.addEventListener("click", () => this.setzeGlasProfil(el.dataset.glasProfil));
-    });
-    this.shadowRoot.querySelector("[data-glas-abdunkeln]")?.addEventListener("change", (e) => this.glasAbdunkeln(e.target.checked));
-    const glasDeckkraft = this.shadowRoot.querySelector("[data-glas-deckkraft]");
+    });    const glasDeckkraft = this.shadowRoot.querySelector("[data-glas-deckkraft]");
     const glasBlur = this.shadowRoot.querySelector("[data-glas-blur]");
     const glasTonHell = this.shadowRoot.querySelector("[data-glas-ton-light]");
     const glasTonDunkel = this.shadowRoot.querySelector("[data-glas-ton-dark]");
