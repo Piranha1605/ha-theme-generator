@@ -219,6 +219,18 @@ pruefe("glas-ebene nimmt die ha-card in bubble-card aus", () => {
   assert.ok(aus[1].split(",").map((s) => s.trim()).includes(":host(.type-custom-bubble-card) ha-card"), "Bubble fehlt in den Ausnahmen");
 });
 
+pruefe("Bedienelemente in den Einstellungen erben ihre Variablen vom App Drawer", () => {
+  // Das Stylesheet von uix-drawer liegt im Shadow Root von ha-drawer. Ein Selektor
+  // ha-button traf dort keinen einzigen Knopf der Einstellungsseiten - die liegen
+  // mehrere Shadow Roots tiefer. Nur Variablen auf :host kommen dort an.
+  const c = ohneKommentare(css(vorlagen.find((x) => x.id === "glas-buttons-einstellungen").block));
+  for (const variable of ["--ha-button-box-shadow", "--ha-button-border-radius", "--control-button-border-radius"]) {
+    const regel = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)].find((m) => m[2].includes(variable + ":"));
+    assert.ok(regel, `${variable} fehlt`);
+    assert.ok(regel[1].split(",").map((s) => s.trim()).includes(":host"), `${variable} steht nicht auf :host`);
+  }
+});
+
 function vorlage(id) {
   const v = vorlagen.find((x) => x.id === id);
   assert.ok(v, `Vorlage ${id} fehlt`);

@@ -2606,7 +2606,12 @@ ha-control-slider {
     label: "Bedienelemente in Glas: Einstellungen und Rest der Oberfläche",
     desc: "Gibt Schaltflächen denselben Aufbau wie dem aktiven Eintrag der Seitenleiste: Eckenradius der Karten, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Betrifft alles außerhalb von Karten, Kopfleiste und Dialogen - die Einstellungsseiten samt ihrer Aktionsknöpfe, eigene Panels und die Knöpfe der Seitenleiste. Sitzt am App Drawer, weil die Einstellungsseiten selbst kein eigenes Stilziel haben: ha-panel-config hat keinen Shadow Root, dort kommt nichts an. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht.",
     ziel: "uix-drawer",
-    css: `ha-button,
+    css: `/* Das Stylesheet liegt im Shadow Root von ha-drawer. Die Knoepfe der
+   Einstellungsseiten liegen mehrere Shadow Roots tiefer - ein Selektor
+   ha-button traf dort keinen einzigen. Auf :host gesetzt erben sie die
+   Variablen. */
+:host,
+ha-button,
 ha-icon-button,
 ha-assist-chip {
   --ha-button-border-radius: var(--ha-card-border-radius, 14px);
@@ -2616,6 +2621,7 @@ ha-assist-chip {
     inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)),
     var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7));
 }
+:host,
 ha-control-button,
 ha-control-select,
 ha-control-slider {
