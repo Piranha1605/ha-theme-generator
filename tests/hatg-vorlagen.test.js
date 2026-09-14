@@ -197,6 +197,28 @@ pruefe("Bubbles Auswahlfeld bleibt durchsichtig, wo uix-card ha-select deckend f
   assert.deepEqual(fehler, [], `ohne Ausnahme fuer Bubbles Auswahlfeld: ${fehler.join(", ")}`);
 });
 
+pruefe("Nur Weichzeichnung: kein Wirt, keine Flaeche, Bubble und Huellen ausgenommen", () => {
+  const c = ohneKommentare(css(vorlagen.find((x) => x.id === "glas-weichzeichnung-karten").block));
+  const regeln = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map((m) => ({ sel: m[1].split(",").map((s) => s.trim()), body: m[2] }));
+  const glas = regeln.find((r) => /backdrop-filter:\s*blur/.test(r.body));
+  assert.deepEqual(glas.sel.sort(), [":host(ha-card)", "ha-card"]);
+  assert.ok(!/background/.test(glas.body), "legt eine Flaeche an - soll nur weichzeichnen");
+  const aus = regeln.find((r) => /backdrop-filter:\s*none/.test(r.body));
+  assert.ok(aus, "keine Ausnahmen");
+  for (const s of [":host(.type-custom-bubble-card) ha-card", ":host(hui-heading-card) ha-card", "ha-card.text-only"]) {
+    assert.ok(aus.sel.includes(s), `Ausnahme fehlt: ${s}`);
+  }
+});
+
+pruefe("glas-ebene nimmt die ha-card in bubble-card aus", () => {
+  // bubble-card hat im Shadow Root eine ha-card um ihre Container. Ohne Ausnahme
+  // lag unter "Bubble Card in Glas" ein zweites Glas.
+  const c = ohneKommentare(css(vorlagen.find((x) => x.id === "glas-ebene").block));
+  const aus = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)].find((m) => /backdrop-filter:\s*none/.test(m[2]) && /background:\s*none/.test(m[2]));
+  assert.ok(aus, "Ausnahmeregel fehlt");
+  assert.ok(aus[1].split(",").map((s) => s.trim()).includes(":host(.type-custom-bubble-card) ha-card"), "Bubble fehlt in den Ausnahmen");
+});
+
 function vorlage(id) {
   const v = vorlagen.find((x) => x.id === id);
   assert.ok(v, `Vorlage ${id} fehlt`);
