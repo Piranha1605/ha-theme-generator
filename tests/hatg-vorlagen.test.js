@@ -202,9 +202,12 @@ pruefe("Nur Weichzeichnung: kein Wirt, keine Flaeche, Bubble und Huellen ausgeno
   const regeln = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map((m) => ({ sel: m[1].split(",").map((s) => s.trim()), body: m[2] }));
   const glas = regeln.find((r) => /backdrop-filter:\s*blur/.test(r.body));
   assert.deepEqual(glas.sel.sort(), [":host(ha-card)", "ha-card"]);
-  assert.ok(!/background/.test(glas.body), "legt eine Flaeche an - soll nur weichzeichnen");
+  assert.ok(!/background-color|background:/.test(glas.body), "legt eine Flaeche an - soll nur weichzeichnen");
+  const bild = (glas.body.match(/background-image:([^;]*);/) || [])[1] || "";
+  assert.ok(/--hatg-glas-abdunkeln/.test(bild) && !/--hatg-glas-reflex|url\(/.test(bild), "background-image traegt mehr als die Abdunkelung");
   const aus = regeln.find((r) => /backdrop-filter:\s*none/.test(r.body));
   assert.ok(aus, "keine Ausnahmen");
+  assert.ok(/background-image:\s*none/.test(aus.body), "Ausnahmen behalten die Abdunkelung");
   for (const s of [":host(.type-custom-bubble-card) ha-card", ":host(hui-heading-card) ha-card", "ha-card.text-only"]) {
     assert.ok(aus.sel.includes(s), `Ausnahme fehlt: ${s}`);
   }
@@ -234,6 +237,17 @@ pruefe("Bedienelemente in den Einstellungen erben ihre Variablen vom App Drawer"
   // Vom App Drawer vererbt, wurden sie an einer laufenden Instanz blau.
   const farbe = regeln.find((m) => m[2].includes("--control-button-background-color:"));
   assert.ok(!farbe || !farbe[1].split(",").map((s) => s.trim()).includes(":host"), "--control-button-background-color wird vom App Drawer vererbt");
+});
+
+pruefe("Abdunkeln hinter Glas wirkt nur im dunklen Modus", () => {
+  // Im hellen Modus mit dunkler Schrift machte die Abdunkelung die Glasflaechen
+  // nur grau - an einer laufenden Instanz als graue Bubble-Karten sichtbar.
+  const a = quelle.indexOf("  glasAbdunkeln(an) {");
+  assert.ok(a !== -1, "glasAbdunkeln fehlt");
+  const methode = quelle.slice(a, quelle.indexOf("\n  }", a));
+  assert.ok(/an && mode === "dark" \? "0\.35" : "0"/.test(methode), "setzt die Abdunkelung nicht nur im dunklen Modus");
+  const b = quelle.indexOf("  abdunkelungAn() {");
+  assert.ok(/values\.dark/.test(quelle.slice(b, quelle.indexOf("\n  }", b))), "Haken liest nicht den dunklen Modus");
 });
 
 function vorlage(id) {
