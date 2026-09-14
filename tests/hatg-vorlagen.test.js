@@ -224,11 +224,16 @@ pruefe("Bedienelemente in den Einstellungen erben ihre Variablen vom App Drawer"
   // ha-button traf dort keinen einzigen Knopf der Einstellungsseiten - die liegen
   // mehrere Shadow Roots tiefer. Nur Variablen auf :host kommen dort an.
   const c = ohneKommentare(css(vorlagen.find((x) => x.id === "glas-buttons-einstellungen").block));
-  for (const variable of ["--ha-button-box-shadow", "--ha-button-border-radius", "--control-button-border-radius"]) {
-    const regel = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)].find((m) => m[2].includes(variable + ":"));
+  const regeln = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)];
+  for (const variable of ["--ha-button-box-shadow", "--ha-button-border-radius"]) {
+    const regel = regeln.find((m) => m[2].includes(variable + ":"));
     assert.ok(regel, `${variable} fehlt`);
     assert.ok(regel[1].split(",").map((s) => s.trim()).includes(":host"), `${variable} steht nicht auf :host`);
   }
+  // Eigene Karten faerben ihre Mulden ueber --control-button-background-color.
+  // Vom App Drawer vererbt, wurden sie an einer laufenden Instanz blau.
+  const farbe = regeln.find((m) => m[2].includes("--control-button-background-color:"));
+  assert.ok(!farbe || !farbe[1].split(",").map((s) => s.trim()).includes(":host"), "--control-button-background-color wird vom App Drawer vererbt");
 });
 
 function vorlage(id) {

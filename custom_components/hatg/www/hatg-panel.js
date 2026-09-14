@@ -2621,7 +2621,9 @@ ha-assist-chip {
     inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)),
     var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7));
 }
-:host,
+/* Bewusst nicht auf :host: Eigene Karten wie die HA-Karten faerben ihre
+   Mulden ueber --control-button-background-color. Vom App Drawer vererbt,
+   wurden sie in der Markenfarbe blau. */
 ha-control-button,
 ha-control-select,
 ha-control-slider {
