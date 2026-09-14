@@ -245,6 +245,18 @@ pruefe("Kein Schalter fuer Abdunkeln hinter Glas im Panel", () => {
   }
 });
 
+pruefe("Kartenmarker in Glas: Flaeche auf .marker, Ring bleibt", () => {
+  // Die Farbe des 1-px-Rings (--ha-marker-color) kennzeichnet die Entitaet.
+  const v = vorlagen.find((x) => x.id === "glas-kartenmarker");
+  assert.ok(v, "Vorlage fehlt");
+  assert.equal(feld(v.block, "ziel"), "uix-entity-marker");
+  const c = ohneKommentare(css(v.block));
+  const regel = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)].find((m) => m[1].trim() === ".marker");
+  assert.ok(regel, "keine Regel fuer .marker");
+  assert.ok(/background-color:/.test(regel[2]) && /backdrop-filter:\s*blur/.test(regel[2]), "keine Glasflaeche");
+  assert.ok(!/\bborder(-color)?:/.test(c), "Vorlage ueberschreibt den farbigen Ring");
+});
+
 function vorlage(id) {
   const v = vorlagen.find((x) => x.id === id);
   assert.ok(v, `Vorlage ${id} fehlt`);

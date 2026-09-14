@@ -257,6 +257,8 @@ const HATG_TEXTE = {
   "Die kurzen Einblendungen am unteren Rand, etwa nach dem Speichern. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "The short messages that appear at the bottom edge, for instance after saving. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
   "Benachrichtigungen in Glas": "Notifications in glass",
   "Die Einträge in der Benachrichtigungsliste der Seitenleiste. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "The entries in the notification list of the sidebar. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
+  "Kartenmarker in Glas": "Map markers in glass",
+  "Die runden Marker von Personen und Geräten auf der Karte - im Panel Karte und in Kartenkarten. Legt Glasfüllung, Glanz, Weichzeichnung und Lichtkanten auf den Marker. Der farbige Ring, an dem man die Entität erkennt, bleibt, und Marker mit Bild zeigen weiter ihr Bild. Gruppierte Marker und Zonen zeichnet die Karte selbst, sie sind nicht betroffen.": "The round markers of people and devices on the map - in the Map panel and in map cards. Puts glass fill, sheen, blur and light edges on the marker. The coloured ring that identifies the entity stays, and markers with a picture keep showing it. Clustered markers and zones are drawn by the map itself and are not affected.",
   "Badges in Glas": "Badges in glass",
   "Die runden Anzeigen oberhalb der Karten. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "The rounded indicators above the cards. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
   "Überschriften-Badges in Glas": "Heading badges in glass",
@@ -2090,6 +2092,28 @@ ha-card {
      gesamte Inhalt nach unten. */
   box-shadow:
     inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
+    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
+    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
+    var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+}`,
+  },
+  {
+    id: "glas-kartenmarker",
+    paket: "glas",
+    label: "Kartenmarker in Glas",
+    desc: "Die runden Marker von Personen und Geräten auf der Karte - im Panel Karte und in Kartenkarten. Legt Glasfüllung, Glanz, Weichzeichnung und Lichtkanten auf den Marker. Der farbige Ring, an dem man die Entität erkennt, bleibt, und Marker mit Bild zeigen weiter ihr Bild. Gruppierte Marker und Zonen zeichnet die Karte selbst, sie sind nicht betroffen.",
+    ziel: "uix-entity-marker",
+    css: `/* Das Stylesheet landet im Shadow Root von ha-entity-marker. Die sichtbare
+   Flaeche ist .marker - deckend in der Kartenfarbe, mit einem 1 px Ring in
+   --ha-marker-color. Den Ring laesst die Vorlage stehen: an seiner Farbe
+   erkennt man die Entitaet. */
+.marker {
+  background-color: rgba(255, 255, 255, 0.68) !important;
+  background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
+  background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+  backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
+  -webkit-backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
+  box-shadow:
     inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
     inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
     var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
