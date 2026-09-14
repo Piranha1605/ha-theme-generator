@@ -1831,7 +1831,15 @@ const HATG_VORLAGEN = [
   --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
   --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
 }
-:host,
+/* Nur die Karte selbst, nicht ihr Wirt. Auf Dashboards patcht UIX das
+   Karten-Element unter hui-card: :host ist dann dieses Element, ha-card die
+   Karte darin. ":host, ha-card" bemalte beide - Fuellung, Glanz und
+   Weichzeichnung lagen doppelt uebereinander, die Karten wirkten
+   ausgewaschen. Wo UIX ha-card selbst patcht, greift :host(ha-card).
+   Ohne Filter am Wirt bleiben ausserdem Bubble-Pop-ups intakt: ein
+   backdrop-filter macht ein Element zum Bezugsrahmen fuer position: fixed,
+   und das Pop-up fiel auf die Groesse des Wirts zusammen. */
+:host(ha-card),
 ha-card {
   background-color: rgba(255, 255, 255, 0.5) !important;
   background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
@@ -1850,15 +1858,6 @@ ha-card {
     inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
     inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
     var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
-}
-:host(.type-custom-bubble-card) {
-  /* Ein backdrop-filter macht das Element zum Bezugsrahmen fuer position: fixed.
-     Bubble-Pop-ups sind fixed und liegen im Shadow Root von bubble-card - mit
-     Filter am Host fielen sie auf dessen Groesse zusammen: Hoehe 0, ausserhalb
-     des Fensters, nur die Kopfzeile schwebte ueber dem Dashboard. Die
-     Weichzeichnung liefert glas-bubble an den Flaechen selbst. */
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
 }
 :host(hui-heading-card) ha-card,
 :host(mushroom-title-card) ha-card,

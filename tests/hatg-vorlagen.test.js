@@ -124,6 +124,32 @@ pruefe("Kein backdrop-filter auf dem Host von Bubble-Karten", () => {
   assert.deepEqual(fehlend, [], `backdrop-filter auf :host ohne Ausnahme fuer Bubble: ${fehlend.join(", ")}`);
 });
 
+pruefe("Glas-Paket bemalt auf uix-card nie den Wirt einer Karte", () => {
+  // Auf Dashboards ist :host das Karten-Element, ha-card die Karte darin.
+  // Farbe, Glanz oder Filter auf blankem :host lagen dort doppelt ueber der
+  // ha-card - an einer laufenden Instanz als ausgewaschener Schleier sichtbar.
+  // Erlaubt bleiben Variablen, die nach innen vererben.
+  const fehler = new Set();
+  for (const v of mitCss) {
+    if (!/\bpaket:\s*"glas"/.test(v.block)) continue;
+    if ((feld(v.block, "ziel") || "uix-card") !== "uix-card") continue;
+    for (const m of ohneKommentare(css(v.block)).matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+      if (!m[1].split(",").some((sel) => sel.trim() === ":host")) continue;
+      const deklarationen = m[2].split(";").map((d) => d.trim()).filter(Boolean);
+      if (!deklarationen.every((d) => d.startsWith("--"))) fehler.add(v.id);
+    }
+  }
+  assert.deepEqual([...fehler], [], `bemalt blanken :host: ${[...fehler].join(", ")}`);
+});
+
+pruefe("glas-ebene legt das Glas auf :host(ha-card) und ha-card", () => {
+  const c = ohneKommentare(css(vorlagen.find((x) => x.id === "glas-ebene").block));
+  const glasregel = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)].find((m) => /backdrop-filter:\s*blur/.test(m[2]));
+  assert.ok(glasregel, "keine Glasregel gefunden");
+  const selektoren = glasregel[1].split(",").map((s) => s.trim()).sort();
+  assert.deepEqual(selektoren, [":host(ha-card)", "ha-card"]);
+});
+
 function vorlage(id) {
   const v = vorlagen.find((x) => x.id === id);
   assert.ok(v, `Vorlage ${id} fehlt`);
