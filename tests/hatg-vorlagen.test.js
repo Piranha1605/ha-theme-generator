@@ -150,6 +150,16 @@ pruefe("glas-ebene legt das Glas auf :host(ha-card) und ha-card", () => {
   assert.deepEqual(selektoren, [":host(ha-card)", "ha-card"]);
 });
 
+pruefe("glas-bubble legt den Reflex nur auf Icons und Sub-Buttons", () => {
+  // Auf einem Kartenbalken von 340 x 56 px zog der diagonale Reflex eine helle
+  // Bahn ueber die linke Haelfte - Bubble-Karten wirkten heller als alle anderen.
+  const c = ohneKommentare(css(vorlagen.find((x) => x.id === "glas-bubble").block));
+  const mitReflex = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)]
+    .filter((m) => /--hatg-glas-reflex/.test(m[2]))
+    .flatMap((m) => m[1].split(",").map((s) => s.trim()));
+  assert.deepEqual(mitReflex.sort(), [".bubble-icon-container", ".bubble-main-icon-container", ".bubble-sub-button"]);
+});
+
 function vorlage(id) {
   const v = vorlagen.find((x) => x.id === id);
   assert.ok(v, `Vorlage ${id} fehlt`);
