@@ -276,6 +276,15 @@ pruefe("glas-bubble: Separator ohne Hintergrund, Sub-Buttons getoent", () => {
   assert.ok(sub && /color-mix\(in srgb, [\s\S]*\) \d+%, transparent\)/.test(sub[2]), "Sub-Buttons mit Hintergrund werden nicht getoent");
 });
 
+pruefe("glas-bubble toent die Schieberfuellung ueber die Deckkraft", () => {
+  // Eine feste Farbe wuerde Lichtern ohne use_accent_color ihre Lichtfarbe nehmen.
+  const c = ohneKommentare(css(vorlagen.find((x) => x.id === "glas-bubble").block));
+  const regel = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)].find((m) => m[1].trim() === ".bubble-range-fill");
+  assert.ok(regel, "keine Regel fuer .bubble-range-fill");
+  assert.ok(/opacity:\s*0?\.\d+\s*!important/.test(regel[2]), "Schieberfuellung wird nicht ueber die Deckkraft getoent");
+  assert.ok(!/background/.test(regel[2]), "Schieberfuellung bekommt eine feste Farbe");
+});
+
 function vorlage(id) {
   const v = vorlagen.find((x) => x.id === id);
   assert.ok(v, `Vorlage ${id} fehlt`);
