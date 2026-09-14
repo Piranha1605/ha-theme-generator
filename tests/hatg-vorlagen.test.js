@@ -150,16 +150,16 @@ pruefe("glas-ebene legt das Glas auf :host(ha-card) und ha-card", () => {
   assert.deepEqual(selektoren, [":host(ha-card)", "ha-card"]);
 });
 
-pruefe("glas-bubble legt den Reflex nur auf Icons und Sub-Buttons", () => {
-  // Auf einem Kartenbalken von 340 x 56 px zog der diagonale Reflex eine helle
-  // Bahn ueber die linke Haelfte - Bubble-Karten wirkten heller als alle anderen.
+pruefe("glas-bubble: Flaechen ohne Ring und Glanz, Icons als Kaestchen", () => {
+  // Ring, Glanz und der grosse Kartenschatten liessen Bubble-Karten neben den
+  // Knoepfen eigener Karten fremd wirken. Vorbild ist deren ruhender Knopf.
   const c = ohneKommentare(css(vorlagen.find((x) => x.id === "glas-bubble").block));
-  const mitReflex = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)]
-    .filter((m) => /--hatg-glas-reflex/.test(m[2]))
-    .flatMap((m) => m[1].split(",").map((s) => s.trim()));
-  // Die Schieberfuellung ist eine Pille wie die Sub-Buttons und traegt den
-  // Glanz bewusst - sie soll aussehen wie ein Sensorwert im Separator.
-  assert.deepEqual(mitReflex.sort(), [".bubble-icon-container", ".bubble-main-icon-container", ".bubble-range-fill", ".bubble-sub-button"]);
+  const regeln = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)];
+  assert.ok(!/--hatg-glas-reflex|--hatg-glas-rand/.test(c), "Glanz oder Ring steht wieder in glas-bubble");
+  const flaeche = regeln.find((m) => m[1].split(",").map((s) => s.trim()).includes(".bubble-button-container"));
+  assert.ok(flaeche && /background-image:\s*none/.test(flaeche[2]) && /border-radius:\s*13px/.test(flaeche[2]), "Flaeche nicht im Knopfstil");
+  const icon = regeln.find((m) => m[1].split(",").map((s) => s.trim()).includes(".bubble-main-icon-container") && /border-radius/.test(m[2]));
+  assert.ok(icon && /box-shadow:\s*none/.test(icon[2]) && !/9999/.test(icon[2]), "Icons sind keine Kaestchen ohne Schatten");
 });
 
 pruefe("Aktiver Seitenleisten-Eintrag ohne Schlagschatten", () => {
@@ -259,13 +259,17 @@ pruefe("Kartenmarker in Glas: Flaeche auf .marker, Ring bleibt", () => {
   assert.ok(!/\bborder(-color)?:/.test(c), "Vorlage ueberschreibt den farbigen Ring");
 });
 
-pruefe("glas-bubble toent eingeschaltete Karten statt sie deckend zu fuellen", () => {
-  // Bubble malt .bubble-background eingeschaltet deckend in der Akzentfarbe.
-  // Neben Glaskarten stand das als volle Farbflaeche, das Icon verschwand darauf.
+pruefe("glas-bubble: eingefaerbte Karten deckend mit Kante, erkannt an opacity 1", () => {
+  // Zustandskarten melden auch is-on, bleiben aber farblos. Haengt die Regel an
+  // is-on, steht dunkle Schrift auf dunklem Glas - an einer laufenden Instanz
+  // bei Druckerpatronen gesehen. Bubble setzt inline opacity: 1 nur bei Farbe.
   const c = ohneKommentare(css(vorlagen.find((x) => x.id === "glas-bubble").block));
-  const regel = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)].find((m) => m[1].trim() === ".bubble-background");
-  assert.ok(regel, "keine Regel fuer .bubble-background");
-  assert.ok(/color-mix\(in srgb, var\(--bubble-button-background-color[^)]*\) \d+%, transparent\)/.test(regel[2]), "Aktivflaeche wird nicht getoent");
+  const regeln = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)];
+  assert.ok(!regeln.some((m) => /\.is-on\b/.test(m[1])), "Regel haengt an is-on");
+  const bg = regeln.find((m) => m[1].trim() === 'ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-background');
+  assert.ok(bg && /var\(--bubble-button-background-color\)/.test(bg[2]) && (bg[2].match(/inset/g) || []).length === 2, "eingefaerbte Flaeche nicht deckend mit Kante");
+  const text = regeln.find((m) => m[1].includes(".bubble-name") && m[1].includes('opacity: 1"]'));
+  assert.ok(text && /--text-primary-color/.test(text[2]), "Schrift auf der Akzentflaeche nicht in --text-primary-color");
 });
 
 pruefe("glas-bubble: Separator ohne Hintergrund, Sub-Buttons getoent", () => {
@@ -275,12 +279,12 @@ pruefe("glas-bubble: Separator ohne Hintergrund, Sub-Buttons getoent", () => {
   assert.ok(sep, "keine Ausnahme fuer Separatoren");
   for (const d of ["background: none", "backdrop-filter: none", "box-shadow: none"]) assert.ok(sep[2].includes(d), `Separator: ${d} fehlt`);
   const sub = regeln.find((m) => m[1].trim() === ".bubble-sub-button.background-on");
-  assert.ok(sub && /color-mix\(in srgb, [\s\S]*\) \d+%, transparent\)/.test(sub[2]), "Sub-Buttons mit Hintergrund werden nicht getoent");
+  assert.ok(sub && (sub[2].match(/inset/g) || []).length === 2 && /--text-primary-color/.test(sub[2]), "Sub-Buttons mit Hintergrund nicht wie das Gewaehlte");
 });
 
-pruefe("glas-bubble: Schieber mit Glasmulde und getoenter Glasfuellung", () => {
+pruefe("glas-bubble: Schieber mit Glasmulde und deckender Fuellung", () => {
   // Spur wie die Schieber der HA-Karten (Mulde mit zwei Innenschatten, der helle
-  // aus --neumorph-hell), Fuellung wie die Sub-Buttons: getoent statt deckend.
+  // aus --neumorph-hell), Fuellung deckend in Bubbles Farbe mit plastischer Kante.
   const c = ohneKommentare(css(vorlagen.find((x) => x.id === "glas-bubble").block));
   const regeln = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)];
   const spur = regeln.find((m) => m[1].trim() === ".bubble-range-slider");
@@ -289,8 +293,9 @@ pruefe("glas-bubble: Schieber mit Glasmulde und getoenter Glasfuellung", () => {
   assert.ok(/var\(--neumorph-hell,/.test(spur[2]), "heller Innenschatten liest --neumorph-hell nicht");
   const fuellung = regeln.find((m) => m[1].trim() === ".bubble-range-fill");
   assert.ok(fuellung, "keine Regel fuer die Fuellung");
-  assert.ok(/background-color:\s*color-mix\(in srgb, var\(--bubble-accent-color[^;]*\d+%, transparent\)/.test(fuellung[2]), "Fuellung ist nicht getoent");
-  assert.ok(/backdrop-filter:\s*blur/.test(fuellung[2]), "Fuellung ist keine Glasflaeche");
+  assert.ok(/opacity:\s*1\s*!important/.test(fuellung[2]), "Fuellung ist nicht deckend");
+  assert.equal((fuellung[2].match(/inset/g) || []).length, 2, "Fuellung hat keine plastische Kante");
+  assert.ok(!/background-color|backdrop-filter:\s*blur/.test(fuellung[2]), "Fuellung ueberschreibt Bubbles Farbe oder ist Glas");
 });
 
 function vorlage(id) {
