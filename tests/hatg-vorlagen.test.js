@@ -157,7 +157,9 @@ pruefe("glas-bubble legt den Reflex nur auf Icons und Sub-Buttons", () => {
   const mitReflex = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)]
     .filter((m) => /--hatg-glas-reflex/.test(m[2]))
     .flatMap((m) => m[1].split(",").map((s) => s.trim()));
-  assert.deepEqual(mitReflex.sort(), [".bubble-icon-container", ".bubble-main-icon-container", ".bubble-sub-button"]);
+  // Die Schieberfuellung ist eine Pille wie die Sub-Buttons und traegt den
+  // Glanz bewusst - sie soll aussehen wie ein Sensorwert im Separator.
+  assert.deepEqual(mitReflex.sort(), [".bubble-icon-container", ".bubble-main-icon-container", ".bubble-range-fill", ".bubble-sub-button"]);
 });
 
 pruefe("Aktiver Seitenleisten-Eintrag ohne Schlagschatten", () => {
@@ -276,18 +278,19 @@ pruefe("glas-bubble: Separator ohne Hintergrund, Sub-Buttons getoent", () => {
   assert.ok(sub && /color-mix\(in srgb, [\s\S]*\) \d+%, transparent\)/.test(sub[2]), "Sub-Buttons mit Hintergrund werden nicht getoent");
 });
 
-pruefe("glas-bubble: Schieber mit Glasmulde und plastischer Fuellung", () => {
-  // Gleiche Masse wie die Schieber der HA-Karten: Mulde mit zwei Innenschatten,
-  // Fuellung deckend mit Innenkante aus der Akzentfarbe - keine festen Farben.
+pruefe("glas-bubble: Schieber mit Glasmulde und getoenter Glasfuellung", () => {
+  // Spur wie die Schieber der HA-Karten (Mulde mit zwei Innenschatten, der helle
+  // aus --neumorph-hell), Fuellung wie die Sub-Buttons: getoent statt deckend.
   const c = ohneKommentare(css(vorlagen.find((x) => x.id === "glas-bubble").block));
   const regeln = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)];
   const spur = regeln.find((m) => m[1].trim() === ".bubble-range-slider");
   assert.ok(spur, "keine Regel fuer die Spur");
   assert.equal((spur[2].match(/inset/g) || []).length, 2, "Spur ist keine vertiefte Mulde");
+  assert.ok(/var\(--neumorph-hell,/.test(spur[2]), "heller Innenschatten liest --neumorph-hell nicht");
   const fuellung = regeln.find((m) => m[1].trim() === ".bubble-range-fill");
   assert.ok(fuellung, "keine Regel fuer die Fuellung");
-  assert.ok(/opacity:\s*1\s*!important/.test(fuellung[2]), "Fuellung ist nicht deckend");
-  assert.ok(/--bubble-accent-color/.test(fuellung[2]) && !/background/.test(fuellung[2]), "Fuellung bekommt eine feste Farbe oder keine Kante aus der Akzentfarbe");
+  assert.ok(/background-color:\s*color-mix\(in srgb, var\(--bubble-accent-color[^;]*\d+%, transparent\)/.test(fuellung[2]), "Fuellung ist nicht getoent");
+  assert.ok(/backdrop-filter:\s*blur/.test(fuellung[2]), "Fuellung ist keine Glasflaeche");
 });
 
 function vorlage(id) {

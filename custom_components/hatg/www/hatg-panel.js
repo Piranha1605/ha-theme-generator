@@ -266,7 +266,7 @@ const HATG_TEXTE = {
   "Kopfleiste des Dashboards in Glas": "Dashboard top bar in glass",
   "Die Leiste über einem Dashboard heißt im Frontend .header und sitzt in hui-root - das Stilziel für die Kopfleiste erreicht sie nicht. Diese Vorlage setzt am Grundgerüst an und legt Weichzeichnung, Reflex und Kanten darauf. Die Farbe selbst kommt aus dem Theme-Feld app-header-background-color; steht dort ein deckender Wert, hilft der Knopf \"Auf Glas setzen\" über der Vorlagenliste.": "The bar above a dashboard is called .header and lives in hui-root - the top bar style target does not reach it. This preset works from the dashboard root and puts blur, sheen and edges on it. The colour itself comes from the theme field app-header-background-color; if that holds an opaque value, the button \"Set to glass\" above the preset list helps.",
   "Bubble Card in Glas": "Bubble Card in glass",
-  "Bubble Card zeichnet seine Flächen selbst und liest dafür eigene Variablen - ohne diese Vorlage bleiben Bubble-Karten deckend, auch wenn die Karte darunter längst Glas ist. Setzt die Variablen auf die gemeinsamen Glaswerte und legt Weichzeichnung und Kanten auf Karten, Icons, Sub-Buttons sowie Climate-, Cover-, Media-Player-, Select- und Kalender-Flächen, den Reflex nur auf Icons und Sub-Buttons - auf breiten Kartenbalken läse er sich als helle Bahn statt als Glanz. Eingeschaltete Karten und Sub-Buttons mit Hintergrund werden zur getönten Glasfläche in der Akzentfarbe statt zur deckenden Farbfläche. Schieber bekommen eine vertiefte Glasmulde als Spur und eine kräftige Füllung mit plastischer Kante. Separatoren bleiben ohne Hintergrund. Schaltet außerdem den Rahmen ab, den Bubble Card aus dem Theme-Feld bubble-border zieht: Er ist deckend und liegt genau auf der Lichtkante, die diese Vorlage als inneren Ring zeichnet - ohne ihn steuern die Regler im Bereich Glaslook auch die Kante. Die Variablennamen stammen aus Bubble Cards eigenem CSS und wurden in einer laufenden Instanz geprüft.": "Bubble Card paints its own surfaces and reads its own variables for them - without this preset, Bubble cards stay opaque even when the card beneath is already glass. It sets those variables to the shared glass values and puts blur and edges on cards, icons, sub-buttons and the climate, cover, media player, select and calendar surfaces, and the sheen only on icons and sub-buttons - on wide card bars it would read as a bright band rather than a sheen. Cards that are on and sub-buttons with a background become a glass surface tinted in the accent colour instead of a solid fill. Sliders get a recessed glass trough as their track and a strong fill with a sculpted edge. Separators stay without a background. It also switches off the border Bubble Card draws from the theme field bubble-border: that border is opaque and sits exactly on the light edge this preset draws as an inner ring - without it, the sliders under Glass look control the edge as well. The variable names come from Bubble Card's own CSS and were verified in a running instance.",
+  "Bubble Card zeichnet seine Flächen selbst und liest dafür eigene Variablen - ohne diese Vorlage bleiben Bubble-Karten deckend, auch wenn die Karte darunter längst Glas ist. Setzt die Variablen auf die gemeinsamen Glaswerte und legt Weichzeichnung und Kanten auf Karten, Icons, Sub-Buttons sowie Climate-, Cover-, Media-Player-, Select- und Kalender-Flächen, den Reflex nur auf Icons und Sub-Buttons - auf breiten Kartenbalken läse er sich als helle Bahn statt als Glanz. Eingeschaltete Karten und Sub-Buttons mit Hintergrund werden zur getönten Glasfläche in der Akzentfarbe statt zur deckenden Farbfläche. Schieber bekommen eine vertiefte Glasmulde als Spur und eine getönte Glasfüllung wie die Sub-Buttons. Separatoren bleiben ohne Hintergrund. Schaltet außerdem den Rahmen ab, den Bubble Card aus dem Theme-Feld bubble-border zieht: Er ist deckend und liegt genau auf der Lichtkante, die diese Vorlage als inneren Ring zeichnet - ohne ihn steuern die Regler im Bereich Glaslook auch die Kante. Die Variablennamen stammen aus Bubble Cards eigenem CSS und wurden in einer laufenden Instanz geprüft.": "Bubble Card paints its own surfaces and reads its own variables for them - without this preset, Bubble cards stay opaque even when the card beneath is already glass. It sets those variables to the shared glass values and puts blur and edges on cards, icons, sub-buttons and the climate, cover, media player, select and calendar surfaces, and the sheen only on icons and sub-buttons - on wide card bars it would read as a bright band rather than a sheen. Cards that are on and sub-buttons with a background become a glass surface tinted in the accent colour instead of a solid fill. Sliders get a recessed glass trough as their track and a tinted glass fill like the sub-buttons. Separators stay without a background. It also switches off the border Bubble Card draws from the theme field bubble-border: that border is opaque and sits exactly on the light edge this preset draws as an inner ring - without it, the sliders under Glass look control the edge as well. The variable names come from Bubble Card's own CSS and were verified in a running instance.",
   "Glance-Karten in Glas": "Glance cards in glass",
   "Glance-Karten bringen ihre eigene Fläche mit und brauchen deshalb einen eigenen Eintrag. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "Glance cards bring their own surface and therefore need an entry of their own. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
   "Grid-Abschnitte in Glas": "Grid sections in glass",
@@ -2210,7 +2210,7 @@ ha-badge {
     id: "glas-bubble",
     paket: "glas",
     label: "Bubble Card in Glas",
-    desc: "Bubble Card zeichnet seine Flächen selbst und liest dafür eigene Variablen - ohne diese Vorlage bleiben Bubble-Karten deckend, auch wenn die Karte darunter längst Glas ist. Setzt die Variablen auf die gemeinsamen Glaswerte und legt Weichzeichnung und Kanten auf Karten, Icons, Sub-Buttons sowie Climate-, Cover-, Media-Player-, Select- und Kalender-Flächen, den Reflex nur auf Icons und Sub-Buttons - auf breiten Kartenbalken läse er sich als helle Bahn statt als Glanz. Eingeschaltete Karten und Sub-Buttons mit Hintergrund werden zur getönten Glasfläche in der Akzentfarbe statt zur deckenden Farbfläche. Schieber bekommen eine vertiefte Glasmulde als Spur und eine kräftige Füllung mit plastischer Kante. Separatoren bleiben ohne Hintergrund. Schaltet außerdem den Rahmen ab, den Bubble Card aus dem Theme-Feld bubble-border zieht: Er ist deckend und liegt genau auf der Lichtkante, die diese Vorlage als inneren Ring zeichnet - ohne ihn steuern die Regler im Bereich Glaslook auch die Kante. Die Variablennamen stammen aus Bubble Cards eigenem CSS und wurden in einer laufenden Instanz geprüft.",
+    desc: "Bubble Card zeichnet seine Flächen selbst und liest dafür eigene Variablen - ohne diese Vorlage bleiben Bubble-Karten deckend, auch wenn die Karte darunter längst Glas ist. Setzt die Variablen auf die gemeinsamen Glaswerte und legt Weichzeichnung und Kanten auf Karten, Icons, Sub-Buttons sowie Climate-, Cover-, Media-Player-, Select- und Kalender-Flächen, den Reflex nur auf Icons und Sub-Buttons - auf breiten Kartenbalken läse er sich als helle Bahn statt als Glanz. Eingeschaltete Karten und Sub-Buttons mit Hintergrund werden zur getönten Glasfläche in der Akzentfarbe statt zur deckenden Farbfläche. Schieber bekommen eine vertiefte Glasmulde als Spur und eine getönte Glasfüllung wie die Sub-Buttons. Separatoren bleiben ohne Hintergrund. Schaltet außerdem den Rahmen ab, den Bubble Card aus dem Theme-Feld bubble-border zieht: Er ist deckend und liegt genau auf der Lichtkante, die diese Vorlage als inneren Ring zeichnet - ohne ihn steuern die Regler im Bereich Glaslook auch die Kante. Die Variablennamen stammen aus Bubble Cards eigenem CSS und wurden in einer laufenden Instanz geprüft.",
     ziel: "uix-card",
     css: `:host {
   /* Bubble Card faerbt seine Flaechen ueber eigene Variablen. Ohne diese Zeilen
@@ -2319,24 +2319,29 @@ ha-select.bubble-dropdown-select {
 .bubble-sub-button.background-on {
   background-color: color-mix(in srgb, var(--bubble-sub-button-light-background-color, var(--bubble-accent-color, var(--bubble-default-color))) 35%, transparent) !important;
 }
-/* Schieber: Spur als vertiefte Glasmulde, Fuellung kraeftig mit plastischer
-   Innenkante - dieselben Masse wie die Schieber der eigenen HA-Karten, damit
-   beide nebeneinander gleich aussehen. Die Schatten mischen sich aus der
-   Kartenflaeche und der Akzentfarbe, feste Farben gibt es keine.
-   Farbschieber setzen opacity 0 mit hoeherer Spezifitaet und bleiben
-   unberuehrt. */
+/* Schieber: Spur als vertiefte Glasmulde - dieselben Masse wie die Schieber
+   der eigenen HA-Karten. Der helle Innenschatten liest --neumorph-hell, den
+   auch diese Karten lesen; ohne Theme-Wert mischt er sich aus der
+   Kartenflaeche. Die Fuellung ist eine getoente Glasflaeche wie die
+   Sub-Buttons, statt deckend in der Akzentfarbe. Farbschieber setzen
+   opacity 0 mit hoeherer Spezifitaet und bleiben unberuehrt. */
 .bubble-range-slider {
   background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.14)) !important;
   box-shadow:
     inset 5px 5px 11px color-mix(in srgb, var(--ha-card-background, var(--card-background-color)) 88%, #000000),
-    inset -5px -5px 11px color-mix(in srgb, var(--ha-card-background, var(--card-background-color)) 58%, #ffffff) !important;
+    inset -5px -5px 11px var(--neumorph-hell, color-mix(in srgb, var(--ha-card-background, var(--card-background-color)) 58%, #ffffff)) !important;
 }
 .bubble-range-fill {
   opacity: 1 !important;
   border-radius: inherit !important;
+  background-color: color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) 35%, transparent) !important;
+  background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+  backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
+  -webkit-backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
   box-shadow:
-    inset 3px 3px 7px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) 62%, #000000),
-    inset -2px -2px 6px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) 74%, #ffffff) !important;
+    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.55)),
+    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
+    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)) !important;
 }`,
   },
   {
