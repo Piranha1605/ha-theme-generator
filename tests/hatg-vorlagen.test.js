@@ -266,6 +266,16 @@ pruefe("glas-bubble toent eingeschaltete Karten statt sie deckend zu fuellen", (
   assert.ok(/color-mix\(in srgb, var\(--bubble-button-background-color[^)]*\) \d+%, transparent\)/.test(regel[2]), "Aktivflaeche wird nicht getoent");
 });
 
+pruefe("glas-bubble: Separator ohne Hintergrund, Sub-Buttons getoent", () => {
+  const c = ohneKommentare(css(vorlagen.find((x) => x.id === "glas-bubble").block));
+  const regeln = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)];
+  const sep = regeln.find((m) => m[1].trim() === ".bubble-container.separator-container");
+  assert.ok(sep, "keine Ausnahme fuer Separatoren");
+  for (const d of ["background: none", "backdrop-filter: none", "box-shadow: none"]) assert.ok(sep[2].includes(d), `Separator: ${d} fehlt`);
+  const sub = regeln.find((m) => m[1].trim() === ".bubble-sub-button.background-on");
+  assert.ok(sub && /color-mix\(in srgb, [\s\S]*\) \d+%, transparent\)/.test(sub[2]), "Sub-Buttons mit Hintergrund werden nicht getoent");
+});
+
 function vorlage(id) {
   const v = vorlagen.find((x) => x.id === id);
   assert.ok(v, `Vorlage ${id} fehlt`);
