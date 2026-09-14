@@ -298,6 +298,28 @@ pruefe("glas-bubble: Schieber mit Glasmulde und deckender Fuellung", () => {
   assert.ok(!/background-color|backdrop-filter:\s*blur/.test(fuellung[2]), "Fuellung ueberschreibt Bubbles Farbe oder ist Glas");
 });
 
+pruefe("Glas-Knoepfe: kleiner Schatten ohne Ring, kleine Rundung", () => {
+  // Vorbild sind die ruhenden Knoepfe eigener Karten. Ring und grosser
+  // Kartenschatten liessen Knoepfe neben ihnen schwer wirken.
+  const knopfVorlagen = mitCss.filter((v) => /--ha-button-box-shadow:/.test(css(v.block)));
+  assert.ok(knopfVorlagen.length >= 4, `nur ${knopfVorlagen.length} Knopf-Vorlagen gefunden`);
+  for (const v of knopfVorlagen) {
+    const c = ohneKommentare(css(v.block));
+    const schatten = (c.match(/--ha-button-box-shadow:([^;]*);/) || [])[1] || "";
+    assert.ok(!/--hatg-glas-rand|--hatg-glas-schatten/.test(schatten), `${v.id}: Ring oder Kartenschatten im Knopfschatten`);
+    assert.ok(/--ha-button-border-radius:\s*11px/.test(c), `${v.id}: Knopf nicht mit kleiner Rundung`);
+  }
+});
+
+pruefe("Aktiver Seitenleisten-Eintrag deckend in der Akzentfarbe mit Textfarbe fuer Akzentflaechen", () => {
+  const c = ohneKommentare(css(vorlagen.find((x) => x.id === "seitenleiste-aktiv-liquid").block));
+  const regeln = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)];
+  const pille = regeln.find((m) => m[1].trim() === "ha-list-item-button.selected::before");
+  assert.ok(pille && /background-color:\s*var\(--accent-color/.test(pille[2]) && !/color-mix\([^)]*transparent\)/.test(pille[2].split("box-shadow")[0]), "Pille nicht deckend in der Akzentfarbe");
+  const text = regeln.find((m) => m[1].trim() === "ha-list-item-button.selected");
+  assert.ok(text && /--sidebar-selected-text-color:\s*var\(--text-primary-color\)/.test(text[2]), "Schrift nicht in --text-primary-color");
+});
+
 function vorlage(id) {
   const v = vorlagen.find((x) => x.id === id);
   assert.ok(v, `Vorlage ${id} fehlt`);
