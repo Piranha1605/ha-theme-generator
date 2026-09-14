@@ -276,13 +276,18 @@ pruefe("glas-bubble: Separator ohne Hintergrund, Sub-Buttons getoent", () => {
   assert.ok(sub && /color-mix\(in srgb, [\s\S]*\) \d+%, transparent\)/.test(sub[2]), "Sub-Buttons mit Hintergrund werden nicht getoent");
 });
 
-pruefe("glas-bubble toent die Schieberfuellung ueber die Deckkraft", () => {
-  // Eine feste Farbe wuerde Lichtern ohne use_accent_color ihre Lichtfarbe nehmen.
+pruefe("glas-bubble: Schieber mit Glasmulde und plastischer Fuellung", () => {
+  // Gleiche Masse wie die Schieber der HA-Karten: Mulde mit zwei Innenschatten,
+  // Fuellung deckend mit Innenkante aus der Akzentfarbe - keine festen Farben.
   const c = ohneKommentare(css(vorlagen.find((x) => x.id === "glas-bubble").block));
-  const regel = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)].find((m) => m[1].trim() === ".bubble-range-fill");
-  assert.ok(regel, "keine Regel fuer .bubble-range-fill");
-  assert.ok(/opacity:\s*0?\.\d+\s*!important/.test(regel[2]), "Schieberfuellung wird nicht ueber die Deckkraft getoent");
-  assert.ok(!/background/.test(regel[2]), "Schieberfuellung bekommt eine feste Farbe");
+  const regeln = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)];
+  const spur = regeln.find((m) => m[1].trim() === ".bubble-range-slider");
+  assert.ok(spur, "keine Regel fuer die Spur");
+  assert.equal((spur[2].match(/inset/g) || []).length, 2, "Spur ist keine vertiefte Mulde");
+  const fuellung = regeln.find((m) => m[1].trim() === ".bubble-range-fill");
+  assert.ok(fuellung, "keine Regel fuer die Fuellung");
+  assert.ok(/opacity:\s*1\s*!important/.test(fuellung[2]), "Fuellung ist nicht deckend");
+  assert.ok(/--bubble-accent-color/.test(fuellung[2]) && !/background/.test(fuellung[2]), "Fuellung bekommt eine feste Farbe oder keine Kante aus der Akzentfarbe");
 });
 
 function vorlage(id) {
