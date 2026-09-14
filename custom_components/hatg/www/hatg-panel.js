@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.3.0b2";
+const HATG_VERSION = "1.3.0b6";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -234,18 +234,20 @@ const HATG_TEXTE = {
   "Einstellungsseiten im iOS-Stil": "Settings pages in iOS style",
   "Macht aus den runden Farbkreisen abgerundete Quadrate, wie iOS sie in seinen Einstellungen zeigt - mit Lichtverlauf, feiner Kante und kurzem Schatten. Dazu kräftigere Überschriften, zurückgenommene Untertitel und leisere Pfeile am Zeilenende. Gilt für beide Navigationslisten der Einstellungen: die Startseite und die Seite System. Alle Werte stehen als eigene Felder im Bereich Glaslook; wer etwas davon nicht will, setzt den betreffenden Wert auf den Ausgangszustand zurück. Die Shadow-DOM-Pfade wurden mit uix_style_path in einer laufenden Instanz geprüft.": "Turns the round colour circles into rounded squares, the way iOS shows them in its settings - with a light gradient, a fine edge and a short shadow. Plus heavier headlines, quieter supporting text and paler chevrons at the end of each row. Covers both settings navigation lists: the start page and the System page. Every value is a field of its own under Glass look; anything you don't want, you set back to its starting value. The shadow DOM paths were verified with uix_style_path in a running instance.",
   "Glas: eigene Ebene unter der Karte": "Glass: its own layer beneath the card",
+  "Glas: nur Weichzeichnung unter der Karte": "Glass: blur only beneath the card",
+  "Legt nur den Weichzeichner unter die Karte - ohne eigene Füllung, Glanz oder Kanten. Für Karten, die ihre Fläche selbst malen, etwa HA-Karten, Proxmox- oder Shelly-Karten: Ohne Weichzeichnung liegt das Hintergrundbild scharf dahinter, und sie wirken neben Bubble-Karten durchsichtiger. Bubble-Karten, Überschriften, Mushroom-Titel und -Chips sowie reine Textkarten sind ausgenommen. Nicht zusammen mit „Glas: eigene Ebene unter der Karte“ nötig, die bringt die Weichzeichnung schon mit. Die Menüleiste der HA-Karten bekommt zusätzlich den Kartenschatten des Themes, ihre Kapsel eine plastische Kante.": "Puts only the blur beneath the card - no fill, sheen or edges of its own. For cards that paint their own surface, such as HA-Karten, Proxmox or Shelly cards: without blur the background image sits sharp behind them, and next to Bubble cards they look more transparent. Bubble cards, headings, Mushroom titles and chips, and text-only cards are left out. Not needed together with \"Glass: its own layer beneath the card\", which already brings the blur. The HA-Karten menu bar also gets the theme's card shadow, and its capsule a sculpted edge.",
   "Milchiges Glas, das den Weichzeichner nicht auf die Karte selbst legt, sondern auf eine Ebene darunter. Anders als der einfache Glas-Effekt bleibt der Kartenhintergrund dadurch mit Hintergrundbildern und Verläufen verträglich. Hüllen-Karten (Überschriften, Mushroom-Titel und -Chips, reine Textkarten) sind bewusst ausgenommen, damit sie nicht plötzlich als Kachel erscheinen.": "Frosted glass that puts the blur on a layer beneath the card instead of on the card itself. Unlike the plain glass effect, the card background stays compatible with background images and gradients. Wrapper cards (headings, Mushroom titles and chips, text-only cards) are deliberately excluded so they do not suddenly show up as tiles.",
-  "Seitenleiste: aktiver Eintrag als Glaskörper": "Sidebar: active entry as a glass body",
-  "Der markierte Eintrag wird zum Glaskörper statt zur flachen Farbfläche: Verlauf in der Auswahlfarbe, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Home Assistant zeichnet diese Fläche als Overlay mit fester Deckkraft - die Vorlage hebt sie auf und ersetzt sie durch die Schichten.": "The highlighted entry becomes a glass body instead of a flat colour patch: a gradient in the selection colour, a light edge at the top, a shadow edge at the bottom, a fine border and a soft drop shadow. Home Assistant draws that surface as an overlay with fixed opacity - the preset lifts it and replaces it with the layers.",
+  "Seitenleiste: aktiver Eintrag in der Akzentfarbe": "Sidebar: active entry in the accent colour",
+  "Der markierte Eintrag sieht aus wie das Gewählte eigener Karten und die Kapsel einer Menüleiste: deckend in der Akzentfarbe mit plastischer Innenkante, Schrift und Symbol darauf in der Textfarbe für Akzentflächen. Einen Schlagschatten gibt es bewusst nicht - die Liste der Seitenleiste schneidet ihn ab, übrig bliebe ein dunkles Rechteck. Home Assistant zeichnet diese Fläche als Overlay mit fester Deckkraft - die Vorlage hebt sie auf.": "The highlighted entry looks like the selected state of custom cards and the capsule of a menu bar: solid in the accent colour with a sculpted inner edge, with text and icon in the text colour for accent surfaces. There is deliberately no drop shadow - the sidebar list clips it, leaving only a dark rectangle. Home Assistant draws that surface as an overlay with fixed opacity - the preset lifts it.",
   "Bedienelemente in Glas: Karten": "Glass controls: cards",
   "Bedienelemente in Glas: Kopfleiste und Rahmen": "Glass controls: top bar and frame",
   "Bedienelemente in Glas: Dialoge": "Glass controls: dialogs",
   "Bedienelemente in Glas: Einstellungsseiten": "Glass controls: settings pages",
   "Bedienelemente in Glas: Glanz": "Glass controls: sheen",
-  "Gibt Schaltflächen denselben Aufbau wie dem aktiven Eintrag der Seitenleiste: Eckenradius der Karten, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Betrifft die Bedienelemente in Karten: Tile-Regler, Buttons in Entities- und Glance-Karten, Assist-Chips. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.": "Gives buttons the same build as the active sidebar entry: your card corner radius, a light edge at the top, a shadow edge at the bottom, a fine border and a soft drop shadow. Applies to the controls inside cards: tile controls, buttons in entities and glance cards, assist chips. It only sets variables Home Assistant provides itself, so it needs no shadow DOM paths.",
-  "Gibt Schaltflächen denselben Aufbau wie dem aktiven Eintrag der Seitenleiste: Eckenradius der Karten, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Betrifft die Icon-Buttons der Kopfleiste - Suche, Assist, Bearbeiten, Benachrichtigungen - und alles Übrige am Dashboard-Rahmen. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.": "Gives buttons the same build as the active sidebar entry: your card corner radius, a light edge at the top, a shadow edge at the bottom, a fine border and a soft drop shadow. Applies to the icon buttons in the top bar - search, assist, edit, notifications - and everything else on the dashboard frame. It only sets variables Home Assistant provides itself, so it needs no shadow DOM paths.",
-  "Gibt Schaltflächen denselben Aufbau wie dem aktiven Eintrag der Seitenleiste: Eckenradius der Karten, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Betrifft die Schaltflächen in Dialogen, also Abbrechen, Speichern und das Schließen-Kreuz. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.": "Gives buttons the same build as the active sidebar entry: your card corner radius, a light edge at the top, a shadow edge at the bottom, a fine border and a soft drop shadow. Applies to the buttons in dialogs, meaning cancel, save and the close cross. It only sets variables Home Assistant provides itself, so it needs no shadow DOM paths.",
-  "Gibt Schaltflächen denselben Aufbau wie dem aktiven Eintrag der Seitenleiste: Eckenradius der Karten, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Betrifft die Schaltflächen auf den Einstellungsseiten, inklusive der Aktionsknöpfe in den Listen. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.": "Gives buttons the same build as the active sidebar entry: your card corner radius, a light edge at the top, a shadow edge at the bottom, a fine border and a soft drop shadow. Applies to the buttons on the settings pages, including the action buttons in the lists. It only sets variables Home Assistant provides itself, so it needs no shadow DOM paths.",
+  "Gibt Schaltflächen den Aufbau der Knöpfe eigener Karten: kleine Rundung, feine Lichtkante oben und ein kleiner weicher Schatten. Betrifft die Bedienelemente in Karten: Tile-Regler, Buttons in Entities- und Glance-Karten, Assist-Chips. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.": "Gives buttons the build of the buttons in custom cards: a small corner radius, a fine light edge at the top and a small soft shadow. Applies to the controls inside cards: tile controls, buttons in entities and glance cards, assist chips. It only sets variables Home Assistant provides itself, so it needs no shadow DOM paths.",
+  "Gibt Schaltflächen den Aufbau der Knöpfe eigener Karten: kleine Rundung, feine Lichtkante oben und ein kleiner weicher Schatten. Betrifft die Icon-Buttons der Kopfleiste - Suche, Assist, Bearbeiten, Benachrichtigungen - und alles Übrige am Dashboard-Rahmen. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.": "Gives buttons the build of the buttons in custom cards: a small corner radius, a fine light edge at the top and a small soft shadow. Applies to the icon buttons in the top bar - search, assist, edit, notifications - and everything else on the dashboard frame. It only sets variables Home Assistant provides itself, so it needs no shadow DOM paths.",
+  "Gibt Schaltflächen den Aufbau der Knöpfe eigener Karten: kleine Rundung, feine Lichtkante oben und ein kleiner weicher Schatten. Betrifft die Schaltflächen in Dialogen, also Abbrechen, Speichern und das Schließen-Kreuz. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.": "Gives buttons the build of the buttons in custom cards: a small corner radius, a fine light edge at the top and a small soft shadow. Applies to the buttons in dialogs, meaning cancel, save and the close cross. It only sets variables Home Assistant provides itself, so it needs no shadow DOM paths.",
+  "Gibt Schaltflächen den Aufbau der Knöpfe eigener Karten: kleine Rundung, feine Lichtkante oben und ein kleiner weicher Schatten. Betrifft die Schaltflächen auf den Einstellungsseiten, inklusive der Aktionsknöpfe in den Listen. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.": "Gives buttons the build of the buttons in custom cards: a small corner radius, a fine light edge at the top and a small soft shadow. Applies to the buttons on the settings pages, including the action buttons in the lists. It only sets variables Home Assistant provides itself, so it needs no shadow DOM paths.",
   "Der Feinschliff zu den Glas-Bedienelementen: legt den hellen Lichtverlauf und die Weichzeichnung auf die Fläche der Schaltflächen in Karten. Braucht dafür einen Shadow-DOM-Pfad in ha-button - wirkt nur zusammen mit der Vorlage für Karten und sollte nach einem größeren Update von Home Assistant nachgeprüft werden.": "The finishing touch for the glass controls: puts the bright sheen and the blur onto the surface of the buttons in cards. It needs a shadow DOM path into ha-button, only works together with the cards preset, and should be checked after a major Home Assistant update.",
   "Info-Dialog in Glas": "More-info dialog in glass",
   "Der Dialog, der beim Antippen einer Entität aufgeht - die am häufigsten geöffnete Fläche im ganzen System. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "The dialog that opens when you tap an entity - the most frequently opened surface in the whole system. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
@@ -255,6 +257,8 @@ const HATG_TEXTE = {
   "Die kurzen Einblendungen am unteren Rand, etwa nach dem Speichern. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "The short messages that appear at the bottom edge, for instance after saving. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
   "Benachrichtigungen in Glas": "Notifications in glass",
   "Die Einträge in der Benachrichtigungsliste der Seitenleiste. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "The entries in the notification list of the sidebar. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
+  "Kartenmarker in Glas": "Map markers in glass",
+  "Die runden Marker von Personen und Geräten auf der Karte - im Panel Karte und in Kartenkarten. Legt Glasfüllung, Glanz, Weichzeichnung und Lichtkanten auf den Marker. Der farbige Ring, an dem man die Entität erkennt, bleibt, und Marker mit Bild zeigen weiter ihr Bild. Gruppierte Marker und Zonen zeichnet die Karte selbst, sie sind nicht betroffen.": "The round markers of people and devices on the map - in the Map panel and in map cards. Puts glass fill, sheen, blur and light edges on the marker. The coloured ring that identifies the entity stays, and markers with a picture keep showing it. Clustered markers and zones are drawn by the map itself and are not affected.",
   "Badges in Glas": "Badges in glass",
   "Die runden Anzeigen oberhalb der Karten. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "The rounded indicators above the cards. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
   "Überschriften-Badges in Glas": "Heading badges in glass",
@@ -262,7 +266,7 @@ const HATG_TEXTE = {
   "Kopfleiste des Dashboards in Glas": "Dashboard top bar in glass",
   "Die Leiste über einem Dashboard heißt im Frontend .header und sitzt in hui-root - das Stilziel für die Kopfleiste erreicht sie nicht. Diese Vorlage setzt am Grundgerüst an und legt Weichzeichnung, Reflex und Kanten darauf. Die Farbe selbst kommt aus dem Theme-Feld app-header-background-color; steht dort ein deckender Wert, hilft der Knopf \"Auf Glas setzen\" über der Vorlagenliste.": "The bar above a dashboard is called .header and lives in hui-root - the top bar style target does not reach it. This preset works from the dashboard root and puts blur, sheen and edges on it. The colour itself comes from the theme field app-header-background-color; if that holds an opaque value, the button \"Set to glass\" above the preset list helps.",
   "Bubble Card in Glas": "Bubble Card in glass",
-  "Bubble Card zeichnet seine Flächen selbst und liest dafür eigene Variablen - ohne diese Vorlage bleiben Bubble-Karten deckend, auch wenn die Karte darunter längst Glas ist. Setzt die Variablen auf die gemeinsamen Glaswerte und legt Weichzeichnung, Reflex und Kanten auf Karten, Icons, Sub-Buttons sowie Climate-, Cover-, Media-Player-, Select- und Kalender-Flächen. Schaltet außerdem den Rahmen ab, den Bubble Card aus dem Theme-Feld bubble-border zieht: Er ist deckend und liegt genau auf der Lichtkante, die diese Vorlage als inneren Ring zeichnet - ohne ihn steuern die Regler im Bereich Glaslook auch die Kante. Die Variablennamen stammen aus Bubble Cards eigenem CSS und wurden in einer laufenden Instanz geprüft.": "Bubble Card paints its own surfaces and reads its own variables for them - without this preset, Bubble cards stay opaque even when the card beneath is already glass. It sets those variables to the shared glass values and puts blur, sheen and edges on cards, icons, sub-buttons and the climate, cover, media player, select and calendar surfaces. It also switches off the border Bubble Card draws from the theme field bubble-border: that border is opaque and sits exactly on the light edge this preset draws as an inner ring - without it, the sliders under Glass look control the edge as well. The variable names come from Bubble Card's own CSS and were verified in a running instance.",
+  "Bubble Card zeichnet seine Flächen selbst und liest dafür eigene Variablen - ohne diese Vorlage bleiben Bubble-Karten deckend, auch wenn die Karte darunter längst Glas ist. Setzt die Variablen auf die gemeinsamen Glaswerte und gibt Karten, Sub-Buttons sowie Climate-, Cover-, Media-Player-, Select- und Kalender-Flächen Weichzeichnung, die Rundung der Karten und einen kleinen weichen Schatten - ohne Ring und Glanz, wie die Knöpfe eigener Karten. Icons werden zu abgerundeten Kästchen mit leiser Tönung. Eingeschaltete Karten und Sub-Buttons mit Hintergrund werden deckend in der Akzentfarbe mit plastischer Innenkante, Schrift und Symbol darauf in der Textfarbe für Akzentflächen. Schieber bekommen eine vertiefte Glasmulde als Spur und eine deckende Füllung mit plastischer Kante. Separatoren bleiben ohne Hintergrund. Schaltet außerdem den Rahmen ab, den Bubble Card aus dem Theme-Feld bubble-border zieht. Die Variablennamen stammen aus Bubble Cards eigenem CSS und wurden in einer laufenden Instanz geprüft.": "Bubble Card paints its own surfaces and reads its own variables for them - without this preset, Bubble cards stay opaque even when the card beneath is already glass. It sets those variables to the shared glass values and gives cards, sub-buttons and the climate, cover, media player, select and calendar surfaces blur, the card radius and a small soft shadow - no ring and no sheen, like the buttons of custom cards. Icons become rounded tiles with a quiet tint. Cards that are on and sub-buttons with a background turn solid in the accent colour with a sculpted inner edge, with text and icon in the text colour for accent surfaces. Sliders get a recessed glass trough as their track and a solid fill with a sculpted edge. Separators stay without a background. It also switches off the border Bubble Card draws from the theme field bubble-border. The variable names come from Bubble Card's own CSS and were verified in a running instance.",
   "Glance-Karten in Glas": "Glance cards in glass",
   "Glance-Karten bringen ihre eigene Fläche mit und brauchen deshalb einen eigenen Eintrag. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "Glance cards bring their own surface and therefore need an entry of their own. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
   "Grid-Abschnitte in Glas": "Grid sections in glass",
@@ -282,7 +286,7 @@ const HATG_TEXTE = {
   "Einstellungsseiten für das Hintergrundbild öffnen": "Open the settings pages for the background image",
   "Die Unterseiten der Einstellungen - Geräte & Dienste, Entitäten, Automationen, Helfer - malen mit hass-tabs-subpage eine eigene deckende Fläche und legen sie über das Hintergrundbild. Diese Vorlage nimmt der Grundfarbe im App Drawer die Deckung, damit das Bild aus der Vorlage \"Hintergrundbild über die ganze Oberfläche\" auch dort durchkommt. Karten, Tabellenzeilen und Dialoge bringen ihre eigenen Farben mit und bleiben lesbar - in der laufenden Instanz auf Integrationen und der Entitätentabelle geprüft. Ohne Hintergrundbild bewirkt sie nichts.": "The settings subpages - Devices & Services, Entities, Automations, Helpers - paint an opaque surface of their own through hass-tabs-subpage and put it over the background image. This preset removes the opacity from the base colour in the app drawer so the image from \"Background image across the whole interface\" comes through there as well. Cards, table rows and dialogs bring their own colours and stay legible - verified in the running instance on Integrations and the entities table. Without a background image it does nothing.",
   "Bedienelemente in Glas: Einstellungen und Rest der Oberfläche": "Controls in glass: settings and the rest of the interface",
-  "Gibt Schaltflächen denselben Aufbau wie dem aktiven Eintrag der Seitenleiste: Eckenradius der Karten, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Betrifft alles außerhalb von Karten, Kopfleiste und Dialogen - die Einstellungsseiten samt ihrer Aktionsknöpfe, eigene Panels und die Knöpfe der Seitenleiste. Sitzt am App Drawer, weil die Einstellungsseiten selbst kein eigenes Stilziel haben: ha-panel-config hat keinen Shadow Root, dort kommt nichts an. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht.": "Gives buttons the same build as the active sidebar entry: your card corner radius, a light edge at the top, a shadow edge at the bottom, a fine border and a soft drop shadow. Applies to everything outside cards, the top bar and dialogs - the settings pages including their action buttons, custom panels and the sidebar's own buttons. It sits on the app drawer because the settings pages have no style target of their own: ha-panel-config has no shadow root, so nothing arrives there. It only sets variables Home Assistant provides itself.",
+  "Gibt Schaltflächen den Aufbau der Knöpfe eigener Karten: kleine Rundung, feine Lichtkante oben und ein kleiner weicher Schatten. Betrifft alles außerhalb von Karten, Kopfleiste und Dialogen - die Einstellungsseiten samt ihrer Aktionsknöpfe, eigene Panels und die Knöpfe der Seitenleiste. Sitzt am App Drawer, weil die Einstellungsseiten selbst kein eigenes Stilziel haben: ha-panel-config hat keinen Shadow Root, dort kommt nichts an. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht.": "Gives buttons the build of the buttons in custom cards: a small corner radius, a fine light edge at the top and a small soft shadow. Applies to everything outside cards, the top bar and dialogs - the settings pages including their action buttons, custom panels and the sidebar's own buttons. It sits on the app drawer because the settings pages have no style target of their own: ha-panel-config has no shadow root, so nothing arrives there. It only sets variables Home Assistant provides itself.",
   "Glaslook": "Glass look",
   "Eigener Titel in der Seitenleiste": "Custom title in the sidebar",
   "Ersetzt das \"Home Assistant\" oben in der Seitenleiste durch einen eigenen Text. Der Text steht im Feld hatg-sidebar-titel im Bereich Glaslook - mit Anführungszeichen, so verlangt es CSS. Home Assistant selbst bietet dafür keine Einstellung.": "Replaces the \"Home Assistant\" at the top of the sidebar with a text of your own. The text lives in the field hatg-sidebar-titel under Glass look - in quotation marks, as CSS requires. Home Assistant itself offers no setting for this.",
@@ -294,6 +298,10 @@ const HATG_TEXTE = {
   "Dialoge übernehmen den Eckenradius deiner Karten, bekommen etwas Abstand nach oben und einen kräftigeren Schleier dahinter, damit sie sich klarer vom Dashboard abheben. Setzt nur Variablen an der Dialog-Wurzel - für tiefere Eingriffe in Dialoge braucht es das Feld uix-dialog-yaml im Freitext.": "Dialogs take on your card corner radius, get some space at the top and a stronger scrim behind them so they stand out from the dashboard. Only sets variables at the dialog root - deeper changes to dialogs need the uix-dialog-yaml field in the free-text area.",
   "Hintergrundbild über die ganze Oberfläche": "Background image across the whole interface",
   "Übernimmt das Hintergrundbild von der Startseite und legt es hinter die ganze Oberfläche - auch hinter Einstellungsseiten, HACS, Verlauf und alle anderen Panels, wo das Dashboard-Hintergrundbild nicht hinreicht. Es muss nichts doppelt eingetragen werden: Die Vorlage greift auf das zu, was unter Hintergrund eingestellt ist, samt Abdunkelung. Ohne gesetztes Bild bewirkt sie nichts.": "Takes the background image from the start page and puts it behind the entire interface - including settings pages, HACS, history and every other panel the dashboard background never reaches. Nothing has to be entered twice: the preset reads whatever is set under Background, dimming included. With no image set it does nothing.",
+  "Bubble-Pop-ups mit Hintergrundbild": "Bubble pop-ups with background image",
+  "Legt ein Hintergrundbild in die Pop-ups von Bubble Card. Ohne weitere Angabe ist es das Bild, das unter Hintergrund auf der Startseite eingestellt ist. Soll ein Pop-up ein anderes Bild zeigen, einen eigenen Theme-Eintrag popup-custom-wallpaper setzen - getrennt für Light und Dark möglich. Bubble Card färbt die Pop-up-Fläche nur über Farbvariablen, ein Bild geht deshalb nur über diese Vorlage. Die Kopfzeile des Pop-ups wird durchsichtig, damit das Bild bis oben reicht. Die Deckkraft, die in Bubble Card für den Pop-up-Hintergrund eingestellt ist, wirkt mit dieser Vorlage nicht mehr - das Bild deckt die Fläche ganz.": "Puts a background image into Bubble Card pop-ups. By default it is the image set under Background on the start page. For a different image in pop-ups, add your own theme entry popup-custom-wallpaper - separately for light and dark if you like. Bubble Card colours the pop-up surface through colour variables only, so an image needs this preset. The pop-up header becomes transparent so the image reaches the top. The background opacity set in Bubble Card no longer applies with this preset - the image covers the surface completely.",
+  "Info-Dialog mit Hintergrundbild": "Info dialog with background image",
+  "Legt das Hintergrundbild in den Dialog, der beim Antippen einer Entität aufgeht - am Desktop wie im Bottom-Sheet auf Tablet und Handy. Ohne weitere Angabe ist es das Bild, das unter Hintergrund auf der Startseite eingestellt ist; ein eigener Theme-Eintrag popup-custom-wallpaper geht vor, derselbe wie bei den Bubble-Pop-ups. Home Assistant färbt die Dialogfläche nur über background-color, ein Bild braucht deshalb eine Regel direkt auf der Fläche. Zusammen mit Info-Dialog in Glas zeigt die Fläche das Bild statt Glas; endet der Hintergrundwert mit einer Vollfarbe, wird sie deckend.": "Puts the background image into the dialog that opens when you tap an entity - on desktop as well as in the bottom sheet on tablets and phones. By default it is the image set under Background on the start page; your own theme entry popup-custom-wallpaper takes precedence, the same one the Bubble pop-ups use. Home Assistant colours the dialog surface through background-color only, so an image needs a rule directly on the surface. Together with Info dialog in glass the surface shows the image instead of glass; if the background value ends with a solid colour, it becomes opaque.",
   "Wirkt auf": "Applies to",
   "Das CSS landet beim Aktivieren markiert im gewählten Stilziel - genau wie die mitgelieferten Vorlagen, für Light und Dark gleichzeitig.": "When activated, the CSS is written and marked into the chosen style target - just like the built-in presets, for light and dark at the same time.",
   "Kartenfarben: Sanfter Verlauf": "Card colours: soft gradient",
@@ -1807,7 +1815,7 @@ const HATG_VORLAGEN = [
     id: "glas-effekt",
     label: "Glas-Effekt (Blur)",
     desc: "Milchiges Glas mit Weichzeichner statt blickdichter Kartenfarbe. Deckt ab: native HA-Karten sowie saemtliche Bubble-Hintergruende inklusive Climate, Cover, Media Player, Select, Kalender, Popup und Horizontal Buttons Stack. Wirkt am staerksten auf einem Dashboard mit Hintergrundbild.",
-    css: ":host,\nha-card {\n  background: rgba(255, 255, 255, 0.10) !important;\n  backdrop-filter: blur(16px) saturate(160%);\n  -webkit-backdrop-filter: blur(16px) saturate(160%);\n  border: 1px solid rgba(255, 255, 255, 0.25) !important;\n  --bubble-card-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-main-buttons-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-button-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-sub-button-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-climate-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-climate-main-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-climate-button-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-cover-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-cover-main-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-media-player-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-media-player-main-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-select-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-select-main-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-horizontal-buttons-stack-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-calendar-main-background-color: rgba(255, 255, 255, 0.10);\n}\n.bubble-container {\n  background: rgba(255, 255, 255, 0.10) !important;\n  backdrop-filter: blur(16px) saturate(160%);\n  -webkit-backdrop-filter: blur(16px) saturate(160%);\n  -webkit-mask-image: -webkit-radial-gradient(white, black);\n}\n:host(hui-heading-card) ha-card,\n:host(mushroom-chips-card) ha-card,\n:host(mushroom-chip) ha-card,\n:host(:has(.chip-container)),\nha-card:has(.chip-container),\n:host(.type-heading) ha-card,\n:host(.type-heading),\nha-card.type-heading,\n:host(:has(.bubble-sub-button)),\nha-card:has(.bubble-sub-button),\n:host(:has(.bubble-separator)),\nha-card:has(.bubble-separator),\n:host(:has(.bubble-container)),\nha-card:has(.bubble-container) {\n  border: none !important;\n  box-shadow: none !important;\n  background: none !important;\n  background-image: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n}",
+    css: ":host,\nha-card {\n  background: rgba(255, 255, 255, 0.10) !important;\n  backdrop-filter: blur(16px) saturate(160%);\n  -webkit-backdrop-filter: blur(16px) saturate(160%);\n  border: 1px solid rgba(255, 255, 255, 0.25) !important;\n  --bubble-card-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-main-buttons-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-button-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-sub-button-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-climate-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-climate-main-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-climate-button-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-cover-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-cover-main-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-media-player-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-media-player-main-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-select-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-select-main-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-horizontal-buttons-stack-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-calendar-main-background-color: rgba(255, 255, 255, 0.10);\n}\n.bubble-container {\n  background: rgba(255, 255, 255, 0.10) !important;\n  backdrop-filter: blur(16px) saturate(160%);\n  -webkit-backdrop-filter: blur(16px) saturate(160%);\n  -webkit-mask-image: -webkit-radial-gradient(white, black);\n}\n:host(.type-custom-bubble-card) {\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n}\n:host(hui-heading-card) ha-card,\n:host(mushroom-chips-card) ha-card,\n:host(mushroom-chip) ha-card,\n:host(:has(.chip-container)),\nha-card:has(.chip-container),\n:host(.type-heading) ha-card,\n:host(.type-heading),\nha-card.type-heading,\n:host(:has(.bubble-sub-button)),\nha-card:has(.bubble-sub-button),\n:host(:has(.bubble-separator)),\nha-card:has(.bubble-separator),\n:host(:has(.bubble-container)),\nha-card:has(.bubble-container) {\n  border: none !important;\n  box-shadow: none !important;\n  background: none !important;\n  background-image: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n}",
   },
   {
     id: "relief-tiefe",
@@ -1827,7 +1835,15 @@ const HATG_VORLAGEN = [
   --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
   --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
 }
-:host,
+/* Nur die Karte selbst, nicht ihr Wirt. Auf Dashboards patcht UIX das
+   Karten-Element unter hui-card: :host ist dann dieses Element, ha-card die
+   Karte darin. ":host, ha-card" bemalte beide - Fuellung, Glanz und
+   Weichzeichnung lagen doppelt uebereinander, die Karten wirkten
+   ausgewaschen. Wo UIX ha-card selbst patcht, greift :host(ha-card).
+   Ohne Filter am Wirt bleiben ausserdem Bubble-Pop-ups intakt: ein
+   backdrop-filter macht ein Element zum Bezugsrahmen fuer position: fixed,
+   und das Pop-up fiel auf die Groesse des Wirts zusammen. */
+:host(ha-card),
 ha-card {
   background-color: rgba(255, 255, 255, 0.5) !important;
   background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
@@ -1847,6 +1863,10 @@ ha-card {
     inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
     var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
 }
+/* Auch bubble-card hat im Shadow Root eine ha-card, die ihre Container
+   umschliesst. Die zeichnet "Bubble Card in Glas" schon - ohne Ausnahme lag
+   darunter ein zweites Glas. */
+:host(.type-custom-bubble-card) ha-card,
 :host(hui-heading-card) ha-card,
 :host(mushroom-title-card) ha-card,
 :host(mushroom-chips-card) ha-card,
@@ -1870,6 +1890,56 @@ mwc-menu-surface {
   --ha-card-background: var(--hatg-glas-menuegrund, #FFFFFF) !important;
   background-color: var(--hatg-glas-menuegrund, #FFFFFF) !important;
   background-image: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+/* Bubble Card legt ein unsichtbares ha-select als Klickflaeche ueber runde
+   Auswahl-Sub-Buttons. Mit deckender Farbe wird daraus ein eckiges dunkles
+   Quadrat. Die Variablen oben halten die aufgeklappte Liste trotzdem deckend. */
+ha-select.bubble-dropdown-select {
+  background-color: transparent !important;
+}`,
+  },
+  {
+    id: "glas-weichzeichnung-karten",
+    label: "Glas: nur Weichzeichnung unter der Karte",
+    desc: "Legt nur den Weichzeichner unter die Karte - ohne eigene Füllung, Glanz oder Kanten. Für Karten, die ihre Fläche selbst malen, etwa HA-Karten, Proxmox- oder Shelly-Karten: Ohne Weichzeichnung liegt das Hintergrundbild scharf dahinter, und sie wirken neben Bubble-Karten durchsichtiger. Bubble-Karten, Überschriften, Mushroom-Titel und -Chips sowie reine Textkarten sind ausgenommen. Nicht zusammen mit „Glas: eigene Ebene unter der Karte“ nötig, die bringt die Weichzeichnung schon mit. Die Menüleiste der HA-Karten bekommt zusätzlich den Kartenschatten des Themes, ihre Kapsel eine plastische Kante.",
+    ziel: "uix-card",
+    css: `/* Nur die Karte selbst, nicht ihr Wirt: Ein backdrop-filter auf dem Wirt
+   macht ihn zum Bezugsrahmen fuer position: fixed. */
+:host(ha-card),
+ha-card {
+  backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+  -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+  /* Die Weichzeichnung folgt der Rundung dieses Elements. Karten, deren
+     Flaeche tiefer liegt (HA-Karten), runden ihre leere ha-card sonst mit
+     16 px, die Flaeche darin mit 24 px - die Ecken lagen dann ausserhalb. */
+  border-radius: var(--ha-card-border-radius, 12px) !important;
+}
+/* Die Menueleiste der HA-Karten ist eine Pille. Ihre Flaeche liest keinen
+   Kartenschatten und blieb neben den uebrigen Karten ohne Kontur - sie
+   bekommt den des Themes, die Kapsel des aktiven Punkts die plastische
+   Innenkante des Gewaehlten. */
+ha-card:has(.menue-leiste) {
+  border-radius: 9999px !important;
+}
+.menue-leiste {
+  box-shadow: var(--ha-card-box-shadow, 0 8px 32px rgba(0, 0, 0, 0.28)) !important;
+}
+.menue-kapsel {
+  box-shadow:
+    inset 3px 3px 7px color-mix(in srgb, var(--accent-color) 62%, #000000),
+    inset -2px -2px 6px color-mix(in srgb, var(--accent-color) 74%, #ffffff) !important;
+}
+/* Bubble Card: Das ha-card in bubble-card umschliesst die Container, die
+   "Bubble Card in Glas" schon weichzeichnet. Huellen-Karten sollen nicht
+   als Kachel erscheinen. */
+:host(.type-custom-bubble-card) ha-card,
+:host(hui-heading-card) ha-card,
+:host(mushroom-title-card) ha-card,
+:host(mushroom-chips-card) ha-card,
+:host(.text-only),
+ha-card.text-only {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }`,
@@ -2039,6 +2109,28 @@ ha-card {
 }`,
   },
   {
+    id: "glas-kartenmarker",
+    paket: "glas",
+    label: "Kartenmarker in Glas",
+    desc: "Die runden Marker von Personen und Geräten auf der Karte - im Panel Karte und in Kartenkarten. Legt Glasfüllung, Glanz, Weichzeichnung und Lichtkanten auf den Marker. Der farbige Ring, an dem man die Entität erkennt, bleibt, und Marker mit Bild zeigen weiter ihr Bild. Gruppierte Marker und Zonen zeichnet die Karte selbst, sie sind nicht betroffen.",
+    ziel: "uix-entity-marker",
+    css: `/* Das Stylesheet landet im Shadow Root von ha-entity-marker. Die sichtbare
+   Flaeche ist .marker - deckend in der Kartenfarbe, mit einem 1 px Ring in
+   --ha-marker-color. Den Ring laesst die Vorlage stehen: an seiner Farbe
+   erkennt man die Entitaet. */
+.marker {
+  background-color: rgba(255, 255, 255, 0.68) !important;
+  background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
+  background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+  backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
+  -webkit-backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
+  box-shadow:
+    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
+    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
+    var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+}`,
+  },
+  {
     id: "glas-badges",
     paket: "glas",
     label: "Badges in Glas",
@@ -2129,7 +2221,7 @@ ha-badge {
     id: "glas-bubble",
     paket: "glas",
     label: "Bubble Card in Glas",
-    desc: "Bubble Card zeichnet seine Flächen selbst und liest dafür eigene Variablen - ohne diese Vorlage bleiben Bubble-Karten deckend, auch wenn die Karte darunter längst Glas ist. Setzt die Variablen auf die gemeinsamen Glaswerte und legt Weichzeichnung, Reflex und Kanten auf Karten, Icons, Sub-Buttons sowie Climate-, Cover-, Media-Player-, Select- und Kalender-Flächen. Schaltet außerdem den Rahmen ab, den Bubble Card aus dem Theme-Feld bubble-border zieht: Er ist deckend und liegt genau auf der Lichtkante, die diese Vorlage als inneren Ring zeichnet - ohne ihn steuern die Regler im Bereich Glaslook auch die Kante. Die Variablennamen stammen aus Bubble Cards eigenem CSS und wurden in einer laufenden Instanz geprüft.",
+    desc: "Bubble Card zeichnet seine Flächen selbst und liest dafür eigene Variablen - ohne diese Vorlage bleiben Bubble-Karten deckend, auch wenn die Karte darunter längst Glas ist. Setzt die Variablen auf die gemeinsamen Glaswerte und gibt Karten, Sub-Buttons sowie Climate-, Cover-, Media-Player-, Select- und Kalender-Flächen Weichzeichnung, die Rundung der Karten und einen kleinen weichen Schatten - ohne Ring und Glanz, wie die Knöpfe eigener Karten. Icons werden zu abgerundeten Kästchen mit leiser Tönung. Eingeschaltete Karten und Sub-Buttons mit Hintergrund werden deckend in der Akzentfarbe mit plastischer Innenkante, Schrift und Symbol darauf in der Textfarbe für Akzentflächen. Schieber bekommen eine vertiefte Glasmulde als Spur und eine deckende Füllung mit plastischer Kante. Separatoren bleiben ohne Hintergrund. Schaltet außerdem den Rahmen ab, den Bubble Card aus dem Theme-Feld bubble-border zieht. Die Variablennamen stammen aus Bubble Cards eigenem CSS und wurden in einer laufenden Instanz geprüft.",
     ziel: "uix-card",
     css: `:host {
   /* Bubble Card faerbt seine Flaechen ueber eigene Variablen. Ohne diese Zeilen
@@ -2156,7 +2248,18 @@ ha-badge {
      sie also ueberdecken. Bubbles eigener Standard ist ohnehin none - mit
      dieser Zeile kommt die Kante wieder aus dem Bereich Glaslook. */
   --bubble-border: none !important;
+  /* Rundung wie die Raumzeilen eigener Karten (Heizzentrale: 11,5 px bei
+     50 px Hoehe, auf 56 px hohe Bubble-Karten umgerechnet). Bubble rechnet
+     Hintergrund und Schieberspur aus diesen Variablen. */
+  --bubble-button-border-radius: 13px;
+  --bubble-border-radius: 13px;
 }
+/* Flaechen im Stil der Knoepfe eigener Karten: Weichzeichnung, kein Ring,
+   kein Glanz, ein kleiner weicher Schatten mit feiner Lichtkante - ein
+   Sechstel des Kartenschattens. Ring, Glanz und der grosse Schatten liessen
+   Bubble-Karten neben diesen Knoepfen an einer laufenden Instanz fremd
+   wirken. Das Klappfeld der Menueleiste gehoert dazu: seine einzige Kontur
+   war der Rahmen, den diese Vorlage oben abschaltet. */
 .bubble-container,
 .bubble-button-container,
 .bubble-climate-container,
@@ -2168,23 +2271,33 @@ ha-badge {
 .bubble-temperature-container,
 .bubble-low-temp-container,
 .bubble-high-temp-container,
-.bubble-icon-container,
-.bubble-main-icon-container,
-.bubble-sub-button,
-/* Das Klappfeld der Menueleiste faerbt sich ueber --bubble-main-background-color
-   schon mit, bekam aber weder Weichzeichnung noch Kante - seine einzige Kontur
-   war der Rahmen, den diese Vorlage oben abschaltet. */
 .bubble-menu-bar-panel {
   backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%)) !important;
   -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%)) !important;
-  background-image:
-    linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-    var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-  box-shadow:
-    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.55)),
-    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-    var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+  background-image: none !important;
+  border-radius: 13px !important;
+  box-shadow: 0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3) !important;
+}
+.bubble-background {
+  border-radius: inherit !important;
+}
+/* Icons als abgerundete Kaestchen mit leiser Toenung, ohne Rand und Glanz. */
+.bubble-icon-container,
+.bubble-main-icon-container {
+  background-color: color-mix(in srgb, var(--secondary-text-color, rgba(255, 255, 255, 0.55)) 15%, transparent) !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+  border-radius: 14px !important;
+}
+/* Sub-Buttons wie ruhende Knoepfe. */
+.bubble-sub-button {
+  background-image: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-radius: 11px !important;
+  box-shadow: 0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3) !important;
 }
 ha-dropdown,
 ha-combo-box,
@@ -2199,6 +2312,69 @@ mwc-menu-surface {
   background-image: none !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
+}
+/* Bubble Card legt ein unsichtbares ha-select als Klickflaeche ueber runde
+   Auswahl-Sub-Buttons. Mit deckender Farbe wird daraus ein eckiges dunkles
+   Quadrat. Die Variablen oben halten die aufgeklappte Liste trotzdem deckend. */
+ha-select.bubble-dropdown-select {
+  background-color: transparent !important;
+}
+/* Eingefaerbte Karten, etwa ein eingeschalteter Schalter: Bubble setzt dann
+   inline opacity: 1 auf .bubble-background, sonst 0.5. Zustandskarten melden
+   ebenfalls is-on, bleiben aber farblos - an is-on allein haengt die Regel
+   deshalb nicht, sonst stuende dunkle Schrift auf dunklem Glas. Wie das
+   Gewaehlte eigener Karten: deckend in der Akzentfarbe mit plastischer
+   Innenkante, Schrift und Symbol in --text-primary-color. */
+ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-background {
+  background-color: var(--bubble-button-background-color) !important;
+  box-shadow:
+    inset 3px 3px 7px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) 62%, #000000),
+    inset -2px -2px 6px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) 74%, #ffffff) !important;
+}
+ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-name,
+ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-state,
+ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-main-icon {
+  color: var(--text-primary-color, #ffffff) !important;
+  opacity: 1 !important;
+}
+ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-main-icon-container {
+  background-color: rgba(0, 0, 0, 0.16) !important;
+}
+/* Separatoren sind Ueberschriften mit Linie, keine Kacheln. */
+.bubble-container.separator-container {
+  background: none !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+}
+/* Sub-Buttons mit Hintergrund (etwa ein Sensorwert im Separator): gewaehlt
+   wie die Karten. */
+.bubble-sub-button.background-on {
+  background-color: var(--bubble-sub-button-light-background-color, var(--bubble-accent-color, var(--bubble-default-color))) !important;
+  color: var(--text-primary-color, #ffffff) !important;
+  box-shadow:
+    inset 3px 3px 7px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) 62%, #000000),
+    inset -2px -2px 6px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) 74%, #ffffff) !important;
+}
+/* Schieber wie die Schieber eigener Karten: Spur als vertiefte Glasmulde,
+   deren heller Innenschatten --neumorph-hell liest (ohne Theme-Wert aus der
+   Kartenflaeche gemischt). Die Fuellung behaelt Bubbles Farbe - Akzent oder
+   Lichtfarbe -, wird deckend und bekommt die plastische Innenkante.
+   Farbschieber setzen opacity 0 mit hoeherer Spezifitaet und bleiben
+   unberuehrt. */
+.bubble-range-slider {
+  background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.14)) !important;
+  box-shadow:
+    inset 5px 5px 11px color-mix(in srgb, var(--ha-card-background, var(--card-background-color)) 88%, #000000),
+    inset -5px -5px 11px var(--neumorph-hell, color-mix(in srgb, var(--ha-card-background, var(--card-background-color)) 58%, #ffffff)) !important;
+}
+.bubble-range-fill {
+  opacity: 1 !important;
+  border-radius: inherit !important;
+  box-shadow:
+    inset 3px 3px 7px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) 62%, #000000),
+    inset -2px -2px 6px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) 74%, #ffffff) !important;
 }`,
   },
   {
@@ -2453,17 +2629,15 @@ mwc-menu-surface {
     id: "glas-buttons-karten",
     paket: "glas",
     label: "Bedienelemente in Glas: Karten",
-    desc: "Gibt Schaltflächen denselben Aufbau wie dem aktiven Eintrag der Seitenleiste: Eckenradius der Karten, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Betrifft die Bedienelemente in Karten: Tile-Regler, Buttons in Entities- und Glance-Karten, Assist-Chips. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.",
+    desc: "Gibt Schaltflächen den Aufbau der Knöpfe eigener Karten: kleine Rundung, feine Lichtkante oben und ein kleiner weicher Schatten. Betrifft die Bedienelemente in Karten: Tile-Regler, Buttons in Entities- und Glance-Karten, Assist-Chips. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.",
     ziel: "uix-card",
     css: `ha-button,
 ha-icon-button,
 ha-assist-chip {
-  --ha-button-border-radius: var(--ha-card-border-radius, 14px);
-  --ha-button-box-shadow:
-    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)),
-    var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7));
+  --ha-button-border-radius: 11px;
+  /* Wie die ruhenden Knoepfe eigener Karten: kleiner weicher Schatten mit
+     feiner Lichtkante - ein Sechstel des Kartenschattens -, kein Ring. */
+  --ha-button-box-shadow: 0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3);
 }
 ha-control-button,
 ha-control-select,
@@ -2479,17 +2653,15 @@ ha-control-slider {
     id: "glas-buttons-rahmen",
     paket: "glas",
     label: "Bedienelemente in Glas: Kopfleiste und Rahmen",
-    desc: "Gibt Schaltflächen denselben Aufbau wie dem aktiven Eintrag der Seitenleiste: Eckenradius der Karten, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Betrifft die Icon-Buttons der Kopfleiste - Suche, Assist, Bearbeiten, Benachrichtigungen - und alles Übrige am Dashboard-Rahmen. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.",
+    desc: "Gibt Schaltflächen den Aufbau der Knöpfe eigener Karten: kleine Rundung, feine Lichtkante oben und ein kleiner weicher Schatten. Betrifft die Icon-Buttons der Kopfleiste - Suche, Assist, Bearbeiten, Benachrichtigungen - und alles Übrige am Dashboard-Rahmen. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.",
     ziel: "uix-root",
     css: `ha-button,
 ha-icon-button,
 ha-assist-chip {
-  --ha-button-border-radius: var(--ha-card-border-radius, 14px);
-  --ha-button-box-shadow:
-    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)),
-    var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7));
+  --ha-button-border-radius: 11px;
+  /* Wie die ruhenden Knoepfe eigener Karten: kleiner weicher Schatten mit
+     feiner Lichtkante - ein Sechstel des Kartenschattens -, kein Ring. */
+  --ha-button-box-shadow: 0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3);
 }
 ha-control-button,
 ha-control-select,
@@ -2505,17 +2677,15 @@ ha-control-slider {
     id: "glas-buttons-dialoge",
     paket: "glas",
     label: "Bedienelemente in Glas: Dialoge",
-    desc: "Gibt Schaltflächen denselben Aufbau wie dem aktiven Eintrag der Seitenleiste: Eckenradius der Karten, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Betrifft die Schaltflächen in Dialogen, also Abbrechen, Speichern und das Schließen-Kreuz. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.",
+    desc: "Gibt Schaltflächen den Aufbau der Knöpfe eigener Karten: kleine Rundung, feine Lichtkante oben und ein kleiner weicher Schatten. Betrifft die Schaltflächen in Dialogen, also Abbrechen, Speichern und das Schließen-Kreuz. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.",
     ziel: "uix-dialog",
     css: `ha-button,
 ha-icon-button,
 ha-assist-chip {
-  --ha-button-border-radius: var(--ha-card-border-radius, 14px);
-  --ha-button-box-shadow:
-    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)),
-    var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7));
+  --ha-button-border-radius: 11px;
+  /* Wie die ruhenden Knoepfe eigener Karten: kleiner weicher Schatten mit
+     feiner Lichtkante - ein Sechstel des Kartenschattens -, kein Ring. */
+  --ha-button-box-shadow: 0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3);
 }
 ha-control-button,
 ha-control-select,
@@ -2531,18 +2701,24 @@ ha-control-slider {
     id: "glas-buttons-einstellungen",
     paket: "glas",
     label: "Bedienelemente in Glas: Einstellungen und Rest der Oberfläche",
-    desc: "Gibt Schaltflächen denselben Aufbau wie dem aktiven Eintrag der Seitenleiste: Eckenradius der Karten, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Betrifft alles außerhalb von Karten, Kopfleiste und Dialogen - die Einstellungsseiten samt ihrer Aktionsknöpfe, eigene Panels und die Knöpfe der Seitenleiste. Sitzt am App Drawer, weil die Einstellungsseiten selbst kein eigenes Stilziel haben: ha-panel-config hat keinen Shadow Root, dort kommt nichts an. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht.",
+    desc: "Gibt Schaltflächen den Aufbau der Knöpfe eigener Karten: kleine Rundung, feine Lichtkante oben und ein kleiner weicher Schatten. Betrifft alles außerhalb von Karten, Kopfleiste und Dialogen - die Einstellungsseiten samt ihrer Aktionsknöpfe, eigene Panels und die Knöpfe der Seitenleiste. Sitzt am App Drawer, weil die Einstellungsseiten selbst kein eigenes Stilziel haben: ha-panel-config hat keinen Shadow Root, dort kommt nichts an. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht.",
     ziel: "uix-drawer",
-    css: `ha-button,
+    css: `/* Das Stylesheet liegt im Shadow Root von ha-drawer. Die Knoepfe der
+   Einstellungsseiten liegen mehrere Shadow Roots tiefer - ein Selektor
+   ha-button traf dort keinen einzigen. Auf :host gesetzt erben sie die
+   Variablen. */
+:host,
+ha-button,
 ha-icon-button,
 ha-assist-chip {
-  --ha-button-border-radius: var(--ha-card-border-radius, 14px);
-  --ha-button-box-shadow:
-    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)),
-    var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7));
+  --ha-button-border-radius: 11px;
+  /* Wie die ruhenden Knoepfe eigener Karten: kleiner weicher Schatten mit
+     feiner Lichtkante - ein Sechstel des Kartenschattens -, kein Ring. */
+  --ha-button-box-shadow: 0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3);
 }
+/* Bewusst nicht auf :host: Eigene Karten wie die HA-Karten faerben ihre
+   Mulden ueber --control-button-background-color. Vom App Drawer vererbt,
+   wurden sie in der Markenfarbe blau. */
 ha-control-button,
 ha-control-select,
 ha-control-slider {
@@ -2634,26 +2810,30 @@ ha-list-item-button.selected::before {
   {
     id: "seitenleiste-aktiv-liquid",
     paket: "glas",
-    label: "Seitenleiste: aktiver Eintrag als Glaskörper",
-    desc: "Der markierte Eintrag wird zum Glaskörper statt zur flachen Farbfläche: Verlauf in der Auswahlfarbe, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Home Assistant zeichnet diese Fläche als Overlay mit fester Deckkraft - die Vorlage hebt sie auf und ersetzt sie durch die Schichten.",
+    label: "Seitenleiste: aktiver Eintrag in der Akzentfarbe",
+    desc: "Der markierte Eintrag sieht aus wie das Gewählte eigener Karten und die Kapsel einer Menüleiste: deckend in der Akzentfarbe mit plastischer Innenkante, Schrift und Symbol darauf in der Textfarbe für Akzentflächen. Einen Schlagschatten gibt es bewusst nicht - die Liste der Seitenleiste schneidet ihn ab, übrig bliebe ein dunkles Rechteck. Home Assistant zeichnet diese Fläche als Overlay mit fester Deckkraft - die Vorlage hebt sie auf.",
     ziel: "uix-sidebar",
     css: `ha-list-item-button.selected::before {
   border-radius: var(--ha-card-border-radius, 14px) !important;
   /* Home Assistant faerbt diese Flaeche selbst und daempft sie ueber opacity -
      ohne !important bleibt davon nichts uebrig. */
   opacity: 1 !important;
-  background-color: rgba(10, 132, 255, 0.28) !important;
-  background-color: color-mix(in srgb, var(--sidebar-selected-icon-color, var(--primary-color)) 38%, transparent) !important;
-  background-image:
-    linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-    var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+  /* Wie das Gewaehlte eigener Karten und die Kapsel einer Menueleiste:
+     deckend in der Akzentfarbe mit plastischer Innenkante. Kein
+     Schlagschatten: Die Liste der Seitenleiste schneidet alles ab, was ueber
+     den Eintrag hinausragt - von einem weichen Schatten blieb an einer
+     laufenden Instanz nur ein dunkles Rechteck hinter der Pille. */
+  background-color: var(--accent-color, var(--primary-color)) !important;
+  background-image: none !important;
   box-shadow:
-    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)),
-    var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
-  backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
-  -webkit-backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
+    inset 3px 3px 7px color-mix(in srgb, var(--accent-color, var(--primary-color)) 62%, #000000),
+    inset -2px -2px 6px color-mix(in srgb, var(--accent-color, var(--primary-color)) 74%, #ffffff) !important;
+}
+/* Schrift und Symbol auf der Akzentflaeche in der Textfarbe fuer Akzentflaechen. */
+ha-list-item-button.selected {
+  --sidebar-selected-text-color: var(--text-primary-color);
+  --sidebar-selected-icon-color: var(--text-primary-color);
+  color: var(--text-primary-color) !important;
 }
 ha-list-item-button::before {
   transition: opacity 160ms ease, box-shadow 160ms ease;
@@ -2710,15 +2890,30 @@ ha-adaptive-dialog {
     desc: "Übernimmt das Hintergrundbild von der Startseite und legt es hinter die ganze Oberfläche - auch hinter Einstellungsseiten, HACS, Verlauf und alle anderen Panels, wo das Dashboard-Hintergrundbild nicht hinreicht. Es muss nichts doppelt eingetragen werden: Die Vorlage greift auf das zu, was unter Hintergrund eingestellt ist, samt Abdunkelung. Ohne gesetztes Bild bewirkt sie nichts.",
     ziel: "uix-drawer",
     css: `:host {
-  /* Nimmt das Bild, das unter "Hintergrund" auf der Startseite eingestellt ist,
-     und legt es hinter alles - auch hinter Einstellungsseiten, HACS und Verlauf.
-     ha-drawer umschliesst alle Panels und ist selbst durchsichtig, die Panels
-     darin ebenso; die graue Flaeche kommt sonst von html. Ist nichts gesetzt,
-     greift der Rueckfall und es passiert nichts.
+  /* ha-drawer umschliesst alle Panels und ist selbst durchsichtig, die Panels
+     darin ebenso; die graue Flaeche kommt sonst von html. Der Host bleibt
+     durchsichtig, das Bild sitzt auf einer eigenen Ebene darunter. */
+  background: transparent !important;
+}
+:host::before {
+  /* Frueher lag das Bild mit background-attachment: fixed direkt auf dem Host.
+     Das zwingt den Browser, bei jedem Scrollschritt die ganze Flaeche neu zu
+     malen - es ruckelte ueberall, nicht nur in den Einstellungen. Ausserdem ist
+     ha-drawer nur so hoch wie das Fenster: wurde eine Seite laenger, riss das
+     Bild nach einer Bildschirmhoehe ab.
+     Eine fest stehende Ebene mit eigener GPU-Schicht behebt beides - sie bewegt
+     sich beim Scrollen nicht und muss nicht neu gemalt werden.
      --lovelace-background ist ein background-Kurzwert (Bild, Position, Groesse),
-     deshalb background und nicht background-image. Live geprueft. */
+     deshalb background und nicht background-image. attachment danach auf
+     scroll, falls ein eigener Wert fixed mitbringt - die Ebene steht ohnehin. */
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
   background: var(--lovelace-background, transparent) !important;
-  background-attachment: fixed !important;
+  background-attachment: scroll !important;
+  will-change: transform;
 }`,
   },
   {
@@ -2734,6 +2929,55 @@ ha-adaptive-dialog {
      Shadow Root, dort kommt ein :host-Block nicht an (nachgemessen). */
   --primary-background-color: transparent;
 }`,
+  },
+  {
+    id: "bubble-popup-hintergrundbild",
+    label: "Bubble-Pop-ups mit Hintergrundbild",
+    desc: "Legt ein Hintergrundbild in die Pop-ups von Bubble Card. Ohne weitere Angabe ist es das Bild, das unter Hintergrund auf der Startseite eingestellt ist. Soll ein Pop-up ein anderes Bild zeigen, einen eigenen Theme-Eintrag popup-custom-wallpaper setzen - getrennt für Light und Dark möglich. Bubble Card färbt die Pop-up-Fläche nur über Farbvariablen, ein Bild geht deshalb nur über diese Vorlage. Die Kopfzeile des Pop-ups wird durchsichtig, damit das Bild bis oben reicht. Die Deckkraft, die in Bubble Card für den Pop-up-Hintergrund eingestellt ist, wirkt mit dieser Vorlage nicht mehr - das Bild deckt die Fläche ganz.",
+    ziel: "uix-card",
+    css: `.bubble-pop-up-background {
+  /* Bubble Card faerbt diese Flaeche ausschliesslich ueber background-color:
+     --bubble-pop-up-main-background-color, dahinter Rueckfaelle. Die
+     eingestellte Deckkraft steckt als Alphawert in dieser Farbe. Eine Variable
+     kann kein Bild tragen - es braucht diese Regel, und der Kurzwert
+     background ersetzt dabei auch die Farbe.
+     --lovelace-background ist ein background-Kurzwert (Bild, Position,
+     Groesse), deshalb background und nicht background-image. Ein eigener
+     Theme-Eintrag popup-custom-wallpaper geht vor. */
+  background: var(--popup-custom-wallpaper, var(--lovelace-background, none)) !important;
+  background-attachment: scroll !important;
+}
+.bubble-pop-up .bubble-header-container,
+.bubble-pop-up .bubble-header {
+  /* bubble-header vergibt Bubble Card nur im Aufbau des Pop-ups - andere
+     Kopfzeilen im Dashboard bleiben unberuehrt. Nachgesehen in v3.3.0. */
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}`,
+  },
+  // UIX haengt die Styles des Info-Dialogs an ha-adaptive-dialog, nicht an
+  // ha-more-info-dialog. Der eigentliche Dialog liegt in dessen Shadow Root,
+  // deshalb beginnen die Pfade mit einem fuehrenden $ - ohne greift nichts
+  // (an einer Instanz mit Markierungen je Variante nachgemessen). Die Flaeche
+  // faerbt HA nur ueber background-color: --ha-dialog-surface-background landet
+  // als Farb-Token auf wa-dialog, das Bottom-Sheet setzt background-color direkt.
+  // Ein Bild braucht also eine Regel auf dem Part der Flaeche.
+  {
+    id: "info-dialog-hintergrundbild",
+    label: "Info-Dialog mit Hintergrundbild",
+    desc: "Legt das Hintergrundbild in den Dialog, der beim Antippen einer Entität aufgeht - am Desktop wie im Bottom-Sheet auf Tablet und Handy. Ohne weitere Angabe ist es das Bild, das unter Hintergrund auf der Startseite eingestellt ist; ein eigener Theme-Eintrag popup-custom-wallpaper geht vor, derselbe wie bei den Bubble-Pop-ups. Home Assistant färbt die Dialogfläche nur über background-color, ein Bild braucht deshalb eine Regel direkt auf der Fläche. Zusammen mit Info-Dialog in Glas zeigt die Fläche das Bild statt Glas; endet der Hintergrundwert mit einer Vollfarbe, wird sie deckend.",
+    ziel: "uix-more-info-yaml",
+    css: `"$ ha-dialog $": |
+  wa-dialog::part(dialog) {
+    background: var(--popup-custom-wallpaper, var(--lovelace-background, none)) !important;
+    background-attachment: scroll !important;
+  }
+"$ ha-bottom-sheet $": |
+  wa-drawer::part(dialog) {
+    background: var(--popup-custom-wallpaper, var(--lovelace-background, none)) !important;
+    background-attachment: scroll !important;
+  }`,
   },
   {
     id: "kopfleiste-glas",
@@ -5513,23 +5757,6 @@ class HATGPanel extends HTMLElement {
         : "Glas überall: auch Karten und Badges bleiben durchscheinend."
     );
   }
-  glasAbdunkeln(an) {
-    const vorher = this._state.editorMode;
-    ["light", "dark"].forEach((mode) => {
-      this._state.editorMode = mode;
-      this.commitField("hatg-glas-abdunkeln", an ? "0.35" : "0");
-    });
-    this._state.editorMode = vorher;
-    this.render();
-    this.showToast(
-      an
-        ? "Abdunkelung an: 35 Prozent hinter dem Glas, wie Apple es für helle Hintergründe empfiehlt."
-        : "Abdunkelung aus."
-    );
-  }
-  abdunkelungAn() {
-    return Number(String(this.currentValues()["hatg-glas-abdunkeln"] || "0")) > 0;
-  }
 
   // Der Glaslook laesst sich aus drei Angaben ableiten: Farbton, Deckkraft und
   // Weichzeichnung. Die uebrigen Werte sind Abstufungen davon.
@@ -6252,10 +6479,6 @@ uix:
               <button type="button" class="${this.aktivesGlasProfil() === "richtlinie" ? "active" : ""}" data-glas-profil="richtlinie">${this._sprache === "en" ? "Apple guideline" : "Apple-Richtlinie"}</button>
               <button type="button" class="${this.aktivesGlasProfil() === "ueberall" ? "active" : ""}" data-glas-profil="ueberall">${this._sprache === "en" ? "Glass everywhere" : "Glas überall"}</button>
             </div>
-            <label class="glas-schalter">
-              <input type="checkbox" data-glas-abdunkeln ${this.abdunkelungAn() ? "checked" : ""} />
-              <span>${this._sprache === "en" ? "Dim behind glass (35 %, for light backgrounds)" : "Abdunkeln hinter Glas (35 %, für helle Hintergründe)"}</span>
-            </label>
           </div>
           <div class="glas-regler-reihe">
             <div class="generator-control">
@@ -7941,8 +8164,6 @@ uix:
         .glas-regler-kopf span { font-size: 12px; line-height: 1.5; color: var(--hatg-text-dim); }
         .glas-regler-reihe { display: grid; grid-template-columns: 1fr 1fr auto; gap: 18px; align-items: end; }
         .glas-profile { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; margin-bottom: 12px; }
-        .glas-schalter { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--hatg-text-dim); cursor: pointer; }
-        .glas-schalter input { accent-color: var(--hatg-blue); }
         .glas-toene { display: flex; gap: 10px; }
         .glas-ton { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; }
         .glas-ton span { font-size: 10px; letter-spacing: .03em; color: var(--hatg-muted); }
@@ -8618,9 +8839,7 @@ uix:
     });
     this.shadowRoot.querySelectorAll("[data-glas-profil]").forEach((el) => {
       el.addEventListener("click", () => this.setzeGlasProfil(el.dataset.glasProfil));
-    });
-    this.shadowRoot.querySelector("[data-glas-abdunkeln]")?.addEventListener("change", (e) => this.glasAbdunkeln(e.target.checked));
-    const glasDeckkraft = this.shadowRoot.querySelector("[data-glas-deckkraft]");
+    });    const glasDeckkraft = this.shadowRoot.querySelector("[data-glas-deckkraft]");
     const glasBlur = this.shadowRoot.querySelector("[data-glas-blur]");
     const glasTonHell = this.shadowRoot.querySelector("[data-glas-ton-light]");
     const glasTonDunkel = this.shadowRoot.querySelector("[data-glas-ton-dark]");
