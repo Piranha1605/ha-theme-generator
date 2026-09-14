@@ -181,6 +181,22 @@ pruefe("Aktiver Seitenleisten-Eintrag ohne Schlagschatten", () => {
   assert.ok(teile.length > 0 && teile.every((s) => s.startsWith("inset")), `nicht jede Ebene ist inset: ${JSON.stringify(teile)}`);
 });
 
+pruefe("Bubbles Auswahlfeld bleibt durchsichtig, wo uix-card ha-select deckend faerbt", () => {
+  // Bubble legt ha-select.bubble-dropdown-select ueber runde Sub-Buttons. Deckend
+  // gefaerbt stand an einer laufenden Instanz ein eckiges dunkles Quadrat darauf.
+  const fehler = [];
+  for (const v of mitCss) {
+    if ((feld(v.block, "ziel") || "uix-card") !== "uix-card") continue;
+    const c = ohneKommentare(css(v.block));
+    const regeln = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)];
+    const deckend = regeln.some((m) => m[1].split(",").some((s) => s.trim() === "ha-select") && /(^|[;\s])background-color:\s*var\(--hatg-glas-menuegrund/.test(m[2]));
+    if (!deckend) continue;
+    const ausnahme = regeln.some((m) => m[1].trim() === "ha-select.bubble-dropdown-select" && /background-color:\s*transparent/.test(m[2]));
+    if (!ausnahme) fehler.push(v.id);
+  }
+  assert.deepEqual(fehler, [], `ohne Ausnahme fuer Bubbles Auswahlfeld: ${fehler.join(", ")}`);
+});
+
 function vorlage(id) {
   const v = vorlagen.find((x) => x.id === id);
   assert.ok(v, `Vorlage ${id} fehlt`);

@@ -1884,6 +1884,12 @@ mwc-menu-surface {
   background-image: none !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
+}
+/* Bubble Card legt ein unsichtbares ha-select als Klickflaeche ueber runde
+   Auswahl-Sub-Buttons. Mit deckender Farbe wird daraus ein eckiges dunkles
+   Quadrat. Die Variablen oben halten die aufgeklappte Liste trotzdem deckend. */
+ha-select.bubble-dropdown-select {
+  background-color: transparent !important;
 }`,
   },
   {
@@ -2221,6 +2227,12 @@ mwc-menu-surface {
   background-image: none !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
+}
+/* Bubble Card legt ein unsichtbares ha-select als Klickflaeche ueber runde
+   Auswahl-Sub-Buttons. Mit deckender Farbe wird daraus ein eckiges dunkles
+   Quadrat. Die Variablen oben halten die aufgeklappte Liste trotzdem deckend. */
+ha-select.bubble-dropdown-select {
+  background-color: transparent !important;
 }`,
   },
   {
