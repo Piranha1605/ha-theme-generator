@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.3.0b2";
+const HATG_VERSION = "1.3.0b3";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -296,6 +296,8 @@ const HATG_TEXTE = {
   "Übernimmt das Hintergrundbild von der Startseite und legt es hinter die ganze Oberfläche - auch hinter Einstellungsseiten, HACS, Verlauf und alle anderen Panels, wo das Dashboard-Hintergrundbild nicht hinreicht. Es muss nichts doppelt eingetragen werden: Die Vorlage greift auf das zu, was unter Hintergrund eingestellt ist, samt Abdunkelung. Ohne gesetztes Bild bewirkt sie nichts.": "Takes the background image from the start page and puts it behind the entire interface - including settings pages, HACS, history and every other panel the dashboard background never reaches. Nothing has to be entered twice: the preset reads whatever is set under Background, dimming included. With no image set it does nothing.",
   "Bubble-Pop-ups mit Hintergrundbild": "Bubble pop-ups with background image",
   "Legt ein Hintergrundbild in die Pop-ups von Bubble Card. Ohne weitere Angabe ist es das Bild, das unter Hintergrund auf der Startseite eingestellt ist. Soll ein Pop-up ein anderes Bild zeigen, einen eigenen Theme-Eintrag popup-custom-wallpaper setzen - getrennt für Light und Dark möglich. Bubble Card färbt die Pop-up-Fläche nur über Farbvariablen, ein Bild geht deshalb nur über diese Vorlage. Die Kopfzeile des Pop-ups wird durchsichtig, damit das Bild bis oben reicht. Die Deckkraft, die in Bubble Card für den Pop-up-Hintergrund eingestellt ist, wirkt mit dieser Vorlage nicht mehr - das Bild deckt die Fläche ganz.": "Puts a background image into Bubble Card pop-ups. By default it is the image set under Background on the start page. For a different image in pop-ups, add your own theme entry popup-custom-wallpaper - separately for light and dark if you like. Bubble Card colours the pop-up surface through colour variables only, so an image needs this preset. The pop-up header becomes transparent so the image reaches the top. The background opacity set in Bubble Card no longer applies with this preset - the image covers the surface completely.",
+  "Info-Dialog mit Hintergrundbild": "Info dialog with background image",
+  "Legt das Hintergrundbild in den Dialog, der beim Antippen einer Entität aufgeht - am Desktop wie im Bottom-Sheet auf Tablet und Handy. Ohne weitere Angabe ist es das Bild, das unter Hintergrund auf der Startseite eingestellt ist; ein eigener Theme-Eintrag popup-custom-wallpaper geht vor, derselbe wie bei den Bubble-Pop-ups. Home Assistant färbt die Dialogfläche nur über background-color, ein Bild braucht deshalb eine Regel direkt auf der Fläche. Zusammen mit Info-Dialog in Glas zeigt die Fläche das Bild statt Glas; endet der Hintergrundwert mit einer Vollfarbe, wird sie deckend.": "Puts the background image into the dialog that opens when you tap an entity - on desktop as well as in the bottom sheet on tablets and phones. By default it is the image set under Background on the start page; your own theme entry popup-custom-wallpaper takes precedence, the same one the Bubble pop-ups use. Home Assistant colours the dialog surface through background-color only, so an image needs a rule directly on the surface. Together with Info dialog in glass the surface shows the image instead of glass; if the background value ends with a solid colour, it becomes opaque.",
   "Wirkt auf": "Applies to",
   "Das CSS landet beim Aktivieren markiert im gewählten Stilziel - genau wie die mitgelieferten Vorlagen, für Light und Dark gleichzeitig.": "When activated, the CSS is written and marked into the chosen style target - just like the built-in presets, for light and dark at the same time.",
   "Kartenfarben: Sanfter Verlauf": "Card colours: soft gradient",
@@ -2777,6 +2779,29 @@ ha-adaptive-dialog {
   border: none !important;
   box-shadow: none !important;
 }`,
+  },
+  // UIX haengt die Styles des Info-Dialogs an ha-adaptive-dialog, nicht an
+  // ha-more-info-dialog. Der eigentliche Dialog liegt in dessen Shadow Root,
+  // deshalb beginnen die Pfade mit einem fuehrenden $ - ohne greift nichts
+  // (an einer Instanz mit Markierungen je Variante nachgemessen). Die Flaeche
+  // faerbt HA nur ueber background-color: --ha-dialog-surface-background landet
+  // als Farb-Token auf wa-dialog, das Bottom-Sheet setzt background-color direkt.
+  // Ein Bild braucht also eine Regel auf dem Part der Flaeche.
+  {
+    id: "info-dialog-hintergrundbild",
+    label: "Info-Dialog mit Hintergrundbild",
+    desc: "Legt das Hintergrundbild in den Dialog, der beim Antippen einer Entität aufgeht - am Desktop wie im Bottom-Sheet auf Tablet und Handy. Ohne weitere Angabe ist es das Bild, das unter Hintergrund auf der Startseite eingestellt ist; ein eigener Theme-Eintrag popup-custom-wallpaper geht vor, derselbe wie bei den Bubble-Pop-ups. Home Assistant färbt die Dialogfläche nur über background-color, ein Bild braucht deshalb eine Regel direkt auf der Fläche. Zusammen mit Info-Dialog in Glas zeigt die Fläche das Bild statt Glas; endet der Hintergrundwert mit einer Vollfarbe, wird sie deckend.",
+    ziel: "uix-more-info-yaml",
+    css: `"$ ha-dialog $": |
+  wa-dialog::part(dialog) {
+    background: var(--popup-custom-wallpaper, var(--lovelace-background, none)) !important;
+    background-attachment: scroll !important;
+  }
+"$ ha-bottom-sheet $": |
+  wa-drawer::part(dialog) {
+    background: var(--popup-custom-wallpaper, var(--lovelace-background, none)) !important;
+    background-attachment: scroll !important;
+  }`,
   },
   {
     id: "kopfleiste-glas",

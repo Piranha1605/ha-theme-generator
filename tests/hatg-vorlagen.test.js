@@ -142,5 +142,28 @@ pruefe("Bubble-Pop-ups mit Hintergrundbild: Aufbau", () => {
   }
 });
 
+pruefe("Info-Dialog mit Hintergrundbild: Pfade mit fuehrendem $", () => {
+  const v = vorlage("info-dialog-hintergrundbild");
+  assert.equal(feld(v.block, "ziel"), "uix-more-info-yaml");
+  assert.ok(!/\bpaket:/.test(v.block), "gehoert nicht ins Glas-Paket");
+  // UIX haengt den Info-Dialog an ha-adaptive-dialog. Ohne fuehrendes $ legt es
+  // keinen Knoten an - an einer Instanz nachgemessen. Genau dieser Fehler stand
+  // im ersten Vorschlag.
+  const schluessel = [...v.css.matchAll(/^(\S[^\n]*?):\s*\|\s*$/gm)].map((m) => m[1]);
+  assert.deepEqual(schluessel, ['"$ ha-dialog $"', '"$ ha-bottom-sheet $"'], `unerwartete Pfade: ${schluessel.join(", ")}`);
+  assert.ok(!v.css.includes("ha-adaptive-dialog"), "ha-adaptive-dialog ist die Wurzel, nicht Teil des Pfads");
+  assert.match(v.css, /wa-dialog::part\(dialog\)\s*\{/);
+  assert.match(v.css, /wa-drawer::part\(dialog\)\s*\{/);
+  const hintergruende = v.css.match(/background:\s*var\(--popup-custom-wallpaper,\s*var\(--lovelace-background/g) || [];
+  assert.equal(hintergruende.length, 2, "Desktop und Bottom-Sheet brauchen je eine Regel");
+  assert.ok(!/background-image:/.test(v.css), "--lovelace-background ist ein Kurzwert und passt nicht in background-image");
+  assert.equal((v.css.match(/background-attachment:\s*scroll/g) || []).length, 2);
+  // Jede CSS-Zeile muss unter ihrem Pfad eingerueckt sein, sonst zerfaellt die YAML-Karte.
+  for (const zeile of v.css.split("\n")) {
+    if (!zeile.trim() || /^"\$ /.test(zeile)) continue;
+    assert.ok(/^ {2}/.test(zeile), `nicht eingerueckt: ${JSON.stringify(zeile)}`);
+  }
+});
+
 console.log(fehler === 0 ? "\nAlle Tests bestanden." : `\n${fehler} Test(s) fehlgeschlagen.`);
 process.exit(fehler === 0 ? 0 : 1);
