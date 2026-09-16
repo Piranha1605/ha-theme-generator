@@ -43,6 +43,7 @@ const HATG_TEXTE = {
   "Kartentransparenz": "Card transparency",
   "Hintergrund": "Background",
   "Pop-up-Hintergrund": "Pop-up background",
+  "Bild wählen": "Choose image",
   "Hintergrundbild": "Background image",
   "Bausteine": "Blocks",
   "Werkzeuge": "Tools",
@@ -290,7 +291,7 @@ const HATG_TEXTE = {
   "Gibt Schaltflächen den Aufbau der Knöpfe eigener Karten: kleine Rundung, feine Lichtkante oben und ein kleiner weicher Schatten. Betrifft alles außerhalb von Karten, Kopfleiste und Dialogen - die Einstellungsseiten samt ihrer Aktionsknöpfe, eigene Panels und die Knöpfe der Seitenleiste. Sitzt am App Drawer, weil die Einstellungsseiten selbst kein eigenes Stilziel haben: ha-panel-config hat keinen Shadow Root, dort kommt nichts an. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht.": "Gives buttons the build of the buttons in custom cards: a small corner radius, a fine light edge at the top and a small soft shadow. Applies to everything outside cards, the top bar and dialogs - the settings pages including their action buttons, custom panels and the sidebar's own buttons. It sits on the app drawer because the settings pages have no style target of their own: ha-panel-config has no shadow root, so nothing arrives there. It only sets variables Home Assistant provides itself.",
   "Glaslook": "Glass look",
   "Eigener Titel in der Seitenleiste": "Custom title in the sidebar",
-  "Ersetzt das \"Home Assistant\" oben in der Seitenleiste durch einen eigenen Text. Der Text steht im Feld hatg-sidebar-titel im Bereich Glaslook - mit Anführungszeichen, so verlangt es CSS. Home Assistant selbst bietet dafür keine Einstellung.": "Replaces the \"Home Assistant\" at the top of the sidebar with a text of your own. The text lives in the field hatg-sidebar-titel under Glass look - in quotation marks, as CSS requires. Home Assistant itself offers no setting for this.",
+  "Ersetzt das \"Home Assistant\" oben in der Seitenleiste durch einen eigenen Text. Den Text trägst du in der aufgeklappten Zeile unter Titel ein; er bleibt beim Auffrischen der Vorlagen erhalten. Home Assistant selbst bietet dafür keine Einstellung.": "Replaces the \"Home Assistant\" at the top of the sidebar with a text of your own. Enter the text in the expanded row under Title; it is kept when presets are refreshed. Home Assistant itself offers no setting for this.",
   "Seitenleiste in Glas": "Sidebar in glass",
   "Die Seitenleiste wird durchscheinend und weichgezeichnet, die Einträge übernehmen den Eckenradius deiner Karten. Wirkt nur, wenn hinter der Seitenleiste etwas zu sehen ist - also mit Hintergrundbild oder einem farbigen Verlauf.": "The sidebar becomes translucent and blurred, and its entries take on your card corner radius. Only visible when there is something behind the sidebar - a background image or a coloured gradient.",
   "App Drawer in Glas": "App drawer in glass",
@@ -2178,6 +2179,17 @@ function hatgVorlagenFelder(tpl) {
   }
   return [...treffer];
 }
+// Vorlagen mit Text-Parameter (titel): der Text steht als content: "..." im CSS.
+const HATG_VORLAGE_TITEL_RE = /content:\s*"((?:[^"\\]|\\.)*)"/;
+function hatgVorlageTitelLesen(blockText) {
+  const m = HATG_VORLAGE_TITEL_RE.exec(String(blockText || ""));
+  return m ? m[1].replace(/\\(.)/g, "$1") : null;
+}
+function hatgVorlageMitTitel(tpl, titel) {
+  const text = String(titel ?? tpl.titel.standard).replace(/[\r\n]+/g, " ");
+  const css = `content: "${text.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
+  return String(tpl.css).replace(HATG_VORLAGE_TITEL_RE, () => css);
+}
 function hatgVorlagenZiel(tpl) {
   const ziel = tpl && tpl.ziel;
   if (!ziel || ziel === HATG_UIX_THEME_KEY) return HATG_VORLAGEN_STANDARDZIEL;
@@ -3061,7 +3073,10 @@ ha-control-slider {
   {
     id: "seitenleiste-titel",
     label: "Eigener Titel in der Seitenleiste",
-    desc: "Ersetzt das \"Home Assistant\" oben in der Seitenleiste durch einen eigenen Text. Der Text steht im Feld hatg-sidebar-titel im Bereich Glaslook - mit Anführungszeichen, so verlangt es CSS. Home Assistant selbst bietet dafür keine Einstellung.",
+    // Der Titel steht als CSS-Text im Block. Frueher kam er aus dem eigenen
+    // Feld hatg-sidebar-titel; der Import setzt dessen Wert dort ein.
+    titel: { standard: "Home Assistant" },
+    desc: "Ersetzt das \"Home Assistant\" oben in der Seitenleiste durch einen eigenen Text. Den Text trägst du in der aufgeklappten Zeile unter Titel ein; er bleibt beim Auffrischen der Vorlagen erhalten. Home Assistant selbst bietet dafür keine Einstellung.",
     ziel: "uix-sidebar",
     css: `.menu .title {
   font-size: 0 !important;
@@ -4955,6 +4970,20 @@ class HATGPanel extends HTMLElement {
       : "";
     const originalFormat = hatgGetKeyFormats()[key];
 
+    // Hintergrundfelder: Bild aus der Galerie waehlen, direkt an der Zeile -
+    // auch in den aufgeklappten Hintergrund-Vorlagen.
+    if (key === "lovelace-background" || key === "popup-custom-wallpaper") {
+      return `
+        <div class="field-row" data-key="${key}" data-type="${type}">
+          ${checkbox}
+          <span class="field-key">${key}${badge}</span>
+          <span class="field-input">
+            <input class="text-input" type="text" value="${hatgEscape(value)}" spellcheck="false" data-text-field="${key}" />
+          </span>
+          <button class="apply-button" type="button" data-bild-waehlen="${key}" title="Bild wählen"><ha-icon icon="mdi:image-plus-outline"></ha-icon></button>
+        </div>`;
+    }
+
     const isDynamicColorValue = hatgIsGradient(value) || /^\s*var\(/i.test(String(value ?? ""));
     if ((originalFormat === "hex" || originalFormat === "rgba") && isDynamicColorValue) {
       return `
@@ -6400,8 +6429,10 @@ class HATGPanel extends HTMLElement {
         const ziel = hatgVorlagenZiel(tpl);
         const text = String(this.currentValues()[ziel] || "");
         const vorhanden = hatgLeseVorlagenBlock(text, tpl.id);
-        if (vorhanden === null || hatgCssOhneKommentare(vorhanden) === hatgCssOhneKommentare(tpl.css)) return;
-        this.commitField(ziel, hatgHaengeVorlagenBlockAn(text, tpl.id, tpl.css, hatgIstYamlZiel(ziel)));
+        if (vorhanden === null) return;
+        const soll = tpl.titel ? hatgVorlageMitTitel(tpl, hatgVorlageTitelLesen(vorhanden)) : tpl.css;
+        if (hatgCssOhneKommentare(vorhanden) === hatgCssOhneKommentare(soll)) return;
+        this.commitField(ziel, hatgHaengeVorlagenBlockAn(text, tpl.id, soll, hatgIstYamlZiel(ziel)));
         if (mode === "light") anzahl++;
       });
     });
@@ -6414,6 +6445,34 @@ class HATGPanel extends HTMLElement {
         : "Alle aktiven Vorlagen sind bereits aktuell."
     );
     return anzahl;
+  }
+
+  renderVorlageTitel(tpl) {
+    const text = hatgVorlageTitelLesen(hatgLeseVorlagenBlock(this.currentValues()[hatgVorlagenZiel(tpl)] || "", tpl.id)) ?? tpl.titel.standard;
+    const en = this._sprache === "en";
+    return `
+      <div class="field-row" data-roh>
+        <span class="field-key">${en ? "Title" : "Titel"}</span>
+        <span class="field-input"><input type="text" class="text-input" value="${hatgEscape(text)}" spellcheck="false" data-vorlage-titel="${tpl.id}" /></span>
+      </div>`;
+  }
+
+  // Schreibt den Titel in den Block beider Modi; ist die Vorlage aus, wird sie
+  // dabei eingeschaltet.
+  setzeVorlageTitel(id, titel) {
+    const tpl = this.alleVorlagen().find((t) => t.id === id);
+    if (!tpl || !tpl.titel) return;
+    const ziel = hatgVorlagenZiel(tpl);
+    const css = hatgVorlageMitTitel(tpl, String(titel ?? "").trim() || tpl.titel.standard);
+    const currentMode = this._state.editorMode;
+    ["light", "dark"].forEach((mode) => {
+      this._state.editorMode = mode;
+      const text = String(this.currentValues()[ziel] || "");
+      const neu = hatgHaengeVorlagenBlockAn(text, id, css, hatgIstYamlZiel(ziel));
+      if (neu !== text) this.commitField(ziel, neu);
+    });
+    this._state.editorMode = currentMode;
+    this.applyPreviewTheme();
   }
 
   renderVorlagenDialog() {
@@ -6758,7 +6817,7 @@ uix:
             }
             ${eigen ? `<button type="button" class="vorlage-edit" data-bearbeite-vorlage="${tpl.id}" title="Bearbeiten"><ha-icon icon="mdi:pencil-outline"></ha-icon></button>` : ""}
           </div>
-          ${offen && felder.length ? `<div class="vorlage-zeile-felder">${this.renderFieldList(felder, null, true)}</div>` : ""}
+          ${offen && felder.length ? `<div class="vorlage-zeile-felder">${tpl.titel ? this.renderVorlageTitel(tpl) : ""}${this.renderFieldList(felder, null, true)}</div>` : ""}
         </div>`;
     };
     const kachel = (tpl, eigen) => {
@@ -9459,6 +9518,15 @@ uix:
         this._state.vorlagenAnsicht = el.dataset.vorlagenAnsicht;
         this.render();
       });
+    });
+    this.shadowRoot.querySelectorAll("[data-vorlage-titel]").forEach((el) => {
+      el.addEventListener("change", () => {
+        this.setzeVorlageTitel(el.dataset.vorlageTitel, el.value);
+        this.render();
+      });
+    });
+    this.shadowRoot.querySelectorAll("[data-bild-waehlen]").forEach((el) => {
+      el.addEventListener("click", () => this.openWallpaperDialog(el.dataset.bildWaehlen));
     });
     this.shadowRoot.querySelectorAll("[data-vorlage-aufklappen]").forEach((el) => {
       el.addEventListener("click", () => {

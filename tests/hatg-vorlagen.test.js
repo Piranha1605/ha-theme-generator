@@ -322,6 +322,17 @@ pruefe("Aktiver Seitenleisten-Eintrag deckend in der Akzentfarbe mit Textfarbe f
   assert.ok(text && /--sidebar-selected-text-color:\s*var\(--text-primary-color\)/.test(text[2]), "Schrift nicht in --text-primary-color");
 });
 
+pruefe("Seitenleisten-Titel ist ein Parameter der Vorlage, keine Beschreibung nennt hatg-Felder", () => {
+  const tpl = vorlagen.find((x) => x.id === "seitenleiste-titel");
+  assert.ok(tpl, "Vorlage seitenleiste-titel fehlt");
+  assert.ok(/titel:\s*\{\s*standard:\s*"Home Assistant"/.test(tpl.block), "Titel-Parameter fehlt");
+  assert.ok(/content:\s*"Home Assistant"/.test(css(tpl.block)), "Titel steht nicht als CSS-Text im Block");
+  for (const v of vorlagen) {
+    const desc = (/desc:\s*"((?:[^"\\]|\\.)*)"/.exec(v.block) || [])[1] || "";
+    assert.ok(!/\bhatg-[a-z]/.test(desc), `${v.id}: Beschreibung nennt ein hatg-Feld`);
+  }
+});
+
 pruefe("Keine Vorlage und kein Feld verweist auf ein hatg-Theme-Feld", () => {
   // Glaswerte stehen in den Feldern, die Home Assistant selbst liest
   // (ha-card-background, ha-card-backdrop-filter, ...). Eigene hatg-Felder
