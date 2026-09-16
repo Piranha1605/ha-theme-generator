@@ -31,12 +31,22 @@ Die Versionsnummer steht an vier Stellen und muss überall gleich sein: `manifes
 
 - **Startseite** — Grundfarben, Basis-Einstellungen, Zustände, Hintergründe
 - **Thematische Bereiche** — HA-Grundgerüst, Bubble Card mit Unterseiten, Mushroom
-- **Alle Felder** — Volltext- und Filtersuche über sämtliche 601 verifizierten Variablen
+- **Alle Felder** — Volltext- und Filtersuche über sämtliche 573 verifizierten Variablen
 - **Code-Editor** — textbasierte Bearbeitung mit Syntax-Highlighting
 - **Vorlagen** — vorgefertigte CSS-Effekte, eine Unterseite je Stilziel
 - **Hintergrundbilder** — über die ganze Oberfläche, mit eigener Galerie
 - **HA Live** — Echtzeit-Vorschau auf dem eigenen Dashboard
 - **Import und Export** — Theme-Verwaltung und Dateioperationen
+
+## Keine eigenen Theme-Felder
+
+HATG schreibt nur Felder, die Home Assistant, Bubble Card oder Mushroom selbst lesen. Eigene Hilfsfelder (`hatg-glas-fuellung`, `hatg-glas-blur` …) gibt es seit v1.3.0b7 nicht mehr: Beim Ausschalten des Glas-Pakets blieben Verweise wie `ha-card-background: var(--hatg-glas-fuellung)` stehen und liefen ins Leere, sobald die Felder fehlten.
+
+- **Glaslook in HA-Feldern.** Die Glas-Regler schreiben direkt in `ha-card-background`, `ha-card-backdrop-filter`, `control-button-background-color`, `ha-dialog-surface-background`, `ha-dialog-surface-backdrop-filter`, `sidebar-background-color`, `app-header-background-color` und `app-header-backdrop-filter` und lesen von dort zurück. Bubble-Felder zeigen per `var(--ha-card-background)` bzw. `var(--control-button-background-color)` darauf. Welche Variablen HA liest, steht in `customElements.get(tag).elementStyles` – am 2026-09-16 für `ha-card`, `ha-badge`, `ha-dialog`, `ha-bottom-sheet`, `hui-root`, `ha-button`, `ha-control-button` geprüft.
+- **Vorlagen lesen HA-Variablen.** Was HA nicht anbietet (kleine Weichzeichnung, Seitenleisten-Weichzeichnung, Icon- und Listenmaße), steht als fester Wert in der UIX-Zeile. Werte, die je Modus verschieden sind, gehören in HA-Felder: UIX-Zeilen gelten für Light und Dark zugleich, und `light-dark()` folgt dem Betriebssystem, weil HA kein `color-scheme` setzt.
+- **Kein `--card-background-color` in Stilzielen überschreiben.** Home Assistant färbt damit auch Auswahlfelder und Menüs; halbtransparent sind sie unlesbar.
+- **Glas-Paket aus** nimmt die Felder zurück: Weichzeichnung auf den Standard, gläserne Flächen deckend aus `card-background-color` abgeleitet oder auf den Standardwert.
+- **Import, Autosave und Entwurf** lösen eigene Felder auf (`hatgLoeseEigeneFelderAuf`): `hatg-*` und unbekannte Felder, auf die per `var()` verwiesen wird – auch unter anderer Vorsilbe (`horizon-*`). In Theme-Feldern tritt je Modus der echte Wert ein oder ein Verweis aufs HA-Feld mit demselben Wert; in Stilzielen ein HA-Feld mit demselben Wert in beiden Modi, sonst der feste Wert oder der Ausweichwert. Was sich nicht eindeutig auflösen lässt, bleibt stehen und wird gemeldet.
 
 ## UI eXtension statt card-mod
 
@@ -72,7 +82,7 @@ Dependabot ist für dieses Repository aktiviert.
 
 ## Zielgruppe
 
-Fortgeschrittene. Wer 601 Theme-Variablen anfasst, kennt sein System, nutzt vermutlich schon Bubble Card oder Mushroom und will bis ins Detail gestalten. Das unterscheidet HATG von HA-OS, das sich an Einsteiger richtet.
+Fortgeschrittene. Wer rund 570 Theme-Variablen anfasst, kennt sein System, nutzt vermutlich schon Bubble Card oder Mushroom und will bis ins Detail gestalten. Das unterscheidet HATG von HA-OS, das sich an Einsteiger richtet.
 
 ## Schreibstil
 

@@ -144,7 +144,7 @@ pruefe("Glas-Paket bemalt auf uix-card nie den Wirt einer Karte", () => {
 
 pruefe("glas-ebene legt das Glas auf :host(ha-card) und ha-card", () => {
   const c = ohneKommentare(css(vorlagen.find((x) => x.id === "glas-ebene").block));
-  const glasregel = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)].find((m) => /backdrop-filter:\s*blur/.test(m[2]));
+  const glasregel = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)].find((m) => /backdrop-filter:\s*(blur|var\(--ha-card-backdrop-filter)/.test(m[2]));
   assert.ok(glasregel, "keine Glasregel gefunden");
   const selektoren = glasregel[1].split(",").map((s) => s.trim()).sort();
   assert.deepEqual(selektoren, [":host(ha-card)", "ha-card"]);
@@ -202,7 +202,7 @@ pruefe("Bubbles Auswahlfeld bleibt durchsichtig, wo uix-card ha-select deckend f
 pruefe("Nur Weichzeichnung: kein Wirt, keine Flaeche, Bubble und Huellen ausgenommen", () => {
   const c = ohneKommentare(css(vorlagen.find((x) => x.id === "glas-weichzeichnung-karten").block));
   const regeln = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map((m) => ({ sel: m[1].split(",").map((s) => s.trim()), body: m[2] }));
-  const glas = regeln.find((r) => /backdrop-filter:\s*blur/.test(r.body));
+  const glas = regeln.find((r) => /backdrop-filter:\s*(blur|var\(--ha-card-backdrop-filter)/.test(r.body));
   assert.deepEqual(glas.sel.sort(), [":host(ha-card)", "ha-card"]);
   assert.ok(!/background/.test(glas.body), "legt eine Flaeche an - soll nur weichzeichnen");
   const aus = regeln.find((r) => /backdrop-filter:\s*none/.test(r.body));
@@ -318,6 +318,21 @@ pruefe("Aktiver Seitenleisten-Eintrag deckend in der Akzentfarbe mit Textfarbe f
   assert.ok(pille && /background-color:\s*var\(--accent-color/.test(pille[2]) && !/color-mix\([^)]*transparent\)/.test(pille[2].split("box-shadow")[0]), "Pille nicht deckend in der Akzentfarbe");
   const text = regeln.find((m) => m[1].trim() === "ha-list-item-button.selected");
   assert.ok(text && /--sidebar-selected-text-color:\s*var\(--text-primary-color\)/.test(text[2]), "Schrift nicht in --text-primary-color");
+});
+
+pruefe("Keine Vorlage und kein Feld verweist auf ein hatg-Theme-Feld", () => {
+  // Glaswerte stehen in den Feldern, die Home Assistant selbst liest
+  // (ha-card-background, ha-card-backdrop-filter, ...). Eigene hatg-Felder
+  // blieben beim Ausschalten des Glas-Pakets als Verweise stehen und liefen ins
+  // Leere, sobald die Felder fehlten.
+  const vorlagenCss = ohneKommentare(VORLAGEN);
+  const einstellungen = ausschnitt("const HATG_EINSTELLUNGEN_ZEILEN", "\n];");
+  const treffer = [...(vorlagenCss + einstellungen).matchAll(/var\(--hatg-[a-z0-9-]+/g)].map((m) => m[0]);
+  assert.deepEqual([...new Set(treffer)], [], "Vorlagen verweisen noch auf hatg-Felder");
+  const manifest = JSON.parse(ausschnitt("const HATG_MANIFEST = ", "\n").slice("const HATG_MANIFEST = ".length).replace(/;\s*$/, ""));
+  const felder = Object.keys(manifest.light).filter((k) => k.startsWith("hatg-"));
+  assert.deepEqual(felder, [], "Feldliste enthaelt noch hatg-Felder");
+  for (const k of ["ha-card-backdrop-filter", "ha-dialog-surface-backdrop-filter"]) assert.ok(k in manifest.light, `${k} fehlt in der Feldliste`);
 });
 
 function vorlage(id) {
