@@ -335,6 +335,9 @@ pruefe("Keine Vorlage und kein Feld verweist auf ein hatg-Theme-Feld", () => {
   const felder = Object.keys(manifest.light).filter((k) => k.startsWith("hatg-"));
   assert.deepEqual(felder, [], "Feldliste enthaelt noch hatg-Felder");
   for (const k of ["ha-card-backdrop-filter", "ha-dialog-surface-backdrop-filter"]) assert.ok(k in manifest.light, `${k} fehlt in der Feldliste`);
+  // Die Pop-up-Vorlagen lesen popup-custom-wallpaper. Ohne Eintrag in der
+  // Feldliste hielte der Import es fuer ein eigenes Hilfsfeld und loeste es auf.
+  assert.ok("popup-custom-wallpaper" in manifest.light && "popup-custom-wallpaper" in manifest.dark, "popup-custom-wallpaper fehlt in der Feldliste");
 });
 
 function vorlage(id) {
