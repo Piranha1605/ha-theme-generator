@@ -1804,6 +1804,60 @@ function hatgLoeseEigeneFelderAuf(bag) {
   return { entfernt, offen: [...offen], behalten: [...gebraucht] };
 }
 
+// Nach dem Auffrischen der Vorlagen zeigt oft nichts mehr auf eigene Felder,
+// die der Import noch stehen lassen musste. Diese fallen dann weg - auch ueber
+// Ketten. Rueckgabe wie bei hatgLoeseEigeneFelderAuf.
+function hatgEntferneVerwaisteEigenfelder(bag, namen) {
+  const modi = ["light", "dark"];
+  const kandidaten = new Set(namen || []);
+  if (!bag || !kandidaten.size) return { entfernt: 0, offen: [] };
+  const extra = bag.extra || { light: {}, dark: {} };
+  const felder = (m) => [bag[m] || {}, extra[m] || {}];
+  const gebraucht = new Set();
+  const offen = new Set();
+  modi.forEach((m) =>
+    felder(m).forEach((b) =>
+      Object.keys(b).forEach((k) => {
+        if (kandidaten.has(k)) return;
+        const treffer = hatgVarNamen(b[k]).filter((n) => kandidaten.has(n));
+        treffer.forEach((n) => gebraucht.add(n));
+        if (treffer.length) offen.add(k);
+      })
+    )
+  );
+  let gewachsen = true;
+  while (gewachsen) {
+    gewachsen = false;
+    [...gebraucht].forEach((k) =>
+      modi.forEach((m) =>
+        felder(m).forEach((b) =>
+          hatgVarNamen(b[k]).forEach((n) => {
+            if (kandidaten.has(n) && !gebraucht.has(n)) {
+              gebraucht.add(n);
+              gewachsen = true;
+            }
+          })
+        )
+      )
+    );
+  }
+  let entfernt = 0;
+  kandidaten.forEach((k) => {
+    if (gebraucht.has(k)) return;
+    let weg = false;
+    modi.forEach((m) =>
+      felder(m).forEach((b) => {
+        if (k in b) {
+          delete b[k];
+          weg = true;
+        }
+      })
+    );
+    if (weg) entfernt++;
+  });
+  return { entfernt, offen: [...offen] };
+}
+
 // Vorlagenbloecke werden im Theme mit Kommentaren eingefasst, damit HATG sie
 // spaeter wiederfindet. Bis v1.0.3 hiess die Marke CARDMOD - alte Themes werden
 // weiter erkannt, geschrieben wird ab jetzt UIX.
@@ -1869,6 +1923,42 @@ function hatgLeseVorlagenBlock(text, id) {
     `${hatgVorlagenMarkenMuster(id, false)}\\n([\\s\\S]*?)\\n\\s*${hatgVorlagenMarkenMuster(id, true)}`
   ).exec(String(text || ""));
   return m ? m[1].trim() : null;
+}
+// Umbenannte Kopien eines HATG-Themes tragen die Marker unter anderer Vorsilbe
+// (/* HORIZON:UIX:glas-bubble:START */). HATG erkannte diese Bloecke nicht und
+// haengte beim Einschalten dieselbe Vorlage ein zweites Mal an. Der Import
+// setzt die Vorsilbe deshalb auf HATG zurueck und laesst von doppelten Bloecken
+// nur den letzten stehen - den, den HATG zuletzt geschrieben hat.
+const HATG_FREMDE_MARKE_RE = /(\/\*\s*|#\s*)([A-Z][A-Z0-9_]*):(UIX|CARDMOD):([a-z0-9][a-z0-9-]*):(START|END)/g;
+function hatgVereinheitlicheVorlagenMarken(bag) {
+  let umbenannt = 0;
+  let doppelt = 0;
+  if (!bag) return { umbenannt, doppelt };
+  ["light", "dark"].forEach((m) =>
+    [bag[m], bag.extra?.[m]].forEach((b) => {
+      if (!b) return;
+      Object.keys(b).forEach((k) => {
+        if (!hatgIstStilzielKey(k)) return;
+        const alt = String(b[k] ?? "");
+        const ids = new Set();
+        let neu = alt.replace(HATG_FREMDE_MARKE_RE, (ganz, vor, marke, art, id, pos) => {
+          ids.add(id);
+          if (marke === "HATG") return ganz;
+          if (pos === "START" && m === "light") umbenannt++;
+          return `${vor}HATG:${art}:${id}:${pos}`;
+        });
+        ids.forEach((id) => {
+          const anzahl = (neu.match(hatgVorlagenBlockRegex(id)) || []).length;
+          if (anzahl < 2) return;
+          let uebrig = anzahl - 1;
+          neu = neu.replace(hatgVorlagenBlockRegex(id), (block) => (uebrig-- > 0 ? "" : block)).trim();
+          if (m === "light") doppelt += anzahl - 1;
+        });
+        if (neu !== alt) b[k] = neu;
+      });
+    })
+  );
+  return { umbenannt, doppelt };
 }
 
 const HATG_VORLAGEN_STILLGELEGT = ["icon-farbe-hintergrund", "ansicht-hintergrund-daempfen", "einstellungen-liste-luftig"];
@@ -4390,6 +4480,7 @@ class HATGPanel extends HTMLElement {
         hatgMigriereStilzielKeys(saved.values.light);
         hatgMigriereStilzielKeys(saved.values.dark);
         if (!saved.extraValues) saved.extraValues = { light: {}, dark: {} };
+        hatgVereinheitlicheVorlagenMarken({ light: saved.values.light, dark: saved.values.dark, extra: saved.extraValues });
         hatgLoeseEigeneFelderAuf({ light: saved.values.light, dark: saved.values.dark, extra: saved.extraValues });
         this._state.values.light = { ...this._state.values.light, ...(saved.values.light || {}) };
         this._state.values.dark = { ...this._state.values.dark, ...(saved.values.dark || {}) };
@@ -10245,6 +10336,7 @@ uix:
     if (migrierteStilziele && parsed.unknownCount) {
       parsed.unknownCount = Math.max(0, parsed.unknownCount - migrierteStilziele);
     }
+    const marken = hatgVereinheitlicheVorlagenMarken(parsed);
     const eigeneFelder = hatgLoeseEigeneFelderAuf(parsed);
     if (eigeneFelder.entfernt && parsed.unknownCount) {
       parsed.unknownCount = Math.max(0, parsed.unknownCount - eigeneFelder.entfernt);
@@ -10272,18 +10364,29 @@ uix:
     const parts = parsed.flatSingleMode
       ? [`Flaches Theme ohne light:/dark:-Aufteilung erkannt`, `${lightKeys.length}/${totalKnown} Felder auf Light UND Dark übernommen`]
       : [`${lightKeys.length}/${totalKnown} Light-Felder`, `${darkKeys.length}/${totalKnown} Dark-Felder importiert`];
-    if (parsed.unknownCount) parts.push(`${parsed.unknownCount} unbekannte Felder aufbewahrt (werden beim Export wieder angehängt)`);
     if (migrierteStilziele)
       parts.push(
         `${migrierteStilziele} card-mod-Feld${migrierteStilziele === 1 ? "" : "er"} auf UIX umgestellt`
       );
-    if (eigeneFelder.entfernt)
-      parts.push(`${eigeneFelder.entfernt} eigene Hilfsfeld${eigeneFelder.entfernt === 1 ? "" : "er"} aufgelöst und entfernt`);
-    if (eigeneFelder.offen.length)
-      parts.push(
-        `${eigeneFelder.offen.length} Feld${eigeneFelder.offen.length === 1 ? " verweist" : "er verweisen"} weiter auf eigene Werte (${hatgFelderNennen(eigeneFelder.offen, "weitere")})`
-      );
     const aufgefrischt = this.frischeVorlagenAuf({ silent: true });
+    // Aufgefrischte Vorlagen verweisen nicht mehr auf eigene Felder des alten Themes.
+    const verwaist = hatgEntferneVerwaisteEigenfelder(
+      { light: this._state.values.light, dark: this._state.values.dark, extra: this._state.extraValues },
+      eigeneFelder.behalten
+    );
+    const entferntGesamt = eigeneFelder.entfernt + verwaist.entfernt;
+    if (entferntGesamt)
+      parts.push(`${entferntGesamt} eigene Hilfsfeld${entferntGesamt === 1 ? "" : "er"} aufgelöst und entfernt`);
+    const unbekannt = new Set([...Object.keys(this._state.extraValues.light), ...Object.keys(this._state.extraValues.dark)]).size;
+    if (unbekannt) parts.push(`${unbekannt} unbekannte Felder aufbewahrt (werden beim Export wieder angehängt)`);
+    if (verwaist.offen.length)
+      parts.push(
+        `${verwaist.offen.length} Feld${verwaist.offen.length === 1 ? " verweist" : "er verweisen"} weiter auf eigene Werte (${hatgFelderNennen(verwaist.offen, "weitere")})`
+      );
+    if (marken.umbenannt)
+      parts.push(`${marken.umbenannt} Vorlage${marken.umbenannt === 1 ? "" : "n"} mit fremder Marke als HATG-Vorlage erkannt`);
+    if (marken.doppelt)
+      parts.push(marken.doppelt === 1 ? "1 doppelter Vorlagenblock entfernt" : `${marken.doppelt} doppelte Vorlagenblöcke entfernt`);
     if (aufgefrischt) parts.push(`${aufgefrischt} UIX-Vorlage${aufgefrischt === 1 ? "" : "n"} auf den aktuellen Stand gebracht`);
     this.showToast(parts.join(", ") + ".");
   }
@@ -10413,6 +10516,7 @@ uix:
       hatgMigriereStilzielKeys(loaded.extraValues?.dark);
       if (loaded.values) {
         if (!loaded.extraValues) loaded.extraValues = { light: {}, dark: {} };
+        hatgVereinheitlicheVorlagenMarken({ light: loaded.values.light, dark: loaded.values.dark, extra: loaded.extraValues });
         hatgLoeseEigeneFelderAuf({ light: loaded.values.light, dark: loaded.values.dark, extra: loaded.extraValues });
       }
       this._state.values.light = { ...hatgDeepClone(HATG_MANIFEST.light), ...(loaded.values?.light || {}) };

@@ -47,6 +47,7 @@ HATG schreibt nur Felder, die Home Assistant, Bubble Card oder Mushroom selbst l
 - **Kein `--card-background-color` in Stilzielen überschreiben.** Home Assistant färbt damit auch Auswahlfelder und Menüs; halbtransparent sind sie unlesbar.
 - **Glas-Paket aus** nimmt die Felder zurück: Weichzeichnung auf den Standard, gläserne Flächen deckend aus `card-background-color` abgeleitet oder auf den Standardwert.
 - **Import, Autosave und Entwurf** lösen eigene Felder auf (`hatgLoeseEigeneFelderAuf`): `hatg-*` und unbekannte Felder, auf die per `var()` verwiesen wird – auch unter anderer Vorsilbe (`horizon-*`). In Theme-Feldern tritt je Modus der echte Wert ein oder ein Verweis aufs HA-Feld mit demselben Wert; in Stilzielen ein HA-Feld mit demselben Wert in beiden Modi, sonst der feste Wert oder der Ausweichwert. Was sich nicht eindeutig auflösen lässt, bleibt stehen und wird gemeldet.
+- **Fremde Vorlagenmarken.** Umbenannte Kopien tragen die Marker unter anderer Vorsilbe (`/* HORIZON:UIX:glas-bubble:START */`). HATG erkennt Vorlagen nur an `HATG:` und hängte sie beim Einschalten ein zweites Mal an – am 2026-09-16 lagen so 23 Glas-Vorlagen doppelt im Theme. Import, Autosave und Entwurf setzen die Vorsilbe deshalb auf `HATG` zurück und lassen von doppelten Blöcken nur den letzten stehen (`hatgVereinheitlicheVorlagenMarken`). Eigene Felder, auf die nach dem Auffrischen der Vorlagen nichts mehr zeigt, fallen danach weg.
 
 ## UI eXtension statt card-mod
 

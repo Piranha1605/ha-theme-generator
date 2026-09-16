@@ -21,7 +21,7 @@ const PANEL = path.join(__dirname, "..", "custom_components", "hatg", "www", "ha
 function ladeHelfer() {
   const quelle = fs.readFileSync(PANEL, "utf8");
   const start = quelle.indexOf("// Fruehere HATG-Themes brachten eigene Hilfsfelder mit");
-  const ende = quelle.indexOf("// Vorlagenbloecke werden im Theme mit Kommentaren eingefasst");
+  const ende = quelle.indexOf("const HATG_VORLAGEN_STILLGELEGT =");
   assert.ok(start !== -1 && ende > start, "Aufloesung der Hilfsfelder in hatg-panel.js nicht gefunden");
   const bekannt = [
     "primary-color",
@@ -37,11 +37,13 @@ function ladeHelfer() {
     HATG_MANIFEST: { light: Object.fromEntries(bekannt.map((k) => [k, ""])) },
     hatgIstStilzielKey: (key) => /^uix-/.test(String(key || "")),
   };
-  vm.runInNewContext(`${quelle.slice(start, ende)}\nthis.hatgLoeseEigeneFelderAuf = hatgLoeseEigeneFelderAuf;`, kontext);
-  return kontext.hatgLoeseEigeneFelderAuf;
+  vm.runInNewContext(`${quelle.slice(start, ende)}\nthis.hatgLoeseEigeneFelderAuf = hatgLoeseEigeneFelderAuf; this.hatgVereinheitlicheVorlagenMarken = hatgVereinheitlicheVorlagenMarken;`, kontext);
+  return kontext;
 }
 
-const loeseAuf = ladeHelfer();
+const helfer = ladeHelfer();
+const loeseAuf = helfer.hatgLoeseEigeneFelderAuf;
+const vereinheitliche = helfer.hatgVereinheitlicheVorlagenMarken;
 
 let fehler = 0;
 function pruefe(name, fn) {
@@ -158,6 +160,37 @@ pruefe("Ohne eigene Felder bleibt alles unveraendert", () => {
   const bericht = loeseAuf(bag);
   assert.equal(JSON.stringify(bag), vorher);
   assert.equal(bericht.entfernt, 0);
+});
+
+pruefe("Fremde Vorlagenmarken werden HATG-Marken, doppelte Bloecke fallen weg", () => {
+  const css = [
+    "/* HORIZON:UIX:glas-bubble:START */",
+    ".alt { color: red; }",
+    "/* HORIZON:UIX:glas-bubble:END */",
+    "/* HORIZON:UIX:eigene-idee:START */",
+    ".mein { color: blue; }",
+    "/* HORIZON:UIX:eigene-idee:END */",
+    "/* HATG:UIX:glas-bubble:START */",
+    ".neu { color: green; }",
+    "/* HATG:UIX:glas-bubble:END */",
+  ].join("\n");
+  const yaml = "# HORIZON:UIX:dialog-pfad:START\n\"$ ha-dialog $\": |\n  x\n# HORIZON:UIX:dialog-pfad:END";
+  const bag = {
+    light: { "uix-card": css, "uix-more-info-yaml": yaml, "primary-color": "/* HORIZON:UIX:x:START */" },
+    dark: { "uix-card": css },
+    extra: { light: {}, dark: {} },
+  };
+  const bericht = vereinheitliche(bag);
+  const neu = bag.light["uix-card"];
+  assert.ok(!/HORIZON/.test(neu), neu);
+  assert.equal((neu.match(/HATG:UIX:glas-bubble:START/g) || []).length, 1, neu);
+  assert.ok(neu.includes(".neu") && !neu.includes(".alt"), "der zuletzt geschriebene Block muss bleiben");
+  assert.ok(neu.includes("/* HATG:UIX:eigene-idee:START */") && neu.includes(".mein"), neu);
+  assert.equal(bag.dark["uix-card"], neu);
+  assert.ok(bag.light["uix-more-info-yaml"].startsWith("# HATG:UIX:dialog-pfad:START"), bag.light["uix-more-info-yaml"]);
+  assert.equal(bag.light["primary-color"], "/* HORIZON:UIX:x:START */", "Nicht-Stilziele bleiben unberuehrt");
+  assert.equal(bericht.umbenannt, 3);
+  assert.equal(bericht.doppelt, 1);
 });
 
 if (fehler) {
