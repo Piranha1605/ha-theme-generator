@@ -1964,6 +1964,125 @@ function hatgVereinheitlicheVorlagenMarken(bag) {
   return { umbenannt, doppelt };
 }
 
+// Verlauf fuer aktive Flaechen: eingeschaltete Bubble-Karten, Sub-Buttons mit
+// Hintergrund, Schieberfuellungen, das Gewaehlte der HA-Karten und der aktive
+// Eintrag der Seitenleiste. HA selbst faerbt seine Knoepfe nur ueber
+// Farbvariablen, die keinen Verlauf annehmen - die bleiben in der Primaerfarbe.
+// Die HA-Karten fuellen ihr Gewaehltes ueber --XX-gewaehlt (Kurzform
+// background), daher nehmen sie den Verlauf an. Gleich fuer Light und Dark,
+// weil UIX-Felder fuer beide Modi gelten.
+const HATG_VERLAUF_ID = "verlauf-akzent";
+const HATG_VERLAUF_ZIELE = ["uix-card", "uix-sidebar"];
+const HATG_VERLAUF_STANDARD = { von: "#4FE3C8", bis: "#38A8FF", winkel: 135, vorn: "#0A2230" };
+function hatgVerlaufHex(wert, ersatz) {
+  const m = /^#?([0-9a-f]{6})$/i.exec(String(wert || "").trim());
+  return m ? `#${m[1].toUpperCase()}` : ersatz;
+}
+function hatgVerlaufNormal(p) {
+  const w = Math.round(Number(p && p.winkel));
+  return {
+    von: hatgVerlaufHex(p && p.von, HATG_VERLAUF_STANDARD.von),
+    bis: hatgVerlaufHex(p && p.bis, HATG_VERLAUF_STANDARD.bis),
+    winkel: isFinite(w) ? ((w % 360) + 360) % 360 : HATG_VERLAUF_STANDARD.winkel,
+    vorn: hatgVerlaufHex(p && p.vorn, HATG_VERLAUF_STANDARD.vorn),
+  };
+}
+function hatgVerlaufCss(ziel, werte) {
+  const p = hatgVerlaufNormal(werte);
+  const kopf = `:host {
+  --verlauf-akzent: linear-gradient(${p.winkel}deg, ${p.von} 0%, ${p.bis} 100%);
+  --verlauf-vorn: ${p.vorn};
+}`;
+  if (ziel === "uix-sidebar") {
+    return `${kopf}
+ha-list-item-button.selected::before {
+  background-color: transparent !important;
+  background-image: var(--verlauf-akzent) !important;
+}
+ha-list-item-button.selected {
+  --sidebar-selected-text-color: var(--verlauf-vorn);
+  --sidebar-selected-icon-color: var(--verlauf-vorn);
+  color: var(--verlauf-vorn) !important;
+}`;
+  }
+  const karten = [
+    ["heizzentrale-karte", "hz"],
+    ["heizung-karte", "hk"],
+    ["uhr-karte", "uk"],
+    ["shelly-karte", "sk"],
+  ]
+    .map(
+      ([tag, k]) => `${tag},
+:host(${tag}) {
+  --${k}-gewaehlt: var(--verlauf-akzent) !important;
+  --${k}-gewaehlt-vorn: var(--verlauf-vorn) !important;
+}`
+    )
+    .join("\n");
+  return `${kopf}
+ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-background {
+  background-color: transparent !important;
+  background-image: var(--verlauf-akzent) !important;
+}
+ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-name,
+ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-state,
+ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-main-icon {
+  color: var(--verlauf-vorn) !important;
+}
+ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-main-icon-container {
+  background-color: rgba(0, 0, 0, 0.14) !important;
+}
+.bubble-sub-button.background-on {
+  background-color: transparent !important;
+  background-image: var(--verlauf-akzent) !important;
+  color: var(--verlauf-vorn) !important;
+}
+.bubble-range-fill {
+  background: var(--verlauf-akzent) !important;
+}
+${karten}
+.menue-kapsel {
+  background-color: transparent !important;
+  background-image: var(--verlauf-akzent) !important;
+}
+.menue-leiste .menue-knopf.is-active {
+  color: var(--verlauf-vorn) !important;
+}
+:host(schieber-karte) .fuellung {
+  background: var(--verlauf-akzent) !important;
+}`;
+}
+// Werte aus einem Block lesen; null, wenn kein Block da ist. Liest auch die
+// erste, von Hand gesetzte Fassung (Verlauf als fester Wert).
+function hatgLeseVerlauf(text) {
+  const block = hatgLeseVorlagenBlock(text, HATG_VERLAUF_ID);
+  if (block === null) return null;
+  const g = /linear-gradient\(\s*(-?\d+(?:\.\d+)?)deg\s*,\s*(#[0-9a-f]{6})[^,]*,\s*(#[0-9a-f]{6})/i.exec(block);
+  const v = /--verlauf-vorn:\s*(#[0-9a-f]{6})/i.exec(block) || /--sidebar-selected-text-color:\s*(#[0-9a-f]{6})/i.exec(block);
+  return hatgVerlaufNormal({ winkel: g ? g[1] : NaN, von: g && g[2], bis: g && g[3], vorn: v && v[1] });
+}
+// Beim Laden: vorhandene Verlaufsbloecke auf den aktuellen Stand bringen, in
+// beiden Zielen. Die Werte kommen aus uix-card, sonst aus der Seitenleiste.
+function hatgMigriereAkzentVerlauf(bag) {
+  let geaendert = 0;
+  if (!bag) return geaendert;
+  ["light", "dark"].forEach((m) => {
+    const b = bag[m];
+    if (!b) return;
+    const werte = hatgLeseVerlauf(b["uix-card"]) || hatgLeseVerlauf(b["uix-sidebar"]);
+    if (!werte) return;
+    HATG_VERLAUF_ZIELE.forEach((k) => {
+      const alt = String(b[k] ?? "");
+      const neu = hatgHaengeVorlagenBlockAn(alt, HATG_VERLAUF_ID, hatgVerlaufCss(k, werte));
+      if (neu !== alt) {
+        b[k] = neu;
+        if (m === "light") geaendert++;
+      }
+    });
+  });
+  return geaendert;
+}
+
 // Bewegter Hintergrund. Dashboards malen ihren Hintergrund in
 // hui-view-background (Shadow Root von hui-root, erreichbar ueber uix-root),
 // die Einstellungsseiten in :host::before von ha-drawer (Vorlage
@@ -4635,6 +4754,7 @@ class HATGPanel extends HTMLElement {
         if (!saved.extraValues) saved.extraValues = { light: {}, dark: {} };
         hatgVereinheitlicheVorlagenMarken({ light: saved.values.light, dark: saved.values.dark, extra: saved.extraValues });
         hatgMigriereHintergrundBewegung({ light: saved.values.light, dark: saved.values.dark, extra: saved.extraValues });
+        hatgMigriereAkzentVerlauf({ light: saved.values.light, dark: saved.values.dark });
         hatgLoeseEigeneFelderAuf({ light: saved.values.light, dark: saved.values.dark, extra: saved.extraValues });
         this._state.values.light = { ...this._state.values.light, ...(saved.values.light || {}) };
         this._state.values.dark = { ...this._state.values.dark, ...(saved.values.dark || {}) };
@@ -7014,6 +7134,7 @@ uix:
         ${pfadHinweis}
         ${kollisionsHinweis}
         ${glasRegler}
+        ${stand.gesamt ? this.renderAkzentVerlauf() : ""}
         ${farbHinweis}
         ${duennHinweis}
         ${hinweis}
@@ -7021,6 +7142,76 @@ uix:
         ${nurEigene || !gruppe || eigene.length ? eigenerBlock : ""}
         ${leer && gruppe && !gruppe.eigen ? `<p class="vorlage-desc">Für dieses Stilziel gibt es noch keine Vorlage.</p>` : ""}
       </section>`;
+  }
+
+  akzentVerlaufStand() {
+    const v = this.currentValues();
+    return hatgLeseVerlauf(v["uix-card"] || "") || hatgLeseVerlauf(v["uix-sidebar"] || "");
+  }
+
+  // Schreibt den Verlauf in beide Ziele und beide Modi oder nimmt ihn heraus.
+  setzeAkzentVerlauf(werte) {
+    const currentMode = this._state.editorMode;
+    ["light", "dark"].forEach((mode) => {
+      this._state.editorMode = mode;
+      HATG_VERLAUF_ZIELE.forEach((ziel) => {
+        const text = String(this.currentValues()[ziel] || "");
+        const neu = werte
+          ? hatgHaengeVorlagenBlockAn(text, HATG_VERLAUF_ID, hatgVerlaufCss(ziel, werte))
+          : hatgEntferneVorlagenBlock(text, HATG_VERLAUF_ID);
+        if (neu !== text) this.commitField(ziel, neu);
+      });
+    });
+    this._state.editorMode = currentMode;
+    this.applyPreviewTheme();
+  }
+
+  renderAkzentVerlauf() {
+    const en = this._sprache === "en";
+    const stand = this.akzentVerlaufStand();
+    const p = stand || HATG_VERLAUF_STANDARD;
+    const farbe = (attr, wert, hell, dunkel) => `
+                <label class="glas-ton" title="${en ? hell : dunkel}">
+                  <input type="color" value="${hatgEscape(wert)}" ${attr} />
+                  <span>${en ? hell : dunkel}</span>
+                </label>`;
+    return `
+        <div class="glas-regler" data-roh>
+          <div class="glas-regler-kopf">
+            <strong>${en ? "Gradient for active surfaces" : "Verlauf für aktive Flächen"}</strong>
+            <span>${
+              en
+                ? "Fills Bubble cards that are on, sub-buttons with a background, slider fills, the selected items of HA-Karten cards and the active sidebar entry with a gradient. Home Assistant's own buttons only take colours and keep the primary colour. Applies to light and dark alike."
+                : "Füllt eingeschaltete Bubble-Karten, Sub-Buttons mit Hintergrund, Schieberfüllungen, das Gewählte der HA-Karten und den aktiven Eintrag der Seitenleiste mit einem Verlauf. Die Knöpfe von Home Assistant selbst nehmen nur Farben an und bleiben in der Primärfarbe. Gilt für Light und Dark gleich."
+            }</span>
+          </div>
+          <div class="glas-profile">
+            <div class="mode-toggle-group inline" role="group">
+              <button type="button" class="${stand ? "" : "active"}" data-verlauf="aus">${en ? "Off" : "Aus"}</button>
+              <button type="button" class="${stand ? "active" : ""}" data-verlauf="an">${en ? "On" : "An"}</button>
+            </div>
+          </div>
+          ${
+            stand
+              ? `
+          <div class="glas-regler-reihe verlauf-reihe">
+            <div class="generator-control glas-regler-farbe">
+              <label>${en ? "Colours" : "Farben"}</label>
+              <div class="glas-toene">
+                ${farbe("data-verlauf-von", p.von, "Start", "Anfang")}
+                ${farbe("data-verlauf-bis", p.bis, "End", "Ende")}
+                ${farbe("data-verlauf-vorn", p.vorn, "Text", "Schrift")}
+              </div>
+            </div>
+            <div class="generator-control">
+              <label>${en ? "Direction" : "Richtung"} <span class="generator-value" data-verlauf-winkel-wert>${p.winkel}°</span></label>
+              <input type="range" min="0" max="345" step="15" value="${p.winkel}" data-verlauf-winkel />
+            </div>
+            <div class="verlauf-vorschau" data-verlauf-vorschau style="background: linear-gradient(${p.winkel}deg, ${p.von}, ${p.bis}); color: ${p.vorn};">${en ? "Active" : "Aktiv"}</div>
+          </div>`
+              : ""
+          }
+        </div>`;
   }
 
   generatorBlurTransparencyState() {
@@ -8752,6 +8943,7 @@ uix:
         .glas-regler-kopf { display: flex; flex-direction: column; gap: 3px; margin-bottom: 12px; }
         .glas-regler-kopf strong { font-size: 14px; font-weight: 650; color: var(--hatg-text); }
         .glas-regler-kopf span { font-size: 12px; line-height: 1.5; color: var(--hatg-text-dim); }
+        .verlauf-vorschau { display: grid; place-items: center; min-width: 96px; height: 34px; padding: 0 14px; border-radius: 11px; font-size: 12px; font-weight: 650; }
         .glas-regler-reihe { display: grid; grid-template-columns: 1fr 1fr auto; gap: 18px; align-items: end; }
         .glas-profile { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; margin-bottom: 12px; }
         .glas-toene { display: flex; gap: 10px; }
@@ -9417,6 +9609,41 @@ uix:
       el.addEventListener("click", () => {
         this._state.saveMenuOpen = false;
         this.resetDerivationsToAutomatic();
+      });
+    });
+    this.shadowRoot.querySelectorAll("[data-verlauf]").forEach((el) => {
+      el.addEventListener("click", () => {
+        const an = el.dataset.verlauf === "an";
+        const stand = this.akzentVerlaufStand();
+        if (!!stand === an) return;
+        this.setzeAkzentVerlauf(an ? stand || HATG_VERLAUF_STANDARD : null);
+        this.render();
+      });
+    });
+    const verlaufWerte = () => {
+      const q = (sel) => this.shadowRoot.querySelector(sel);
+      return {
+        von: q("[data-verlauf-von]")?.value,
+        bis: q("[data-verlauf-bis]")?.value,
+        vorn: q("[data-verlauf-vorn]")?.value,
+        winkel: q("[data-verlauf-winkel]")?.value,
+      };
+    };
+    const verlaufVorschau = () => {
+      const p = hatgVerlaufNormal(verlaufWerte());
+      const v = this.shadowRoot.querySelector("[data-verlauf-vorschau]");
+      if (v) {
+        v.style.background = `linear-gradient(${p.winkel}deg, ${p.von}, ${p.bis})`;
+        v.style.color = p.vorn;
+      }
+      const w = this.shadowRoot.querySelector("[data-verlauf-winkel-wert]");
+      if (w) w.textContent = `${p.winkel}°`;
+    };
+    this.shadowRoot.querySelectorAll("[data-verlauf-von], [data-verlauf-bis], [data-verlauf-vorn], [data-verlauf-winkel]").forEach((el) => {
+      el.addEventListener("input", verlaufVorschau);
+      el.addEventListener("change", () => {
+        this.setzeAkzentVerlauf(verlaufWerte());
+        this.render();
       });
     });
     this.shadowRoot.querySelectorAll("[data-popup-bg]").forEach((el) => {
@@ -10711,6 +10938,7 @@ uix:
     }
     const marken = hatgVereinheitlicheVorlagenMarken(parsed);
     hatgMigriereHintergrundBewegung(parsed);
+    hatgMigriereAkzentVerlauf(parsed);
     const eigeneFelder = hatgLoeseEigeneFelderAuf(parsed);
     if (eigeneFelder.entfernt && parsed.unknownCount) {
       parsed.unknownCount = Math.max(0, parsed.unknownCount - eigeneFelder.entfernt);
@@ -10892,6 +11120,7 @@ uix:
         if (!loaded.extraValues) loaded.extraValues = { light: {}, dark: {} };
         hatgVereinheitlicheVorlagenMarken({ light: loaded.values.light, dark: loaded.values.dark, extra: loaded.extraValues });
         hatgMigriereHintergrundBewegung({ light: loaded.values.light, dark: loaded.values.dark, extra: loaded.extraValues });
+        hatgMigriereAkzentVerlauf({ light: loaded.values.light, dark: loaded.values.dark });
         hatgLoeseEigeneFelderAuf({ light: loaded.values.light, dark: loaded.values.dark, extra: loaded.extraValues });
       }
       this._state.values.light = { ...hatgDeepClone(HATG_MANIFEST.light), ...(loaded.values?.light || {}) };

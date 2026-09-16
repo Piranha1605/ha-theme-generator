@@ -37,7 +37,7 @@ function ladeHelfer() {
     HATG_MANIFEST: { light: Object.fromEntries(bekannt.map((k) => [k, ""])) },
     hatgIstStilzielKey: (key) => /^uix-/.test(String(key || "")),
   };
-  vm.runInNewContext(`${quelle.slice(start, ende)}\nthis.hatgLoeseEigeneFelderAuf = hatgLoeseEigeneFelderAuf; this.hatgVereinheitlicheVorlagenMarken = hatgVereinheitlicheVorlagenMarken; this.hatgMigriereHintergrundBewegung = hatgMigriereHintergrundBewegung; this.hatgBewegungCss = hatgBewegungCss; this.hatgLeseBewegung = hatgLeseBewegung; this.hatgBewegungDauer = hatgBewegungDauer;`, kontext);
+  vm.runInNewContext(`${quelle.slice(start, ende)}\nthis.hatgLoeseEigeneFelderAuf = hatgLoeseEigeneFelderAuf; this.hatgVereinheitlicheVorlagenMarken = hatgVereinheitlicheVorlagenMarken; this.hatgMigriereHintergrundBewegung = hatgMigriereHintergrundBewegung; this.hatgBewegungCss = hatgBewegungCss; this.hatgLeseBewegung = hatgLeseBewegung; this.hatgBewegungDauer = hatgBewegungDauer; this.hatgLeseVerlauf = hatgLeseVerlauf; this.hatgMigriereAkzentVerlauf = hatgMigriereAkzentVerlauf;`, kontext);
   return kontext;
 }
 
@@ -229,6 +229,29 @@ pruefe("Hintergrund-Bewegung: fruehere Handfassung wird uebernommen, fremde Anim
   assert.equal(bag.light["uix-drawer"], fremd, "fremde Animation wurde angefasst");
   assert.equal(n, 1);
   assert.equal(vereinheitlicheBewegung(bag), 0, "zweiter Lauf aendert nichts");
+});
+
+pruefe("Akzent-Verlauf: Handfassung der Seitenleiste wird gelesen und in beide Ziele geschrieben", () => {
+  const seite = [
+    "/* HATG:UIX:verlauf-akzent:START */",
+    "ha-list-item-button.selected::before {",
+    "  background-image: linear-gradient(135deg, #4FE3C8 0%, #38A8FF 100%) !important;",
+    "}",
+    "ha-list-item-button.selected {",
+    "  --sidebar-selected-text-color: #0A2230;",
+    "}",
+    "/* HATG:UIX:verlauf-akzent:END */",
+  ].join("\n");
+  const w = helfer.hatgLeseVerlauf(seite);
+  assert.deepEqual({ ...w }, { von: "#4FE3C8", bis: "#38A8FF", winkel: 135, vorn: "#0A2230" });
+  assert.equal(helfer.hatgLeseVerlauf(".x { color: red; }"), null);
+  const bag = { light: { "uix-sidebar": seite, "uix-card": ".alt { color: red; }" }, dark: { "uix-sidebar": seite } };
+  assert.equal(helfer.hatgMigriereAkzentVerlauf(bag), 2);
+  assert.ok(/--verlauf-akzent: linear-gradient\(135deg, #4FE3C8 0%, #38A8FF 100%\)/.test(bag.light["uix-card"]), bag.light["uix-card"]);
+  assert.ok(bag.light["uix-card"].startsWith(".alt { color: red; }"));
+  assert.ok(/--hz-gewaehlt: var\(--verlauf-akzent\)/.test(bag.light["uix-card"]));
+  assert.ok(/background-image: var\(--verlauf-akzent\)/.test(bag.dark["uix-sidebar"]));
+  assert.equal(helfer.hatgMigriereAkzentVerlauf(bag), 0, "zweiter Lauf aendert nichts");
 });
 
 if (fehler) {
