@@ -266,7 +266,7 @@ const HATG_TEXTE = {
   "Kopfleiste des Dashboards in Glas": "Dashboard top bar in glass",
   "Die Leiste über einem Dashboard heißt im Frontend .header und sitzt in hui-root - das Stilziel für die Kopfleiste erreicht sie nicht. Diese Vorlage setzt am Grundgerüst an und legt Weichzeichnung, Reflex und Kanten darauf. Die Farbe selbst kommt aus dem Theme-Feld app-header-background-color; steht dort ein deckender Wert, hilft der Knopf \"Auf Glas setzen\" über der Vorlagenliste.": "The bar above a dashboard is called .header and lives in hui-root - the top bar style target does not reach it. This preset works from the dashboard root and puts blur, sheen and edges on it. The colour itself comes from the theme field app-header-background-color; if that holds an opaque value, the button \"Set to glass\" above the preset list helps.",
   "Bubble Card in Glas": "Bubble Card in glass",
-  "Bubble Card zeichnet seine Flächen selbst und liest dafür eigene Variablen - ohne diese Vorlage bleiben Bubble-Karten deckend, auch wenn die Karte darunter längst Glas ist. Setzt die Variablen auf die gemeinsamen Glaswerte und gibt Karten, Sub-Buttons sowie Climate-, Cover-, Media-Player-, Select- und Kalender-Flächen Weichzeichnung, die Rundung der Karten und einen kleinen weichen Schatten - ohne Ring und Glanz, wie die Knöpfe eigener Karten. Icons werden zu abgerundeten Kästchen mit leiser Tönung. Eingeschaltete Karten und Sub-Buttons mit Hintergrund werden deckend in der Akzentfarbe mit plastischer Innenkante, Schrift und Symbol darauf in der Textfarbe für Akzentflächen. Schieber bekommen eine vertiefte Glasmulde als Spur und eine deckende Füllung mit plastischer Kante. Separatoren bleiben ohne Hintergrund. Schaltet außerdem den Rahmen ab, den Bubble Card aus dem Theme-Feld bubble-border zieht. Die Variablennamen stammen aus Bubble Cards eigenem CSS und wurden in einer laufenden Instanz geprüft.": "Bubble Card paints its own surfaces and reads its own variables for them - without this preset, Bubble cards stay opaque even when the card beneath is already glass. It sets those variables to the shared glass values and gives cards, sub-buttons and the climate, cover, media player, select and calendar surfaces blur, the card radius and a small soft shadow - no ring and no sheen, like the buttons of custom cards. Icons become rounded tiles with a quiet tint. Cards that are on and sub-buttons with a background turn solid in the accent colour with a sculpted inner edge, with text and icon in the text colour for accent surfaces. Sliders get a recessed glass trough as their track and a solid fill with a sculpted edge. Separators stay without a background. It also switches off the border Bubble Card draws from the theme field bubble-border. The variable names come from Bubble Card's own CSS and were verified in a running instance.",
+  "Bubble Card zeichnet seine Flächen selbst und liest dafür eigene Variablen - ohne diese Vorlage bleiben Bubble-Karten deckend, auch wenn die Karte darunter längst Glas ist. Setzt die Variablen auf die gemeinsamen Glaswerte und gibt Karten, Sub-Buttons sowie Climate-, Cover-, Media-Player-, Select- und Kalender-Flächen Weichzeichnung, die Rundung der Karten sowie Rahmen und Schatten der HA-Karten aus ha-card-border-width, ha-card-border-color und ha-card-box-shadow - ohne Glanz. Icons werden zu abgerundeten Kästchen mit leiser Tönung. Eingeschaltete Karten und Sub-Buttons mit Hintergrund werden deckend in der Akzentfarbe mit plastischer Innenkante, Schrift und Symbol darauf in der Textfarbe für Akzentflächen. Schieber bekommen eine vertiefte Glasmulde als Spur und eine deckende Füllung mit plastischer Kante. Separatoren bleiben ohne Hintergrund. Den Rahmen, den Bubble Card aus dem Theme-Feld bubble-border zieht, schaltet sie ab - er würde auch Pop-ups und deren Knöpfe einfassen. Die Variablennamen stammen aus Bubble Cards eigenem CSS und wurden in einer laufenden Instanz geprüft.": "Bubble Card paints its own surfaces and reads its own variables for them - without this preset, Bubble cards stay opaque even when the card beneath is already glass. It sets those variables to the shared glass values and gives cards, sub-buttons and the climate, cover, media player, select and calendar surfaces blur, the card radius, and the border and shadow of HA cards from ha-card-border-width, ha-card-border-color and ha-card-box-shadow - without sheen. Icons become rounded tiles with a quiet tint. Cards that are on and sub-buttons with a background turn solid in the accent colour with a sculpted inner edge, with text and icon in the text colour for accent surfaces. Sliders get a recessed glass trough as their track and a solid fill with a sculpted edge. Separators stay without a background. It switches off the border Bubble Card draws from the theme field bubble-border - that one would also frame pop-ups and their buttons. The variable names come from Bubble Card's own CSS and were verified in a running instance.",
   "Glance-Karten in Glas": "Glance cards in glass",
   "Glance-Karten bringen ihre eigene Fläche mit und brauchen deshalb einen eigenen Eintrag. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "Glance cards bring their own surface and therefore need an entry of their own. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
   "Grid-Abschnitte in Glas": "Grid sections in glass",
@@ -2520,7 +2520,7 @@ ha-badge {
     id: "glas-bubble",
     paket: "glas",
     label: "Bubble Card in Glas",
-    desc: "Bubble Card zeichnet seine Flächen selbst und liest dafür eigene Variablen - ohne diese Vorlage bleiben Bubble-Karten deckend, auch wenn die Karte darunter längst Glas ist. Setzt die Variablen auf die gemeinsamen Glaswerte und gibt Karten, Sub-Buttons sowie Climate-, Cover-, Media-Player-, Select- und Kalender-Flächen Weichzeichnung, die Rundung der Karten und einen kleinen weichen Schatten - ohne Ring und Glanz, wie die Knöpfe eigener Karten. Icons werden zu abgerundeten Kästchen mit leiser Tönung. Eingeschaltete Karten und Sub-Buttons mit Hintergrund werden deckend in der Akzentfarbe mit plastischer Innenkante, Schrift und Symbol darauf in der Textfarbe für Akzentflächen. Schieber bekommen eine vertiefte Glasmulde als Spur und eine deckende Füllung mit plastischer Kante. Separatoren bleiben ohne Hintergrund. Schaltet außerdem den Rahmen ab, den Bubble Card aus dem Theme-Feld bubble-border zieht. Die Variablennamen stammen aus Bubble Cards eigenem CSS und wurden in einer laufenden Instanz geprüft.",
+    desc: "Bubble Card zeichnet seine Flächen selbst und liest dafür eigene Variablen - ohne diese Vorlage bleiben Bubble-Karten deckend, auch wenn die Karte darunter längst Glas ist. Setzt die Variablen auf die gemeinsamen Glaswerte und gibt Karten, Sub-Buttons sowie Climate-, Cover-, Media-Player-, Select- und Kalender-Flächen Weichzeichnung, die Rundung der Karten sowie Rahmen und Schatten der HA-Karten aus ha-card-border-width, ha-card-border-color und ha-card-box-shadow - ohne Glanz. Icons werden zu abgerundeten Kästchen mit leiser Tönung. Eingeschaltete Karten und Sub-Buttons mit Hintergrund werden deckend in der Akzentfarbe mit plastischer Innenkante, Schrift und Symbol darauf in der Textfarbe für Akzentflächen. Schieber bekommen eine vertiefte Glasmulde als Spur und eine deckende Füllung mit plastischer Kante. Separatoren bleiben ohne Hintergrund. Den Rahmen, den Bubble Card aus dem Theme-Feld bubble-border zieht, schaltet sie ab - er würde auch Pop-ups und deren Knöpfe einfassen. Die Variablennamen stammen aus Bubble Cards eigenem CSS und wurden in einer laufenden Instanz geprüft.",
     ziel: "uix-card",
     css: `:host {
   /* Bubble Card faerbt seine Flaechen ueber eigene Variablen. Ohne diese Zeilen
@@ -2540,12 +2540,10 @@ ha-badge {
   --bubble-main-buttons-background-color: var(--control-button-background-color) !important;
   --bubble-climate-button-background-color: var(--control-button-background-color) !important;
   /* Aus --bubble-border zieht Bubble Card einen echten border - auf
-     .bubble-container jeder Karte, auf .bubble-pop-up, auf die Schliessen-
-     Knoepfe der Pop-ups und auf das Menueleisten-Panel. Der Wert aus dem
-     Theme-Feld ist deckend und liegt genau auf der Lichtkante, die diese
-     Vorlage weiter unten als inneren Ring in den box-shadow legt. Er wuerde
-     sie also ueberdecken. Bubbles eigener Standard ist ohnehin none - mit
-     dieser Zeile kommt die Kante wieder aus dem Bereich Glaslook. */
+     .bubble-container jeder Karte, aber auch auf .bubble-pop-up und die
+     Schliessen-Knoepfe der Pop-ups. Den Rahmen der Karten setzt diese
+     Vorlage weiter unten direkt aus den HA-Feldern, die Variable bleibt
+     deshalb aus. */
   --bubble-border: none !important;
   /* Rundung wie die Raumzeilen eigener Karten (Heizzentrale: 11,5 px bei
      50 px Hoehe, auf 56 px hohe Bubble-Karten umgerechnet). Bubble rechnet
@@ -2553,12 +2551,11 @@ ha-badge {
   --bubble-button-border-radius: 13px;
   --bubble-border-radius: 13px;
 }
-/* Flaechen im Stil der Knoepfe eigener Karten: Weichzeichnung, kein Ring,
-   kein Glanz, ein kleiner weicher Schatten mit feiner Lichtkante - ein
-   Sechstel des Kartenschattens. Ring, Glanz und der grosse Schatten liessen
-   Bubble-Karten neben diesen Knoepfen an einer laufenden Instanz fremd
-   wirken. Das Klappfeld der Menueleiste gehoert dazu: seine einzige Kontur
-   war der Rahmen, den diese Vorlage oben abschaltet. */
+/* Flaechen wie HA-Karten: Weichzeichnung, Rahmen und Schatten aus denselben
+   Theme-Feldern, die ha-card liest - ohne diese Zeilen standen Bubble-Karten
+   am 2026-09-16 rahmenlos neben HA-Karten mit 8 px breitem Rahmen. Das
+   Klappfeld der Menueleiste gehoert dazu: seine einzige Kontur war der
+   Rahmen, den diese Vorlage oben abschaltet. */
 .bubble-container,
 .bubble-button-container,
 .bubble-climate-container,
@@ -2574,8 +2571,9 @@ ha-badge {
   backdrop-filter: var(--ha-card-backdrop-filter, blur(18px)) !important;
   -webkit-backdrop-filter: var(--ha-card-backdrop-filter, blur(18px)) !important;
   background-image: none !important;
+  border: var(--ha-card-border-width, 1px) solid var(--ha-card-border-color, var(--divider-color, transparent)) !important;
   border-radius: 13px !important;
-  box-shadow: 0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3) !important;
+  box-shadow: var(--ha-card-box-shadow, none) !important;
 }
 .bubble-background {
   border-radius: inherit !important;
@@ -2645,6 +2643,7 @@ ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-main-icon-container
   background-image: none !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
+  border: 0 !important;
   box-shadow: none !important;
 }
 /* Sub-Buttons mit Hintergrund (etwa ein Sensorwert im Separator): gewaehlt
@@ -4061,6 +4060,55 @@ function hatgMergeStilzielYaml(einfachesCss, yamlKarte) {
     .join("\n");
   const punktEintrag = `".": |\n${eingerueckt}`;
   return karte ? `${punktEintrag}\n${karte}` : punktEintrag;
+}
+
+// UIX liest die Karte mit einem strengen YAML-Parser: steht ein Pfad zweimal
+// darin, verwirft es das ganze Feld, und keine Vorlage des Stilziels kommt an.
+// Am 2026-09-16 legte ein doppelter Eintrag "ha-button $" so das komplette
+// uix-card-yaml still. Doppelte Pfade werden deshalb beim Schreiben zu einem
+// zusammengefasst; das CSS des zweiten haengt am ersten.
+function hatgYamlPfadeZusammenfuehren(yamlKarte) {
+  const zeilen = String(yamlKarte ?? "").split("\n");
+  const kopf = /^("(?:[^"\\]|\\.)*"|'[^']*'|[^\s#'"][^\n]*?):\s*\|[-+]?\s*$/;
+  const abschnitte = [];
+  const nachPfad = new Map();
+  let aktuell = null;
+  for (const zeile of zeilen) {
+    const eingerueckt = /^\s/.test(zeile) || zeile.trim() === "";
+    if (aktuell && eingerueckt) {
+      aktuell.rumpf.push(zeile);
+      continue;
+    }
+    const m = kopf.exec(zeile);
+    if (!m) {
+      aktuell = null;
+      abschnitte.push({ zeilen: [zeile] });
+      continue;
+    }
+    const pfad = m[1].replace(/^(["'])([\s\S]*)\1$/, "$2");
+    const vorher = nachPfad.get(pfad);
+    if (vorher) {
+      aktuell = { rumpf: [] };
+      aktuell.ziel = vorher;
+      abschnitte.push(aktuell);
+      continue;
+    }
+    aktuell = { kopf: zeile, rumpf: [] };
+    nachPfad.set(pfad, aktuell);
+    abschnitte.push(aktuell);
+  }
+  if (!abschnitte.some((a) => a.ziel)) return String(yamlKarte ?? "");
+  abschnitte.forEach((a) => {
+    if (!a.ziel) return;
+    const rumpf = a.rumpf.slice();
+    while (rumpf.length && rumpf[rumpf.length - 1].trim() === "") rumpf.pop();
+    while (a.ziel.rumpf.length && a.ziel.rumpf[a.ziel.rumpf.length - 1].trim() === "") a.ziel.rumpf.pop();
+    a.ziel.rumpf.push(...rumpf);
+  });
+  return abschnitte
+    .filter((a) => !a.ziel)
+    .flatMap((a) => (a.zeilen ? a.zeilen : [a.kopf, ...a.rumpf]))
+    .join("\n");
 }
 
 // Gegenstueck dazu. Beim Import muss der "."-Eintrag zurueck ins einfache Feld,
@@ -7395,9 +7443,11 @@ uix:
     Object.keys(flatZiele).forEach((yamlName) => {
       if (!/-yaml$/.test(yamlName)) return;
       const basis = yamlName.replace(/-yaml$/, "");
-      if (!String(flatZiele[basis] ?? "").trim()) return;
-      flatZiele[yamlName] = hatgMergeStilzielYaml(flatZiele[basis], flatZiele[yamlName]);
-      delete flatZiele[basis];
+      if (String(flatZiele[basis] ?? "").trim()) {
+        flatZiele[yamlName] = hatgMergeStilzielYaml(flatZiele[basis], flatZiele[yamlName]);
+        delete flatZiele[basis];
+      }
+      flatZiele[yamlName] = hatgYamlPfadeZusammenfuehren(flatZiele[yamlName]);
     });
     const flatKeys = Object.keys(flatZiele);
     const flatUeberschrift =

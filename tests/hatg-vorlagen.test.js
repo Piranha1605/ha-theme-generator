@@ -150,14 +150,16 @@ pruefe("glas-ebene legt das Glas auf :host(ha-card) und ha-card", () => {
   assert.deepEqual(selektoren, [":host(ha-card)", "ha-card"]);
 });
 
-pruefe("glas-bubble: Flaechen ohne Ring und Glanz, Icons als Kaestchen", () => {
-  // Ring, Glanz und der grosse Kartenschatten liessen Bubble-Karten neben den
-  // Knoepfen eigener Karten fremd wirken. Vorbild ist deren ruhender Knopf.
+pruefe("glas-bubble: Flaechen mit Rahmen und Schatten der HA-Karten, ohne Glanz, Icons als Kaestchen", () => {
+  // Rahmen und Schatten kommen aus denselben Feldern wie bei ha-card - sonst
+  // stehen Bubble-Karten rahmenlos neben HA-Karten (2026-09-16).
   const c = ohneKommentare(css(vorlagen.find((x) => x.id === "glas-bubble").block));
   const regeln = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)];
   assert.ok(!/--hatg-glas-reflex|--hatg-glas-rand/.test(c), "Glanz oder Ring steht wieder in glas-bubble");
   const flaeche = regeln.find((m) => m[1].split(",").map((s) => s.trim()).includes(".bubble-button-container"));
   assert.ok(flaeche && /background-image:\s*none/.test(flaeche[2]) && /border-radius:\s*13px/.test(flaeche[2]), "Flaeche nicht im Knopfstil");
+  assert.ok(/border:\s*var\(--ha-card-border-width[^;]*var\(--ha-card-border-color/.test(flaeche[2]), "Rahmen kommt nicht aus den HA-Kartenfeldern");
+  assert.ok(/box-shadow:\s*var\(--ha-card-box-shadow/.test(flaeche[2]), "Schatten kommt nicht aus ha-card-box-shadow");
   const icon = regeln.find((m) => m[1].split(",").map((s) => s.trim()).includes(".bubble-main-icon-container") && /border-radius/.test(m[2]));
   assert.ok(icon && /box-shadow:\s*none/.test(icon[2]) && !/9999/.test(icon[2]), "Icons sind keine Kaestchen ohne Schatten");
 });
@@ -277,7 +279,7 @@ pruefe("glas-bubble: Separator ohne Hintergrund, Sub-Buttons getoent", () => {
   const regeln = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)];
   const sep = regeln.find((m) => m[1].trim() === ".bubble-container.separator-container");
   assert.ok(sep, "keine Ausnahme fuer Separatoren");
-  for (const d of ["background: none", "backdrop-filter: none", "box-shadow: none"]) assert.ok(sep[2].includes(d), `Separator: ${d} fehlt`);
+  for (const d of ["background: none", "backdrop-filter: none", "border: 0", "box-shadow: none"]) assert.ok(sep[2].includes(d), `Separator: ${d} fehlt`);
   const sub = regeln.find((m) => m[1].trim() === ".bubble-sub-button.background-on");
   assert.ok(sub && (sub[2].match(/inset/g) || []).length === 2 && /--text-primary-color/.test(sub[2]), "Sub-Buttons mit Hintergrund nicht wie das Gewaehlte");
 });
