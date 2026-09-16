@@ -1961,6 +1961,94 @@ function hatgVereinheitlicheVorlagenMarken(bag) {
   return { umbenannt, doppelt };
 }
 
+// Bewegter Hintergrund. Dashboards malen ihren Hintergrund in
+// hui-view-background (Shadow Root von hui-root, erreichbar ueber uix-root),
+// die Einstellungsseiten in :host::before von ha-drawer (Vorlage
+// ansicht-hintergrundbild). Bewegt wird nur per transform: das laeuft auf der
+// Grafikkarte und laesst Bild, Verlauf und die Abdunkel-Schicht der Ansicht
+// unangetastet. Die Flaeche ist rundum 14 % groesser als der Bildschirm, damit
+// beim Verschieben kein Rand sichtbar wird. Gemessen am 2026-09-16: HA kappt
+// hui-view-background per max-width auf Bildschirmbreite, dessen Rand lief
+// sonst als gerade Kante durchs Bild.
+const HATG_BEWEGUNG_ID = "hintergrund-bewegung";
+const HATG_BEWEGUNG_ZIELE = ["uix-root", "uix-drawer"];
+const HATG_BEWEGUNG_STUFE_STANDARD = 4;
+function hatgBewegungDauer(stufe) {
+  const s = Math.min(10, Math.max(1, Math.round(Number(stufe) || HATG_BEWEGUNG_STUFE_STANDARD)));
+  return Math.round(60 / s);
+}
+function hatgBewegungStufe(dauer) {
+  const d = Number(dauer);
+  if (!isFinite(d) || d <= 0) return HATG_BEWEGUNG_STUFE_STANDARD;
+  return Math.min(10, Math.max(1, Math.round(60 / d)));
+}
+function hatgBewegungCss(ziel, stufe) {
+  const dauer = hatgBewegungDauer(stufe);
+  const element = ziel === "uix-root" ? "hui-view-background" : ":host::before";
+  const groesse =
+    ziel === "uix-root"
+      ? `
+  width: 128% !important;
+  height: 128% !important;
+  max-width: none !important;
+  max-height: none !important;`
+      : "";
+  return `${element} {
+  inset: -14% !important;${groesse}
+  animation: hatg-hintergrund-drift ${dauer}s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes hatg-hintergrund-drift {
+  0% { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
+  33% { transform: translate3d(-7%, 4%, 0) scale(1.08) rotate(-3deg); }
+  66% { transform: translate3d(6%, -4%, 0) scale(1.04) rotate(2deg); }
+  100% { transform: translate3d(-3%, 7%, 0) scale(1.12) rotate(-1.5deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  ${element} { animation: none !important; }
+}`;
+}
+// Stand aus einem Stilziel lesen: null, wenn die Bewegung aus ist.
+function hatgLeseBewegung(text) {
+  const block = hatgLeseVorlagenBlock(text, HATG_BEWEGUNG_ID);
+  if (block === null) return null;
+  const m = /hatg-hintergrund-drift\s+([\d.]+)s/.exec(block);
+  return { stufe: hatgBewegungStufe(m ? m[1] : NaN) };
+}
+// Beim Laden: Bewegungsbloecke auf den aktuellen Stand bringen. Eine fruehere,
+// von Hand eingesetzte Fassung (Block liquid-hintergrund mit horizon-drift,
+// 2026-09-16 im Theme horizon_linen) wird dabei uebernommen; ihre Groessen
+// fuer einzelne Lichtflaechen verkleinerten ein Bild und liessen Raender frei.
+function hatgMigriereHintergrundBewegung(bag) {
+  let geaendert = 0;
+  if (!bag) return geaendert;
+  ["light", "dark"].forEach((m) =>
+    [bag[m], bag.extra?.[m]].forEach((b) => {
+      if (!b) return;
+      HATG_BEWEGUNG_ZIELE.forEach((k) => {
+        if (b[k] === undefined) return;
+        let text = String(b[k] ?? "");
+        let stufe = null;
+        const alt = hatgLeseVorlagenBlock(text, "liquid-hintergrund");
+        if (alt !== null && /horizon-drift/.test(alt)) {
+          const d = /horizon-drift\s+([\d.]+)s/.exec(alt);
+          stufe = hatgBewegungStufe(d ? d[1] : NaN);
+          text = hatgEntferneVorlagenBlock(text, "liquid-hintergrund");
+        }
+        const vorhanden = hatgLeseBewegung(text);
+        if (vorhanden) stufe = vorhanden.stufe;
+        if (stufe === null) return;
+        const neu = hatgHaengeVorlagenBlockAn(text, HATG_BEWEGUNG_ID, hatgBewegungCss(k, stufe));
+        if (neu !== b[k]) {
+          b[k] = neu;
+          if (m === "light") geaendert++;
+        }
+      });
+    })
+  );
+  return geaendert;
+}
+
 const HATG_VORLAGEN_STILLGELEGT = ["icon-farbe-hintergrund", "ansicht-hintergrund-daempfen", "einstellungen-liste-luftig"];
 // Ziele, in denen stillgelegte Vorlagen liegen koennen - sonst findet das
 // Aufraeumen sie nicht mehr, sobald die Definition weg ist.
@@ -4529,6 +4617,7 @@ class HATGPanel extends HTMLElement {
         hatgMigriereStilzielKeys(saved.values.dark);
         if (!saved.extraValues) saved.extraValues = { light: {}, dark: {} };
         hatgVereinheitlicheVorlagenMarken({ light: saved.values.light, dark: saved.values.dark, extra: saved.extraValues });
+        hatgMigriereHintergrundBewegung({ light: saved.values.light, dark: saved.values.dark, extra: saved.extraValues });
         hatgLoeseEigeneFelderAuf({ light: saved.values.light, dark: saved.values.dark, extra: saved.extraValues });
         this._state.values.light = { ...this._state.values.light, ...(saved.values.light || {}) };
         this._state.values.dark = { ...this._state.values.dark, ...(saved.values.dark || {}) };
@@ -7036,6 +7125,7 @@ uix:
         </div>
         ${customField}
         ${this.renderBackgroundOpacitySlider()}
+        ${this.renderHintergrundBewegung()}
       </div>`;
   }
 
@@ -7050,6 +7140,64 @@ uix:
         <label>Deckkraft des Bildes <span class="generator-value" data-bg-opacity-value>${p} %</span></label>
         <input type="range" min="0" max="100" step="1" value="${p}" data-bg-opacity />
         <small>Bei 0 % bleibt nur die Hintergrundfarbe stehen, bei 100 % das Bild in voller Stärke.</small>
+      </div>`;
+  }
+
+  // Stand der Hintergrund-Bewegung, gelesen aus uix-root des bearbeiteten Modus.
+  hintergrundBewegungStand() {
+    return hatgLeseBewegung(this.currentValues()["uix-root"] || "");
+  }
+
+  // Schreibt oder entfernt die Bewegung in beiden Modi und beiden Zielen.
+  setzeHintergrundBewegung(an, stufe = HATG_BEWEGUNG_STUFE_STANDARD) {
+    const currentMode = this._state.editorMode;
+    ["light", "dark"].forEach((mode) => {
+      this._state.editorMode = mode;
+      HATG_BEWEGUNG_ZIELE.forEach((ziel) => {
+        const text = String(this.currentValues()[ziel] || "");
+        const neu = an
+          ? hatgHaengeVorlagenBlockAn(text, HATG_BEWEGUNG_ID, hatgBewegungCss(ziel, stufe))
+          : hatgEntferneVorlagenBlock(text, HATG_BEWEGUNG_ID);
+        if (neu !== text) this.commitField(ziel, neu);
+      });
+    });
+    this._state.editorMode = currentMode;
+    this.applyPreviewTheme();
+  }
+
+  renderHintergrundBewegung() {
+    const values = this.currentValues();
+    if ((values["background-style"] || "off") === "off") return "";
+    const en = this._sprache === "en";
+    const stand = this.hintergrundBewegungStand();
+    const stufe = stand ? stand.stufe : HATG_BEWEGUNG_STUFE_STANDARD;
+    const zieheAn = hatgVorlagenBlockActive(values["uix-drawer"] || "", "ansicht-hintergrundbild");
+    return `
+      <div class="bg-opacity-row" data-roh>
+        <label>${en ? "Move background" : "Hintergrund bewegen"}
+          <span class="mode-toggle-group inline" role="group">
+            <button type="button" class="${stand ? "" : "active"}" data-bg-bewegung="aus">${en ? "Off" : "Aus"}</button>
+            <button type="button" class="${stand ? "active" : ""}" data-bg-bewegung="an">${en ? "On" : "An"}</button>
+          </span>
+        </label>
+        ${
+          stand
+            ? `
+        <label>${en ? "Speed" : "Geschwindigkeit"} <span class="generator-value" data-bg-bewegung-wert>${en ? "Level" : "Stufe"} ${stufe} · ${hatgBewegungDauer(stufe)} s</span></label>
+        <input type="range" min="1" max="10" step="1" value="${stufe}" data-bg-bewegung-stufe />`
+            : ""
+        }
+        <small>${
+          en
+            ? "Slowly shifts, zooms and turns the background on dashboards - image or gradient alike. Runs on the graphics card; systems set to reduced motion keep it still. Higher level, faster movement; the seconds are one pass."
+            : "Verschiebt, zoomt und dreht den Hintergrund auf Dashboards langsam - Bild wie Verlauf. Läuft auf der Grafikkarte; ist im System reduzierte Bewegung eingestellt, steht er still. Höhere Stufe, schnellere Bewegung; die Sekunden sind ein Durchlauf."
+        }${
+          zieheAn
+            ? ""
+            : en
+              ? " Settings pages only move along with the preset Background image across the whole interface."
+              : " Die Einstellungsseiten bewegen sich nur mit der Vorlage Hintergrundbild über die ganze Oberfläche mit."
+        }</small>
       </div>`;
   }
 
@@ -9152,6 +9300,28 @@ uix:
         this.resetDerivationsToAutomatic();
       });
     });
+    this.shadowRoot.querySelectorAll("[data-bg-bewegung]").forEach((el) => {
+      el.addEventListener("click", () => {
+        const an = el.dataset.bgBewegung === "an";
+        const stand = this.hintergrundBewegungStand();
+        if (!!stand === an) return;
+        this.setzeHintergrundBewegung(an, stand ? stand.stufe : HATG_BEWEGUNG_STUFE_STANDARD);
+        this.render();
+      });
+    });
+    this.shadowRoot.querySelectorAll("[data-bg-bewegung-stufe]").forEach((el) => {
+      const anzeige = this.shadowRoot.querySelector("[data-bg-bewegung-wert]");
+      const zeige = () => {
+        const st = parseInt(el.value, 10) || HATG_BEWEGUNG_STUFE_STANDARD;
+        if (anzeige) anzeige.textContent = `${this._sprache === "en" ? "Level" : "Stufe"} ${st} · ${hatgBewegungDauer(st)} s`;
+        return st;
+      };
+      el.addEventListener("input", zeige);
+      el.addEventListener("change", () => {
+        this.setzeHintergrundBewegung(true, zeige());
+        this.render();
+      });
+    });
     this.shadowRoot.querySelectorAll("[data-bg-opacity]").forEach((el) => {
       const anzeige = this.shadowRoot.querySelector("[data-bg-opacity-value]");
       el.addEventListener("input", () => {
@@ -10387,6 +10557,7 @@ uix:
       parsed.unknownCount = Math.max(0, parsed.unknownCount - migrierteStilziele);
     }
     const marken = hatgVereinheitlicheVorlagenMarken(parsed);
+    hatgMigriereHintergrundBewegung(parsed);
     const eigeneFelder = hatgLoeseEigeneFelderAuf(parsed);
     if (eigeneFelder.entfernt && parsed.unknownCount) {
       parsed.unknownCount = Math.max(0, parsed.unknownCount - eigeneFelder.entfernt);
@@ -10567,6 +10738,7 @@ uix:
       if (loaded.values) {
         if (!loaded.extraValues) loaded.extraValues = { light: {}, dark: {} };
         hatgVereinheitlicheVorlagenMarken({ light: loaded.values.light, dark: loaded.values.dark, extra: loaded.extraValues });
+        hatgMigriereHintergrundBewegung({ light: loaded.values.light, dark: loaded.values.dark, extra: loaded.extraValues });
         hatgLoeseEigeneFelderAuf({ light: loaded.values.light, dark: loaded.values.dark, extra: loaded.extraValues });
       }
       this._state.values.light = { ...hatgDeepClone(HATG_MANIFEST.light), ...(loaded.values?.light || {}) };

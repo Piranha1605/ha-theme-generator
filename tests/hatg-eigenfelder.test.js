@@ -37,13 +37,14 @@ function ladeHelfer() {
     HATG_MANIFEST: { light: Object.fromEntries(bekannt.map((k) => [k, ""])) },
     hatgIstStilzielKey: (key) => /^uix-/.test(String(key || "")),
   };
-  vm.runInNewContext(`${quelle.slice(start, ende)}\nthis.hatgLoeseEigeneFelderAuf = hatgLoeseEigeneFelderAuf; this.hatgVereinheitlicheVorlagenMarken = hatgVereinheitlicheVorlagenMarken;`, kontext);
+  vm.runInNewContext(`${quelle.slice(start, ende)}\nthis.hatgLoeseEigeneFelderAuf = hatgLoeseEigeneFelderAuf; this.hatgVereinheitlicheVorlagenMarken = hatgVereinheitlicheVorlagenMarken; this.hatgMigriereHintergrundBewegung = hatgMigriereHintergrundBewegung; this.hatgBewegungCss = hatgBewegungCss; this.hatgLeseBewegung = hatgLeseBewegung; this.hatgBewegungDauer = hatgBewegungDauer;`, kontext);
   return kontext;
 }
 
 const helfer = ladeHelfer();
 const loeseAuf = helfer.hatgLoeseEigeneFelderAuf;
 const vereinheitliche = helfer.hatgVereinheitlicheVorlagenMarken;
+const vereinheitlicheBewegung = helfer.hatgMigriereHintergrundBewegung;
 
 let fehler = 0;
 function pruefe(name, fn) {
@@ -191,6 +192,43 @@ pruefe("Fremde Vorlagenmarken werden HATG-Marken, doppelte Bloecke fallen weg", 
   assert.equal(bag.light["primary-color"], "/* HORIZON:UIX:x:START */", "Nicht-Stilziele bleiben unberuehrt");
   assert.equal(bericht.umbenannt, 3);
   assert.equal(bericht.doppelt, 1);
+});
+
+pruefe("Hintergrund-Bewegung: nur transform, Flaeche ohne Breitenkappung, Stufe kommt zurueck", () => {
+  const root = helfer.hatgBewegungCss("uix-root", 5);
+  assert.ok(/hui-view-background \{/.test(root) && /max-width: none !important/.test(root), root);
+  assert.ok(!/background-(size|position)/.test(root), "Bild und Abdunkel-Schicht duerfen nicht veraendert werden");
+  assert.ok(/hatg-hintergrund-drift 12s/.test(root));
+  const drawer = helfer.hatgBewegungCss("uix-drawer", 5);
+  assert.ok(drawer.startsWith(":host::before {") && !/max-width/.test(drawer), drawer);
+  const text = `/* HATG:UIX:hintergrund-bewegung:START */\n${root}\n/* HATG:UIX:hintergrund-bewegung:END */`;
+  assert.equal(helfer.hatgLeseBewegung(text).stufe, 5);
+  assert.equal(helfer.hatgLeseBewegung("hui-view-background {}"), null);
+  assert.equal(helfer.hatgBewegungDauer(1), 60);
+  assert.equal(helfer.hatgBewegungDauer(10), 6);
+});
+
+pruefe("Hintergrund-Bewegung: fruehere Handfassung wird uebernommen, fremde Animationen bleiben", () => {
+  const alt = [
+    "/* HATG:UIX:liquid-hintergrund:START */",
+    "hui-view-background {",
+    "  background-size: 90% 90%, 100% 100% !important;",
+    "  animation: horizon-drift 14s ease-in-out infinite alternate, horizon-licht 9s ease-in-out infinite alternate;",
+    "}",
+    "/* HATG:UIX:liquid-hintergrund:END */",
+    ".header { color: red; }",
+  ].join("\n");
+  const fremd = "/* HATG:UIX:liquid-hintergrund:START */\n:host { animation: liquid-scene-drift 22s; }\n/* HATG:UIX:liquid-hintergrund:END */";
+  const bag = { light: { "uix-root": alt, "uix-drawer": fremd }, dark: { "uix-root": alt }, extra: { light: {}, dark: {} } };
+  const n = vereinheitlicheBewegung(bag);
+  const neu = bag.light["uix-root"];
+  assert.ok(!/liquid-hintergrund|horizon-licht|90% 90%/.test(neu), neu);
+  assert.ok(neu.includes(".header { color: red; }"));
+  assert.equal(helfer.hatgLeseBewegung(neu).stufe, 4);
+  assert.equal(bag.dark["uix-root"], neu);
+  assert.equal(bag.light["uix-drawer"], fremd, "fremde Animation wurde angefasst");
+  assert.equal(n, 1);
+  assert.equal(vereinheitlicheBewegung(bag), 0, "zweiter Lauf aendert nichts");
 });
 
 if (fehler) {

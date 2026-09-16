@@ -34,7 +34,7 @@ Die Versionsnummer steht an vier Stellen und muss überall gleich sein: `manifes
 - **Alle Felder** — Volltext- und Filtersuche über sämtliche 573 verifizierten Variablen
 - **Code-Editor** — textbasierte Bearbeitung mit Syntax-Highlighting
 - **Vorlagen** — vorgefertigte CSS-Effekte, eine Unterseite je Stilziel
-- **Hintergrundbilder** — über die ganze Oberfläche, mit eigener Galerie
+- **Hintergrundbilder** — über die ganze Oberfläche, mit eigener Galerie; Hintergrund-Bewegung mit Schalter und Geschwindigkeitsstufe (`hintergrund-bewegung` in `uix-root` und `uix-drawer`, nur `transform`, Fläche 14 % größer, `max-width: none`)
 - **HA Live** — Echtzeit-Vorschau auf dem eigenen Dashboard
 - **Import und Export** — Theme-Verwaltung und Dateioperationen
 
