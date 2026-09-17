@@ -31,13 +31,14 @@ function ladeHelfer() {
     `${quelle.slice(start, ende)}
      this.hatgMergeStilzielYaml = hatgMergeStilzielYaml;
      this.hatgTeileStilzielYaml = hatgTeileStilzielYaml;
-     this.hatgEntflechteStilzieleImBag = hatgEntflechteStilzieleImBag;`,
+     this.hatgEntflechteStilzieleImBag = hatgEntflechteStilzieleImBag;
+     this.hatgYamlPfadeZusammenfuehren = hatgYamlPfadeZusammenfuehren;`,
     kontext
   );
   return kontext;
 }
 
-const { hatgMergeStilzielYaml, hatgTeileStilzielYaml, hatgEntflechteStilzieleImBag } = ladeHelfer();
+const { hatgMergeStilzielYaml, hatgTeileStilzielYaml, hatgEntflechteStilzieleImBag, hatgYamlPfadeZusammenfuehren } = ladeHelfer();
 
 let fehler = 0;
 function pruefe(name, fn) {
@@ -135,6 +136,31 @@ pruefe("Ein bereits belegtes einfaches Feld wird nicht ueberschrieben", () => {
 pruefe("Unquotierter Punkt-Schluessel wird ebenfalls erkannt", () => {
   const { punkt } = hatgTeileStilzielYaml(`.: |\n  :host { color: red; }\nha-button $: |\n  .button { color: blue; }`);
   assert.equal(punkt, ":host { color: red; }");
+});
+
+pruefe("Doppelte Pfade werden zu einem zusammengefasst", () => {
+  // UIX verwirft eine Karte mit doppeltem Schluessel komplett.
+  const karte = [
+    "\".\": |",
+    "  :host { color: red; }",
+    "# ALT:UIX:glas-buttons-glanz:START",
+    "ha-button $: |",
+    "  .button { color: blue; }",
+    "",
+    "# ALT:UIX:glas-buttons-glanz:END",
+    "# HATG:UIX:glas-buttons-glanz:START",
+    "\"ha-button $\": |",
+    "  .button { color: green; }",
+    "# HATG:UIX:glas-buttons-glanz:END",
+    "\"$ ha-dialog $\": |",
+    "  x { y: z; }",
+  ].join("\n");
+  const neu = hatgYamlPfadeZusammenfuehren(karte);
+  const koepfe = neu.split("\n").filter((z) => /^[^\s#].*:\s*\|/.test(z));
+  assert.deepEqual(koepfe, ["\".\": |", "ha-button $: |", "\"$ ha-dialog $\": |"], neu);
+  assert.ok(/\.button \{ color: blue; \}\n  \.button \{ color: green; \}/.test(neu), neu);
+  assert.ok(neu.includes("# HATG:UIX:glas-buttons-glanz:START"), "Marker duerfen nicht verschwinden");
+  assert.equal(hatgYamlPfadeZusammenfuehren(KARTE), KARTE, "ohne Dubletten unveraendert");
 });
 
 console.log(fehler === 0 ? "\nAlle Tests bestanden." : `\n${fehler} Test(s) fehlgeschlagen.`);

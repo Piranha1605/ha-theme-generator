@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.3.0b2";
+const HATG_VERSION = "1.3.0";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -42,6 +42,9 @@ const HATG_TEXTE = {
   "Unschärfe": "Blur",
   "Kartentransparenz": "Card transparency",
   "Hintergrund": "Background",
+  "Pop-up-Hintergrund": "Pop-up background",
+  "1 Rest einer gelöschten eigenen Vorlage entfernt. Jetzt speichern und Themes neu laden.": "1 leftover of a deleted custom preset removed. Now save and reload themes.",
+  "Bild wählen": "Choose image",
   "Hintergrundbild": "Background image",
   "Bausteine": "Blocks",
   "Werkzeuge": "Tools",
@@ -234,18 +237,20 @@ const HATG_TEXTE = {
   "Einstellungsseiten im iOS-Stil": "Settings pages in iOS style",
   "Macht aus den runden Farbkreisen abgerundete Quadrate, wie iOS sie in seinen Einstellungen zeigt - mit Lichtverlauf, feiner Kante und kurzem Schatten. Dazu kräftigere Überschriften, zurückgenommene Untertitel und leisere Pfeile am Zeilenende. Gilt für beide Navigationslisten der Einstellungen: die Startseite und die Seite System. Alle Werte stehen als eigene Felder im Bereich Glaslook; wer etwas davon nicht will, setzt den betreffenden Wert auf den Ausgangszustand zurück. Die Shadow-DOM-Pfade wurden mit uix_style_path in einer laufenden Instanz geprüft.": "Turns the round colour circles into rounded squares, the way iOS shows them in its settings - with a light gradient, a fine edge and a short shadow. Plus heavier headlines, quieter supporting text and paler chevrons at the end of each row. Covers both settings navigation lists: the start page and the System page. Every value is a field of its own under Glass look; anything you don't want, you set back to its starting value. The shadow DOM paths were verified with uix_style_path in a running instance.",
   "Glas: eigene Ebene unter der Karte": "Glass: its own layer beneath the card",
+  "Glas: nur Weichzeichnung unter der Karte": "Glass: blur only beneath the card",
+  "Legt nur den Weichzeichner unter die Karte - ohne eigene Füllung, Glanz oder Kanten. Für Karten, die ihre Fläche selbst malen, etwa HA-Karten, Proxmox- oder Shelly-Karten: Ohne Weichzeichnung liegt das Hintergrundbild scharf dahinter, und sie wirken neben Bubble-Karten durchsichtiger. Bubble-Karten, Überschriften, Mushroom-Titel und -Chips sowie reine Textkarten sind ausgenommen. Nicht zusammen mit „Glas: eigene Ebene unter der Karte“ nötig, die bringt die Weichzeichnung schon mit. Die Menüleiste der HA-Karten bekommt zusätzlich den Kartenschatten des Themes, ihre Kapsel eine plastische Kante.": "Puts only the blur beneath the card - no fill, sheen or edges of its own. For cards that paint their own surface, such as HA-Karten, Proxmox or Shelly cards: without blur the background image sits sharp behind them, and next to Bubble cards they look more transparent. Bubble cards, headings, Mushroom titles and chips, and text-only cards are left out. Not needed together with \"Glass: its own layer beneath the card\", which already brings the blur. The HA-Karten menu bar also gets the theme's card shadow, and its capsule a sculpted edge.",
   "Milchiges Glas, das den Weichzeichner nicht auf die Karte selbst legt, sondern auf eine Ebene darunter. Anders als der einfache Glas-Effekt bleibt der Kartenhintergrund dadurch mit Hintergrundbildern und Verläufen verträglich. Hüllen-Karten (Überschriften, Mushroom-Titel und -Chips, reine Textkarten) sind bewusst ausgenommen, damit sie nicht plötzlich als Kachel erscheinen.": "Frosted glass that puts the blur on a layer beneath the card instead of on the card itself. Unlike the plain glass effect, the card background stays compatible with background images and gradients. Wrapper cards (headings, Mushroom titles and chips, text-only cards) are deliberately excluded so they do not suddenly show up as tiles.",
-  "Seitenleiste: aktiver Eintrag als Glaskörper": "Sidebar: active entry as a glass body",
-  "Der markierte Eintrag wird zum Glaskörper statt zur flachen Farbfläche: Verlauf in der Auswahlfarbe, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Home Assistant zeichnet diese Fläche als Overlay mit fester Deckkraft - die Vorlage hebt sie auf und ersetzt sie durch die Schichten.": "The highlighted entry becomes a glass body instead of a flat colour patch: a gradient in the selection colour, a light edge at the top, a shadow edge at the bottom, a fine border and a soft drop shadow. Home Assistant draws that surface as an overlay with fixed opacity - the preset lifts it and replaces it with the layers.",
+  "Seitenleiste: aktiver Eintrag in der Akzentfarbe": "Sidebar: active entry in the accent colour",
+  "Der markierte Eintrag sieht aus wie das Gewählte eigener Karten und die Kapsel einer Menüleiste: deckend in der Akzentfarbe mit plastischer Innenkante, Schrift und Symbol darauf in der Textfarbe für Akzentflächen. Einen Schlagschatten gibt es bewusst nicht - die Liste der Seitenleiste schneidet ihn ab, übrig bliebe ein dunkles Rechteck. Home Assistant zeichnet diese Fläche als Overlay mit fester Deckkraft - die Vorlage hebt sie auf.": "The highlighted entry looks like the selected state of custom cards and the capsule of a menu bar: solid in the accent colour with a sculpted inner edge, with text and icon in the text colour for accent surfaces. There is deliberately no drop shadow - the sidebar list clips it, leaving only a dark rectangle. Home Assistant draws that surface as an overlay with fixed opacity - the preset lifts it.",
   "Bedienelemente in Glas: Karten": "Glass controls: cards",
   "Bedienelemente in Glas: Kopfleiste und Rahmen": "Glass controls: top bar and frame",
   "Bedienelemente in Glas: Dialoge": "Glass controls: dialogs",
   "Bedienelemente in Glas: Einstellungsseiten": "Glass controls: settings pages",
   "Bedienelemente in Glas: Glanz": "Glass controls: sheen",
-  "Gibt Schaltflächen denselben Aufbau wie dem aktiven Eintrag der Seitenleiste: Eckenradius der Karten, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Betrifft die Bedienelemente in Karten: Tile-Regler, Buttons in Entities- und Glance-Karten, Assist-Chips. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.": "Gives buttons the same build as the active sidebar entry: your card corner radius, a light edge at the top, a shadow edge at the bottom, a fine border and a soft drop shadow. Applies to the controls inside cards: tile controls, buttons in entities and glance cards, assist chips. It only sets variables Home Assistant provides itself, so it needs no shadow DOM paths.",
-  "Gibt Schaltflächen denselben Aufbau wie dem aktiven Eintrag der Seitenleiste: Eckenradius der Karten, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Betrifft die Icon-Buttons der Kopfleiste - Suche, Assist, Bearbeiten, Benachrichtigungen - und alles Übrige am Dashboard-Rahmen. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.": "Gives buttons the same build as the active sidebar entry: your card corner radius, a light edge at the top, a shadow edge at the bottom, a fine border and a soft drop shadow. Applies to the icon buttons in the top bar - search, assist, edit, notifications - and everything else on the dashboard frame. It only sets variables Home Assistant provides itself, so it needs no shadow DOM paths.",
-  "Gibt Schaltflächen denselben Aufbau wie dem aktiven Eintrag der Seitenleiste: Eckenradius der Karten, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Betrifft die Schaltflächen in Dialogen, also Abbrechen, Speichern und das Schließen-Kreuz. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.": "Gives buttons the same build as the active sidebar entry: your card corner radius, a light edge at the top, a shadow edge at the bottom, a fine border and a soft drop shadow. Applies to the buttons in dialogs, meaning cancel, save and the close cross. It only sets variables Home Assistant provides itself, so it needs no shadow DOM paths.",
-  "Gibt Schaltflächen denselben Aufbau wie dem aktiven Eintrag der Seitenleiste: Eckenradius der Karten, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Betrifft die Schaltflächen auf den Einstellungsseiten, inklusive der Aktionsknöpfe in den Listen. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.": "Gives buttons the same build as the active sidebar entry: your card corner radius, a light edge at the top, a shadow edge at the bottom, a fine border and a soft drop shadow. Applies to the buttons on the settings pages, including the action buttons in the lists. It only sets variables Home Assistant provides itself, so it needs no shadow DOM paths.",
+  "Gibt Schaltflächen den Aufbau der Knöpfe eigener Karten: kleine Rundung, feine Lichtkante oben und ein kleiner weicher Schatten. Betrifft die Bedienelemente in Karten: Tile-Regler, Buttons in Entities- und Glance-Karten, Assist-Chips. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.": "Gives buttons the build of the buttons in custom cards: a small corner radius, a fine light edge at the top and a small soft shadow. Applies to the controls inside cards: tile controls, buttons in entities and glance cards, assist chips. It only sets variables Home Assistant provides itself, so it needs no shadow DOM paths.",
+  "Gibt Schaltflächen den Aufbau der Knöpfe eigener Karten: kleine Rundung, feine Lichtkante oben und ein kleiner weicher Schatten. Betrifft die Icon-Buttons der Kopfleiste - Suche, Assist, Bearbeiten, Benachrichtigungen - und alles Übrige am Dashboard-Rahmen. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.": "Gives buttons the build of the buttons in custom cards: a small corner radius, a fine light edge at the top and a small soft shadow. Applies to the icon buttons in the top bar - search, assist, edit, notifications - and everything else on the dashboard frame. It only sets variables Home Assistant provides itself, so it needs no shadow DOM paths.",
+  "Gibt Schaltflächen den Aufbau der Knöpfe eigener Karten: kleine Rundung, feine Lichtkante oben und ein kleiner weicher Schatten. Betrifft die Schaltflächen in Dialogen, also Abbrechen, Speichern und das Schließen-Kreuz. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.": "Gives buttons the build of the buttons in custom cards: a small corner radius, a fine light edge at the top and a small soft shadow. Applies to the buttons in dialogs, meaning cancel, save and the close cross. It only sets variables Home Assistant provides itself, so it needs no shadow DOM paths.",
+  "Gibt Schaltflächen den Aufbau der Knöpfe eigener Karten: kleine Rundung, feine Lichtkante oben und ein kleiner weicher Schatten. Betrifft die Schaltflächen auf den Einstellungsseiten, inklusive der Aktionsknöpfe in den Listen. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.": "Gives buttons the build of the buttons in custom cards: a small corner radius, a fine light edge at the top and a small soft shadow. Applies to the buttons on the settings pages, including the action buttons in the lists. It only sets variables Home Assistant provides itself, so it needs no shadow DOM paths.",
   "Der Feinschliff zu den Glas-Bedienelementen: legt den hellen Lichtverlauf und die Weichzeichnung auf die Fläche der Schaltflächen in Karten. Braucht dafür einen Shadow-DOM-Pfad in ha-button - wirkt nur zusammen mit der Vorlage für Karten und sollte nach einem größeren Update von Home Assistant nachgeprüft werden.": "The finishing touch for the glass controls: puts the bright sheen and the blur onto the surface of the buttons in cards. It needs a shadow DOM path into ha-button, only works together with the cards preset, and should be checked after a major Home Assistant update.",
   "Info-Dialog in Glas": "More-info dialog in glass",
   "Der Dialog, der beim Antippen einer Entität aufgeht - die am häufigsten geöffnete Fläche im ganzen System. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "The dialog that opens when you tap an entity - the most frequently opened surface in the whole system. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
@@ -255,6 +260,8 @@ const HATG_TEXTE = {
   "Die kurzen Einblendungen am unteren Rand, etwa nach dem Speichern. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "The short messages that appear at the bottom edge, for instance after saving. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
   "Benachrichtigungen in Glas": "Notifications in glass",
   "Die Einträge in der Benachrichtigungsliste der Seitenleiste. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "The entries in the notification list of the sidebar. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
+  "Kartenmarker in Glas": "Map markers in glass",
+  "Die runden Marker von Personen und Geräten auf der Karte - im Panel Karte und in Kartenkarten. Legt Glasfüllung, Glanz, Weichzeichnung und Lichtkanten auf den Marker. Der farbige Ring, an dem man die Entität erkennt, bleibt, und Marker mit Bild zeigen weiter ihr Bild. Gruppierte Marker und Zonen zeichnet die Karte selbst, sie sind nicht betroffen.": "The round markers of people and devices on the map - in the Map panel and in map cards. Puts glass fill, sheen, blur and light edges on the marker. The coloured ring that identifies the entity stays, and markers with a picture keep showing it. Clustered markers and zones are drawn by the map itself and are not affected.",
   "Badges in Glas": "Badges in glass",
   "Die runden Anzeigen oberhalb der Karten. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "The rounded indicators above the cards. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
   "Überschriften-Badges in Glas": "Heading badges in glass",
@@ -262,7 +269,7 @@ const HATG_TEXTE = {
   "Kopfleiste des Dashboards in Glas": "Dashboard top bar in glass",
   "Die Leiste über einem Dashboard heißt im Frontend .header und sitzt in hui-root - das Stilziel für die Kopfleiste erreicht sie nicht. Diese Vorlage setzt am Grundgerüst an und legt Weichzeichnung, Reflex und Kanten darauf. Die Farbe selbst kommt aus dem Theme-Feld app-header-background-color; steht dort ein deckender Wert, hilft der Knopf \"Auf Glas setzen\" über der Vorlagenliste.": "The bar above a dashboard is called .header and lives in hui-root - the top bar style target does not reach it. This preset works from the dashboard root and puts blur, sheen and edges on it. The colour itself comes from the theme field app-header-background-color; if that holds an opaque value, the button \"Set to glass\" above the preset list helps.",
   "Bubble Card in Glas": "Bubble Card in glass",
-  "Bubble Card zeichnet seine Flächen selbst und liest dafür eigene Variablen - ohne diese Vorlage bleiben Bubble-Karten deckend, auch wenn die Karte darunter längst Glas ist. Setzt die Variablen auf die gemeinsamen Glaswerte und legt Weichzeichnung, Reflex und Kanten auf Karten, Icons, Sub-Buttons sowie Climate-, Cover-, Media-Player-, Select- und Kalender-Flächen. Schaltet außerdem den Rahmen ab, den Bubble Card aus dem Theme-Feld bubble-border zieht: Er ist deckend und liegt genau auf der Lichtkante, die diese Vorlage als inneren Ring zeichnet - ohne ihn steuern die Regler im Bereich Glaslook auch die Kante. Die Variablennamen stammen aus Bubble Cards eigenem CSS und wurden in einer laufenden Instanz geprüft.": "Bubble Card paints its own surfaces and reads its own variables for them - without this preset, Bubble cards stay opaque even when the card beneath is already glass. It sets those variables to the shared glass values and puts blur, sheen and edges on cards, icons, sub-buttons and the climate, cover, media player, select and calendar surfaces. It also switches off the border Bubble Card draws from the theme field bubble-border: that border is opaque and sits exactly on the light edge this preset draws as an inner ring - without it, the sliders under Glass look control the edge as well. The variable names come from Bubble Card's own CSS and were verified in a running instance.",
+  "Bubble Card zeichnet seine Flächen selbst und liest dafür eigene Variablen - ohne diese Vorlage bleiben Bubble-Karten deckend, auch wenn die Karte darunter längst Glas ist. Setzt die Variablen auf die gemeinsamen Glaswerte und gibt Karten, Sub-Buttons sowie Climate-, Cover-, Media-Player-, Select- und Kalender-Flächen Weichzeichnung, die Rundung der Karten sowie Rahmen und Schatten der HA-Karten aus ha-card-border-width, ha-card-border-color und ha-card-box-shadow - ohne Glanz. Icons werden zu abgerundeten Kästchen mit leiser Tönung. Eingeschaltete Karten und Sub-Buttons mit Hintergrund werden deckend in der Akzentfarbe mit plastischer Innenkante, Schrift und Symbol darauf in der Textfarbe für Akzentflächen. Schieber bekommen eine vertiefte Glasmulde als Spur und eine deckende Füllung mit plastischer Kante. Separatoren bleiben ohne Hintergrund. Den Rahmen, den Bubble Card aus dem Theme-Feld bubble-border zieht, schaltet sie ab - er würde auch Pop-ups und deren Knöpfe einfassen. Die Variablennamen stammen aus Bubble Cards eigenem CSS und wurden in einer laufenden Instanz geprüft.": "Bubble Card paints its own surfaces and reads its own variables for them - without this preset, Bubble cards stay opaque even when the card beneath is already glass. It sets those variables to the shared glass values and gives cards, sub-buttons and the climate, cover, media player, select and calendar surfaces blur, the card radius, and the border and shadow of HA cards from ha-card-border-width, ha-card-border-color and ha-card-box-shadow - without sheen. Icons become rounded tiles with a quiet tint. Cards that are on and sub-buttons with a background turn solid in the accent colour with a sculpted inner edge, with text and icon in the text colour for accent surfaces. Sliders get a recessed glass trough as their track and a solid fill with a sculpted edge. Separators stay without a background. It switches off the border Bubble Card draws from the theme field bubble-border - that one would also frame pop-ups and their buttons. The variable names come from Bubble Card's own CSS and were verified in a running instance.",
   "Glance-Karten in Glas": "Glance cards in glass",
   "Glance-Karten bringen ihre eigene Fläche mit und brauchen deshalb einen eigenen Eintrag. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "Glance cards bring their own surface and therefore need an entry of their own. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
   "Grid-Abschnitte in Glas": "Grid sections in glass",
@@ -282,10 +289,10 @@ const HATG_TEXTE = {
   "Einstellungsseiten für das Hintergrundbild öffnen": "Open the settings pages for the background image",
   "Die Unterseiten der Einstellungen - Geräte & Dienste, Entitäten, Automationen, Helfer - malen mit hass-tabs-subpage eine eigene deckende Fläche und legen sie über das Hintergrundbild. Diese Vorlage nimmt der Grundfarbe im App Drawer die Deckung, damit das Bild aus der Vorlage \"Hintergrundbild über die ganze Oberfläche\" auch dort durchkommt. Karten, Tabellenzeilen und Dialoge bringen ihre eigenen Farben mit und bleiben lesbar - in der laufenden Instanz auf Integrationen und der Entitätentabelle geprüft. Ohne Hintergrundbild bewirkt sie nichts.": "The settings subpages - Devices & Services, Entities, Automations, Helpers - paint an opaque surface of their own through hass-tabs-subpage and put it over the background image. This preset removes the opacity from the base colour in the app drawer so the image from \"Background image across the whole interface\" comes through there as well. Cards, table rows and dialogs bring their own colours and stay legible - verified in the running instance on Integrations and the entities table. Without a background image it does nothing.",
   "Bedienelemente in Glas: Einstellungen und Rest der Oberfläche": "Controls in glass: settings and the rest of the interface",
-  "Gibt Schaltflächen denselben Aufbau wie dem aktiven Eintrag der Seitenleiste: Eckenradius der Karten, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Betrifft alles außerhalb von Karten, Kopfleiste und Dialogen - die Einstellungsseiten samt ihrer Aktionsknöpfe, eigene Panels und die Knöpfe der Seitenleiste. Sitzt am App Drawer, weil die Einstellungsseiten selbst kein eigenes Stilziel haben: ha-panel-config hat keinen Shadow Root, dort kommt nichts an. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht.": "Gives buttons the same build as the active sidebar entry: your card corner radius, a light edge at the top, a shadow edge at the bottom, a fine border and a soft drop shadow. Applies to everything outside cards, the top bar and dialogs - the settings pages including their action buttons, custom panels and the sidebar's own buttons. It sits on the app drawer because the settings pages have no style target of their own: ha-panel-config has no shadow root, so nothing arrives there. It only sets variables Home Assistant provides itself.",
+  "Gibt Schaltflächen den Aufbau der Knöpfe eigener Karten: kleine Rundung, feine Lichtkante oben und ein kleiner weicher Schatten. Betrifft alles außerhalb von Karten, Kopfleiste und Dialogen - die Einstellungsseiten samt ihrer Aktionsknöpfe, eigene Panels und die Knöpfe der Seitenleiste. Sitzt am App Drawer, weil die Einstellungsseiten selbst kein eigenes Stilziel haben: ha-panel-config hat keinen Shadow Root, dort kommt nichts an. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht.": "Gives buttons the build of the buttons in custom cards: a small corner radius, a fine light edge at the top and a small soft shadow. Applies to everything outside cards, the top bar and dialogs - the settings pages including their action buttons, custom panels and the sidebar's own buttons. It sits on the app drawer because the settings pages have no style target of their own: ha-panel-config has no shadow root, so nothing arrives there. It only sets variables Home Assistant provides itself.",
   "Glaslook": "Glass look",
   "Eigener Titel in der Seitenleiste": "Custom title in the sidebar",
-  "Ersetzt das \"Home Assistant\" oben in der Seitenleiste durch einen eigenen Text. Der Text steht im Feld hatg-sidebar-titel im Bereich Glaslook - mit Anführungszeichen, so verlangt es CSS. Home Assistant selbst bietet dafür keine Einstellung.": "Replaces the \"Home Assistant\" at the top of the sidebar with a text of your own. The text lives in the field hatg-sidebar-titel under Glass look - in quotation marks, as CSS requires. Home Assistant itself offers no setting for this.",
+  "Ersetzt das \"Home Assistant\" oben in der Seitenleiste durch einen eigenen Text. Den Text trägst du in der aufgeklappten Zeile unter Titel ein; er bleibt beim Auffrischen der Vorlagen erhalten. Home Assistant selbst bietet dafür keine Einstellung.": "Replaces the \"Home Assistant\" at the top of the sidebar with a text of your own. Enter the text in the expanded row under Title; it is kept when presets are refreshed. Home Assistant itself offers no setting for this.",
   "Seitenleiste in Glas": "Sidebar in glass",
   "Die Seitenleiste wird durchscheinend und weichgezeichnet, die Einträge übernehmen den Eckenradius deiner Karten. Wirkt nur, wenn hinter der Seitenleiste etwas zu sehen ist - also mit Hintergrundbild oder einem farbigen Verlauf.": "The sidebar becomes translucent and blurred, and its entries take on your card corner radius. Only visible when there is something behind the sidebar - a background image or a coloured gradient.",
   "App Drawer in Glas": "App drawer in glass",
@@ -294,6 +301,10 @@ const HATG_TEXTE = {
   "Dialoge übernehmen den Eckenradius deiner Karten, bekommen etwas Abstand nach oben und einen kräftigeren Schleier dahinter, damit sie sich klarer vom Dashboard abheben. Setzt nur Variablen an der Dialog-Wurzel - für tiefere Eingriffe in Dialoge braucht es das Feld uix-dialog-yaml im Freitext.": "Dialogs take on your card corner radius, get some space at the top and a stronger scrim behind them so they stand out from the dashboard. Only sets variables at the dialog root - deeper changes to dialogs need the uix-dialog-yaml field in the free-text area.",
   "Hintergrundbild über die ganze Oberfläche": "Background image across the whole interface",
   "Übernimmt das Hintergrundbild von der Startseite und legt es hinter die ganze Oberfläche - auch hinter Einstellungsseiten, HACS, Verlauf und alle anderen Panels, wo das Dashboard-Hintergrundbild nicht hinreicht. Es muss nichts doppelt eingetragen werden: Die Vorlage greift auf das zu, was unter Hintergrund eingestellt ist, samt Abdunkelung. Ohne gesetztes Bild bewirkt sie nichts.": "Takes the background image from the start page and puts it behind the entire interface - including settings pages, HACS, history and every other panel the dashboard background never reaches. Nothing has to be entered twice: the preset reads whatever is set under Background, dimming included. With no image set it does nothing.",
+  "Bubble-Pop-ups mit Hintergrundbild": "Bubble pop-ups with background image",
+  "Legt ein Hintergrundbild in die Pop-ups von Bubble Card. Ohne weitere Angabe ist es das Bild, das unter Hintergrund auf der Startseite eingestellt ist. Soll ein Pop-up ein anderes Bild zeigen, einen eigenen Theme-Eintrag popup-custom-wallpaper setzen - getrennt für Light und Dark möglich. Bubble Card färbt die Pop-up-Fläche nur über Farbvariablen, ein Bild geht deshalb nur über diese Vorlage. Die Kopfzeile des Pop-ups wird durchsichtig, damit das Bild bis oben reicht. Die Deckkraft, die in Bubble Card für den Pop-up-Hintergrund eingestellt ist, wirkt mit dieser Vorlage nicht mehr - das Bild deckt die Fläche ganz.": "Puts a background image into Bubble Card pop-ups. By default it is the image set under Background on the start page. For a different image in pop-ups, add your own theme entry popup-custom-wallpaper - separately for light and dark if you like. Bubble Card colours the pop-up surface through colour variables only, so an image needs this preset. The pop-up header becomes transparent so the image reaches the top. The background opacity set in Bubble Card no longer applies with this preset - the image covers the surface completely.",
+  "Info-Dialog mit Hintergrundbild": "Info dialog with background image",
+  "Legt das Hintergrundbild in den Dialog, der beim Antippen einer Entität aufgeht - am Desktop wie im Bottom-Sheet auf Tablet und Handy. Ohne weitere Angabe ist es das Bild, das unter Hintergrund auf der Startseite eingestellt ist; ein eigener Theme-Eintrag popup-custom-wallpaper geht vor, derselbe wie bei den Bubble-Pop-ups. Home Assistant färbt die Dialogfläche nur über background-color, ein Bild braucht deshalb eine Regel direkt auf der Fläche. Zusammen mit Info-Dialog in Glas zeigt die Fläche das Bild statt Glas; endet der Hintergrundwert mit einer Vollfarbe, wird sie deckend.": "Puts the background image into the dialog that opens when you tap an entity - on desktop as well as in the bottom sheet on tablets and phones. By default it is the image set under Background on the start page; your own theme entry popup-custom-wallpaper takes precedence, the same one the Bubble pop-ups use. Home Assistant colours the dialog surface through background-color only, so an image needs a rule directly on the surface. Together with Info dialog in glass the surface shows the image instead of glass; if the background value ends with a solid colour, it becomes opaque.",
   "Wirkt auf": "Applies to",
   "Das CSS landet beim Aktivieren markiert im gewählten Stilziel - genau wie die mitgelieferten Vorlagen, für Light und Dark gleichzeitig.": "When activated, the CSS is written and marked into the chosen style target - just like the built-in presets, for light and dark at the same time.",
   "Kartenfarben: Sanfter Verlauf": "Card colours: soft gradient",
@@ -449,6 +460,8 @@ const HATG_TEXT_MUSTER = {
     [/^Theme gespeichert:\s*(.+)$/, "Theme saved: $1"],
     [/^Bild hochgeladen:\s*(.+)$/, "Image uploaded: $1"],
     [/^Hintergrundbild gesetzt:\s*(.+?)\.\s*Nicht vergessen zu speichern\.$/, "Background image set: $1. Remember to save."],
+    [/^(\d+) Reste gelöschter eigener Vorlagen entfernt\. Jetzt speichern und Themes neu laden\.$/, "$1 leftovers of deleted custom presets removed. Now save and reload themes."],
+    [/^Pop-up-Hintergrund gesetzt:\s*(.+?)\.\s*Nicht vergessen zu speichern\.$/, "Pop-up background set: $1. Remember to save."],
     [/^Rückgängig:\s*(\d+) Felder \(inkl\. automatischer Ableitungen\)\.$/, "Undone: $1 fields (including automatic derivations)."],
     [/^Rückgängig:\s*(.+?)\.$/, "Undone: $1."],
     [/^Löschen fehlgeschlagen:\s*(.+)$/, "Deleting failed: $1"],
@@ -549,7 +562,7 @@ function hatgUebersetzeBaum(wurzel, sprache) {
   return ersetzt;
 }
 
-const HATG_MANIFEST = {"sections":[{"id":"grundfarben-text","label":"Grundfarben & Text","desc":"Zentrale Farben für Text, Akzent, Primärfarbe, Fehler, Erfolg, Warnungen und allgemeine Farbbasis.","icon":"mdi:palette-outline","keys":["accent-color","primary-color","dark-primary-color","light-primary-color","primary-text-color","secondary-text-color","text-primary-color","disabled-text-color","disabled-color","error-color","warning-color","success-color","info-color","red-color","green-color","blue-color","orange-color","yellow-color","purple-color","pink-color","cyan-color","grey-color","deep-purple-color","indigo-color","light-blue-color","teal-color","light-green-color","lime-color","amber-color","deep-orange-color","brown-color","light-grey-color","dark-grey-color","blue-grey-color","black-color","white-color","printer-cyan-color","printer-magenta-color","printer-yellow-color"],"exportGroups":[{"label":"Grundfarben","keys":["accent-color","primary-color","dark-primary-color","light-primary-color","disabled-color","error-color","warning-color","success-color","info-color","red-color","green-color","blue-color","orange-color","yellow-color","purple-color","pink-color","cyan-color","grey-color","deep-purple-color","indigo-color","light-blue-color","teal-color","light-green-color","lime-color","amber-color","deep-orange-color","brown-color","light-grey-color","dark-grey-color","blue-grey-color","black-color","white-color","printer-cyan-color","printer-magenta-color","printer-yellow-color"]},{"label":"Text","keys":["primary-text-color","secondary-text-color","text-primary-color","disabled-text-color"]}]},{"id":"hintergruende-karten","label":"HA-Grundgerüst","desc":"Die komplette native Home-Assistant-Oberfläche in 16 Unterordnern: Card, Hintergründe, Theme, Header, App Drawer, Sidebar, Status/Icons, Schalter/Toggle/Slider, Buttons & Chips, Eingaben, Material/MDC, HA 2026, Abstände/Schatten, Schrift, RGB-Hilfswerte, Graphen & Energie.","icon":"mdi:view-dashboard-outline","keys":["card-background-color","ha-card-background","ha-card-background-color","wa-color-surface-raised","ha-card-border-color","ha-card-border-radius","ha-card-border-width","ha-card-box-shadow","table-row-background-color","table-row-alternative-background-color","primary-background-color","background-color","lovelace-background","secondary-background-color","mdc-theme-background","mdc-theme-surface","mdc-theme-on-surface","app-header-background-color","app-header-text-color","app-header-backdrop-filter","app-header-edit-background-color","app-header-edit-text-color","app-theme-color","app-toolbar-background-color","toolbar-background-color","app-toolbar-text-color","toolbar-text-color","app-drawer-background-color","app-drawer-text-color","app-drawer-icon-color","sidebar-background-color","sidebar-selected-background-color","sidebar-text-color","sidebar-icon-color","sidebar-selected-text-color","sidebar-selected-icon-color","state-icon-color","state-icon-active-color","state-icon-unavailable-color","state-active-color","state-inactive-color","state-unavailable-color","state-on-color","state-off-color","state-light-color","state-light-active-color","state-light-on-color","state-switch-color","state-switch-active-color","state-switch-on-color","state-climate-cool-color","state-climate-heat-color","state-climate-auto-color","state-climate-dry-color","state-climate-fan_only-color","state-climate-heat_cool-color","state-cover-color","state-cover-active-color","state-cover-open-color","state-cover-closed-color","state-fan-color","state-fan-active-color","state-media_player-color","state-media_player-active-color","state-vacuum-color","state-vacuum-active-color","state-vacuum-error-color","state-lock-locked-color","state-lock-locking-color","state-lock-unlocked-color","state-lock-unlocking-color","state-lock-jammed-color","state-lock-open-color","state-lock-opening-color","state-alarm_control_panel-triggered-color","state-alarm-triggered-color","state-alarm_control_panel-armed_home-color","state-alarm_control_panel-armed_away-color","state-alarm-armed-color","state-alarm_control_panel-disarmed-color","state-alarm-disarmed-color","state-alarm_control_panel-armed_custom_bypass-color","state-alarm_control_panel-armed_night-color","state-alarm_control_panel-armed_vacation-color","state-alarm_control_panel-arming-color","state-alarm_control_panel-disarming-color","state-alarm_control_panel-pending-color","state-alert-off-color","state-alert-on-color","state-binary_sensor-active-color","state-binary_sensor-battery-on-color","state-binary_sensor-carbon_monoxide-on-color","state-binary_sensor-gas-on-color","state-binary_sensor-heat-on-color","state-binary_sensor-lock-on-color","state-binary_sensor-moisture-on-color","state-binary_sensor-problem-on-color","state-binary_sensor-safety-on-color","state-binary_sensor-smoke-on-color","state-binary_sensor-sound-on-color","state-binary_sensor-tamper-on-color","state-device_tracker-active-color","state-device_tracker-home-color","state-humidifier-on-color","state-lawn_mower-active-color","state-lawn_mower-error-color","state-person-active-color","state-person-home-color","state-plant-active-color","state-siren-active-color","state-sun-above_horizon-color","state-sun-below_horizon-color","state-update-active-color","state-valve-active-color","state-water_heater-eco-color","state-water_heater-electric-color","state-water_heater-gas-color","state-water_heater-heat_pump-color","state-water_heater-high_demand-color","state-water_heater-performance-color","state-weather-clear_night-color","state-weather-cloudy-color","state-weather-exceptional-color","state-weather-fog-color","state-weather-hail-color","state-weather-lightning_rainy-color","state-weather-lightning-color","state-weather-partlycloudy-color","state-weather-pouring-color","state-weather-rainy-color","state-weather-snowy_rainy-color","state-weather-snowy-color","state-weather-sunny-color","state-weather-windy_variant-color","state-weather-windy-color","state-battery-low-color","state-sensor-battery-high-color","state-sensor-battery-medium-color","state-sensor-battery-low-color","label-badge-background-color","label-badge-text-color","label-badge-red","label-badge-blue","label-badge-green","label-badge-yellow","state-battery-alert-color","ha-control-switch-color","ha-control-switch-checked-color","ha-control-switch-unchecked-color","ha-switch-background-color","ha-switch-background-color-hover","ha-switch-border-color","ha-switch-thumb-background-color","ha-switch-thumb-background-color-hover","ha-switch-thumb-border-color","ha-switch-thumb-border-color-hover","ha-switch-checked-background-color","ha-switch-checked-background-color-hover","ha-switch-checked-border-color","ha-switch-checked-thumb-background-color","ha-switch-checked-thumb-background-color-hover","ha-switch-checked-thumb-border-color","ha-switch-checked-thumb-border-color-hover","control-slider-color","slider-color","slider-secondary-color","slider-track-color","control-button-background-color","control-button-icon-color","control-button-border-radius","input-background-color","input-fill-color","input-disabled-fill-color","input-disabled-ink-color","input-disabled-label-ink-color","input-disabled-line-color","input-dropdown-icon-color","input-hover-line-color","input-idle-line-color","input-ink-color","input-label-ink-color","input-outlined-disabled-border-color","mdc-select-idle-line-color","mdc-select-dropdown-icon-color","mdc-select-hover-line-color","mdc-text-field-idle-line-color","mdc-text-field-hover-line-color","ha-color-form-background","ha-color-form-background-hover","ha-color-form-background-disabled","mdc-theme-primary","mdc-theme-secondary","mdc-theme-on-primary","md-sys-color-primary","md-sys-color-on-primary","md-sys-color-primary-container","md-sys-color-on-primary-container","md-sys-color-on-surface","ha-on-surface-color","md-radio-selected-icon-color","mdc-radio-unchecked-color","ha-color-fill-primary-normal-resting","ha-color-fill-primary-normal-hover","ha-color-fill-primary-quiet-resting","ha-color-fill-primary-quiet-hover","ha-color-fill-disabled-normal-resting","ha-color-on-disabled-normal","ha-color-fill-disabled-loud-resting","ha-color-on-disabled-loud","ha-color-on-disabled-quiet","ha-color-fill-neutral-quiet-resting","ha-color-fill-neutral-quiet-hover","ha-color-fill-neutral-quiet-active","ha-color-fill-neutral-normal-resting","ha-color-fill-neutral-normal-hover","ha-color-fill-neutral-normal-active","ha-color-fill-danger-normal-resting","ha-color-fill-danger-normal-hover","ha-color-fill-danger-normal-active","ha-color-on-danger-normal","ha-color-fill-warning-normal-resting","ha-color-fill-warning-normal-hover","ha-color-fill-warning-normal-active","ha-color-on-warning-normal","ha-tooltip-background-color","ha-tooltip-text-color","border-color","border-radius","box-shadow","divider-color","outline-color","outline-variant-color","outline-hover-color","ha-line-height-condensed","ha-line-height-expanded","ha-line-height-normal","primary-font-family","ha-font-family-body","ha-font-family-heading","ha-font-family-longform","ha-font-family-code","mdc-typography-font-family","ha-font-size-scale","ha-font-size-2xs","ha-font-size-xs","ha-font-size-s","ha-font-size-m","ha-font-size-l","ha-font-size-xl","ha-font-size-2xl","ha-font-size-3xl","ha-font-size-4xl","ha-font-weight-light","ha-font-weight-normal","ha-font-weight-body","ha-font-weight-medium","ha-font-weight-heading","ha-font-weight-action","ha-font-weight-bold","rgb-primary-color","rgb-accent-color","rgb-primary-text-color","rgb-secondary-text-color","rgb-card-background-color","rgb-primary-background-color","rgb-blue-color","rgb-orange-color","rgb-state-switch-color","rgb-state-light-color","rgb-state-cover-color","rgb-state-fan-color","rgb-state-media_player-color","graph-color-1","graph-color-2","graph-color-3","graph-color-4","graph-color-5","graph-color-6","graph-color-7","graph-color-8","graph-color-9","graph-color-10","graph-color-11","graph-color-12","graph-color-13","graph-color-14","color-1","color-2","color-3","color-4","color-5","color-6","color-7","color-8","color-9","color-10","color-11","color-12","color-13","color-14","energy-grid-consumption-color","energy-grid-return-color","energy-solar-color","energy-non-fossil-color","energy-battery-out-color","energy-battery-in-color","energy-gas-color","energy-water-color","glass-effect-style","background-style","ha-list-gap","ha-list-padding","ha-list-item-focus-radius","ha-list-item-focus-background","ha-border-radius-circle","ha-ripple-color"],"groups":[{"label":"Card","keys":["card-background-color","ha-card-background","ha-card-background-color","wa-color-surface-raised","ha-card-border-color","ha-card-border-radius","ha-card-border-width","ha-card-box-shadow","table-row-background-color","table-row-alternative-background-color"],"id":"hintergruende-karten__card","icon":"mdi:card-outline"},{"label":"Hintergründe","keys":["primary-background-color","background-color","lovelace-background","secondary-background-color","glass-effect-style","background-style"],"id":"hintergruende-karten__hintergruende","icon":"mdi:image-outline"},{"label":"Theme","keys":["mdc-theme-background","mdc-theme-surface","mdc-theme-on-surface"],"id":"hintergruende-karten__theme","icon":"mdi:palette-swatch-outline"},{"label":"Header","keys":["app-header-background-color","app-header-text-color","app-header-backdrop-filter","app-header-edit-background-color","app-header-edit-text-color","app-theme-color","app-toolbar-background-color","toolbar-background-color","app-toolbar-text-color","toolbar-text-color"],"id":"hintergruende-karten__header","icon":"mdi:page-layout-header"},{"label":"App Drawer","keys":["app-drawer-background-color","app-drawer-text-color","app-drawer-icon-color"],"id":"hintergruende-karten__app-drawer","icon":"mdi:drawer"},{"label":"Sidebar","keys":["sidebar-background-color","sidebar-selected-background-color","sidebar-text-color","sidebar-icon-color","sidebar-selected-text-color","sidebar-selected-icon-color"],"id":"hintergruende-karten__sidebar","icon":"mdi:dock-left"},{"label":"Status, Icons & Entitäten","keys":["state-icon-color","state-icon-active-color","state-icon-unavailable-color","state-active-color","state-inactive-color","state-unavailable-color","state-on-color","state-off-color","state-light-color","state-light-active-color","state-light-on-color","state-switch-color","state-switch-active-color","state-switch-on-color","state-climate-cool-color","state-climate-heat-color","state-climate-auto-color","state-climate-dry-color","state-climate-fan_only-color","state-climate-heat_cool-color","state-cover-color","state-cover-active-color","state-cover-open-color","state-cover-closed-color","state-fan-color","state-fan-active-color","state-media_player-color","state-media_player-active-color","state-vacuum-color","state-vacuum-active-color","state-vacuum-error-color","state-lock-locked-color","state-lock-locking-color","state-lock-unlocked-color","state-lock-unlocking-color","state-lock-jammed-color","state-lock-open-color","state-lock-opening-color","state-alarm_control_panel-triggered-color","state-alarm-triggered-color","state-alarm_control_panel-armed_home-color","state-alarm_control_panel-armed_away-color","state-alarm-armed-color","state-alarm_control_panel-disarmed-color","state-alarm-disarmed-color","state-alarm_control_panel-armed_custom_bypass-color","state-alarm_control_panel-armed_night-color","state-alarm_control_panel-armed_vacation-color","state-alarm_control_panel-arming-color","state-alarm_control_panel-disarming-color","state-alarm_control_panel-pending-color","state-alert-off-color","state-alert-on-color","state-binary_sensor-active-color","state-binary_sensor-battery-on-color","state-binary_sensor-carbon_monoxide-on-color","state-binary_sensor-gas-on-color","state-binary_sensor-heat-on-color","state-binary_sensor-lock-on-color","state-binary_sensor-moisture-on-color","state-binary_sensor-problem-on-color","state-binary_sensor-safety-on-color","state-binary_sensor-smoke-on-color","state-binary_sensor-sound-on-color","state-binary_sensor-tamper-on-color","state-device_tracker-active-color","state-device_tracker-home-color","state-humidifier-on-color","state-lawn_mower-active-color","state-lawn_mower-error-color","state-person-active-color","state-person-home-color","state-plant-active-color","state-siren-active-color","state-sun-above_horizon-color","state-sun-below_horizon-color","state-update-active-color","state-valve-active-color","state-water_heater-eco-color","state-water_heater-electric-color","state-water_heater-gas-color","state-water_heater-heat_pump-color","state-water_heater-high_demand-color","state-water_heater-performance-color","state-weather-clear_night-color","state-weather-cloudy-color","state-weather-exceptional-color","state-weather-fog-color","state-weather-hail-color","state-weather-lightning_rainy-color","state-weather-lightning-color","state-weather-partlycloudy-color","state-weather-pouring-color","state-weather-rainy-color","state-weather-snowy_rainy-color","state-weather-snowy-color","state-weather-sunny-color","state-weather-windy_variant-color","state-weather-windy-color","state-battery-low-color","state-sensor-battery-high-color","state-sensor-battery-medium-color","state-sensor-battery-low-color","label-badge-background-color","label-badge-text-color","label-badge-red","label-badge-blue","label-badge-green","label-badge-yellow","state-battery-alert-color"],"id":"hintergruende-karten__status-icons-entitaeten","icon":"mdi:emoticon-outline"},{"label":"Schalter, Toggle & Slider","keys":["ha-control-switch-color","ha-control-switch-checked-color","ha-control-switch-unchecked-color","ha-switch-background-color","ha-switch-background-color-hover","ha-switch-border-color","ha-switch-thumb-background-color","ha-switch-thumb-background-color-hover","ha-switch-thumb-border-color","ha-switch-thumb-border-color-hover","ha-switch-checked-background-color","ha-switch-checked-background-color-hover","ha-switch-checked-border-color","ha-switch-checked-thumb-background-color","ha-switch-checked-thumb-background-color-hover","ha-switch-checked-thumb-border-color","ha-switch-checked-thumb-border-color-hover","control-slider-color","slider-color","slider-secondary-color","slider-track-color"],"id":"hintergruende-karten__schalter-toggle-slider","icon":"mdi:toggle-switch-outline"},{"label":"Buttons & Chips","keys":["control-button-background-color","control-button-icon-color","control-button-border-radius"],"id":"hintergruende-karten__buttons-chips","icon":"mdi:gesture-tap-button"},{"label":"Eingaben & Auswahlfelder","keys":["input-background-color","input-fill-color","input-disabled-fill-color","input-disabled-ink-color","input-disabled-label-ink-color","input-disabled-line-color","input-dropdown-icon-color","input-hover-line-color","input-idle-line-color","input-ink-color","input-label-ink-color","input-outlined-disabled-border-color","mdc-select-idle-line-color","mdc-select-dropdown-icon-color","mdc-select-hover-line-color","mdc-text-field-idle-line-color","mdc-text-field-hover-line-color","ha-color-form-background","ha-color-form-background-hover","ha-color-form-background-disabled"],"id":"hintergruende-karten__eingaben-auswahlfelder","icon":"mdi:form-select"},{"label":"Material, Paper & MDC","keys":["mdc-theme-primary","mdc-theme-secondary","mdc-theme-on-primary","md-sys-color-primary","md-sys-color-on-primary","md-sys-color-primary-container","md-sys-color-on-primary-container","md-sys-color-on-surface","ha-on-surface-color","md-radio-selected-icon-color","mdc-radio-unchecked-color"],"id":"hintergruende-karten__material-paper-mdc","icon":"mdi:material-design"},{"label":"HA 2026 / Web Awesome","keys":["ha-color-fill-primary-normal-resting","ha-color-fill-primary-normal-hover","ha-color-fill-primary-quiet-resting","ha-color-fill-primary-quiet-hover","ha-color-fill-disabled-normal-resting","ha-color-on-disabled-normal","ha-color-fill-disabled-loud-resting","ha-color-on-disabled-loud","ha-color-on-disabled-quiet","ha-color-fill-neutral-quiet-resting","ha-color-fill-neutral-quiet-hover","ha-color-fill-neutral-quiet-active","ha-color-fill-neutral-normal-resting","ha-color-fill-neutral-normal-hover","ha-color-fill-neutral-normal-active","ha-color-fill-danger-normal-resting","ha-color-fill-danger-normal-hover","ha-color-fill-danger-normal-active","ha-color-on-danger-normal","ha-color-fill-warning-normal-resting","ha-color-fill-warning-normal-hover","ha-color-fill-warning-normal-active","ha-color-on-warning-normal","ha-tooltip-background-color","ha-tooltip-text-color"],"id":"hintergruende-karten__ha-2026-web-awesome","icon":"mdi:web"},{"label":"Abstände, Rundungen, Schatten & Rahmen","keys":["border-color","border-radius","box-shadow","divider-color","outline-color","outline-variant-color","outline-hover-color","ha-line-height-condensed","ha-line-height-expanded","ha-line-height-normal","ha-list-gap","ha-list-padding","ha-list-item-focus-radius","ha-list-item-focus-background","ha-border-radius-circle","ha-ripple-color"],"id":"hintergruende-karten__abstaende-rundungen-schatten-rahmen","icon":"mdi:square-rounded-outline"},{"label":"Schrift & Typografie","keys":["primary-font-family","ha-font-family-body","ha-font-family-heading","ha-font-family-longform","ha-font-family-code","mdc-typography-font-family","ha-font-size-scale","ha-font-size-2xs","ha-font-size-xs","ha-font-size-s","ha-font-size-m","ha-font-size-l","ha-font-size-xl","ha-font-size-2xl","ha-font-size-3xl","ha-font-size-4xl","ha-font-weight-light","ha-font-weight-normal","ha-font-weight-body","ha-font-weight-medium","ha-font-weight-heading","ha-font-weight-action","ha-font-weight-bold"],"id":"hintergruende-karten__schrift-typografie","icon":"mdi:format-font"},{"label":"RGB-Hilfswerte","keys":["rgb-primary-color","rgb-accent-color","rgb-primary-text-color","rgb-secondary-text-color","rgb-card-background-color","rgb-primary-background-color","rgb-blue-color","rgb-orange-color","rgb-state-switch-color","rgb-state-light-color","rgb-state-cover-color","rgb-state-fan-color","rgb-state-media_player-color"],"id":"hintergruende-karten__rgb-hilfswerte","icon":"mdi:invert-colors"},{"label":"Graphen & Energie","keys":["graph-color-1","graph-color-2","graph-color-3","graph-color-4","graph-color-5","graph-color-6","graph-color-7","graph-color-8","graph-color-9","graph-color-10","graph-color-11","graph-color-12","graph-color-13","graph-color-14","color-1","color-2","color-3","color-4","color-5","color-6","color-7","color-8","color-9","color-10","color-11","color-12","color-13","color-14","energy-grid-consumption-color","energy-grid-return-color","energy-solar-color","energy-non-fossil-color","energy-battery-out-color","energy-battery-in-color","energy-gas-color","energy-water-color"],"id":"hintergruende-karten__graphen-energie","icon":"mdi:chart-line"}]},{"id":"bubble-card","label":"Bubble Card","desc":"Alle Bubble-Card-Werte an einem Ort, in 9 Unterordnern: Karten & Hintergründe, Buttons, Sub-Buttons, Separator, Popup & Dialog, Horizontal Buttons Stack, Climate, Cover, Media Player.","icon":"mdi:circle-multiple-outline","keys":["bubble-card-background-color","bubble-main-buttons-background-color","bubble-secondary-background-color","bubble-icon-background-color","bubble-icon-color","bubble-name-color","bubble-state-color","bubble-accent-color","bubble-active-color","bubble-toggle-color","bubble-line-background-color","bubble-border","bubble-border-color","bubble-border-radius","bubble-box-shadow","bubble-card-border-radius","bubble-select-border-radius","bubble-icon-border-radius","bubble-button-background-color","bubble-button-active-background-color","bubble-button-icon-color","bubble-button-active-icon-color","bubble-button-text-color","bubble-button-active-text-color","bubble-button-border-radius","bubble-button-card-background-color","bubble-button-main-background-color","bubble-button-active-color","bubble-sub-button-background-color","bubble-sub-button-active-background-color","bubble-sub-button-icon-color","bubble-sub-button-active-icon-color","bubble-sub-button-text-color","bubble-sub-button-active-text-color","bubble-sub-button-border-radius","bubble-sub-button-box-shadow","bubble-sub-buttons-main-background-color","bubble-separator-background-color","bubble-separator-icon-background-color","bubble-separator-icon-color","bubble-separator-line-color","bubble-separator-name-color","bubble-separator-text-color","bubble-separator-border-radius","bubble-pop-up-background-color","bubble-pop-up-backdrop-filter","bubble-pop-up-border-radius","bubble-pop-up-box-shadow","dialog-box-shadow","more-info-header-background","more-info-header-color","popup-border-radius","ha-dialog-scrim-backdrop-filter","ha-dialog-surface-background","mdc-dialog-scrim-color","bubble-horizontal-buttons-stack-background-color","bubble-horizontal-buttons-stack-button-background-color","bubble-horizontal-buttons-stack-button-icon-color","bubble-horizontal-buttons-stack-button-text-color","bubble-horizontal-buttons-stack-border-radius","bubble-horizontal-buttons-stack-box-shadow","bubble-climate-background-color","bubble-climate-main-background-color","bubble-climate-button-background-color","bubble-climate-button-icon-color","bubble-climate-border-radius","bubble-climate-box-shadow","bubble-climate-icon-border-radius","bubble-cover-background-color","bubble-cover-main-background-color","bubble-cover-button-background-color","bubble-cover-button-icon-color","bubble-cover-border-radius","bubble-cover-box-shadow","bubble-media-player-background-color","bubble-media-player-main-background-color","bubble-media-player-button-background-color","bubble-media-player-button-icon-color","bubble-media-player-border-radius","bubble-media-player-box-shadow","bubble-calendar-height","bubble-calendar-mask-size","bubble-calendar-border-radius","bubble-event-background-color","bubble-event-background-image","bubble-select-main-background-color","bubble-select-background-color","bubble-select-list-background-color","bubble-select-list-item-accent-color","bubble-select-list-width","bubble-select-arrow-background-color","bubble-select-button-border-radius","bubble-select-icon-background-color","bubble-select-icon-border-radius","bubble-select-box-shadow","bubble-pop-up-main-background-color","bubble-backdrop-background-color","bubble-button-icon-border-radius","bubble-button-icon-background-color","bubble-light-white-color","bubble-light-color","bubble-button-box-shadow","bubble-media-player-buttons-border-radius","bubble-media-player-slider-background-color","bubble-media-player-icon-border-radius","bubble-media-player-icon-background-color","bubble-cover-icon-border-radius","bubble-cover-icon-background-color","bubble-state-climate-fan-only-color","bubble-state-climate-dry-color","bubble-state-climate-cool-color","bubble-state-climate-heat-color","bubble-state-climate-auto-color","bubble-state-climate-heat-cool-color","bubble-climate-accent-color","bubble-calendar-main-background-color","bubble-sub-slider-border-radius","bubble-sub-slider-background-color","bubble-sub-slider-height","bubble-sub-button-dark-text-color","bubble-footer-width","bubble-footer-bottom","bubble-footer-box-shadow","bubble-select-list-border-radius"],"groups":[{"label":"Karten & Hintergründe","keys":["bubble-card-background-color","bubble-main-buttons-background-color","bubble-secondary-background-color","bubble-icon-background-color","bubble-icon-color","bubble-name-color","bubble-state-color","bubble-accent-color","bubble-active-color","bubble-toggle-color","bubble-line-background-color","bubble-border","bubble-border-color","bubble-border-radius","bubble-box-shadow","bubble-card-border-radius","bubble-icon-border-radius"],"id":"bubble-card__karten-hintergruende","icon":"mdi:card-outline"},{"label":"Select (Auswahlkarte)","keys":["bubble-select-main-background-color","bubble-select-background-color","bubble-select-border-radius","bubble-select-list-background-color","bubble-select-list-border-radius","bubble-select-list-width","bubble-select-list-item-accent-color","bubble-select-arrow-background-color","bubble-select-button-border-radius","bubble-select-icon-background-color","bubble-select-icon-border-radius","bubble-select-box-shadow"],"id":"bubble-card__select","icon":"mdi:form-select"},{"label":"Buttons","keys":["bubble-button-background-color","bubble-button-active-background-color","bubble-button-icon-color","bubble-button-active-icon-color","bubble-button-text-color","bubble-button-active-text-color","bubble-button-border-radius","bubble-button-card-background-color","bubble-button-main-background-color","bubble-button-active-color","bubble-button-icon-border-radius","bubble-button-icon-background-color","bubble-light-white-color","bubble-light-color","bubble-button-box-shadow"],"id":"bubble-card__buttons","icon":"mdi:gesture-tap-button"},{"label":"Sub-Buttons","keys":["bubble-sub-button-background-color","bubble-sub-button-active-background-color","bubble-sub-button-icon-color","bubble-sub-button-active-icon-color","bubble-sub-button-text-color","bubble-sub-button-active-text-color","bubble-sub-button-border-radius","bubble-sub-button-box-shadow","bubble-sub-buttons-main-background-color","bubble-sub-slider-border-radius","bubble-sub-slider-background-color","bubble-sub-slider-height","bubble-sub-button-dark-text-color","bubble-footer-width","bubble-footer-bottom","bubble-footer-box-shadow"],"id":"bubble-card__sub-buttons","icon":"mdi:dots-horizontal-circle-outline"},{"label":"Separator","keys":["bubble-separator-background-color","bubble-separator-icon-background-color","bubble-separator-icon-color","bubble-separator-line-color","bubble-separator-name-color","bubble-separator-text-color","bubble-separator-border-radius"],"id":"bubble-card__separator","icon":"mdi:minus"},{"label":"Popup & Dialog","keys":["bubble-pop-up-background-color","bubble-pop-up-backdrop-filter","bubble-pop-up-border-radius","bubble-pop-up-box-shadow","dialog-box-shadow","more-info-header-background","more-info-header-color","popup-border-radius","ha-dialog-scrim-backdrop-filter","ha-dialog-surface-background","mdc-dialog-scrim-color","bubble-pop-up-main-background-color","bubble-backdrop-background-color"],"id":"bubble-card__popup-dialog","icon":"mdi:window-maximize"},{"label":"Horizontal Buttons Stack","keys":["bubble-horizontal-buttons-stack-background-color","bubble-horizontal-buttons-stack-button-background-color","bubble-horizontal-buttons-stack-button-icon-color","bubble-horizontal-buttons-stack-button-text-color","bubble-horizontal-buttons-stack-border-radius","bubble-horizontal-buttons-stack-box-shadow"],"id":"bubble-card__horizontal-buttons-stack","icon":"mdi:view-sequential"},{"label":"Climate","keys":["bubble-climate-background-color","bubble-climate-main-background-color","bubble-climate-button-background-color","bubble-climate-button-icon-color","bubble-climate-border-radius","bubble-climate-box-shadow","bubble-climate-icon-border-radius","bubble-state-climate-fan-only-color","bubble-state-climate-dry-color","bubble-state-climate-cool-color","bubble-state-climate-heat-color","bubble-state-climate-auto-color","bubble-state-climate-heat-cool-color","bubble-climate-accent-color"],"id":"bubble-card__climate","icon":"mdi:thermostat"},{"label":"Cover","keys":["bubble-cover-background-color","bubble-cover-main-background-color","bubble-cover-button-background-color","bubble-cover-button-icon-color","bubble-cover-border-radius","bubble-cover-box-shadow","bubble-cover-icon-border-radius","bubble-cover-icon-background-color"],"id":"bubble-card__cover","icon":"mdi:window-shutter"},{"label":"Media Player","keys":["bubble-media-player-background-color","bubble-media-player-main-background-color","bubble-media-player-button-background-color","bubble-media-player-button-icon-color","bubble-media-player-border-radius","bubble-media-player-box-shadow","bubble-media-player-buttons-border-radius","bubble-media-player-slider-background-color","bubble-media-player-icon-border-radius","bubble-media-player-icon-background-color"],"id":"bubble-card__media-player","icon":"mdi:play-circle-outline"},{"label":"Calendar","keys":["bubble-calendar-main-background-color","bubble-calendar-height","bubble-calendar-mask-size","bubble-calendar-border-radius","bubble-event-background-color","bubble-event-background-image"],"id":"bubble-card__calendar","icon":"mdi:calendar"}]},{"id":"mushroom","label":"Mushroom","desc":"Alle Mushroom-Werte an einem Ort, in 6 Unterordnern: Karten & Hintergründe, Icons, Toggle, Slider, Chips, RGB-Hilfswerte.","icon":"mdi:mushroom-outline","keys":["mush-card-background","mush-control-background-color","mush-card-primary-color","mush-card-secondary-color","mush-title-color","mush-subtitle-color","mush-icon-background-color","mush-icon-color","mush-icon-active-color","mush-toggle-color","mush-toggle-background-color","mush-slider-color","mush-slider-track-color","mush-slider-background-color","mush-chip-background","mush-chip-active-background","mush-chip-color","mush-chip-icon-color","mush-chip-active-color","mush-chip-active-icon-color","mush-chip-border-color","mush-chip-border-radius","mush-chip-font-size","mush-rgb-primary-text-color","mush-rgb-secondary-text-color","mush-rgb-state-switch","mush-rgb-state-light","mush-rgb-state-cover","mush-rgb-state-entity","mush-rgb-state-fan","mush-rgb-state-media-player","mush-rgb-state-vacuum","mush-rgb-success","mush-rgb-warning","mush-rgb-danger","mush-rgb-disabled","mush-rgb-info"],"groups":[{"label":"Karten & Hintergründe","keys":["mush-card-background","mush-control-background-color","mush-card-primary-color","mush-card-secondary-color","mush-title-color","mush-subtitle-color"],"id":"mushroom__karten-hintergruende","icon":"mdi:card-outline"},{"label":"Icons","keys":["mush-icon-background-color","mush-icon-color","mush-icon-active-color"],"id":"mushroom__icons","icon":"mdi:shape-outline"},{"label":"Toggle","keys":["mush-toggle-color","mush-toggle-background-color"],"id":"mushroom__toggle","icon":"mdi:toggle-switch-outline"},{"label":"Slider","keys":["mush-slider-color","mush-slider-track-color","mush-slider-background-color"],"id":"mushroom__slider","icon":"mdi:tune-variant"},{"label":"Chips","keys":["mush-chip-background","mush-chip-active-background","mush-chip-color","mush-chip-icon-color","mush-chip-active-color","mush-chip-active-icon-color","mush-chip-border-color","mush-chip-border-radius","mush-chip-font-size"],"id":"mushroom__chips","icon":"mdi:label-outline"},{"label":"RGB-Hilfswerte","keys":["mush-rgb-primary-text-color","mush-rgb-secondary-text-color","mush-rgb-state-switch","mush-rgb-state-light","mush-rgb-state-cover","mush-rgb-state-entity","mush-rgb-state-fan","mush-rgb-state-media-player","mush-rgb-state-vacuum","mush-rgb-success","mush-rgb-warning","mush-rgb-danger","mush-rgb-disabled","mush-rgb-info"],"id":"mushroom__rgb-hilfswerte","icon":"mdi:invert-colors"}]},{"id":"uix-generator","label":"UIX & Generator","desc":"UIX-Stilziele für das ganze Theme, interne Generatorwerte und ein Freitextfeld für eigene, von HATG nicht verwaltete Theme-Einträge.","icon":"mdi:code-braces","keys":["uix-card","uix-root","uix-view","uix-view-background","uix-row","uix-badge","uix-sidebar","uix-more-info","uix-dialog","uix-drawer","uix-glance","uix-heading-badge","uix-assist-chip","uix-element","uix-entity-marker","uix-config","uix-panel-custom","uix-top-app-bar-fixed","uix-toast","uix-grid-section","uix-calendar","uix-todo","uix-history","uix-states-history-charts","uix-persistent-notification-item","uix-card-yaml","uix-root-yaml","uix-view-yaml","uix-view-background-yaml","uix-row-yaml","uix-badge-yaml","uix-sidebar-yaml","uix-more-info-yaml","uix-dialog-yaml","uix-drawer-yaml","uix-glance-yaml","uix-heading-badge-yaml","uix-assist-chip-yaml","uix-element-yaml","uix-entity-marker-yaml","uix-config-yaml","uix-panel-custom-yaml","uix-top-app-bar-fixed-yaml","uix-toast-yaml","uix-grid-section-yaml","uix-calendar-yaml","uix-todo-yaml","uix-history-yaml","uix-states-history-charts-yaml","uix-persistent-notification-item-yaml","hatg-glas-blur-klein","hatg-glas-blur","hatg-glas-blur-gross","hatg-glas-saettigung","hatg-glas-fuellung-leicht","hatg-glas-fuellung","hatg-glas-fuellung-stark","hatg-glas-rand","hatg-glas-rand-hell","hatg-glas-kante-hell","hatg-glas-kante-dunkel","hatg-glas-schatten","hatg-glas-schatten-hoch","hatg-glas-reflex","hatg-glas-menuegrund","hatg-glas-nav-fuellung","hatg-glas-nav-blur","hatg-glas-abdunkeln","hatg-sidebar-titel","hatg-icon-groesse","hatg-icon-radius","hatg-icon-glanz","hatg-icon-rand","hatg-icon-schatten","hatg-liste-abstand","hatg-liste-innenrand","hatg-liste-titel-groesse","hatg-liste-titel-gewicht","hatg-liste-untertitel-groesse","hatg-liste-untertitel-deckkraft","hatg-liste-pfeil-groesse","hatg-liste-pfeil-deckkraft","uix-theme","card-backdrop-blur","eigene-theme-eintraege"],"groups":[{"label":"Stilziele: häufig","keys":["uix-card","uix-root","uix-view","uix-view-background","uix-row","uix-badge","uix-sidebar","uix-more-info","uix-dialog","uix-drawer"],"id":"uix-generator__ziele-haeufig","icon":"mdi:target"},{"label":"Stilziele: weitere","keys":["uix-glance","uix-heading-badge","uix-assist-chip","uix-element","uix-entity-marker","uix-config","uix-panel-custom","uix-top-app-bar-fixed","uix-toast","uix-grid-section","uix-calendar","uix-todo","uix-history","uix-states-history-charts","uix-persistent-notification-item"],"id":"uix-generator__ziele-weitere","icon":"mdi:target-variant"},{"label":"Stilziele: Shadow-DOM","keys":["uix-card-yaml","uix-root-yaml","uix-view-yaml","uix-view-background-yaml","uix-row-yaml","uix-badge-yaml","uix-sidebar-yaml","uix-more-info-yaml","uix-dialog-yaml","uix-drawer-yaml","uix-glance-yaml","uix-heading-badge-yaml","uix-assist-chip-yaml","uix-element-yaml","uix-entity-marker-yaml","uix-config-yaml","uix-panel-custom-yaml","uix-top-app-bar-fixed-yaml","uix-toast-yaml","uix-grid-section-yaml","uix-calendar-yaml","uix-todo-yaml","uix-history-yaml","uix-states-history-charts-yaml","uix-persistent-notification-item-yaml"],"id":"uix-generator__ziele-yaml","icon":"mdi:file-tree-outline"},{"label":"Glaslook","keys":["hatg-glas-blur-klein","hatg-glas-blur","hatg-glas-blur-gross","hatg-glas-saettigung","hatg-glas-fuellung-leicht","hatg-glas-fuellung","hatg-glas-fuellung-stark","hatg-glas-rand","hatg-glas-rand-hell","hatg-glas-kante-hell","hatg-glas-kante-dunkel","hatg-glas-schatten","hatg-glas-schatten-hoch","hatg-glas-reflex","hatg-glas-menuegrund","hatg-glas-nav-fuellung","hatg-glas-nav-blur","hatg-glas-abdunkeln","hatg-sidebar-titel","hatg-icon-groesse","hatg-icon-radius","hatg-icon-glanz","hatg-icon-rand","hatg-icon-schatten","hatg-liste-abstand","hatg-liste-innenrand","hatg-liste-titel-groesse","hatg-liste-titel-gewicht","hatg-liste-untertitel-groesse","hatg-liste-untertitel-deckkraft","hatg-liste-pfeil-groesse","hatg-liste-pfeil-deckkraft"],"id":"uix-generator__glas","icon":"mdi:blur"},{"label":"Generator & Eigenes","keys":["uix-theme","card-backdrop-blur","eigene-theme-eintraege"],"id":"uix-generator__intern","icon":"mdi:code-braces"}]}],"light":{"accent-color":"#ff9300","primary-color":"#ff9300","dark-primary-color":"#F9F9FB","light-primary-color":"#E5F1FF","primary-text-color":"#1C1C1E","secondary-text-color":"#3C3C43","text-primary-color":"#FFFFFF","disabled-text-color":"#8E8E93","error-color":"#FF3B30","warning-color":"#FFCC00","success-color":"#34C759","info-color":"#007AFF","red-color":"#FF3B30","green-color":"#34C759","blue-color":"#007AFF","orange-color":"#FF9500","yellow-color":"#FFCC00","purple-color":"#AF52DE","pink-color":"#FF2D55","cyan-color":"#5AC8FA","grey-color":"#3C3C43","black-color":"#000000","white-color":"#FFFFFF","primary-background-color":"#F2F2F7","background-color":"#F2F2F7","lovelace-background":"#F2F2F7","secondary-background-color":"#F9F9FB","card-background-color":"#FFFFFF","ha-card-background":"#FFFFFF","ha-card-background-color":"#FFFFFF","table-row-background-color":"#F9F9FB","table-row-alternative-background-color":"#FFFFFF","app-header-background-color":"#FFFFFF","app-toolbar-background-color":"#FFFFFF","toolbar-background-color":"#FFFFFF","app-drawer-background-color":"#FFFFFF","sidebar-background-color":"#FFFFFF","sidebar-selected-background-color":"#E5F1FF","mdc-theme-background":"#F2F2F7","mdc-theme-surface":"#FFFFFF","mdc-theme-on-surface":"#1C1C1E","wa-color-surface-raised":"#FFFFFF","app-header-text-color":"#1C1C1E","app-toolbar-text-color":"#1C1C1E","toolbar-text-color":"#1C1C1E","app-drawer-text-color":"#3C3C43","app-drawer-icon-color":"#007AFF","sidebar-text-color":"#3C3C43","sidebar-icon-color":"rgba(33, 33, 33, 0.6)","sidebar-selected-text-color":"#1C1C1E","sidebar-selected-icon-color":"#007AFF","state-icon-color":"#007AFF","state-icon-active-color":"#007AFF","state-icon-unavailable-color":"#FFFFFF","state-active-color":"#007AFF","state-inactive-color":"#FFFFFF","state-unavailable-color":"#FFFFFF","state-on-color":"#34C759","state-off-color":"#FFFFFF","state-light-color":"#007AFF","state-light-active-color":"#007AFF","state-light-on-color":"#ff9300","state-switch-color":"#007AFF","state-switch-active-color":"#007AFF","state-switch-on-color":"#007AFF","state-climate-cool-color":"#007AFF","state-climate-heat-color":"#ff2600","state-climate-auto-color":"#007AFF","state-cover-color":"#007AFF","state-cover-active-color":"#007AFF","state-cover-open-color":"#929000","state-cover-closed-color":"#ff2600","state-fan-color":"#007AFF","state-fan-active-color":"#007AFF","state-media_player-color":"#007AFF","state-vacuum-color":"#007AFF","state-vacuum-active-color":"#007AFF","state-lock-locked-color":"#007AFF","state-lock-locking-color":"#ff2600","state-lock-unlocked-color":"#007AFF","state-lock-unlocking-color":"#929000","state-alarm_control_panel-triggered-color":"#ff2600","state-alarm-triggered-color":"#ff2600","state-alarm_control_panel-armed_home-color":"#ffd478","state-alarm_control_panel-armed_away-color":"#ffd478","state-alarm-armed-color":"#ffd478","state-alarm_control_panel-disarmed-color":"#ff9300","state-alarm-disarmed-color":"#ff9300","state-battery-low-color":"#ff2600","label-badge-background-color":"#FFFFFF","label-badge-text-color":"rgba(33, 33, 33, 0.8)","label-badge-red":"#FF3B30","label-badge-blue":"#007AFF","label-badge-green":"#34C759","label-badge-yellow":"#FFCC00","state-battery-alert-color":"#ff2600","ha-control-switch-color":"#007AFF","ha-control-switch-checked-color":"#007AFF","ha-control-switch-unchecked-color":"#D1D1D6","mush-toggle-color":"#007AFF","mush-rgb-state-switch":"0, 122, 255","bubble-toggle-color":"#007AFF","rgb-state-switch-color":"0, 122, 255","control-slider-color":"#007AFF","slider-color":"#007AFF","slider-secondary-color":"#E5F1FF","slider-track-color":"#D1D1D6","mush-slider-color":"#007AFF","mush-slider-track-color":"#D1D1D6","mush-toggle-background-color":"#D1D1D6","control-button-background-color":"#F9F9FB","control-button-icon-color":"#007AFF","control-button-border-radius":"18px","mush-chip-background":"#FFFFFF","mush-chip-active-background":"#F9F9FB","mush-chip-color":"#1C1C1E","mush-chip-icon-color":"#007AFF","mush-chip-active-color":"#ff9300","mush-chip-active-icon-color":"#ff9300","mush-chip-border-color":"#C6C6C8","mush-chip-border-radius":"16px","mush-chip-font-size":"12px","bubble-button-background-color":"#FFFFFF","bubble-button-active-background-color":"#007AFF","bubble-button-icon-color":"#007AFF","bubble-button-active-icon-color":"#FFFFFF","bubble-button-text-color":"#1C1C1E","bubble-button-active-text-color":"#FFFFFF","bubble-button-border-radius":"18px","bubble-sub-button-background-color":"#F9F9FB","bubble-sub-button-active-background-color":"#007AFF","bubble-sub-button-icon-color":"#007AFF","bubble-sub-button-active-icon-color":"#FFFFFF","bubble-sub-button-text-color":"#3C3C43","bubble-sub-button-active-text-color":"#FFFFFF","bubble-sub-button-border-radius":"14px","bubble-sub-button-box-shadow":"0 4px 10px rgba(60,60,67,.16)","input-background-color":"#F9F9FB","input-fill-color":"#F9F9FB","input-disabled-fill-color":"rgba(249, 249, 251, 0.55)","input-disabled-ink-color":"rgba(0, 0, 0, 0.37)","input-disabled-label-ink-color":"#8E8E93","input-disabled-line-color":"rgba(0, 0, 0, 0.06)","input-dropdown-icon-color":"rgba(0, 0, 0, 0.54)","input-hover-line-color":"rgba(0, 0, 0, 0.87)","input-idle-line-color":"rgba(0, 0, 0, 0.42)","input-ink-color":"rgba(0, 0, 0, 0.87)","input-label-ink-color":"rgba(0, 0, 0, 0.6)","input-outlined-disabled-border-color":"rgba(0, 0, 0, 0.06)","mdc-select-idle-line-color":"#C6C6C8","mdc-select-dropdown-icon-color":"#3C3C43","mdc-select-hover-line-color":"#C6C6C8","mdc-text-field-idle-line-color":"#C6C6C8","mdc-text-field-hover-line-color":"#C6C6C8","ha-color-form-background":"#F9F9FB","ha-color-form-background-hover":"#F9F9FB","ha-color-form-background-disabled":"rgba(249, 249, 251, 0.55)","mdc-theme-primary":"#007AFF","mdc-theme-secondary":"#007AFF","mdc-theme-on-primary":"#FFFFFF","md-sys-color-primary":"#ff9300","md-sys-color-on-primary":"#007AFF","md-sys-color-primary-container":"#E5F1FF","md-sys-color-on-primary-container":"#FFFFFF","md-sys-color-on-surface":"#feffff","ha-on-surface-color":"#feffff","md-radio-selected-icon-color":"#007AFF","mdc-radio-unchecked-color":"#3C3C43","ha-color-fill-primary-normal-resting":"rgba(0, 122, 255, 0.15)","ha-color-fill-primary-normal-hover":"rgba(0, 122, 255, 0.25)","ha-color-fill-primary-quiet-resting":"rgba(0, 122, 255, 0.08)","ha-color-fill-primary-quiet-hover":"rgba(0, 122, 255, 0.15)","ha-color-fill-disabled-normal-resting":"rgba(142, 142, 147, 0.12)","ha-color-on-disabled-normal":"rgba(60, 60, 67, 0.55)","ha-color-fill-disabled-loud-resting":"rgba(142, 142, 147, 0.22)","ha-color-on-disabled-loud":"rgba(60, 60, 67, 0.65)","ha-color-on-disabled-quiet":"rgba(60, 60, 67, 0.50)","ha-color-fill-neutral-quiet-resting":"#FFFFFF","ha-color-fill-neutral-quiet-hover":"#F9F9FB","ha-color-fill-neutral-quiet-active":"#E5F1FF","ha-color-fill-neutral-normal-resting":"#F9F9FB","ha-color-fill-neutral-normal-hover":"#FFFFFF","ha-color-fill-neutral-normal-active":"#E5F1FF","ha-color-fill-danger-normal-resting":"rgba(255, 59, 48, 0.15)","ha-color-fill-danger-normal-hover":"rgba(255, 59, 48, 0.22)","ha-color-fill-danger-normal-active":"rgba(255, 59, 48, 0.28)","ha-color-on-danger-normal":"#FF3B30","ha-color-fill-warning-normal-resting":"rgba(255, 204, 0, 0.15)","ha-color-fill-warning-normal-hover":"rgba(255, 204, 0, 0.22)","ha-color-fill-warning-normal-active":"rgba(255, 204, 0, 0.28)","ha-color-on-warning-normal":"#8A5A00","ha-tooltip-background-color":"#F9F9FB","ha-tooltip-text-color":"#1C1C1E","border-color":"rgba(0, 0, 0, 0.12)","border-radius":"18px","box-shadow":"0 10px 28px rgba(60,60,67,.14)","divider-color":"rgba(0, 0, 0, 0.12)","outline-color":"rgba(0, 0, 0, 0.12)","outline-variant-color":"#C6C6C8","ha-card-border-color":"rgba(0, 0, 0, 0.12)","ha-card-border-radius":"18px","ha-card-border-width":"1px","ha-card-box-shadow":"0 10px 28px rgba(60,60,67,.14)","ha-line-height-condensed":"1.25","ha-line-height-expanded":"1.35","ha-line-height-normal":"1.5","ha-list-gap":"0px","ha-list-padding":"0px","ha-list-item-focus-radius":"12px","ha-list-item-focus-background":"rgba(127, 127, 127, 0.12)","ha-border-radius-circle":"50%","ha-ripple-color":"","bubble-border":"1px solid #C6C6C8","bubble-border-color":"rgba(0, 0, 0, 0.12)","bubble-border-radius":"18px","bubble-box-shadow":"0 10px 28px rgba(60,60,67,.14)","bubble-card-border-radius":"18px","bubble-climate-border-radius":"18px","bubble-climate-box-shadow":"0 10px 28px rgba(60,60,67,.14)","bubble-climate-icon-border-radius":"32px","bubble-cover-border-radius":"18px","bubble-cover-box-shadow":"0 10px 28px rgba(60,60,67,.14)","bubble-icon-border-radius":"14px","bubble-media-player-border-radius":"18px","bubble-media-player-box-shadow":"0 10px 28px rgba(60,60,67,.14)","bubble-calendar-height":"56px","bubble-calendar-mask-size":"16px","bubble-calendar-border-radius":"18px","bubble-event-background-color":"#F9F9FB","bubble-event-background-image":"none","bubble-pop-up-border-radius":"18px","bubble-pop-up-box-shadow":"0 10px 28px rgba(60,60,67,.14)","bubble-select-border-radius":"18px","bubble-separator-border-radius":"18px","bubble-horizontal-buttons-stack-border-radius":"18px","bubble-horizontal-buttons-stack-box-shadow":"0 10px 28px rgba(60,60,67,.14)","primary-font-family":"-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif","ha-font-family-body":"-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif","ha-font-family-heading":"-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif","ha-font-family-longform":"-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif","ha-font-family-code":"'SF Mono', 'Roboto Mono', Consolas, monospace","mdc-typography-font-family":"'SF Mono', 'Roboto Mono', Consolas, monospace","ha-font-size-scale":"1","ha-font-size-2xs":"8px","ha-font-size-xs":"8px","ha-font-size-s":"12px","ha-font-size-m":"14px","ha-font-size-l":"16px","ha-font-size-xl":"18px","ha-font-size-2xl":"20px","ha-font-size-3xl":"22px","ha-font-size-4xl":"24px","ha-font-weight-light":"300","ha-font-weight-normal":"400","ha-font-weight-body":"400","ha-font-weight-medium":"500","ha-font-weight-heading":"500","ha-font-weight-action":"500","ha-font-weight-bold":"700","rgb-primary-color":"255, 147, 0","rgb-accent-color":"255, 147, 0","rgb-primary-text-color":"28, 28, 30","rgb-secondary-text-color":"60, 60, 67","rgb-card-background-color":"255, 255, 255","rgb-primary-background-color":"242, 242, 247","rgb-blue-color":"0, 122, 255","rgb-orange-color":"255, 149, 0","rgb-state-light-color":"0, 122, 255","rgb-state-cover-color":"0, 122, 255","rgb-state-fan-color":"0, 122, 255","rgb-state-media_player-color":"0, 122, 255","mush-rgb-primary-text-color":"28, 28, 30","mush-rgb-secondary-text-color":"60, 60, 67","mush-rgb-state-light":"0, 122, 255","mush-rgb-state-cover":"0, 122, 255","mush-rgb-state-entity":"0, 122, 255","mush-rgb-state-fan":"0, 122, 255","mush-rgb-state-media-player":"0, 122, 255","mush-rgb-state-vacuum":"0, 122, 255","mush-rgb-success":"52, 199, 89","mush-rgb-warning":"255, 204, 0","mush-rgb-danger":"255, 59, 48","mush-rgb-disabled":"142, 142, 147","mush-rgb-info":"0, 122, 255","graph-color-1":"#ff9300","graph-color-2":"#007AFF","graph-color-3":"#34C759","graph-color-4":"#AF52DE","graph-color-5":"#FF3B30","graph-color-6":"#5AC8FA","graph-color-7":"#00C7BE","graph-color-8":"#FF2D55","graph-color-9":"#FF6B22","graph-color-10":"#5856D6","graph-color-11":"#A3D977","graph-color-12":"#FFCC00","graph-color-13":"#AF52DE","graph-color-14":"#8E6E53","energy-grid-consumption-color":"#007AFF","energy-grid-return-color":"#AF52DE","energy-solar-color":"#ff9300","energy-non-fossil-color":"#34C759","energy-battery-out-color":"#00C7BE","energy-battery-in-color":"#AF52DE","energy-gas-color":"#FF3B30","energy-water-color":"#5AC8FA","bubble-card-background-color":"#FFFFFF","bubble-secondary-background-color":"#F9F9FB","bubble-icon-background-color":"#F9F9FB","bubble-icon-color":"#007AFF","bubble-name-color":"#1C1C1E","bubble-state-color":"#3C3C43","bubble-accent-color":"#007AFF","bubble-active-color":"#007AFF","bubble-line-background-color":"rgba(0, 0, 0, 0.12)","bubble-pop-up-background-color":"#F2F2F7","bubble-pop-up-backdrop-filter":"blur(18px)","dialog-box-shadow":"0 10px 28px rgba(60,60,67,.14)","more-info-header-background":"#F9F9FB","more-info-header-color":"#1C1C1E","popup-border-radius":"12px","ha-dialog-scrim-backdrop-filter":"blur(10px)","ha-dialog-surface-background":"rgba(255, 255, 255, 0.92)","mdc-dialog-scrim-color":"rgba(0, 0, 0, 0.35)","bubble-separator-background-color":"#FFFFFF","bubble-separator-icon-background-color":"#F9F9FB","bubble-separator-icon-color":"#007AFF","bubble-separator-line-color":"rgba(0, 0, 0, 0.12)","bubble-separator-name-color":"#1C1C1E","bubble-separator-text-color":"#1C1C1E","bubble-horizontal-buttons-stack-background-color":"#FFFFFF","bubble-horizontal-buttons-stack-button-background-color":"#F9F9FB","bubble-sub-buttons-main-background-color":"#FFFFFF","bubble-climate-background-color":"#FFFFFF","bubble-climate-main-background-color":"#FFFFFF","bubble-cover-background-color":"#FFFFFF","bubble-cover-main-background-color":"#FFFFFF","bubble-media-player-background-color":"#FFFFFF","bubble-media-player-main-background-color":"#FFFFFF","mush-card-background":"#FFFFFF","mush-control-background-color":"#F9F9FB","mush-icon-background-color":"#F9F9FB","mush-card-primary-color":"#1C1C1E","mush-card-secondary-color":"#3C3C43","mush-title-color":"#1C1C1E","mush-subtitle-color":"#3C3C43","mush-icon-color":"#3C3C43","mush-icon-active-color":"#007AFF","hatg-glas-blur-klein":"8px","hatg-glas-blur":"18px","hatg-glas-blur-gross":"32px","hatg-glas-saettigung":"150%","hatg-glas-fuellung-leicht":"rgba(255, 255, 255, 0.35)","hatg-glas-fuellung":"rgba(255, 255, 255, 0.5)","hatg-glas-fuellung-stark":"rgba(255, 255, 255, 0.68)","hatg-glas-rand":"rgba(255, 255, 255, 0.55)","hatg-glas-rand-hell":"rgba(255, 255, 255, 0.75)","hatg-glas-kante-hell":"rgba(255, 255, 255, 0.5)","hatg-glas-kante-dunkel":"rgba(0, 0, 0, 0.12)","hatg-glas-schatten":"0 8px 26px -12px rgba(0, 0, 0, 0.28)","hatg-glas-schatten-hoch":"0 20px 50px -20px rgba(0, 0, 0, 0.35)","hatg-glas-reflex":"linear-gradient(135deg, rgba(255,255,255,0.42) 0%, rgba(255,255,255,0.08) 38%, rgba(255,255,255,0) 62%)","hatg-glas-menuegrund":"#FFFFFF","hatg-glas-nav-fuellung":"rgba(255, 255, 255, 0.45)","hatg-glas-nav-blur":"32px","hatg-glas-abdunkeln":"0","hatg-sidebar-titel":"\"Home Assistant\"","hatg-icon-groesse":"34px","hatg-icon-radius":"28%","hatg-icon-glanz":"linear-gradient(160deg, rgba(255,255,255,0.34) 0%, rgba(255,255,255,0.06) 52%, rgba(255,255,255,0) 78%)","hatg-icon-rand":"rgba(255, 255, 255, 0.16)","hatg-icon-schatten":"0 1px 2px rgba(0, 0, 0, 0.35)","hatg-liste-titel-groesse":"15px","hatg-liste-titel-gewicht":"600","hatg-liste-untertitel-groesse":"12.5px","hatg-liste-untertitel-deckkraft":"0.68","hatg-liste-pfeil-groesse":"18px","hatg-liste-pfeil-deckkraft":"0.4","uix-theme":"basis","uix-card":"","bubble-button-card-background-color":"#FFFFFF","bubble-button-main-background-color":"#FFFFFF","bubble-climate-button-background-color":"#F9F9FB","bubble-cover-button-background-color":"#F9F9FB","bubble-media-player-button-background-color":"#F9F9FB","mush-slider-background-color":"#F9F9FB","bubble-button-active-color":"#007AFF","bubble-climate-button-icon-color":"#3C3C43","bubble-cover-button-icon-color":"#3C3C43","bubble-horizontal-buttons-stack-button-icon-color":"#3C3C43","bubble-horizontal-buttons-stack-button-text-color":"#1C1C1E","bubble-media-player-button-icon-color":"#3C3C43","deep-purple-color":"#6E41AB","indigo-color":"#3F51B5","light-blue-color":"#03A9F4","teal-color":"#009688","light-green-color":"#8BC34A","lime-color":"#CDDC39","amber-color":"#FFC107","deep-orange-color":"#FF6F22","brown-color":"#795548","light-grey-color":"#BDBDBD","dark-grey-color":"#606060","blue-grey-color":"#607D8B","disabled-color":"#D1D1D6","outline-hover-color":"rgba(0, 0, 0, 0.24)","state-alarm_control_panel-armed_custom_bypass-color":"#34C759","state-alarm_control_panel-armed_night-color":"#34C759","state-alarm_control_panel-armed_vacation-color":"#34C759","state-alarm_control_panel-arming-color":"#007AFF","state-alarm_control_panel-disarming-color":"#007AFF","state-alarm_control_panel-pending-color":"#007AFF","state-alert-off-color":"#007AFF","state-alert-on-color":"#FF3B30","state-binary_sensor-active-color":"#FFC107","state-binary_sensor-battery-on-color":"#FF3B30","state-binary_sensor-carbon_monoxide-on-color":"#FF3B30","state-binary_sensor-gas-on-color":"#FF3B30","state-binary_sensor-heat-on-color":"#FF3B30","state-binary_sensor-lock-on-color":"#FF3B30","state-binary_sensor-moisture-on-color":"#FF3B30","state-binary_sensor-problem-on-color":"#FF3B30","state-binary_sensor-safety-on-color":"#FF3B30","state-binary_sensor-smoke-on-color":"#FF3B30","state-binary_sensor-sound-on-color":"#FF3B30","state-binary_sensor-tamper-on-color":"#FF3B30","state-climate-dry-color":"#007AFF","state-climate-fan_only-color":"#5AC8FA","state-climate-heat_cool-color":"#FFC107","state-device_tracker-active-color":"#007AFF","state-device_tracker-home-color":"#34C759","state-humidifier-on-color":"#007AFF","state-lawn_mower-active-color":"#009688","state-lawn_mower-error-color":"#FF3B30","state-lock-jammed-color":"#FF3B30","state-lock-open-color":"#FF3B30","state-lock-opening-color":"#007AFF","state-media_player-active-color":"#007AFF","state-person-active-color":"#007AFF","state-person-home-color":"#34C759","state-plant-active-color":"#FF3B30","state-siren-active-color":"#FF3B30","state-sun-above_horizon-color":"#FFC107","state-sun-below_horizon-color":"#3F51B5","state-update-active-color":"#007AFF","state-valve-active-color":"#007AFF","state-vacuum-error-color":"#FF3B30","state-water_heater-eco-color":"#34C759","state-water_heater-electric-color":"#007AFF","state-water_heater-gas-color":"#007AFF","state-water_heater-heat_pump-color":"#007AFF","state-water_heater-high_demand-color":"#FF6F22","state-water_heater-performance-color":"#FF6F22","state-weather-clear_night-color":"#6E41AB","state-weather-cloudy-color":"#BDBDBD","state-weather-exceptional-color":"#FF3B30","state-weather-fog-color":"#3C3C43","state-weather-hail-color":"#5AC8FA","state-weather-lightning_rainy-color":"#CDDC39","state-weather-lightning-color":"#FFCC00","state-weather-partlycloudy-color":"#607D8B","state-weather-pouring-color":"#3F51B5","state-weather-rainy-color":"#007AFF","state-weather-snowy_rainy-color":"#03A9F4","state-weather-snowy-color":"#C0E0FF","state-weather-sunny-color":"#FFC107","state-weather-windy_variant-color":"#34C759","state-weather-windy-color":"#34C759","state-sensor-battery-high-color":"#34C759","state-sensor-battery-medium-color":"#007AFF","state-sensor-battery-low-color":"#FF3B30","color-1":"#ff9300","color-2":"#007AFF","color-3":"#34C759","color-4":"#AF52DE","color-5":"#FF3B30","color-6":"#5AC8FA","color-7":"#00C7BE","color-8":"#FF2D55","color-9":"#FF6B22","color-10":"#5856D6","color-11":"#A3D977","color-12":"#FFCC00","color-13":"#AF52DE","color-14":"#8E6E53","ha-switch-background-color":"#D1D1D6","ha-switch-background-color-hover":"#D1D1D6","ha-switch-border-color":"rgba(0,0,0,0)","ha-switch-thumb-background-color":"#FFFFFF","ha-switch-thumb-background-color-hover":"#FFFFFF","ha-switch-thumb-border-color":"rgba(0,0,0,0)","ha-switch-thumb-border-color-hover":"rgba(0,0,0,0)","ha-switch-checked-background-color":"#E5F1FF","ha-switch-checked-background-color-hover":"#E5F1FF","ha-switch-checked-border-color":"rgba(0,0,0,0)","ha-switch-checked-thumb-background-color":"#007AFF","ha-switch-checked-thumb-background-color-hover":"#007AFF","ha-switch-checked-thumb-border-color":"rgba(0,0,0,0)","ha-switch-checked-thumb-border-color-hover":"rgba(0,0,0,0)","printer-cyan-color":"#00AEEF","printer-magenta-color":"#EC008C","printer-yellow-color":"#FFD400","bubble-main-buttons-background-color":"#FFFFFF","card-backdrop-blur":"none","glass-effect-style":"off","background-style":"off","uix-root":"","uix-view":"","uix-view-background":"","uix-row":"","uix-badge":"","uix-sidebar":"","uix-more-info":"","uix-dialog":"","uix-drawer":"","uix-glance":"","uix-heading-badge":"","uix-assist-chip":"","uix-element":"","uix-entity-marker":"","uix-config":"","uix-panel-custom":"","uix-top-app-bar-fixed":"","uix-toast":"","uix-grid-section":"","uix-calendar":"","uix-todo":"","uix-history":"","uix-states-history-charts":"","uix-persistent-notification-item":"","uix-card-yaml":"","uix-root-yaml":"","uix-view-yaml":"","uix-view-background-yaml":"","uix-row-yaml":"","uix-badge-yaml":"","uix-sidebar-yaml":"","uix-more-info-yaml":"","uix-dialog-yaml":"","uix-drawer-yaml":"","uix-glance-yaml":"","uix-heading-badge-yaml":"","uix-assist-chip-yaml":"","uix-element-yaml":"","uix-entity-marker-yaml":"","uix-config-yaml":"","uix-panel-custom-yaml":"","uix-top-app-bar-fixed-yaml":"","uix-toast-yaml":"","uix-grid-section-yaml":"","uix-calendar-yaml":"","uix-todo-yaml":"","uix-history-yaml":"","uix-states-history-charts-yaml":"","uix-persistent-notification-item-yaml":"","app-header-backdrop-filter":"blur(8px) saturate(1.1)","app-header-edit-background-color":"rgba(30, 33, 54, 0.8)","app-header-edit-text-color":"rgba(234, 235, 238, 0.98)","app-theme-color":"rgb(0, 0, 0)","bubble-select-main-background-color":"#FFFFFF","bubble-select-background-color":"#F2F2F7","bubble-select-list-background-color":"#FFFFFF","bubble-select-list-item-accent-color":"#007AFF","bubble-select-list-width":"220px","bubble-select-arrow-background-color":"#F9F9FB","bubble-select-button-border-radius":"18px","bubble-select-icon-background-color":"#F9F9FB","bubble-select-icon-border-radius":"14px","bubble-select-box-shadow":"0 10px 28px rgba(60,60,67,.14)","bubble-pop-up-main-background-color":"#FFFFFF","bubble-backdrop-background-color":"rgba(0, 0, 0, 0.32)","bubble-button-icon-border-radius":"14px","bubble-button-icon-background-color":"#F9F9FB","bubble-light-white-color":"#FFFFFF","bubble-light-color":"#FFC107","bubble-button-box-shadow":"0 10px 28px rgba(60,60,67,.14)","bubble-media-player-buttons-border-radius":"14px","bubble-media-player-slider-background-color":"#F2F2F7","bubble-media-player-icon-border-radius":"14px","bubble-media-player-icon-background-color":"#F9F9FB","bubble-cover-icon-border-radius":"14px","bubble-cover-icon-background-color":"#F9F9FB","bubble-state-climate-fan-only-color":"#32ADE6","bubble-state-climate-dry-color":"#FF9500","bubble-state-climate-cool-color":"#007AFF","bubble-state-climate-heat-color":"#FF3B30","bubble-state-climate-auto-color":"#34C759","bubble-state-climate-heat-cool-color":"#AF52DE","bubble-climate-accent-color":"#007AFF","bubble-calendar-main-background-color":"#FFFFFF","bubble-sub-slider-border-radius":"18px","bubble-sub-slider-background-color":"#F9F9FB","bubble-sub-slider-height":"48px","bubble-sub-button-dark-text-color":"#1C1C1E","bubble-footer-width":"320px","bubble-footer-bottom":"16px","bubble-footer-box-shadow":"0 10px 28px rgba(60,60,67,.14)","bubble-select-list-border-radius":"18px","eigene-theme-eintraege":"","hatg-liste-abstand":"6px","hatg-liste-innenrand":"8px"},"dark":{"accent-color":"#ff9300","primary-color":"#ff9300","dark-primary-color":"#2C2C2E","light-primary-color":"#ff9300","primary-text-color":"#feffff","secondary-text-color":"#C7C7CC","text-primary-color":"#000000","disabled-text-color":"#636366","error-color":"#FF453A","warning-color":"#FFD60A","success-color":"#30D158","info-color":"#0A84FF","red-color":"#FF453A","green-color":"#30D158","blue-color":"#0A84FF","orange-color":"#FF9F0A","yellow-color":"#FFD60A","purple-color":"#BF5AF2","pink-color":"#FF375F","cyan-color":"#32ADE6","grey-color":"#C7C7CC","black-color":"#000000","white-color":"#FFFFFF","primary-background-color":"#000000","background-color":"#000000","lovelace-background":"#000000","secondary-background-color":"#2C2C2E","card-background-color":"#1C1C1E","ha-card-background":"#1C1C1E","ha-card-background-color":"#1C1C1E","table-row-background-color":"#2C2C2E","table-row-alternative-background-color":"#1C1C1E","app-header-background-color":"#1C1C1E","app-toolbar-background-color":"#1C1C1E","toolbar-background-color":"#1C1C1E","app-drawer-background-color":"#1C1C1E","sidebar-background-color":"#1C1C1E","sidebar-selected-background-color":"#d5d5d5","mdc-theme-background":"#000000","mdc-theme-surface":"#1C1C1E","mdc-theme-on-surface":"#F2F2F7","wa-color-surface-raised":"#1C1C1E","app-header-text-color":"#F2F2F7","app-toolbar-text-color":"#F2F2F7","toolbar-text-color":"#F2F2F7","app-drawer-text-color":"#C7C7CC","app-drawer-icon-color":"#ff9300","sidebar-text-color":"#C7C7CC","sidebar-icon-color":"rgba(225, 225, 225, 0.6)","sidebar-selected-text-color":"#feffff","sidebar-selected-icon-color":"#ff9300","state-icon-color":"#ff9300","state-icon-active-color":"#ff9300","state-icon-unavailable-color":"#929292","state-active-color":"#ff9300","state-inactive-color":"#929292","state-unavailable-color":"#929292","state-on-color":"#30D158","state-off-color":"#636366","state-light-color":"#ff9300","state-light-active-color":"#ff9300","state-light-on-color":"#ff9300","state-switch-color":"#0A84FF","state-switch-active-color":"#ff9300","state-switch-on-color":"#ff9300","state-climate-cool-color":"#0A84FF","state-climate-heat-color":"#ff2600","state-climate-auto-color":"#ffd478","state-cover-color":"#0A84FF","state-cover-active-color":"#929000","state-cover-open-color":"#929000","state-cover-closed-color":"#ff2600","state-fan-color":"#0A84FF","state-fan-active-color":"#0A84FF","state-media_player-color":"#0A84FF","state-vacuum-color":"#0A84FF","state-vacuum-active-color":"#0A84FF","state-lock-locked-color":"#ff2600","state-lock-locking-color":"#ff2600","state-lock-unlocked-color":"#929000","state-lock-unlocking-color":"#929000","state-alarm_control_panel-triggered-color":"#ff2600","state-alarm-triggered-color":"#ff2600","state-alarm_control_panel-armed_home-color":"#ffd478","state-alarm_control_panel-armed_away-color":"#ffd478","state-alarm-armed-color":"#ffd478","state-alarm_control_panel-disarmed-color":"#ff9300","state-alarm-disarmed-color":"#ff9300","state-battery-low-color":"#ff2600","label-badge-background-color":"#1C1C1E","label-badge-text-color":"rgba(225, 225, 225, 0.8)","label-badge-red":"#FF453A","label-badge-blue":"#0A84FF","label-badge-green":"#30D158","label-badge-yellow":"#FFD60A","state-battery-alert-color":"#ff2600","ha-control-switch-color":"#ff9300","ha-control-switch-checked-color":"#ff9300","ha-control-switch-unchecked-color":"#3A3A3C","mush-toggle-color":"#ff9300","mush-rgb-state-switch":"255, 147, 0","bubble-toggle-color":"#ff9300","rgb-state-switch-color":"255, 147, 0","control-slider-color":"#ff9300","slider-color":"#ff9300","slider-secondary-color":"#1F3A5F","slider-track-color":"#48484A","mush-slider-color":"#ff9300","mush-slider-track-color":"#48484A","mush-toggle-background-color":"#48484A","control-button-background-color":"#2C2C2E","control-button-icon-color":"#ff9300","control-button-border-radius":"18px","mush-chip-background":"#2C2C2E","mush-chip-active-background":"#1F3A5F","mush-chip-color":"#F2F2F7","mush-chip-icon-color":"#ff9300","mush-chip-active-color":"#0A84FF","mush-chip-active-icon-color":"#0A84FF","mush-chip-border-color":"#38383A","mush-chip-border-radius":"16px","mush-chip-font-size":"12px","bubble-button-background-color":"#1C1C1E","bubble-button-active-background-color":"#0A84FF","bubble-button-icon-color":"#ff9300","bubble-button-active-icon-color":"#000000","bubble-button-text-color":"#feffff","bubble-button-active-text-color":"#000000","bubble-button-border-radius":"18px","bubble-sub-button-background-color":"#2C2C2E","bubble-sub-button-active-background-color":"#0A84FF","bubble-sub-button-icon-color":"#ff9300","bubble-sub-button-active-icon-color":"#000000","bubble-sub-button-text-color":"#C7C7CC","bubble-sub-button-active-text-color":"#000000","bubble-sub-button-border-radius":"14px","bubble-sub-button-box-shadow":"0 4px 11px rgba(0,0,0,.45)","input-background-color":"#2C2C2E","input-fill-color":"#2C2C2E","input-disabled-fill-color":"rgba(44, 44, 46, 0.50)","input-disabled-ink-color":"rgba(255, 255, 255, 0.37)","input-disabled-label-ink-color":"#636366","input-disabled-line-color":"rgba(255, 255, 255, 0.06)","input-dropdown-icon-color":"rgba(255, 255, 255, 0.54)","input-hover-line-color":"rgba(255, 255, 255, 0.87)","input-idle-line-color":"rgba(255, 255, 255, 0.42)","input-ink-color":"rgba(255, 255, 255, 0.87)","input-label-ink-color":"rgba(255, 255, 255, 0.6)","input-outlined-disabled-border-color":"rgba(255, 255, 255, 0.06)","mdc-select-idle-line-color":"#38383A","mdc-select-dropdown-icon-color":"#C7C7CC","mdc-select-hover-line-color":"#38383A","mdc-text-field-idle-line-color":"#38383A","mdc-text-field-hover-line-color":"#38383A","ha-color-form-background":"#2C2C2E","ha-color-form-background-hover":"#2C2C2E","ha-color-form-background-disabled":"rgba(44, 44, 46, 0.50)","mdc-theme-primary":"#0A84FF","mdc-theme-secondary":"#0A84FF","mdc-theme-on-primary":"#000000","md-sys-color-primary":"#ff9300","md-sys-color-on-primary":"#0A84FF","md-sys-color-primary-container":"#1F3A5F","md-sys-color-on-primary-container":"#000000","md-sys-color-on-surface":"#feffff","ha-on-surface-color":"#feffff","md-radio-selected-icon-color":"#0A84FF","mdc-radio-unchecked-color":"#C7C7CC","ha-color-fill-primary-normal-resting":"rgba(255, 147, 0, 0.15)","ha-color-fill-primary-normal-hover":"rgba(255, 147, 0, 0.25)","ha-color-fill-primary-quiet-resting":"rgba(255, 147, 0, 0.08)","ha-color-fill-primary-quiet-hover":"rgba(255, 147, 0, 0.15)","ha-color-fill-disabled-normal-resting":"rgba(99, 99, 102, 0.08)","ha-color-on-disabled-normal":"rgba(199, 199, 204, 0.50)","ha-color-fill-disabled-loud-resting":"rgba(99, 99, 102, 0.22)","ha-color-on-disabled-loud":"rgba(199, 199, 204, 0.55)","ha-color-on-disabled-quiet":"rgba(199, 199, 204, 0.50)","ha-color-fill-neutral-quiet-resting":"#1C1C1E","ha-color-fill-neutral-quiet-hover":"#2C2C2E","ha-color-fill-neutral-quiet-active":"#1C1C1E","ha-color-fill-neutral-normal-resting":"#2C2C2E","ha-color-fill-neutral-normal-hover":"#1C1C1E","ha-color-fill-neutral-normal-active":"#2C2C2E","ha-color-fill-danger-normal-resting":"rgba(255, 69, 58, 0.15)","ha-color-fill-danger-normal-hover":"rgba(255, 69, 58, 0.22)","ha-color-fill-danger-normal-active":"rgba(255, 69, 58, 0.28)","ha-color-on-danger-normal":"#F2F2F7","ha-color-fill-warning-normal-resting":"rgba(255, 214, 10, 0.15)","ha-color-fill-warning-normal-hover":"rgba(255, 214, 10, 0.22)","ha-color-fill-warning-normal-active":"rgba(255, 214, 10, 0.28)","ha-color-on-warning-normal":"#F2F2F7","ha-tooltip-background-color":"#2C2C2E","ha-tooltip-text-color":"#F2F2F7","border-color":"rgba(225, 225, 225, 0.12)","border-radius":"18px","box-shadow":"0 10px 30px rgba(0,0,0,.50)","divider-color":"rgba(225, 225, 225, 0.12)","outline-color":"rgba(225, 225, 225, 0.12)","outline-variant-color":"#38383A","ha-card-border-color":"rgba(225, 225, 225, 0.12)","ha-card-border-radius":"18px","ha-card-border-width":"1px","ha-card-box-shadow":"0 10px 30px rgba(0,0,0,.50)","ha-line-height-condensed":"1.25","ha-line-height-expanded":"1.35","ha-line-height-normal":"1.5","ha-list-gap":"0px","ha-list-padding":"0px","ha-list-item-focus-radius":"12px","ha-list-item-focus-background":"rgba(127, 127, 127, 0.12)","ha-border-radius-circle":"50%","ha-ripple-color":"","bubble-border":"1px solid #38383A","bubble-border-color":"rgba(225, 225, 225, 0.12)","bubble-border-radius":"18px","bubble-box-shadow":"0 10px 30px rgba(0,0,0,.50)","bubble-card-border-radius":"18px","bubble-climate-border-radius":"18px","bubble-climate-box-shadow":"0 10px 30px rgba(0,0,0,.50)","bubble-climate-icon-border-radius":"32px","bubble-cover-border-radius":"18px","bubble-cover-box-shadow":"0 10px 30px rgba(0,0,0,.50)","bubble-icon-border-radius":"14px","bubble-media-player-border-radius":"18px","bubble-media-player-box-shadow":"0 10px 30px rgba(0,0,0,.50)","bubble-calendar-height":"56px","bubble-calendar-mask-size":"16px","bubble-calendar-border-radius":"18px","bubble-event-background-color":"#2C2C2E","bubble-event-background-image":"none","bubble-pop-up-border-radius":"18px","bubble-pop-up-box-shadow":"0 10px 30px rgba(0,0,0,.50)","bubble-select-border-radius":"18px","bubble-separator-border-radius":"18px","bubble-horizontal-buttons-stack-border-radius":"18px","bubble-horizontal-buttons-stack-box-shadow":"0 10px 30px rgba(0,0,0,.50)","primary-font-family":"-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif","ha-font-family-body":"-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif","ha-font-family-heading":"-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif","ha-font-family-longform":"-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif","ha-font-family-code":"'SF Mono', 'Roboto Mono', Consolas, monospace","mdc-typography-font-family":"'SF Mono', 'Roboto Mono', Consolas, monospace","ha-font-size-scale":"1","ha-font-size-2xs":"8px","ha-font-size-xs":"8px","ha-font-size-s":"12px","ha-font-size-m":"14px","ha-font-size-l":"16px","ha-font-size-xl":"18px","ha-font-size-2xl":"20px","ha-font-size-3xl":"22px","ha-font-size-4xl":"24px","ha-font-weight-light":"300","ha-font-weight-normal":"400","ha-font-weight-body":"400","ha-font-weight-medium":"500","ha-font-weight-heading":"500","ha-font-weight-action":"500","ha-font-weight-bold":"700","rgb-primary-color":"255, 147, 0","rgb-accent-color":"255, 147, 0","rgb-primary-text-color":"254, 255, 255","rgb-secondary-text-color":"199, 199, 204","rgb-card-background-color":"28, 28, 30","rgb-primary-background-color":"0, 0, 0","rgb-blue-color":"10, 132, 255","rgb-orange-color":"255, 159, 10","rgb-state-light-color":"10, 132, 255","rgb-state-cover-color":"10, 132, 255","rgb-state-fan-color":"10, 132, 255","rgb-state-media_player-color":"10, 132, 255","mush-rgb-primary-text-color":"242, 242, 247","mush-rgb-secondary-text-color":"199, 199, 204","mush-rgb-state-light":"10, 132, 255","mush-rgb-state-cover":"10, 132, 255","mush-rgb-state-entity":"10, 132, 255","mush-rgb-state-fan":"10, 132, 255","mush-rgb-state-media-player":"10, 132, 255","mush-rgb-state-vacuum":"10, 132, 255","mush-rgb-success":"48, 209, 88","mush-rgb-warning":"255, 214, 10","mush-rgb-danger":"255, 69, 58","mush-rgb-disabled":"99, 99, 102","mush-rgb-info":"10, 132, 255","graph-color-1":"#0A84FF","graph-color-2":"#64D2FF","graph-color-3":"#30D158","graph-color-4":"#BF5AF2","graph-color-5":"#FF453A","graph-color-6":"#32ADE6","graph-color-7":"#64D2FF","graph-color-8":"#FF375F","graph-color-9":"#FF9F0A","graph-color-10":"#5E5CE6","graph-color-11":"#A3D977","graph-color-12":"#FFD60A","graph-color-13":"#BF5AF2","graph-color-14":"#A2845E","energy-grid-consumption-color":"#0A84FF","energy-grid-return-color":"#BF5AF2","energy-solar-color":"#FF9F0A","energy-non-fossil-color":"#30D158","energy-battery-out-color":"#64D2FF","energy-battery-in-color":"#BF5AF2","energy-gas-color":"#FF453A","energy-water-color":"#32ADE6","bubble-card-background-color":"#1C1C1E","bubble-secondary-background-color":"#2C2C2E","bubble-icon-background-color":"#2C2C2E","bubble-icon-color":"#ff9300","bubble-name-color":"#feffff","bubble-state-color":"#C7C7CC","bubble-accent-color":"#ff9300","bubble-active-color":"#ff9300","bubble-line-background-color":"rgba(225, 225, 225, 0.12)","bubble-pop-up-background-color":"#000000","bubble-pop-up-backdrop-filter":"blur(18px)","dialog-box-shadow":"0 10px 30px rgba(0,0,0,.50)","more-info-header-background":"#2C2C2E","more-info-header-color":"#F2F2F7","popup-border-radius":"12px","ha-dialog-scrim-backdrop-filter":"blur(10px)","ha-dialog-surface-background":"rgba(28, 28, 30, 0.92)","mdc-dialog-scrim-color":"rgba(0, 0, 0, 0.60)","bubble-separator-background-color":"#1C1C1E","bubble-separator-icon-background-color":"#2C2C2E","bubble-separator-icon-color":"#0A84FF","bubble-separator-line-color":"rgba(225, 225, 225, 0.12)","bubble-separator-name-color":"#feffff","bubble-separator-text-color":"#feffff","bubble-horizontal-buttons-stack-background-color":"#1C1C1E","bubble-horizontal-buttons-stack-button-background-color":"#2C2C2E","bubble-sub-buttons-main-background-color":"#1C1C1E","bubble-climate-background-color":"#1C1C1E","bubble-climate-main-background-color":"#1C1C1E","bubble-cover-background-color":"#1C1C1E","bubble-cover-main-background-color":"#1C1C1E","bubble-media-player-background-color":"#1C1C1E","bubble-media-player-main-background-color":"#1C1C1E","mush-card-background":"#1C1C1E","mush-control-background-color":"#2C2C2E","mush-icon-background-color":"#2C2C2E","mush-card-primary-color":"#feffff","mush-card-secondary-color":"#C7C7CC","mush-title-color":"#feffff","mush-subtitle-color":"#C7C7CC","mush-icon-color":"#C7C7CC","mush-icon-active-color":"#ff9300","hatg-glas-blur-klein":"8px","hatg-glas-blur":"18px","hatg-glas-blur-gross":"32px","hatg-glas-saettigung":"150%","hatg-glas-fuellung-leicht":"rgba(255, 255, 255, 0.06)","hatg-glas-fuellung":"rgba(255, 255, 255, 0.1)","hatg-glas-fuellung-stark":"rgba(255, 255, 255, 0.16)","hatg-glas-rand":"rgba(255, 255, 255, 0.14)","hatg-glas-rand-hell":"rgba(255, 255, 255, 0.28)","hatg-glas-kante-hell":"rgba(255, 255, 255, 0.28)","hatg-glas-kante-dunkel":"rgba(0, 0, 0, 0.35)","hatg-glas-schatten":"0 8px 28px -12px rgba(0, 0, 0, 0.7)","hatg-glas-schatten-hoch":"0 22px 55px -22px rgba(0, 0, 0, 0.8)","hatg-glas-reflex":"linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)","hatg-glas-menuegrund":"#1C1C1E","hatg-glas-nav-fuellung":"rgba(255, 255, 255, 0.12)","hatg-glas-nav-blur":"32px","hatg-glas-abdunkeln":"0","hatg-sidebar-titel":"\"Home Assistant\"","hatg-icon-groesse":"34px","hatg-icon-radius":"28%","hatg-icon-glanz":"linear-gradient(160deg, rgba(255,255,255,0.34) 0%, rgba(255,255,255,0.06) 52%, rgba(255,255,255,0) 78%)","hatg-icon-rand":"rgba(255, 255, 255, 0.16)","hatg-icon-schatten":"0 1px 2px rgba(0, 0, 0, 0.35)","hatg-liste-titel-groesse":"15px","hatg-liste-titel-gewicht":"600","hatg-liste-untertitel-groesse":"12.5px","hatg-liste-untertitel-deckkraft":"0.68","hatg-liste-pfeil-groesse":"18px","hatg-liste-pfeil-deckkraft":"0.4","uix-theme":"basis","uix-card":"","bubble-button-card-background-color":"#1C1C1E","bubble-button-main-background-color":"#1C1C1E","bubble-climate-button-background-color":"#2C2C2E","bubble-cover-button-background-color":"#2C2C2E","bubble-media-player-button-background-color":"#2C2C2E","mush-slider-background-color":"#2C2C2E","bubble-button-active-color":"#0A84FF","bubble-climate-button-icon-color":"#C7C7CC","bubble-cover-button-icon-color":"#C7C7CC","bubble-horizontal-buttons-stack-button-icon-color":"#C7C7CC","bubble-horizontal-buttons-stack-button-text-color":"#F2F2F7","bubble-media-player-button-icon-color":"#C7C7CC","deep-purple-color":"#6E41AB","indigo-color":"#3F51B5","light-blue-color":"#03A9F4","teal-color":"#009688","light-green-color":"#8BC34A","lime-color":"#CDDC39","amber-color":"#FFC107","deep-orange-color":"#FF6F22","brown-color":"#795548","light-grey-color":"#BDBDBD","dark-grey-color":"#606060","blue-grey-color":"#607D8B","disabled-color":"#464646","outline-hover-color":"rgba(225, 225, 225, 0.24)","state-alarm_control_panel-armed_custom_bypass-color":"#30D158","state-alarm_control_panel-armed_night-color":"#30D158","state-alarm_control_panel-armed_vacation-color":"#30D158","state-alarm_control_panel-arming-color":"#0A84FF","state-alarm_control_panel-disarming-color":"#0A84FF","state-alarm_control_panel-pending-color":"#0A84FF","state-alert-off-color":"#0A84FF","state-alert-on-color":"#FF453A","state-binary_sensor-active-color":"#FFC107","state-binary_sensor-battery-on-color":"#FF453A","state-binary_sensor-carbon_monoxide-on-color":"#FF453A","state-binary_sensor-gas-on-color":"#FF453A","state-binary_sensor-heat-on-color":"#FF453A","state-binary_sensor-lock-on-color":"#FF453A","state-binary_sensor-moisture-on-color":"#FF453A","state-binary_sensor-problem-on-color":"#FF453A","state-binary_sensor-safety-on-color":"#FF453A","state-binary_sensor-smoke-on-color":"#FF453A","state-binary_sensor-sound-on-color":"#FF453A","state-binary_sensor-tamper-on-color":"#FF453A","state-climate-dry-color":"#0A84FF","state-climate-fan_only-color":"#32ADE6","state-climate-heat_cool-color":"#FFC107","state-device_tracker-active-color":"#0A84FF","state-device_tracker-home-color":"#30D158","state-humidifier-on-color":"#0A84FF","state-lawn_mower-active-color":"#009688","state-lawn_mower-error-color":"#FF453A","state-lock-jammed-color":"#FF453A","state-lock-open-color":"#FF453A","state-lock-opening-color":"#0A84FF","state-media_player-active-color":"#0A84FF","state-person-active-color":"#0A84FF","state-person-home-color":"#30D158","state-plant-active-color":"#FF453A","state-siren-active-color":"#FF453A","state-sun-above_horizon-color":"#FFC107","state-sun-below_horizon-color":"#3F51B5","state-update-active-color":"#0A84FF","state-valve-active-color":"#0A84FF","state-vacuum-error-color":"#FF453A","state-water_heater-eco-color":"#30D158","state-water_heater-electric-color":"#0A84FF","state-water_heater-gas-color":"#0A84FF","state-water_heater-heat_pump-color":"#0A84FF","state-water_heater-high_demand-color":"#FF6F22","state-water_heater-performance-color":"#FF6F22","state-weather-clear_night-color":"#6E41AB","state-weather-cloudy-color":"#BDBDBD","state-weather-exceptional-color":"#FF453A","state-weather-fog-color":"#C7C7CC","state-weather-hail-color":"#32ADE6","state-weather-lightning_rainy-color":"#CDDC39","state-weather-lightning-color":"#FFD60A","state-weather-partlycloudy-color":"#607D8B","state-weather-pouring-color":"#3F51B5","state-weather-rainy-color":"#0A84FF","state-weather-snowy_rainy-color":"#03A9F4","state-weather-snowy-color":"#C0E0FF","state-weather-sunny-color":"#FFC107","state-weather-windy_variant-color":"#30D158","state-weather-windy-color":"#30D158","state-sensor-battery-high-color":"#30D158","state-sensor-battery-medium-color":"#0A84FF","state-sensor-battery-low-color":"#FF453A","color-1":"#0A84FF","color-2":"#64D2FF","color-3":"#30D158","color-4":"#BF5AF2","color-5":"#FF453A","color-6":"#32ADE6","color-7":"#64D2FF","color-8":"#FF375F","color-9":"#FF9F0A","color-10":"#5E5CE6","color-11":"#A3D977","color-12":"#FFD60A","color-13":"#BF5AF2","color-14":"#A2845E","ha-switch-background-color":"#3A3A3C","ha-switch-background-color-hover":"#3A3A3C","ha-switch-border-color":"rgba(0,0,0,0)","ha-switch-thumb-background-color":"#636366","ha-switch-thumb-background-color-hover":"#636366","ha-switch-thumb-border-color":"rgba(0,0,0,0)","ha-switch-thumb-border-color-hover":"rgba(0,0,0,0)","ha-switch-checked-background-color":"#1F3A5F","ha-switch-checked-background-color-hover":"#1F3A5F","ha-switch-checked-border-color":"rgba(0,0,0,0)","ha-switch-checked-thumb-background-color":"#0A84FF","ha-switch-checked-thumb-background-color-hover":"#0A84FF","ha-switch-checked-thumb-border-color":"rgba(0,0,0,0)","ha-switch-checked-thumb-border-color-hover":"rgba(0,0,0,0)","printer-cyan-color":"#33C3FF","printer-magenta-color":"#FF3EA8","printer-yellow-color":"#FFE14D","bubble-main-buttons-background-color":"#1C1C1E","card-backdrop-blur":"none","glass-effect-style":"off","background-style":"off","uix-root":"","uix-view":"","uix-view-background":"","uix-row":"","uix-badge":"","uix-sidebar":"","uix-more-info":"","uix-dialog":"","uix-drawer":"","uix-glance":"","uix-heading-badge":"","uix-assist-chip":"","uix-element":"","uix-entity-marker":"","uix-config":"","uix-panel-custom":"","uix-top-app-bar-fixed":"","uix-toast":"","uix-grid-section":"","uix-calendar":"","uix-todo":"","uix-history":"","uix-states-history-charts":"","uix-persistent-notification-item":"","uix-card-yaml":"","uix-root-yaml":"","uix-view-yaml":"","uix-view-background-yaml":"","uix-row-yaml":"","uix-badge-yaml":"","uix-sidebar-yaml":"","uix-more-info-yaml":"","uix-dialog-yaml":"","uix-drawer-yaml":"","uix-glance-yaml":"","uix-heading-badge-yaml":"","uix-assist-chip-yaml":"","uix-element-yaml":"","uix-entity-marker-yaml":"","uix-config-yaml":"","uix-panel-custom-yaml":"","uix-top-app-bar-fixed-yaml":"","uix-toast-yaml":"","uix-grid-section-yaml":"","uix-calendar-yaml":"","uix-todo-yaml":"","uix-history-yaml":"","uix-states-history-charts-yaml":"","uix-persistent-notification-item-yaml":"","app-header-backdrop-filter":"blur(8px) saturate(1.1)","app-header-edit-background-color":"rgba(30, 33, 54, 0.8)","app-header-edit-text-color":"rgba(234, 235, 238, 0.98)","app-theme-color":"rgb(0, 0, 0)","bubble-select-main-background-color":"#1C1C1E","bubble-select-background-color":"#000000","bubble-select-list-background-color":"#1C1C1E","bubble-select-list-item-accent-color":"#0A84FF","bubble-select-list-width":"220px","bubble-select-arrow-background-color":"#2C2C2E","bubble-select-button-border-radius":"18px","bubble-select-icon-background-color":"#2C2C2E","bubble-select-icon-border-radius":"14px","bubble-select-box-shadow":"0 10px 30px rgba(0,0,0,.50)","bubble-pop-up-main-background-color":"#1C1C1E","bubble-backdrop-background-color":"rgba(0, 0, 0, 0.55)","bubble-button-icon-border-radius":"14px","bubble-button-icon-background-color":"#2C2C2E","bubble-light-white-color":"#FFFFFF","bubble-light-color":"#FFC107","bubble-button-box-shadow":"0 10px 30px rgba(0,0,0,.50)","bubble-media-player-buttons-border-radius":"14px","bubble-media-player-slider-background-color":"#2C2C2E","bubble-media-player-icon-border-radius":"14px","bubble-media-player-icon-background-color":"#2C2C2E","bubble-cover-icon-border-radius":"14px","bubble-cover-icon-background-color":"#2C2C2E","bubble-state-climate-fan-only-color":"#64D2FF","bubble-state-climate-dry-color":"#FF9F0A","bubble-state-climate-cool-color":"#0A84FF","bubble-state-climate-heat-color":"#FF453A","bubble-state-climate-auto-color":"#30D158","bubble-state-climate-heat-cool-color":"#BF5AF2","bubble-climate-accent-color":"#0A84FF","bubble-calendar-main-background-color":"#1C1C1E","bubble-sub-slider-border-radius":"18px","bubble-sub-slider-background-color":"#2C2C2E","bubble-sub-slider-height":"48px","bubble-sub-button-dark-text-color":"#1C1C1E","bubble-footer-width":"320px","bubble-footer-bottom":"16px","bubble-footer-box-shadow":"0 10px 30px rgba(0,0,0,.50)","bubble-select-list-border-radius":"18px","eigene-theme-eintraege":"","hatg-liste-abstand":"6px","hatg-liste-innenrand":"8px"}};
+const HATG_MANIFEST = {"sections":[{"id":"grundfarben-text","label":"Grundfarben & Text","desc":"Zentrale Farben für Text, Akzent, Primärfarbe, Fehler, Erfolg, Warnungen und allgemeine Farbbasis.","icon":"mdi:palette-outline","keys":["accent-color","primary-color","dark-primary-color","light-primary-color","primary-text-color","secondary-text-color","text-primary-color","disabled-text-color","disabled-color","error-color","warning-color","success-color","info-color","red-color","green-color","blue-color","orange-color","yellow-color","purple-color","pink-color","cyan-color","grey-color","deep-purple-color","indigo-color","light-blue-color","teal-color","light-green-color","lime-color","amber-color","deep-orange-color","brown-color","light-grey-color","dark-grey-color","blue-grey-color","black-color","white-color","printer-cyan-color","printer-magenta-color","printer-yellow-color"],"exportGroups":[{"label":"Grundfarben","keys":["accent-color","primary-color","dark-primary-color","light-primary-color","disabled-color","error-color","warning-color","success-color","info-color","red-color","green-color","blue-color","orange-color","yellow-color","purple-color","pink-color","cyan-color","grey-color","deep-purple-color","indigo-color","light-blue-color","teal-color","light-green-color","lime-color","amber-color","deep-orange-color","brown-color","light-grey-color","dark-grey-color","blue-grey-color","black-color","white-color","printer-cyan-color","printer-magenta-color","printer-yellow-color"]},{"label":"Text","keys":["primary-text-color","secondary-text-color","text-primary-color","disabled-text-color"]}]},{"id":"hintergruende-karten","label":"HA-Grundgerüst","desc":"Die komplette native Home-Assistant-Oberfläche in 16 Unterordnern: Card, Hintergründe, Theme, Header, App Drawer, Sidebar, Status/Icons, Schalter/Toggle/Slider, Buttons & Chips, Eingaben, Material/MDC, HA 2026, Abstände/Schatten, Schrift, RGB-Hilfswerte, Graphen & Energie.","icon":"mdi:view-dashboard-outline","keys":["card-background-color","ha-card-background","ha-card-background-color","wa-color-surface-raised","ha-card-border-color","ha-card-border-radius","ha-card-border-width","ha-card-box-shadow","table-row-background-color","table-row-alternative-background-color","primary-background-color","background-color","lovelace-background","popup-custom-wallpaper","secondary-background-color","mdc-theme-background","mdc-theme-surface","mdc-theme-on-surface","app-header-background-color","app-header-text-color","app-header-backdrop-filter","app-header-edit-background-color","app-header-edit-text-color","app-theme-color","app-toolbar-background-color","toolbar-background-color","app-toolbar-text-color","toolbar-text-color","app-drawer-background-color","app-drawer-text-color","app-drawer-icon-color","sidebar-background-color","sidebar-selected-background-color","sidebar-text-color","sidebar-icon-color","sidebar-selected-text-color","sidebar-selected-icon-color","state-icon-color","state-icon-active-color","state-icon-unavailable-color","state-active-color","state-inactive-color","state-unavailable-color","state-on-color","state-off-color","state-light-color","state-light-active-color","state-light-on-color","state-switch-color","state-switch-active-color","state-switch-on-color","state-climate-cool-color","state-climate-heat-color","state-climate-auto-color","state-climate-dry-color","state-climate-fan_only-color","state-climate-heat_cool-color","state-cover-color","state-cover-active-color","state-cover-open-color","state-cover-closed-color","state-fan-color","state-fan-active-color","state-media_player-color","state-media_player-active-color","state-vacuum-color","state-vacuum-active-color","state-vacuum-error-color","state-lock-locked-color","state-lock-locking-color","state-lock-unlocked-color","state-lock-unlocking-color","state-lock-jammed-color","state-lock-open-color","state-lock-opening-color","state-alarm_control_panel-triggered-color","state-alarm-triggered-color","state-alarm_control_panel-armed_home-color","state-alarm_control_panel-armed_away-color","state-alarm-armed-color","state-alarm_control_panel-disarmed-color","state-alarm-disarmed-color","state-alarm_control_panel-armed_custom_bypass-color","state-alarm_control_panel-armed_night-color","state-alarm_control_panel-armed_vacation-color","state-alarm_control_panel-arming-color","state-alarm_control_panel-disarming-color","state-alarm_control_panel-pending-color","state-alert-off-color","state-alert-on-color","state-binary_sensor-active-color","state-binary_sensor-battery-on-color","state-binary_sensor-carbon_monoxide-on-color","state-binary_sensor-gas-on-color","state-binary_sensor-heat-on-color","state-binary_sensor-lock-on-color","state-binary_sensor-moisture-on-color","state-binary_sensor-problem-on-color","state-binary_sensor-safety-on-color","state-binary_sensor-smoke-on-color","state-binary_sensor-sound-on-color","state-binary_sensor-tamper-on-color","state-device_tracker-active-color","state-device_tracker-home-color","state-humidifier-on-color","state-lawn_mower-active-color","state-lawn_mower-error-color","state-person-active-color","state-person-home-color","state-plant-active-color","state-siren-active-color","state-sun-above_horizon-color","state-sun-below_horizon-color","state-update-active-color","state-valve-active-color","state-water_heater-eco-color","state-water_heater-electric-color","state-water_heater-gas-color","state-water_heater-heat_pump-color","state-water_heater-high_demand-color","state-water_heater-performance-color","state-weather-clear_night-color","state-weather-cloudy-color","state-weather-exceptional-color","state-weather-fog-color","state-weather-hail-color","state-weather-lightning_rainy-color","state-weather-lightning-color","state-weather-partlycloudy-color","state-weather-pouring-color","state-weather-rainy-color","state-weather-snowy_rainy-color","state-weather-snowy-color","state-weather-sunny-color","state-weather-windy_variant-color","state-weather-windy-color","state-battery-low-color","state-sensor-battery-high-color","state-sensor-battery-medium-color","state-sensor-battery-low-color","label-badge-background-color","label-badge-text-color","label-badge-red","label-badge-blue","label-badge-green","label-badge-yellow","state-battery-alert-color","ha-control-switch-color","ha-control-switch-checked-color","ha-control-switch-unchecked-color","ha-switch-background-color","ha-switch-background-color-hover","ha-switch-border-color","ha-switch-thumb-background-color","ha-switch-thumb-background-color-hover","ha-switch-thumb-border-color","ha-switch-thumb-border-color-hover","ha-switch-checked-background-color","ha-switch-checked-background-color-hover","ha-switch-checked-border-color","ha-switch-checked-thumb-background-color","ha-switch-checked-thumb-background-color-hover","ha-switch-checked-thumb-border-color","ha-switch-checked-thumb-border-color-hover","control-slider-color","slider-color","slider-secondary-color","slider-track-color","control-button-background-color","control-button-icon-color","control-button-border-radius","input-background-color","input-fill-color","input-disabled-fill-color","input-disabled-ink-color","input-disabled-label-ink-color","input-disabled-line-color","input-dropdown-icon-color","input-hover-line-color","input-idle-line-color","input-ink-color","input-label-ink-color","input-outlined-disabled-border-color","mdc-select-idle-line-color","mdc-select-dropdown-icon-color","mdc-select-hover-line-color","mdc-text-field-idle-line-color","mdc-text-field-hover-line-color","ha-color-form-background","ha-color-form-background-hover","ha-color-form-background-disabled","mdc-theme-primary","mdc-theme-secondary","mdc-theme-on-primary","md-sys-color-primary","md-sys-color-on-primary","md-sys-color-primary-container","md-sys-color-on-primary-container","md-sys-color-on-surface","ha-on-surface-color","md-radio-selected-icon-color","mdc-radio-unchecked-color","ha-color-fill-primary-normal-resting","ha-color-fill-primary-normal-hover","ha-color-fill-primary-quiet-resting","ha-color-fill-primary-quiet-hover","ha-color-fill-disabled-normal-resting","ha-color-on-disabled-normal","ha-color-fill-disabled-loud-resting","ha-color-on-disabled-loud","ha-color-on-disabled-quiet","ha-color-fill-neutral-quiet-resting","ha-color-fill-neutral-quiet-hover","ha-color-fill-neutral-quiet-active","ha-color-fill-neutral-normal-resting","ha-color-fill-neutral-normal-hover","ha-color-fill-neutral-normal-active","ha-color-fill-danger-normal-resting","ha-color-fill-danger-normal-hover","ha-color-fill-danger-normal-active","ha-color-on-danger-normal","ha-color-fill-warning-normal-resting","ha-color-fill-warning-normal-hover","ha-color-fill-warning-normal-active","ha-color-on-warning-normal","ha-tooltip-background-color","ha-tooltip-text-color","border-color","border-radius","box-shadow","divider-color","outline-color","outline-variant-color","outline-hover-color","ha-line-height-condensed","ha-line-height-expanded","ha-line-height-normal","primary-font-family","ha-font-family-body","ha-font-family-heading","ha-font-family-longform","ha-font-family-code","mdc-typography-font-family","ha-font-size-scale","ha-font-size-2xs","ha-font-size-xs","ha-font-size-s","ha-font-size-m","ha-font-size-l","ha-font-size-xl","ha-font-size-2xl","ha-font-size-3xl","ha-font-size-4xl","ha-font-weight-light","ha-font-weight-normal","ha-font-weight-body","ha-font-weight-medium","ha-font-weight-heading","ha-font-weight-action","ha-font-weight-bold","rgb-primary-color","rgb-accent-color","rgb-primary-text-color","rgb-secondary-text-color","rgb-card-background-color","rgb-primary-background-color","rgb-blue-color","rgb-orange-color","rgb-state-switch-color","rgb-state-light-color","rgb-state-cover-color","rgb-state-fan-color","rgb-state-media_player-color","graph-color-1","graph-color-2","graph-color-3","graph-color-4","graph-color-5","graph-color-6","graph-color-7","graph-color-8","graph-color-9","graph-color-10","graph-color-11","graph-color-12","graph-color-13","graph-color-14","color-1","color-2","color-3","color-4","color-5","color-6","color-7","color-8","color-9","color-10","color-11","color-12","color-13","color-14","energy-grid-consumption-color","energy-grid-return-color","energy-solar-color","energy-non-fossil-color","energy-battery-out-color","energy-battery-in-color","energy-gas-color","energy-water-color","glass-effect-style","background-style","ha-list-gap","ha-list-padding","ha-list-item-focus-radius","ha-list-item-focus-background","ha-border-radius-circle","ha-ripple-color"],"groups":[{"label":"Card","keys":["card-background-color","ha-card-background","ha-card-background-color","wa-color-surface-raised","ha-card-border-color","ha-card-border-radius","ha-card-border-width","ha-card-box-shadow","table-row-background-color","table-row-alternative-background-color"],"id":"hintergruende-karten__card","icon":"mdi:card-outline"},{"label":"Hintergründe","keys":["primary-background-color","background-color","lovelace-background","popup-custom-wallpaper","secondary-background-color","glass-effect-style","background-style"],"id":"hintergruende-karten__hintergruende","icon":"mdi:image-outline"},{"label":"Theme","keys":["mdc-theme-background","mdc-theme-surface","mdc-theme-on-surface"],"id":"hintergruende-karten__theme","icon":"mdi:palette-swatch-outline"},{"label":"Header","keys":["app-header-background-color","app-header-text-color","app-header-backdrop-filter","app-header-edit-background-color","app-header-edit-text-color","app-theme-color","app-toolbar-background-color","toolbar-background-color","app-toolbar-text-color","toolbar-text-color"],"id":"hintergruende-karten__header","icon":"mdi:page-layout-header"},{"label":"App Drawer","keys":["app-drawer-background-color","app-drawer-text-color","app-drawer-icon-color"],"id":"hintergruende-karten__app-drawer","icon":"mdi:drawer"},{"label":"Sidebar","keys":["sidebar-background-color","sidebar-selected-background-color","sidebar-text-color","sidebar-icon-color","sidebar-selected-text-color","sidebar-selected-icon-color"],"id":"hintergruende-karten__sidebar","icon":"mdi:dock-left"},{"label":"Status, Icons & Entitäten","keys":["state-icon-color","state-icon-active-color","state-icon-unavailable-color","state-active-color","state-inactive-color","state-unavailable-color","state-on-color","state-off-color","state-light-color","state-light-active-color","state-light-on-color","state-switch-color","state-switch-active-color","state-switch-on-color","state-climate-cool-color","state-climate-heat-color","state-climate-auto-color","state-climate-dry-color","state-climate-fan_only-color","state-climate-heat_cool-color","state-cover-color","state-cover-active-color","state-cover-open-color","state-cover-closed-color","state-fan-color","state-fan-active-color","state-media_player-color","state-media_player-active-color","state-vacuum-color","state-vacuum-active-color","state-vacuum-error-color","state-lock-locked-color","state-lock-locking-color","state-lock-unlocked-color","state-lock-unlocking-color","state-lock-jammed-color","state-lock-open-color","state-lock-opening-color","state-alarm_control_panel-triggered-color","state-alarm-triggered-color","state-alarm_control_panel-armed_home-color","state-alarm_control_panel-armed_away-color","state-alarm-armed-color","state-alarm_control_panel-disarmed-color","state-alarm-disarmed-color","state-alarm_control_panel-armed_custom_bypass-color","state-alarm_control_panel-armed_night-color","state-alarm_control_panel-armed_vacation-color","state-alarm_control_panel-arming-color","state-alarm_control_panel-disarming-color","state-alarm_control_panel-pending-color","state-alert-off-color","state-alert-on-color","state-binary_sensor-active-color","state-binary_sensor-battery-on-color","state-binary_sensor-carbon_monoxide-on-color","state-binary_sensor-gas-on-color","state-binary_sensor-heat-on-color","state-binary_sensor-lock-on-color","state-binary_sensor-moisture-on-color","state-binary_sensor-problem-on-color","state-binary_sensor-safety-on-color","state-binary_sensor-smoke-on-color","state-binary_sensor-sound-on-color","state-binary_sensor-tamper-on-color","state-device_tracker-active-color","state-device_tracker-home-color","state-humidifier-on-color","state-lawn_mower-active-color","state-lawn_mower-error-color","state-person-active-color","state-person-home-color","state-plant-active-color","state-siren-active-color","state-sun-above_horizon-color","state-sun-below_horizon-color","state-update-active-color","state-valve-active-color","state-water_heater-eco-color","state-water_heater-electric-color","state-water_heater-gas-color","state-water_heater-heat_pump-color","state-water_heater-high_demand-color","state-water_heater-performance-color","state-weather-clear_night-color","state-weather-cloudy-color","state-weather-exceptional-color","state-weather-fog-color","state-weather-hail-color","state-weather-lightning_rainy-color","state-weather-lightning-color","state-weather-partlycloudy-color","state-weather-pouring-color","state-weather-rainy-color","state-weather-snowy_rainy-color","state-weather-snowy-color","state-weather-sunny-color","state-weather-windy_variant-color","state-weather-windy-color","state-battery-low-color","state-sensor-battery-high-color","state-sensor-battery-medium-color","state-sensor-battery-low-color","label-badge-background-color","label-badge-text-color","label-badge-red","label-badge-blue","label-badge-green","label-badge-yellow","state-battery-alert-color"],"id":"hintergruende-karten__status-icons-entitaeten","icon":"mdi:emoticon-outline"},{"label":"Schalter, Toggle & Slider","keys":["ha-control-switch-color","ha-control-switch-checked-color","ha-control-switch-unchecked-color","ha-switch-background-color","ha-switch-background-color-hover","ha-switch-border-color","ha-switch-thumb-background-color","ha-switch-thumb-background-color-hover","ha-switch-thumb-border-color","ha-switch-thumb-border-color-hover","ha-switch-checked-background-color","ha-switch-checked-background-color-hover","ha-switch-checked-border-color","ha-switch-checked-thumb-background-color","ha-switch-checked-thumb-background-color-hover","ha-switch-checked-thumb-border-color","ha-switch-checked-thumb-border-color-hover","control-slider-color","slider-color","slider-secondary-color","slider-track-color"],"id":"hintergruende-karten__schalter-toggle-slider","icon":"mdi:toggle-switch-outline"},{"label":"Buttons & Chips","keys":["control-button-background-color","control-button-icon-color","control-button-border-radius"],"id":"hintergruende-karten__buttons-chips","icon":"mdi:gesture-tap-button"},{"label":"Eingaben & Auswahlfelder","keys":["input-background-color","input-fill-color","input-disabled-fill-color","input-disabled-ink-color","input-disabled-label-ink-color","input-disabled-line-color","input-dropdown-icon-color","input-hover-line-color","input-idle-line-color","input-ink-color","input-label-ink-color","input-outlined-disabled-border-color","mdc-select-idle-line-color","mdc-select-dropdown-icon-color","mdc-select-hover-line-color","mdc-text-field-idle-line-color","mdc-text-field-hover-line-color","ha-color-form-background","ha-color-form-background-hover","ha-color-form-background-disabled"],"id":"hintergruende-karten__eingaben-auswahlfelder","icon":"mdi:form-select"},{"label":"Material, Paper & MDC","keys":["mdc-theme-primary","mdc-theme-secondary","mdc-theme-on-primary","md-sys-color-primary","md-sys-color-on-primary","md-sys-color-primary-container","md-sys-color-on-primary-container","md-sys-color-on-surface","ha-on-surface-color","md-radio-selected-icon-color","mdc-radio-unchecked-color"],"id":"hintergruende-karten__material-paper-mdc","icon":"mdi:material-design"},{"label":"HA 2026 / Web Awesome","keys":["ha-color-fill-primary-normal-resting","ha-color-fill-primary-normal-hover","ha-color-fill-primary-quiet-resting","ha-color-fill-primary-quiet-hover","ha-color-fill-disabled-normal-resting","ha-color-on-disabled-normal","ha-color-fill-disabled-loud-resting","ha-color-on-disabled-loud","ha-color-on-disabled-quiet","ha-color-fill-neutral-quiet-resting","ha-color-fill-neutral-quiet-hover","ha-color-fill-neutral-quiet-active","ha-color-fill-neutral-normal-resting","ha-color-fill-neutral-normal-hover","ha-color-fill-neutral-normal-active","ha-color-fill-danger-normal-resting","ha-color-fill-danger-normal-hover","ha-color-fill-danger-normal-active","ha-color-on-danger-normal","ha-color-fill-warning-normal-resting","ha-color-fill-warning-normal-hover","ha-color-fill-warning-normal-active","ha-color-on-warning-normal","ha-tooltip-background-color","ha-tooltip-text-color"],"id":"hintergruende-karten__ha-2026-web-awesome","icon":"mdi:web"},{"label":"Abstände, Rundungen, Schatten & Rahmen","keys":["border-color","border-radius","box-shadow","divider-color","outline-color","outline-variant-color","outline-hover-color","ha-line-height-condensed","ha-line-height-expanded","ha-line-height-normal","ha-list-gap","ha-list-padding","ha-list-item-focus-radius","ha-list-item-focus-background","ha-border-radius-circle","ha-ripple-color"],"id":"hintergruende-karten__abstaende-rundungen-schatten-rahmen","icon":"mdi:square-rounded-outline"},{"label":"Schrift & Typografie","keys":["primary-font-family","ha-font-family-body","ha-font-family-heading","ha-font-family-longform","ha-font-family-code","mdc-typography-font-family","ha-font-size-scale","ha-font-size-2xs","ha-font-size-xs","ha-font-size-s","ha-font-size-m","ha-font-size-l","ha-font-size-xl","ha-font-size-2xl","ha-font-size-3xl","ha-font-size-4xl","ha-font-weight-light","ha-font-weight-normal","ha-font-weight-body","ha-font-weight-medium","ha-font-weight-heading","ha-font-weight-action","ha-font-weight-bold"],"id":"hintergruende-karten__schrift-typografie","icon":"mdi:format-font"},{"label":"RGB-Hilfswerte","keys":["rgb-primary-color","rgb-accent-color","rgb-primary-text-color","rgb-secondary-text-color","rgb-card-background-color","rgb-primary-background-color","rgb-blue-color","rgb-orange-color","rgb-state-switch-color","rgb-state-light-color","rgb-state-cover-color","rgb-state-fan-color","rgb-state-media_player-color"],"id":"hintergruende-karten__rgb-hilfswerte","icon":"mdi:invert-colors"},{"label":"Graphen & Energie","keys":["graph-color-1","graph-color-2","graph-color-3","graph-color-4","graph-color-5","graph-color-6","graph-color-7","graph-color-8","graph-color-9","graph-color-10","graph-color-11","graph-color-12","graph-color-13","graph-color-14","color-1","color-2","color-3","color-4","color-5","color-6","color-7","color-8","color-9","color-10","color-11","color-12","color-13","color-14","energy-grid-consumption-color","energy-grid-return-color","energy-solar-color","energy-non-fossil-color","energy-battery-out-color","energy-battery-in-color","energy-gas-color","energy-water-color"],"id":"hintergruende-karten__graphen-energie","icon":"mdi:chart-line"}]},{"id":"bubble-card","label":"Bubble Card","desc":"Alle Bubble-Card-Werte an einem Ort, in 9 Unterordnern: Karten & Hintergründe, Buttons, Sub-Buttons, Separator, Popup & Dialog, Horizontal Buttons Stack, Climate, Cover, Media Player.","icon":"mdi:circle-multiple-outline","keys":["bubble-card-background-color","bubble-main-buttons-background-color","bubble-secondary-background-color","bubble-icon-background-color","bubble-icon-color","bubble-name-color","bubble-state-color","bubble-accent-color","bubble-active-color","bubble-toggle-color","bubble-line-background-color","bubble-border","bubble-border-color","bubble-border-radius","bubble-box-shadow","bubble-card-border-radius","bubble-select-border-radius","bubble-icon-border-radius","bubble-button-background-color","bubble-button-active-background-color","bubble-button-icon-color","bubble-button-active-icon-color","bubble-button-text-color","bubble-button-active-text-color","bubble-button-border-radius","bubble-button-card-background-color","bubble-button-main-background-color","bubble-button-active-color","bubble-sub-button-background-color","bubble-sub-button-active-background-color","bubble-sub-button-icon-color","bubble-sub-button-active-icon-color","bubble-sub-button-text-color","bubble-sub-button-active-text-color","bubble-sub-button-border-radius","bubble-sub-button-box-shadow","bubble-sub-buttons-main-background-color","bubble-separator-background-color","bubble-separator-icon-background-color","bubble-separator-icon-color","bubble-separator-line-color","bubble-separator-name-color","bubble-separator-text-color","bubble-separator-border-radius","bubble-pop-up-background-color","bubble-pop-up-backdrop-filter","bubble-pop-up-border-radius","bubble-pop-up-box-shadow","dialog-box-shadow","more-info-header-background","more-info-header-color","popup-border-radius","ha-dialog-scrim-backdrop-filter","ha-dialog-surface-background","mdc-dialog-scrim-color","bubble-horizontal-buttons-stack-background-color","bubble-horizontal-buttons-stack-button-background-color","bubble-horizontal-buttons-stack-button-icon-color","bubble-horizontal-buttons-stack-button-text-color","bubble-horizontal-buttons-stack-border-radius","bubble-horizontal-buttons-stack-box-shadow","bubble-climate-background-color","bubble-climate-main-background-color","bubble-climate-button-background-color","bubble-climate-button-icon-color","bubble-climate-border-radius","bubble-climate-box-shadow","bubble-climate-icon-border-radius","bubble-cover-background-color","bubble-cover-main-background-color","bubble-cover-button-background-color","bubble-cover-button-icon-color","bubble-cover-border-radius","bubble-cover-box-shadow","bubble-media-player-background-color","bubble-media-player-main-background-color","bubble-media-player-button-background-color","bubble-media-player-button-icon-color","bubble-media-player-border-radius","bubble-media-player-box-shadow","bubble-calendar-height","bubble-calendar-mask-size","bubble-calendar-border-radius","bubble-event-background-color","bubble-event-background-image","bubble-select-main-background-color","bubble-select-background-color","bubble-select-list-background-color","bubble-select-list-item-accent-color","bubble-select-list-width","bubble-select-arrow-background-color","bubble-select-button-border-radius","bubble-select-icon-background-color","bubble-select-icon-border-radius","bubble-select-box-shadow","bubble-pop-up-main-background-color","bubble-backdrop-background-color","bubble-button-icon-border-radius","bubble-button-icon-background-color","bubble-light-white-color","bubble-light-color","bubble-button-box-shadow","bubble-media-player-buttons-border-radius","bubble-media-player-slider-background-color","bubble-media-player-icon-border-radius","bubble-media-player-icon-background-color","bubble-cover-icon-border-radius","bubble-cover-icon-background-color","bubble-state-climate-fan-only-color","bubble-state-climate-dry-color","bubble-state-climate-cool-color","bubble-state-climate-heat-color","bubble-state-climate-auto-color","bubble-state-climate-heat-cool-color","bubble-climate-accent-color","bubble-calendar-main-background-color","bubble-sub-slider-border-radius","bubble-sub-slider-background-color","bubble-sub-slider-height","bubble-sub-button-dark-text-color","bubble-footer-width","bubble-footer-bottom","bubble-footer-box-shadow","bubble-select-list-border-radius"],"groups":[{"label":"Karten & Hintergründe","keys":["bubble-card-background-color","bubble-main-buttons-background-color","bubble-secondary-background-color","bubble-icon-background-color","bubble-icon-color","bubble-name-color","bubble-state-color","bubble-accent-color","bubble-active-color","bubble-toggle-color","bubble-line-background-color","bubble-border","bubble-border-color","bubble-border-radius","bubble-box-shadow","bubble-card-border-radius","bubble-icon-border-radius"],"id":"bubble-card__karten-hintergruende","icon":"mdi:card-outline"},{"label":"Select (Auswahlkarte)","keys":["bubble-select-main-background-color","bubble-select-background-color","bubble-select-border-radius","bubble-select-list-background-color","bubble-select-list-border-radius","bubble-select-list-width","bubble-select-list-item-accent-color","bubble-select-arrow-background-color","bubble-select-button-border-radius","bubble-select-icon-background-color","bubble-select-icon-border-radius","bubble-select-box-shadow"],"id":"bubble-card__select","icon":"mdi:form-select"},{"label":"Buttons","keys":["bubble-button-background-color","bubble-button-active-background-color","bubble-button-icon-color","bubble-button-active-icon-color","bubble-button-text-color","bubble-button-active-text-color","bubble-button-border-radius","bubble-button-card-background-color","bubble-button-main-background-color","bubble-button-active-color","bubble-button-icon-border-radius","bubble-button-icon-background-color","bubble-light-white-color","bubble-light-color","bubble-button-box-shadow"],"id":"bubble-card__buttons","icon":"mdi:gesture-tap-button"},{"label":"Sub-Buttons","keys":["bubble-sub-button-background-color","bubble-sub-button-active-background-color","bubble-sub-button-icon-color","bubble-sub-button-active-icon-color","bubble-sub-button-text-color","bubble-sub-button-active-text-color","bubble-sub-button-border-radius","bubble-sub-button-box-shadow","bubble-sub-buttons-main-background-color","bubble-sub-slider-border-radius","bubble-sub-slider-background-color","bubble-sub-slider-height","bubble-sub-button-dark-text-color","bubble-footer-width","bubble-footer-bottom","bubble-footer-box-shadow"],"id":"bubble-card__sub-buttons","icon":"mdi:dots-horizontal-circle-outline"},{"label":"Separator","keys":["bubble-separator-background-color","bubble-separator-icon-background-color","bubble-separator-icon-color","bubble-separator-line-color","bubble-separator-name-color","bubble-separator-text-color","bubble-separator-border-radius"],"id":"bubble-card__separator","icon":"mdi:minus"},{"label":"Popup & Dialog","keys":["bubble-pop-up-background-color","bubble-pop-up-backdrop-filter","bubble-pop-up-border-radius","bubble-pop-up-box-shadow","dialog-box-shadow","more-info-header-background","more-info-header-color","popup-border-radius","ha-dialog-scrim-backdrop-filter","ha-dialog-surface-background","mdc-dialog-scrim-color","bubble-pop-up-main-background-color","bubble-backdrop-background-color"],"id":"bubble-card__popup-dialog","icon":"mdi:window-maximize"},{"label":"Horizontal Buttons Stack","keys":["bubble-horizontal-buttons-stack-background-color","bubble-horizontal-buttons-stack-button-background-color","bubble-horizontal-buttons-stack-button-icon-color","bubble-horizontal-buttons-stack-button-text-color","bubble-horizontal-buttons-stack-border-radius","bubble-horizontal-buttons-stack-box-shadow"],"id":"bubble-card__horizontal-buttons-stack","icon":"mdi:view-sequential"},{"label":"Climate","keys":["bubble-climate-background-color","bubble-climate-main-background-color","bubble-climate-button-background-color","bubble-climate-button-icon-color","bubble-climate-border-radius","bubble-climate-box-shadow","bubble-climate-icon-border-radius","bubble-state-climate-fan-only-color","bubble-state-climate-dry-color","bubble-state-climate-cool-color","bubble-state-climate-heat-color","bubble-state-climate-auto-color","bubble-state-climate-heat-cool-color","bubble-climate-accent-color"],"id":"bubble-card__climate","icon":"mdi:thermostat"},{"label":"Cover","keys":["bubble-cover-background-color","bubble-cover-main-background-color","bubble-cover-button-background-color","bubble-cover-button-icon-color","bubble-cover-border-radius","bubble-cover-box-shadow","bubble-cover-icon-border-radius","bubble-cover-icon-background-color"],"id":"bubble-card__cover","icon":"mdi:window-shutter"},{"label":"Media Player","keys":["bubble-media-player-background-color","bubble-media-player-main-background-color","bubble-media-player-button-background-color","bubble-media-player-button-icon-color","bubble-media-player-border-radius","bubble-media-player-box-shadow","bubble-media-player-buttons-border-radius","bubble-media-player-slider-background-color","bubble-media-player-icon-border-radius","bubble-media-player-icon-background-color"],"id":"bubble-card__media-player","icon":"mdi:play-circle-outline"},{"label":"Calendar","keys":["bubble-calendar-main-background-color","bubble-calendar-height","bubble-calendar-mask-size","bubble-calendar-border-radius","bubble-event-background-color","bubble-event-background-image"],"id":"bubble-card__calendar","icon":"mdi:calendar"}]},{"id":"mushroom","label":"Mushroom","desc":"Alle Mushroom-Werte an einem Ort, in 6 Unterordnern: Karten & Hintergründe, Icons, Toggle, Slider, Chips, RGB-Hilfswerte.","icon":"mdi:mushroom-outline","keys":["mush-card-background","mush-control-background-color","mush-card-primary-color","mush-card-secondary-color","mush-title-color","mush-subtitle-color","mush-icon-background-color","mush-icon-color","mush-icon-active-color","mush-toggle-color","mush-toggle-background-color","mush-slider-color","mush-slider-track-color","mush-slider-background-color","mush-chip-background","mush-chip-active-background","mush-chip-color","mush-chip-icon-color","mush-chip-active-color","mush-chip-active-icon-color","mush-chip-border-color","mush-chip-border-radius","mush-chip-font-size","mush-rgb-primary-text-color","mush-rgb-secondary-text-color","mush-rgb-state-switch","mush-rgb-state-light","mush-rgb-state-cover","mush-rgb-state-entity","mush-rgb-state-fan","mush-rgb-state-media-player","mush-rgb-state-vacuum","mush-rgb-success","mush-rgb-warning","mush-rgb-danger","mush-rgb-disabled","mush-rgb-info"],"groups":[{"label":"Karten & Hintergründe","keys":["mush-card-background","mush-control-background-color","mush-card-primary-color","mush-card-secondary-color","mush-title-color","mush-subtitle-color"],"id":"mushroom__karten-hintergruende","icon":"mdi:card-outline"},{"label":"Icons","keys":["mush-icon-background-color","mush-icon-color","mush-icon-active-color"],"id":"mushroom__icons","icon":"mdi:shape-outline"},{"label":"Toggle","keys":["mush-toggle-color","mush-toggle-background-color"],"id":"mushroom__toggle","icon":"mdi:toggle-switch-outline"},{"label":"Slider","keys":["mush-slider-color","mush-slider-track-color","mush-slider-background-color"],"id":"mushroom__slider","icon":"mdi:tune-variant"},{"label":"Chips","keys":["mush-chip-background","mush-chip-active-background","mush-chip-color","mush-chip-icon-color","mush-chip-active-color","mush-chip-active-icon-color","mush-chip-border-color","mush-chip-border-radius","mush-chip-font-size"],"id":"mushroom__chips","icon":"mdi:label-outline"},{"label":"RGB-Hilfswerte","keys":["mush-rgb-primary-text-color","mush-rgb-secondary-text-color","mush-rgb-state-switch","mush-rgb-state-light","mush-rgb-state-cover","mush-rgb-state-entity","mush-rgb-state-fan","mush-rgb-state-media-player","mush-rgb-state-vacuum","mush-rgb-success","mush-rgb-warning","mush-rgb-danger","mush-rgb-disabled","mush-rgb-info"],"id":"mushroom__rgb-hilfswerte","icon":"mdi:invert-colors"}]},{"id":"uix-generator","label":"UIX & Generator","desc":"UIX-Stilziele für das ganze Theme, interne Generatorwerte und ein Freitextfeld für eigene, von HATG nicht verwaltete Theme-Einträge.","icon":"mdi:code-braces","keys":["uix-card","uix-root","uix-view","uix-view-background","uix-row","uix-badge","uix-sidebar","uix-more-info","uix-dialog","uix-drawer","uix-glance","uix-heading-badge","uix-assist-chip","uix-element","uix-entity-marker","uix-config","uix-panel-custom","uix-top-app-bar-fixed","uix-toast","uix-grid-section","uix-calendar","uix-todo","uix-history","uix-states-history-charts","uix-persistent-notification-item","uix-card-yaml","uix-root-yaml","uix-view-yaml","uix-view-background-yaml","uix-row-yaml","uix-badge-yaml","uix-sidebar-yaml","uix-more-info-yaml","uix-dialog-yaml","uix-drawer-yaml","uix-glance-yaml","uix-heading-badge-yaml","uix-assist-chip-yaml","uix-element-yaml","uix-entity-marker-yaml","uix-config-yaml","uix-panel-custom-yaml","uix-top-app-bar-fixed-yaml","uix-toast-yaml","uix-grid-section-yaml","uix-calendar-yaml","uix-todo-yaml","uix-history-yaml","uix-states-history-charts-yaml","uix-persistent-notification-item-yaml","uix-theme","card-backdrop-blur","eigene-theme-eintraege","ha-card-backdrop-filter","ha-dialog-surface-backdrop-filter","ha-button-box-shadow","ha-button-border-radius"],"groups":[{"label":"Stilziele: häufig","keys":["uix-card","uix-root","uix-view","uix-view-background","uix-row","uix-badge","uix-sidebar","uix-more-info","uix-dialog","uix-drawer"],"id":"uix-generator__ziele-haeufig","icon":"mdi:target"},{"label":"Stilziele: weitere","keys":["uix-glance","uix-heading-badge","uix-assist-chip","uix-element","uix-entity-marker","uix-config","uix-panel-custom","uix-top-app-bar-fixed","uix-toast","uix-grid-section","uix-calendar","uix-todo","uix-history","uix-states-history-charts","uix-persistent-notification-item"],"id":"uix-generator__ziele-weitere","icon":"mdi:target-variant"},{"label":"Stilziele: Shadow-DOM","keys":["uix-card-yaml","uix-root-yaml","uix-view-yaml","uix-view-background-yaml","uix-row-yaml","uix-badge-yaml","uix-sidebar-yaml","uix-more-info-yaml","uix-dialog-yaml","uix-drawer-yaml","uix-glance-yaml","uix-heading-badge-yaml","uix-assist-chip-yaml","uix-element-yaml","uix-entity-marker-yaml","uix-config-yaml","uix-panel-custom-yaml","uix-top-app-bar-fixed-yaml","uix-toast-yaml","uix-grid-section-yaml","uix-calendar-yaml","uix-todo-yaml","uix-history-yaml","uix-states-history-charts-yaml","uix-persistent-notification-item-yaml"],"id":"uix-generator__ziele-yaml","icon":"mdi:file-tree-outline"},{"label":"Glaslook","keys":["ha-card-backdrop-filter","ha-dialog-surface-backdrop-filter","ha-button-box-shadow","ha-button-border-radius"],"id":"uix-generator__glas","icon":"mdi:blur"},{"label":"Generator & Eigenes","keys":["uix-theme","card-backdrop-blur","eigene-theme-eintraege"],"id":"uix-generator__intern","icon":"mdi:code-braces"}]}],"light":{"accent-color":"#ff9300","primary-color":"#ff9300","dark-primary-color":"#F9F9FB","light-primary-color":"#E5F1FF","primary-text-color":"#1C1C1E","secondary-text-color":"#3C3C43","text-primary-color":"#FFFFFF","disabled-text-color":"#8E8E93","error-color":"#FF3B30","warning-color":"#FFCC00","success-color":"#34C759","info-color":"#007AFF","red-color":"#FF3B30","green-color":"#34C759","blue-color":"#007AFF","orange-color":"#FF9500","yellow-color":"#FFCC00","purple-color":"#AF52DE","pink-color":"#FF2D55","cyan-color":"#5AC8FA","grey-color":"#3C3C43","black-color":"#000000","white-color":"#FFFFFF","primary-background-color":"#F2F2F7","background-color":"#F2F2F7","lovelace-background":"#F2F2F7","popup-custom-wallpaper":"","secondary-background-color":"#F9F9FB","card-background-color":"#FFFFFF","ha-card-background":"#FFFFFF","ha-card-background-color":"#FFFFFF","table-row-background-color":"#F9F9FB","table-row-alternative-background-color":"#FFFFFF","app-header-background-color":"#FFFFFF","app-toolbar-background-color":"#FFFFFF","toolbar-background-color":"#FFFFFF","app-drawer-background-color":"#FFFFFF","sidebar-background-color":"#FFFFFF","sidebar-selected-background-color":"#E5F1FF","mdc-theme-background":"#F2F2F7","mdc-theme-surface":"#FFFFFF","mdc-theme-on-surface":"#1C1C1E","wa-color-surface-raised":"#FFFFFF","app-header-text-color":"#1C1C1E","app-toolbar-text-color":"#1C1C1E","toolbar-text-color":"#1C1C1E","app-drawer-text-color":"#3C3C43","app-drawer-icon-color":"#007AFF","sidebar-text-color":"#3C3C43","sidebar-icon-color":"rgba(33, 33, 33, 0.6)","sidebar-selected-text-color":"#1C1C1E","sidebar-selected-icon-color":"#007AFF","state-icon-color":"#007AFF","state-icon-active-color":"#007AFF","state-icon-unavailable-color":"#FFFFFF","state-active-color":"#007AFF","state-inactive-color":"#FFFFFF","state-unavailable-color":"#FFFFFF","state-on-color":"#34C759","state-off-color":"#FFFFFF","state-light-color":"#007AFF","state-light-active-color":"#007AFF","state-light-on-color":"#ff9300","state-switch-color":"#007AFF","state-switch-active-color":"#007AFF","state-switch-on-color":"#007AFF","state-climate-cool-color":"#007AFF","state-climate-heat-color":"#ff2600","state-climate-auto-color":"#007AFF","state-cover-color":"#007AFF","state-cover-active-color":"#007AFF","state-cover-open-color":"#929000","state-cover-closed-color":"#ff2600","state-fan-color":"#007AFF","state-fan-active-color":"#007AFF","state-media_player-color":"#007AFF","state-vacuum-color":"#007AFF","state-vacuum-active-color":"#007AFF","state-lock-locked-color":"#007AFF","state-lock-locking-color":"#ff2600","state-lock-unlocked-color":"#007AFF","state-lock-unlocking-color":"#929000","state-alarm_control_panel-triggered-color":"#ff2600","state-alarm-triggered-color":"#ff2600","state-alarm_control_panel-armed_home-color":"#ffd478","state-alarm_control_panel-armed_away-color":"#ffd478","state-alarm-armed-color":"#ffd478","state-alarm_control_panel-disarmed-color":"#ff9300","state-alarm-disarmed-color":"#ff9300","state-battery-low-color":"#ff2600","label-badge-background-color":"#FFFFFF","label-badge-text-color":"rgba(33, 33, 33, 0.8)","label-badge-red":"#FF3B30","label-badge-blue":"#007AFF","label-badge-green":"#34C759","label-badge-yellow":"#FFCC00","state-battery-alert-color":"#ff2600","ha-control-switch-color":"#007AFF","ha-control-switch-checked-color":"#007AFF","ha-control-switch-unchecked-color":"#D1D1D6","mush-toggle-color":"#007AFF","mush-rgb-state-switch":"0, 122, 255","bubble-toggle-color":"#007AFF","rgb-state-switch-color":"0, 122, 255","control-slider-color":"#007AFF","slider-color":"#007AFF","slider-secondary-color":"#E5F1FF","slider-track-color":"#D1D1D6","mush-slider-color":"#007AFF","mush-slider-track-color":"#D1D1D6","mush-toggle-background-color":"#D1D1D6","control-button-background-color":"#F9F9FB","control-button-icon-color":"#007AFF","control-button-border-radius":"18px","mush-chip-background":"#FFFFFF","mush-chip-active-background":"#F9F9FB","mush-chip-color":"#1C1C1E","mush-chip-icon-color":"#007AFF","mush-chip-active-color":"#ff9300","mush-chip-active-icon-color":"#ff9300","mush-chip-border-color":"#C6C6C8","mush-chip-border-radius":"16px","mush-chip-font-size":"12px","bubble-button-background-color":"#FFFFFF","bubble-button-active-background-color":"#007AFF","bubble-button-icon-color":"#007AFF","bubble-button-active-icon-color":"#FFFFFF","bubble-button-text-color":"#1C1C1E","bubble-button-active-text-color":"#FFFFFF","bubble-button-border-radius":"18px","bubble-sub-button-background-color":"#F9F9FB","bubble-sub-button-active-background-color":"#007AFF","bubble-sub-button-icon-color":"#007AFF","bubble-sub-button-active-icon-color":"#FFFFFF","bubble-sub-button-text-color":"#3C3C43","bubble-sub-button-active-text-color":"#FFFFFF","bubble-sub-button-border-radius":"14px","bubble-sub-button-box-shadow":"0 4px 10px rgba(60,60,67,.16)","input-background-color":"#F9F9FB","input-fill-color":"#F9F9FB","input-disabled-fill-color":"rgba(249, 249, 251, 0.55)","input-disabled-ink-color":"rgba(0, 0, 0, 0.37)","input-disabled-label-ink-color":"#8E8E93","input-disabled-line-color":"rgba(0, 0, 0, 0.06)","input-dropdown-icon-color":"rgba(0, 0, 0, 0.54)","input-hover-line-color":"rgba(0, 0, 0, 0.87)","input-idle-line-color":"rgba(0, 0, 0, 0.42)","input-ink-color":"rgba(0, 0, 0, 0.87)","input-label-ink-color":"rgba(0, 0, 0, 0.6)","input-outlined-disabled-border-color":"rgba(0, 0, 0, 0.06)","mdc-select-idle-line-color":"#C6C6C8","mdc-select-dropdown-icon-color":"#3C3C43","mdc-select-hover-line-color":"#C6C6C8","mdc-text-field-idle-line-color":"#C6C6C8","mdc-text-field-hover-line-color":"#C6C6C8","ha-color-form-background":"#F9F9FB","ha-color-form-background-hover":"#F9F9FB","ha-color-form-background-disabled":"rgba(249, 249, 251, 0.55)","mdc-theme-primary":"#007AFF","mdc-theme-secondary":"#007AFF","mdc-theme-on-primary":"#FFFFFF","md-sys-color-primary":"#ff9300","md-sys-color-on-primary":"#007AFF","md-sys-color-primary-container":"#E5F1FF","md-sys-color-on-primary-container":"#FFFFFF","md-sys-color-on-surface":"#feffff","ha-on-surface-color":"#feffff","md-radio-selected-icon-color":"#007AFF","mdc-radio-unchecked-color":"#3C3C43","ha-color-fill-primary-normal-resting":"rgba(0, 122, 255, 0.15)","ha-color-fill-primary-normal-hover":"rgba(0, 122, 255, 0.25)","ha-color-fill-primary-quiet-resting":"rgba(0, 122, 255, 0.08)","ha-color-fill-primary-quiet-hover":"rgba(0, 122, 255, 0.15)","ha-color-fill-disabled-normal-resting":"rgba(142, 142, 147, 0.12)","ha-color-on-disabled-normal":"rgba(60, 60, 67, 0.55)","ha-color-fill-disabled-loud-resting":"rgba(142, 142, 147, 0.22)","ha-color-on-disabled-loud":"rgba(60, 60, 67, 0.65)","ha-color-on-disabled-quiet":"rgba(60, 60, 67, 0.50)","ha-color-fill-neutral-quiet-resting":"#FFFFFF","ha-color-fill-neutral-quiet-hover":"#F9F9FB","ha-color-fill-neutral-quiet-active":"#E5F1FF","ha-color-fill-neutral-normal-resting":"#F9F9FB","ha-color-fill-neutral-normal-hover":"#FFFFFF","ha-color-fill-neutral-normal-active":"#E5F1FF","ha-color-fill-danger-normal-resting":"rgba(255, 59, 48, 0.15)","ha-color-fill-danger-normal-hover":"rgba(255, 59, 48, 0.22)","ha-color-fill-danger-normal-active":"rgba(255, 59, 48, 0.28)","ha-color-on-danger-normal":"#FF3B30","ha-color-fill-warning-normal-resting":"rgba(255, 204, 0, 0.15)","ha-color-fill-warning-normal-hover":"rgba(255, 204, 0, 0.22)","ha-color-fill-warning-normal-active":"rgba(255, 204, 0, 0.28)","ha-color-on-warning-normal":"#8A5A00","ha-tooltip-background-color":"#F9F9FB","ha-tooltip-text-color":"#1C1C1E","border-color":"rgba(0, 0, 0, 0.12)","border-radius":"18px","box-shadow":"0 10px 28px rgba(60,60,67,.14)","divider-color":"rgba(0, 0, 0, 0.12)","outline-color":"rgba(0, 0, 0, 0.12)","outline-variant-color":"#C6C6C8","ha-card-border-color":"rgba(0, 0, 0, 0.12)","ha-card-border-radius":"18px","ha-card-border-width":"1px","ha-card-box-shadow":"0 10px 28px rgba(60,60,67,.14)","ha-line-height-condensed":"1.25","ha-line-height-expanded":"1.35","ha-line-height-normal":"1.5","ha-list-gap":"0px","ha-list-padding":"0px","ha-list-item-focus-radius":"12px","ha-list-item-focus-background":"rgba(127, 127, 127, 0.12)","ha-border-radius-circle":"50%","ha-ripple-color":"","bubble-border":"1px solid #C6C6C8","bubble-border-color":"rgba(0, 0, 0, 0.12)","bubble-border-radius":"18px","bubble-box-shadow":"0 10px 28px rgba(60,60,67,.14)","bubble-card-border-radius":"18px","bubble-climate-border-radius":"18px","bubble-climate-box-shadow":"0 10px 28px rgba(60,60,67,.14)","bubble-climate-icon-border-radius":"32px","bubble-cover-border-radius":"18px","bubble-cover-box-shadow":"0 10px 28px rgba(60,60,67,.14)","bubble-icon-border-radius":"14px","bubble-media-player-border-radius":"18px","bubble-media-player-box-shadow":"0 10px 28px rgba(60,60,67,.14)","bubble-calendar-height":"56px","bubble-calendar-mask-size":"16px","bubble-calendar-border-radius":"18px","bubble-event-background-color":"#F9F9FB","bubble-event-background-image":"none","bubble-pop-up-border-radius":"18px","bubble-pop-up-box-shadow":"0 10px 28px rgba(60,60,67,.14)","bubble-select-border-radius":"18px","bubble-separator-border-radius":"18px","bubble-horizontal-buttons-stack-border-radius":"18px","bubble-horizontal-buttons-stack-box-shadow":"0 10px 28px rgba(60,60,67,.14)","primary-font-family":"-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif","ha-font-family-body":"-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif","ha-font-family-heading":"-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif","ha-font-family-longform":"-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif","ha-font-family-code":"'SF Mono', 'Roboto Mono', Consolas, monospace","mdc-typography-font-family":"'SF Mono', 'Roboto Mono', Consolas, monospace","ha-font-size-scale":"1","ha-font-size-2xs":"8px","ha-font-size-xs":"8px","ha-font-size-s":"12px","ha-font-size-m":"14px","ha-font-size-l":"16px","ha-font-size-xl":"18px","ha-font-size-2xl":"20px","ha-font-size-3xl":"22px","ha-font-size-4xl":"24px","ha-font-weight-light":"300","ha-font-weight-normal":"400","ha-font-weight-body":"400","ha-font-weight-medium":"500","ha-font-weight-heading":"500","ha-font-weight-action":"500","ha-font-weight-bold":"700","rgb-primary-color":"255, 147, 0","rgb-accent-color":"255, 147, 0","rgb-primary-text-color":"28, 28, 30","rgb-secondary-text-color":"60, 60, 67","rgb-card-background-color":"255, 255, 255","rgb-primary-background-color":"242, 242, 247","rgb-blue-color":"0, 122, 255","rgb-orange-color":"255, 149, 0","rgb-state-light-color":"0, 122, 255","rgb-state-cover-color":"0, 122, 255","rgb-state-fan-color":"0, 122, 255","rgb-state-media_player-color":"0, 122, 255","mush-rgb-primary-text-color":"28, 28, 30","mush-rgb-secondary-text-color":"60, 60, 67","mush-rgb-state-light":"0, 122, 255","mush-rgb-state-cover":"0, 122, 255","mush-rgb-state-entity":"0, 122, 255","mush-rgb-state-fan":"0, 122, 255","mush-rgb-state-media-player":"0, 122, 255","mush-rgb-state-vacuum":"0, 122, 255","mush-rgb-success":"52, 199, 89","mush-rgb-warning":"255, 204, 0","mush-rgb-danger":"255, 59, 48","mush-rgb-disabled":"142, 142, 147","mush-rgb-info":"0, 122, 255","graph-color-1":"#ff9300","graph-color-2":"#007AFF","graph-color-3":"#34C759","graph-color-4":"#AF52DE","graph-color-5":"#FF3B30","graph-color-6":"#5AC8FA","graph-color-7":"#00C7BE","graph-color-8":"#FF2D55","graph-color-9":"#FF6B22","graph-color-10":"#5856D6","graph-color-11":"#A3D977","graph-color-12":"#FFCC00","graph-color-13":"#AF52DE","graph-color-14":"#8E6E53","energy-grid-consumption-color":"#007AFF","energy-grid-return-color":"#AF52DE","energy-solar-color":"#ff9300","energy-non-fossil-color":"#34C759","energy-battery-out-color":"#00C7BE","energy-battery-in-color":"#AF52DE","energy-gas-color":"#FF3B30","energy-water-color":"#5AC8FA","bubble-card-background-color":"#FFFFFF","bubble-secondary-background-color":"#F9F9FB","bubble-icon-background-color":"#F9F9FB","bubble-icon-color":"#007AFF","bubble-name-color":"#1C1C1E","bubble-state-color":"#3C3C43","bubble-accent-color":"#007AFF","bubble-active-color":"#007AFF","bubble-line-background-color":"rgba(0, 0, 0, 0.12)","bubble-pop-up-background-color":"#F2F2F7","bubble-pop-up-backdrop-filter":"blur(18px)","dialog-box-shadow":"0 10px 28px rgba(60,60,67,.14)","more-info-header-background":"#F9F9FB","more-info-header-color":"#1C1C1E","popup-border-radius":"12px","ha-dialog-scrim-backdrop-filter":"blur(10px)","ha-dialog-surface-background":"rgba(255, 255, 255, 0.92)","mdc-dialog-scrim-color":"rgba(0, 0, 0, 0.35)","bubble-separator-background-color":"#FFFFFF","bubble-separator-icon-background-color":"#F9F9FB","bubble-separator-icon-color":"#007AFF","bubble-separator-line-color":"rgba(0, 0, 0, 0.12)","bubble-separator-name-color":"#1C1C1E","bubble-separator-text-color":"#1C1C1E","bubble-horizontal-buttons-stack-background-color":"#FFFFFF","bubble-horizontal-buttons-stack-button-background-color":"#F9F9FB","bubble-sub-buttons-main-background-color":"#FFFFFF","bubble-climate-background-color":"#FFFFFF","bubble-climate-main-background-color":"#FFFFFF","bubble-cover-background-color":"#FFFFFF","bubble-cover-main-background-color":"#FFFFFF","bubble-media-player-background-color":"#FFFFFF","bubble-media-player-main-background-color":"#FFFFFF","mush-card-background":"#FFFFFF","mush-control-background-color":"#F9F9FB","mush-icon-background-color":"#F9F9FB","mush-card-primary-color":"#1C1C1E","mush-card-secondary-color":"#3C3C43","mush-title-color":"#1C1C1E","mush-subtitle-color":"#3C3C43","mush-icon-color":"#3C3C43","mush-icon-active-color":"#007AFF","uix-theme":"basis","uix-card":"","bubble-button-card-background-color":"#FFFFFF","bubble-button-main-background-color":"#FFFFFF","bubble-climate-button-background-color":"#F9F9FB","bubble-cover-button-background-color":"#F9F9FB","bubble-media-player-button-background-color":"#F9F9FB","mush-slider-background-color":"#F9F9FB","bubble-button-active-color":"#007AFF","bubble-climate-button-icon-color":"#3C3C43","bubble-cover-button-icon-color":"#3C3C43","bubble-horizontal-buttons-stack-button-icon-color":"#3C3C43","bubble-horizontal-buttons-stack-button-text-color":"#1C1C1E","bubble-media-player-button-icon-color":"#3C3C43","deep-purple-color":"#6E41AB","indigo-color":"#3F51B5","light-blue-color":"#03A9F4","teal-color":"#009688","light-green-color":"#8BC34A","lime-color":"#CDDC39","amber-color":"#FFC107","deep-orange-color":"#FF6F22","brown-color":"#795548","light-grey-color":"#BDBDBD","dark-grey-color":"#606060","blue-grey-color":"#607D8B","disabled-color":"#D1D1D6","outline-hover-color":"rgba(0, 0, 0, 0.24)","state-alarm_control_panel-armed_custom_bypass-color":"#34C759","state-alarm_control_panel-armed_night-color":"#34C759","state-alarm_control_panel-armed_vacation-color":"#34C759","state-alarm_control_panel-arming-color":"#007AFF","state-alarm_control_panel-disarming-color":"#007AFF","state-alarm_control_panel-pending-color":"#007AFF","state-alert-off-color":"#007AFF","state-alert-on-color":"#FF3B30","state-binary_sensor-active-color":"#FFC107","state-binary_sensor-battery-on-color":"#FF3B30","state-binary_sensor-carbon_monoxide-on-color":"#FF3B30","state-binary_sensor-gas-on-color":"#FF3B30","state-binary_sensor-heat-on-color":"#FF3B30","state-binary_sensor-lock-on-color":"#FF3B30","state-binary_sensor-moisture-on-color":"#FF3B30","state-binary_sensor-problem-on-color":"#FF3B30","state-binary_sensor-safety-on-color":"#FF3B30","state-binary_sensor-smoke-on-color":"#FF3B30","state-binary_sensor-sound-on-color":"#FF3B30","state-binary_sensor-tamper-on-color":"#FF3B30","state-climate-dry-color":"#007AFF","state-climate-fan_only-color":"#5AC8FA","state-climate-heat_cool-color":"#FFC107","state-device_tracker-active-color":"#007AFF","state-device_tracker-home-color":"#34C759","state-humidifier-on-color":"#007AFF","state-lawn_mower-active-color":"#009688","state-lawn_mower-error-color":"#FF3B30","state-lock-jammed-color":"#FF3B30","state-lock-open-color":"#FF3B30","state-lock-opening-color":"#007AFF","state-media_player-active-color":"#007AFF","state-person-active-color":"#007AFF","state-person-home-color":"#34C759","state-plant-active-color":"#FF3B30","state-siren-active-color":"#FF3B30","state-sun-above_horizon-color":"#FFC107","state-sun-below_horizon-color":"#3F51B5","state-update-active-color":"#007AFF","state-valve-active-color":"#007AFF","state-vacuum-error-color":"#FF3B30","state-water_heater-eco-color":"#34C759","state-water_heater-electric-color":"#007AFF","state-water_heater-gas-color":"#007AFF","state-water_heater-heat_pump-color":"#007AFF","state-water_heater-high_demand-color":"#FF6F22","state-water_heater-performance-color":"#FF6F22","state-weather-clear_night-color":"#6E41AB","state-weather-cloudy-color":"#BDBDBD","state-weather-exceptional-color":"#FF3B30","state-weather-fog-color":"#3C3C43","state-weather-hail-color":"#5AC8FA","state-weather-lightning_rainy-color":"#CDDC39","state-weather-lightning-color":"#FFCC00","state-weather-partlycloudy-color":"#607D8B","state-weather-pouring-color":"#3F51B5","state-weather-rainy-color":"#007AFF","state-weather-snowy_rainy-color":"#03A9F4","state-weather-snowy-color":"#C0E0FF","state-weather-sunny-color":"#FFC107","state-weather-windy_variant-color":"#34C759","state-weather-windy-color":"#34C759","state-sensor-battery-high-color":"#34C759","state-sensor-battery-medium-color":"#007AFF","state-sensor-battery-low-color":"#FF3B30","color-1":"#ff9300","color-2":"#007AFF","color-3":"#34C759","color-4":"#AF52DE","color-5":"#FF3B30","color-6":"#5AC8FA","color-7":"#00C7BE","color-8":"#FF2D55","color-9":"#FF6B22","color-10":"#5856D6","color-11":"#A3D977","color-12":"#FFCC00","color-13":"#AF52DE","color-14":"#8E6E53","ha-switch-background-color":"#D1D1D6","ha-switch-background-color-hover":"#D1D1D6","ha-switch-border-color":"rgba(0,0,0,0)","ha-switch-thumb-background-color":"#FFFFFF","ha-switch-thumb-background-color-hover":"#FFFFFF","ha-switch-thumb-border-color":"rgba(0,0,0,0)","ha-switch-thumb-border-color-hover":"rgba(0,0,0,0)","ha-switch-checked-background-color":"#E5F1FF","ha-switch-checked-background-color-hover":"#E5F1FF","ha-switch-checked-border-color":"rgba(0,0,0,0)","ha-switch-checked-thumb-background-color":"#007AFF","ha-switch-checked-thumb-background-color-hover":"#007AFF","ha-switch-checked-thumb-border-color":"rgba(0,0,0,0)","ha-switch-checked-thumb-border-color-hover":"rgba(0,0,0,0)","printer-cyan-color":"#00AEEF","printer-magenta-color":"#EC008C","printer-yellow-color":"#FFD400","bubble-main-buttons-background-color":"#FFFFFF","card-backdrop-blur":"none","glass-effect-style":"off","background-style":"off","uix-root":"","uix-view":"","uix-view-background":"","uix-row":"","uix-badge":"","uix-sidebar":"","uix-more-info":"","uix-dialog":"","uix-drawer":"","uix-glance":"","uix-heading-badge":"","uix-assist-chip":"","uix-element":"","uix-entity-marker":"","uix-config":"","uix-panel-custom":"","uix-top-app-bar-fixed":"","uix-toast":"","uix-grid-section":"","uix-calendar":"","uix-todo":"","uix-history":"","uix-states-history-charts":"","uix-persistent-notification-item":"","uix-card-yaml":"","uix-root-yaml":"","uix-view-yaml":"","uix-view-background-yaml":"","uix-row-yaml":"","uix-badge-yaml":"","uix-sidebar-yaml":"","uix-more-info-yaml":"","uix-dialog-yaml":"","uix-drawer-yaml":"","uix-glance-yaml":"","uix-heading-badge-yaml":"","uix-assist-chip-yaml":"","uix-element-yaml":"","uix-entity-marker-yaml":"","uix-config-yaml":"","uix-panel-custom-yaml":"","uix-top-app-bar-fixed-yaml":"","uix-toast-yaml":"","uix-grid-section-yaml":"","uix-calendar-yaml":"","uix-todo-yaml":"","uix-history-yaml":"","uix-states-history-charts-yaml":"","uix-persistent-notification-item-yaml":"","app-header-backdrop-filter":"blur(8px) saturate(1.1)","app-header-edit-background-color":"rgba(30, 33, 54, 0.8)","app-header-edit-text-color":"rgba(234, 235, 238, 0.98)","app-theme-color":"rgb(0, 0, 0)","bubble-select-main-background-color":"#FFFFFF","bubble-select-background-color":"#F2F2F7","bubble-select-list-background-color":"#FFFFFF","bubble-select-list-item-accent-color":"#007AFF","bubble-select-list-width":"220px","bubble-select-arrow-background-color":"#F9F9FB","bubble-select-button-border-radius":"18px","bubble-select-icon-background-color":"#F9F9FB","bubble-select-icon-border-radius":"14px","bubble-select-box-shadow":"0 10px 28px rgba(60,60,67,.14)","bubble-pop-up-main-background-color":"#FFFFFF","bubble-backdrop-background-color":"rgba(0, 0, 0, 0.32)","bubble-button-icon-border-radius":"14px","bubble-button-icon-background-color":"#F9F9FB","bubble-light-white-color":"#FFFFFF","bubble-light-color":"#FFC107","bubble-button-box-shadow":"0 10px 28px rgba(60,60,67,.14)","bubble-media-player-buttons-border-radius":"14px","bubble-media-player-slider-background-color":"#F2F2F7","bubble-media-player-icon-border-radius":"14px","bubble-media-player-icon-background-color":"#F9F9FB","bubble-cover-icon-border-radius":"14px","bubble-cover-icon-background-color":"#F9F9FB","bubble-state-climate-fan-only-color":"#32ADE6","bubble-state-climate-dry-color":"#FF9500","bubble-state-climate-cool-color":"#007AFF","bubble-state-climate-heat-color":"#FF3B30","bubble-state-climate-auto-color":"#34C759","bubble-state-climate-heat-cool-color":"#AF52DE","bubble-climate-accent-color":"#007AFF","bubble-calendar-main-background-color":"#FFFFFF","bubble-sub-slider-border-radius":"18px","bubble-sub-slider-background-color":"#F9F9FB","bubble-sub-slider-height":"48px","bubble-sub-button-dark-text-color":"#1C1C1E","bubble-footer-width":"320px","bubble-footer-bottom":"16px","bubble-footer-box-shadow":"0 10px 28px rgba(60,60,67,.14)","bubble-select-list-border-radius":"18px","eigene-theme-eintraege":"","ha-card-backdrop-filter":"","ha-dialog-surface-backdrop-filter":"","ha-button-box-shadow":"","ha-button-border-radius":""},"dark":{"accent-color":"#ff9300","primary-color":"#ff9300","dark-primary-color":"#2C2C2E","light-primary-color":"#ff9300","primary-text-color":"#feffff","secondary-text-color":"#C7C7CC","text-primary-color":"#000000","disabled-text-color":"#636366","error-color":"#FF453A","warning-color":"#FFD60A","success-color":"#30D158","info-color":"#0A84FF","red-color":"#FF453A","green-color":"#30D158","blue-color":"#0A84FF","orange-color":"#FF9F0A","yellow-color":"#FFD60A","purple-color":"#BF5AF2","pink-color":"#FF375F","cyan-color":"#32ADE6","grey-color":"#C7C7CC","black-color":"#000000","white-color":"#FFFFFF","primary-background-color":"#000000","background-color":"#000000","lovelace-background":"#000000","popup-custom-wallpaper":"","secondary-background-color":"#2C2C2E","card-background-color":"#1C1C1E","ha-card-background":"#1C1C1E","ha-card-background-color":"#1C1C1E","table-row-background-color":"#2C2C2E","table-row-alternative-background-color":"#1C1C1E","app-header-background-color":"#1C1C1E","app-toolbar-background-color":"#1C1C1E","toolbar-background-color":"#1C1C1E","app-drawer-background-color":"#1C1C1E","sidebar-background-color":"#1C1C1E","sidebar-selected-background-color":"#d5d5d5","mdc-theme-background":"#000000","mdc-theme-surface":"#1C1C1E","mdc-theme-on-surface":"#F2F2F7","wa-color-surface-raised":"#1C1C1E","app-header-text-color":"#F2F2F7","app-toolbar-text-color":"#F2F2F7","toolbar-text-color":"#F2F2F7","app-drawer-text-color":"#C7C7CC","app-drawer-icon-color":"#ff9300","sidebar-text-color":"#C7C7CC","sidebar-icon-color":"rgba(225, 225, 225, 0.6)","sidebar-selected-text-color":"#feffff","sidebar-selected-icon-color":"#ff9300","state-icon-color":"#ff9300","state-icon-active-color":"#ff9300","state-icon-unavailable-color":"#929292","state-active-color":"#ff9300","state-inactive-color":"#929292","state-unavailable-color":"#929292","state-on-color":"#30D158","state-off-color":"#636366","state-light-color":"#ff9300","state-light-active-color":"#ff9300","state-light-on-color":"#ff9300","state-switch-color":"#0A84FF","state-switch-active-color":"#ff9300","state-switch-on-color":"#ff9300","state-climate-cool-color":"#0A84FF","state-climate-heat-color":"#ff2600","state-climate-auto-color":"#ffd478","state-cover-color":"#0A84FF","state-cover-active-color":"#929000","state-cover-open-color":"#929000","state-cover-closed-color":"#ff2600","state-fan-color":"#0A84FF","state-fan-active-color":"#0A84FF","state-media_player-color":"#0A84FF","state-vacuum-color":"#0A84FF","state-vacuum-active-color":"#0A84FF","state-lock-locked-color":"#ff2600","state-lock-locking-color":"#ff2600","state-lock-unlocked-color":"#929000","state-lock-unlocking-color":"#929000","state-alarm_control_panel-triggered-color":"#ff2600","state-alarm-triggered-color":"#ff2600","state-alarm_control_panel-armed_home-color":"#ffd478","state-alarm_control_panel-armed_away-color":"#ffd478","state-alarm-armed-color":"#ffd478","state-alarm_control_panel-disarmed-color":"#ff9300","state-alarm-disarmed-color":"#ff9300","state-battery-low-color":"#ff2600","label-badge-background-color":"#1C1C1E","label-badge-text-color":"rgba(225, 225, 225, 0.8)","label-badge-red":"#FF453A","label-badge-blue":"#0A84FF","label-badge-green":"#30D158","label-badge-yellow":"#FFD60A","state-battery-alert-color":"#ff2600","ha-control-switch-color":"#ff9300","ha-control-switch-checked-color":"#ff9300","ha-control-switch-unchecked-color":"#3A3A3C","mush-toggle-color":"#ff9300","mush-rgb-state-switch":"255, 147, 0","bubble-toggle-color":"#ff9300","rgb-state-switch-color":"255, 147, 0","control-slider-color":"#ff9300","slider-color":"#ff9300","slider-secondary-color":"#1F3A5F","slider-track-color":"#48484A","mush-slider-color":"#ff9300","mush-slider-track-color":"#48484A","mush-toggle-background-color":"#48484A","control-button-background-color":"#2C2C2E","control-button-icon-color":"#ff9300","control-button-border-radius":"18px","mush-chip-background":"#2C2C2E","mush-chip-active-background":"#1F3A5F","mush-chip-color":"#F2F2F7","mush-chip-icon-color":"#ff9300","mush-chip-active-color":"#0A84FF","mush-chip-active-icon-color":"#0A84FF","mush-chip-border-color":"#38383A","mush-chip-border-radius":"16px","mush-chip-font-size":"12px","bubble-button-background-color":"#1C1C1E","bubble-button-active-background-color":"#0A84FF","bubble-button-icon-color":"#ff9300","bubble-button-active-icon-color":"#000000","bubble-button-text-color":"#feffff","bubble-button-active-text-color":"#000000","bubble-button-border-radius":"18px","bubble-sub-button-background-color":"#2C2C2E","bubble-sub-button-active-background-color":"#0A84FF","bubble-sub-button-icon-color":"#ff9300","bubble-sub-button-active-icon-color":"#000000","bubble-sub-button-text-color":"#C7C7CC","bubble-sub-button-active-text-color":"#000000","bubble-sub-button-border-radius":"14px","bubble-sub-button-box-shadow":"0 4px 11px rgba(0,0,0,.45)","input-background-color":"#2C2C2E","input-fill-color":"#2C2C2E","input-disabled-fill-color":"rgba(44, 44, 46, 0.50)","input-disabled-ink-color":"rgba(255, 255, 255, 0.37)","input-disabled-label-ink-color":"#636366","input-disabled-line-color":"rgba(255, 255, 255, 0.06)","input-dropdown-icon-color":"rgba(255, 255, 255, 0.54)","input-hover-line-color":"rgba(255, 255, 255, 0.87)","input-idle-line-color":"rgba(255, 255, 255, 0.42)","input-ink-color":"rgba(255, 255, 255, 0.87)","input-label-ink-color":"rgba(255, 255, 255, 0.6)","input-outlined-disabled-border-color":"rgba(255, 255, 255, 0.06)","mdc-select-idle-line-color":"#38383A","mdc-select-dropdown-icon-color":"#C7C7CC","mdc-select-hover-line-color":"#38383A","mdc-text-field-idle-line-color":"#38383A","mdc-text-field-hover-line-color":"#38383A","ha-color-form-background":"#2C2C2E","ha-color-form-background-hover":"#2C2C2E","ha-color-form-background-disabled":"rgba(44, 44, 46, 0.50)","mdc-theme-primary":"#0A84FF","mdc-theme-secondary":"#0A84FF","mdc-theme-on-primary":"#000000","md-sys-color-primary":"#ff9300","md-sys-color-on-primary":"#0A84FF","md-sys-color-primary-container":"#1F3A5F","md-sys-color-on-primary-container":"#000000","md-sys-color-on-surface":"#feffff","ha-on-surface-color":"#feffff","md-radio-selected-icon-color":"#0A84FF","mdc-radio-unchecked-color":"#C7C7CC","ha-color-fill-primary-normal-resting":"rgba(255, 147, 0, 0.15)","ha-color-fill-primary-normal-hover":"rgba(255, 147, 0, 0.25)","ha-color-fill-primary-quiet-resting":"rgba(255, 147, 0, 0.08)","ha-color-fill-primary-quiet-hover":"rgba(255, 147, 0, 0.15)","ha-color-fill-disabled-normal-resting":"rgba(99, 99, 102, 0.08)","ha-color-on-disabled-normal":"rgba(199, 199, 204, 0.50)","ha-color-fill-disabled-loud-resting":"rgba(99, 99, 102, 0.22)","ha-color-on-disabled-loud":"rgba(199, 199, 204, 0.55)","ha-color-on-disabled-quiet":"rgba(199, 199, 204, 0.50)","ha-color-fill-neutral-quiet-resting":"#1C1C1E","ha-color-fill-neutral-quiet-hover":"#2C2C2E","ha-color-fill-neutral-quiet-active":"#1C1C1E","ha-color-fill-neutral-normal-resting":"#2C2C2E","ha-color-fill-neutral-normal-hover":"#1C1C1E","ha-color-fill-neutral-normal-active":"#2C2C2E","ha-color-fill-danger-normal-resting":"rgba(255, 69, 58, 0.15)","ha-color-fill-danger-normal-hover":"rgba(255, 69, 58, 0.22)","ha-color-fill-danger-normal-active":"rgba(255, 69, 58, 0.28)","ha-color-on-danger-normal":"#F2F2F7","ha-color-fill-warning-normal-resting":"rgba(255, 214, 10, 0.15)","ha-color-fill-warning-normal-hover":"rgba(255, 214, 10, 0.22)","ha-color-fill-warning-normal-active":"rgba(255, 214, 10, 0.28)","ha-color-on-warning-normal":"#F2F2F7","ha-tooltip-background-color":"#2C2C2E","ha-tooltip-text-color":"#F2F2F7","border-color":"rgba(225, 225, 225, 0.12)","border-radius":"18px","box-shadow":"0 10px 30px rgba(0,0,0,.50)","divider-color":"rgba(225, 225, 225, 0.12)","outline-color":"rgba(225, 225, 225, 0.12)","outline-variant-color":"#38383A","ha-card-border-color":"rgba(225, 225, 225, 0.12)","ha-card-border-radius":"18px","ha-card-border-width":"1px","ha-card-box-shadow":"0 10px 30px rgba(0,0,0,.50)","ha-line-height-condensed":"1.25","ha-line-height-expanded":"1.35","ha-line-height-normal":"1.5","ha-list-gap":"0px","ha-list-padding":"0px","ha-list-item-focus-radius":"12px","ha-list-item-focus-background":"rgba(127, 127, 127, 0.12)","ha-border-radius-circle":"50%","ha-ripple-color":"","bubble-border":"1px solid #38383A","bubble-border-color":"rgba(225, 225, 225, 0.12)","bubble-border-radius":"18px","bubble-box-shadow":"0 10px 30px rgba(0,0,0,.50)","bubble-card-border-radius":"18px","bubble-climate-border-radius":"18px","bubble-climate-box-shadow":"0 10px 30px rgba(0,0,0,.50)","bubble-climate-icon-border-radius":"32px","bubble-cover-border-radius":"18px","bubble-cover-box-shadow":"0 10px 30px rgba(0,0,0,.50)","bubble-icon-border-radius":"14px","bubble-media-player-border-radius":"18px","bubble-media-player-box-shadow":"0 10px 30px rgba(0,0,0,.50)","bubble-calendar-height":"56px","bubble-calendar-mask-size":"16px","bubble-calendar-border-radius":"18px","bubble-event-background-color":"#2C2C2E","bubble-event-background-image":"none","bubble-pop-up-border-radius":"18px","bubble-pop-up-box-shadow":"0 10px 30px rgba(0,0,0,.50)","bubble-select-border-radius":"18px","bubble-separator-border-radius":"18px","bubble-horizontal-buttons-stack-border-radius":"18px","bubble-horizontal-buttons-stack-box-shadow":"0 10px 30px rgba(0,0,0,.50)","primary-font-family":"-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif","ha-font-family-body":"-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif","ha-font-family-heading":"-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif","ha-font-family-longform":"-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif","ha-font-family-code":"'SF Mono', 'Roboto Mono', Consolas, monospace","mdc-typography-font-family":"'SF Mono', 'Roboto Mono', Consolas, monospace","ha-font-size-scale":"1","ha-font-size-2xs":"8px","ha-font-size-xs":"8px","ha-font-size-s":"12px","ha-font-size-m":"14px","ha-font-size-l":"16px","ha-font-size-xl":"18px","ha-font-size-2xl":"20px","ha-font-size-3xl":"22px","ha-font-size-4xl":"24px","ha-font-weight-light":"300","ha-font-weight-normal":"400","ha-font-weight-body":"400","ha-font-weight-medium":"500","ha-font-weight-heading":"500","ha-font-weight-action":"500","ha-font-weight-bold":"700","rgb-primary-color":"255, 147, 0","rgb-accent-color":"255, 147, 0","rgb-primary-text-color":"254, 255, 255","rgb-secondary-text-color":"199, 199, 204","rgb-card-background-color":"28, 28, 30","rgb-primary-background-color":"0, 0, 0","rgb-blue-color":"10, 132, 255","rgb-orange-color":"255, 159, 10","rgb-state-light-color":"10, 132, 255","rgb-state-cover-color":"10, 132, 255","rgb-state-fan-color":"10, 132, 255","rgb-state-media_player-color":"10, 132, 255","mush-rgb-primary-text-color":"242, 242, 247","mush-rgb-secondary-text-color":"199, 199, 204","mush-rgb-state-light":"10, 132, 255","mush-rgb-state-cover":"10, 132, 255","mush-rgb-state-entity":"10, 132, 255","mush-rgb-state-fan":"10, 132, 255","mush-rgb-state-media-player":"10, 132, 255","mush-rgb-state-vacuum":"10, 132, 255","mush-rgb-success":"48, 209, 88","mush-rgb-warning":"255, 214, 10","mush-rgb-danger":"255, 69, 58","mush-rgb-disabled":"99, 99, 102","mush-rgb-info":"10, 132, 255","graph-color-1":"#0A84FF","graph-color-2":"#64D2FF","graph-color-3":"#30D158","graph-color-4":"#BF5AF2","graph-color-5":"#FF453A","graph-color-6":"#32ADE6","graph-color-7":"#64D2FF","graph-color-8":"#FF375F","graph-color-9":"#FF9F0A","graph-color-10":"#5E5CE6","graph-color-11":"#A3D977","graph-color-12":"#FFD60A","graph-color-13":"#BF5AF2","graph-color-14":"#A2845E","energy-grid-consumption-color":"#0A84FF","energy-grid-return-color":"#BF5AF2","energy-solar-color":"#FF9F0A","energy-non-fossil-color":"#30D158","energy-battery-out-color":"#64D2FF","energy-battery-in-color":"#BF5AF2","energy-gas-color":"#FF453A","energy-water-color":"#32ADE6","bubble-card-background-color":"#1C1C1E","bubble-secondary-background-color":"#2C2C2E","bubble-icon-background-color":"#2C2C2E","bubble-icon-color":"#ff9300","bubble-name-color":"#feffff","bubble-state-color":"#C7C7CC","bubble-accent-color":"#ff9300","bubble-active-color":"#ff9300","bubble-line-background-color":"rgba(225, 225, 225, 0.12)","bubble-pop-up-background-color":"#000000","bubble-pop-up-backdrop-filter":"blur(18px)","dialog-box-shadow":"0 10px 30px rgba(0,0,0,.50)","more-info-header-background":"#2C2C2E","more-info-header-color":"#F2F2F7","popup-border-radius":"12px","ha-dialog-scrim-backdrop-filter":"blur(10px)","ha-dialog-surface-background":"rgba(28, 28, 30, 0.92)","mdc-dialog-scrim-color":"rgba(0, 0, 0, 0.60)","bubble-separator-background-color":"#1C1C1E","bubble-separator-icon-background-color":"#2C2C2E","bubble-separator-icon-color":"#0A84FF","bubble-separator-line-color":"rgba(225, 225, 225, 0.12)","bubble-separator-name-color":"#feffff","bubble-separator-text-color":"#feffff","bubble-horizontal-buttons-stack-background-color":"#1C1C1E","bubble-horizontal-buttons-stack-button-background-color":"#2C2C2E","bubble-sub-buttons-main-background-color":"#1C1C1E","bubble-climate-background-color":"#1C1C1E","bubble-climate-main-background-color":"#1C1C1E","bubble-cover-background-color":"#1C1C1E","bubble-cover-main-background-color":"#1C1C1E","bubble-media-player-background-color":"#1C1C1E","bubble-media-player-main-background-color":"#1C1C1E","mush-card-background":"#1C1C1E","mush-control-background-color":"#2C2C2E","mush-icon-background-color":"#2C2C2E","mush-card-primary-color":"#feffff","mush-card-secondary-color":"#C7C7CC","mush-title-color":"#feffff","mush-subtitle-color":"#C7C7CC","mush-icon-color":"#C7C7CC","mush-icon-active-color":"#ff9300","uix-theme":"basis","uix-card":"","bubble-button-card-background-color":"#1C1C1E","bubble-button-main-background-color":"#1C1C1E","bubble-climate-button-background-color":"#2C2C2E","bubble-cover-button-background-color":"#2C2C2E","bubble-media-player-button-background-color":"#2C2C2E","mush-slider-background-color":"#2C2C2E","bubble-button-active-color":"#0A84FF","bubble-climate-button-icon-color":"#C7C7CC","bubble-cover-button-icon-color":"#C7C7CC","bubble-horizontal-buttons-stack-button-icon-color":"#C7C7CC","bubble-horizontal-buttons-stack-button-text-color":"#F2F2F7","bubble-media-player-button-icon-color":"#C7C7CC","deep-purple-color":"#6E41AB","indigo-color":"#3F51B5","light-blue-color":"#03A9F4","teal-color":"#009688","light-green-color":"#8BC34A","lime-color":"#CDDC39","amber-color":"#FFC107","deep-orange-color":"#FF6F22","brown-color":"#795548","light-grey-color":"#BDBDBD","dark-grey-color":"#606060","blue-grey-color":"#607D8B","disabled-color":"#464646","outline-hover-color":"rgba(225, 225, 225, 0.24)","state-alarm_control_panel-armed_custom_bypass-color":"#30D158","state-alarm_control_panel-armed_night-color":"#30D158","state-alarm_control_panel-armed_vacation-color":"#30D158","state-alarm_control_panel-arming-color":"#0A84FF","state-alarm_control_panel-disarming-color":"#0A84FF","state-alarm_control_panel-pending-color":"#0A84FF","state-alert-off-color":"#0A84FF","state-alert-on-color":"#FF453A","state-binary_sensor-active-color":"#FFC107","state-binary_sensor-battery-on-color":"#FF453A","state-binary_sensor-carbon_monoxide-on-color":"#FF453A","state-binary_sensor-gas-on-color":"#FF453A","state-binary_sensor-heat-on-color":"#FF453A","state-binary_sensor-lock-on-color":"#FF453A","state-binary_sensor-moisture-on-color":"#FF453A","state-binary_sensor-problem-on-color":"#FF453A","state-binary_sensor-safety-on-color":"#FF453A","state-binary_sensor-smoke-on-color":"#FF453A","state-binary_sensor-sound-on-color":"#FF453A","state-binary_sensor-tamper-on-color":"#FF453A","state-climate-dry-color":"#0A84FF","state-climate-fan_only-color":"#32ADE6","state-climate-heat_cool-color":"#FFC107","state-device_tracker-active-color":"#0A84FF","state-device_tracker-home-color":"#30D158","state-humidifier-on-color":"#0A84FF","state-lawn_mower-active-color":"#009688","state-lawn_mower-error-color":"#FF453A","state-lock-jammed-color":"#FF453A","state-lock-open-color":"#FF453A","state-lock-opening-color":"#0A84FF","state-media_player-active-color":"#0A84FF","state-person-active-color":"#0A84FF","state-person-home-color":"#30D158","state-plant-active-color":"#FF453A","state-siren-active-color":"#FF453A","state-sun-above_horizon-color":"#FFC107","state-sun-below_horizon-color":"#3F51B5","state-update-active-color":"#0A84FF","state-valve-active-color":"#0A84FF","state-vacuum-error-color":"#FF453A","state-water_heater-eco-color":"#30D158","state-water_heater-electric-color":"#0A84FF","state-water_heater-gas-color":"#0A84FF","state-water_heater-heat_pump-color":"#0A84FF","state-water_heater-high_demand-color":"#FF6F22","state-water_heater-performance-color":"#FF6F22","state-weather-clear_night-color":"#6E41AB","state-weather-cloudy-color":"#BDBDBD","state-weather-exceptional-color":"#FF453A","state-weather-fog-color":"#C7C7CC","state-weather-hail-color":"#32ADE6","state-weather-lightning_rainy-color":"#CDDC39","state-weather-lightning-color":"#FFD60A","state-weather-partlycloudy-color":"#607D8B","state-weather-pouring-color":"#3F51B5","state-weather-rainy-color":"#0A84FF","state-weather-snowy_rainy-color":"#03A9F4","state-weather-snowy-color":"#C0E0FF","state-weather-sunny-color":"#FFC107","state-weather-windy_variant-color":"#30D158","state-weather-windy-color":"#30D158","state-sensor-battery-high-color":"#30D158","state-sensor-battery-medium-color":"#0A84FF","state-sensor-battery-low-color":"#FF453A","color-1":"#0A84FF","color-2":"#64D2FF","color-3":"#30D158","color-4":"#BF5AF2","color-5":"#FF453A","color-6":"#32ADE6","color-7":"#64D2FF","color-8":"#FF375F","color-9":"#FF9F0A","color-10":"#5E5CE6","color-11":"#A3D977","color-12":"#FFD60A","color-13":"#BF5AF2","color-14":"#A2845E","ha-switch-background-color":"#3A3A3C","ha-switch-background-color-hover":"#3A3A3C","ha-switch-border-color":"rgba(0,0,0,0)","ha-switch-thumb-background-color":"#636366","ha-switch-thumb-background-color-hover":"#636366","ha-switch-thumb-border-color":"rgba(0,0,0,0)","ha-switch-thumb-border-color-hover":"rgba(0,0,0,0)","ha-switch-checked-background-color":"#1F3A5F","ha-switch-checked-background-color-hover":"#1F3A5F","ha-switch-checked-border-color":"rgba(0,0,0,0)","ha-switch-checked-thumb-background-color":"#0A84FF","ha-switch-checked-thumb-background-color-hover":"#0A84FF","ha-switch-checked-thumb-border-color":"rgba(0,0,0,0)","ha-switch-checked-thumb-border-color-hover":"rgba(0,0,0,0)","printer-cyan-color":"#33C3FF","printer-magenta-color":"#FF3EA8","printer-yellow-color":"#FFE14D","bubble-main-buttons-background-color":"#1C1C1E","card-backdrop-blur":"none","glass-effect-style":"off","background-style":"off","uix-root":"","uix-view":"","uix-view-background":"","uix-row":"","uix-badge":"","uix-sidebar":"","uix-more-info":"","uix-dialog":"","uix-drawer":"","uix-glance":"","uix-heading-badge":"","uix-assist-chip":"","uix-element":"","uix-entity-marker":"","uix-config":"","uix-panel-custom":"","uix-top-app-bar-fixed":"","uix-toast":"","uix-grid-section":"","uix-calendar":"","uix-todo":"","uix-history":"","uix-states-history-charts":"","uix-persistent-notification-item":"","uix-card-yaml":"","uix-root-yaml":"","uix-view-yaml":"","uix-view-background-yaml":"","uix-row-yaml":"","uix-badge-yaml":"","uix-sidebar-yaml":"","uix-more-info-yaml":"","uix-dialog-yaml":"","uix-drawer-yaml":"","uix-glance-yaml":"","uix-heading-badge-yaml":"","uix-assist-chip-yaml":"","uix-element-yaml":"","uix-entity-marker-yaml":"","uix-config-yaml":"","uix-panel-custom-yaml":"","uix-top-app-bar-fixed-yaml":"","uix-toast-yaml":"","uix-grid-section-yaml":"","uix-calendar-yaml":"","uix-todo-yaml":"","uix-history-yaml":"","uix-states-history-charts-yaml":"","uix-persistent-notification-item-yaml":"","app-header-backdrop-filter":"blur(8px) saturate(1.1)","app-header-edit-background-color":"rgba(30, 33, 54, 0.8)","app-header-edit-text-color":"rgba(234, 235, 238, 0.98)","app-theme-color":"rgb(0, 0, 0)","bubble-select-main-background-color":"#1C1C1E","bubble-select-background-color":"#000000","bubble-select-list-background-color":"#1C1C1E","bubble-select-list-item-accent-color":"#0A84FF","bubble-select-list-width":"220px","bubble-select-arrow-background-color":"#2C2C2E","bubble-select-button-border-radius":"18px","bubble-select-icon-background-color":"#2C2C2E","bubble-select-icon-border-radius":"14px","bubble-select-box-shadow":"0 10px 30px rgba(0,0,0,.50)","bubble-pop-up-main-background-color":"#1C1C1E","bubble-backdrop-background-color":"rgba(0, 0, 0, 0.55)","bubble-button-icon-border-radius":"14px","bubble-button-icon-background-color":"#2C2C2E","bubble-light-white-color":"#FFFFFF","bubble-light-color":"#FFC107","bubble-button-box-shadow":"0 10px 30px rgba(0,0,0,.50)","bubble-media-player-buttons-border-radius":"14px","bubble-media-player-slider-background-color":"#2C2C2E","bubble-media-player-icon-border-radius":"14px","bubble-media-player-icon-background-color":"#2C2C2E","bubble-cover-icon-border-radius":"14px","bubble-cover-icon-background-color":"#2C2C2E","bubble-state-climate-fan-only-color":"#64D2FF","bubble-state-climate-dry-color":"#FF9F0A","bubble-state-climate-cool-color":"#0A84FF","bubble-state-climate-heat-color":"#FF453A","bubble-state-climate-auto-color":"#30D158","bubble-state-climate-heat-cool-color":"#BF5AF2","bubble-climate-accent-color":"#0A84FF","bubble-calendar-main-background-color":"#1C1C1E","bubble-sub-slider-border-radius":"18px","bubble-sub-slider-background-color":"#2C2C2E","bubble-sub-slider-height":"48px","bubble-sub-button-dark-text-color":"#1C1C1E","bubble-footer-width":"320px","bubble-footer-bottom":"16px","bubble-footer-box-shadow":"0 10px 30px rgba(0,0,0,.50)","bubble-select-list-border-radius":"18px","eigene-theme-eintraege":"","ha-card-backdrop-filter":"","ha-dialog-surface-backdrop-filter":"","ha-button-box-shadow":"","ha-button-border-radius":""}};
 
 const HATG_BASE_PRESET_CORE_KEYS = [
   "primary-color",
@@ -1522,6 +1535,334 @@ function hatgMigriereStilzielKeys(bag) {
   return migriert;
 }
 
+// Fruehere HATG-Themes brachten eigene Hilfsfelder mit (hatg-glas-fuellung ...),
+// umbenannte Kopien tragen dieselben Namen unter anderer Vorsilbe
+// (horizon-glas-fuellung). Diese Felder entsprechen einem Feld, das Home
+// Assistant selbst liest - die Vorsilbe spielt dafuer keine Rolle.
+const HATG_EIGENFELD_ZUORDNUNG = {
+  "glas-fuellung": "ha-card-background",
+  "glas-fuellung-stark": "control-button-background-color",
+  "glas-nav-fuellung": "sidebar-background-color",
+  "glas-menuegrund": "card-background-color",
+  "glas-schatten": "ha-card-box-shadow",
+  "glas-schatten-hoch": "dialog-box-shadow",
+};
+const HATG_VAR_NAME_RE = /var\(\s*--([a-zA-Z0-9_-]+)/g;
+
+// Ruft ersetze(name, fallback) fuer jedes var(--name[, fallback]) auf, innen
+// zuerst. Gibt ersetze null zurueck, bleibt der Aufruf stehen.
+function hatgErsetzeVarAufrufe(text, ersetze) {
+  const s = String(text ?? "");
+  let aus = "";
+  let i = 0;
+  for (;;) {
+    const k = s.indexOf("var(", i);
+    if (k < 0) {
+      aus += s.slice(i);
+      break;
+    }
+    aus += s.slice(i, k);
+    let j = k + 4;
+    let tiefe = 1;
+    while (j < s.length && tiefe) {
+      if (s[j] === "(") tiefe++;
+      else if (s[j] === ")") tiefe--;
+      j++;
+    }
+    if (tiefe) {
+      aus += s.slice(k);
+      break;
+    }
+    const m = /^\s*--([a-zA-Z0-9_-]+)\s*(?:,([\s\S]*))?$/.exec(s.slice(k + 4, j - 1));
+    if (!m) {
+      aus += s.slice(k, j);
+      i = j;
+      continue;
+    }
+    const fallback = m[2] !== undefined ? hatgErsetzeVarAufrufe(m[2].trim(), ersetze) : null;
+    const neu = ersetze(m[1], fallback);
+    if (neu !== null && neu !== undefined) aus += neu;
+    else aus += fallback !== null ? `var(--${m[1]}, ${fallback})` : `var(--${m[1]})`;
+    i = j;
+  }
+  return aus;
+}
+
+function hatgVarNamen(text) {
+  return [...String(text ?? "").matchAll(HATG_VAR_NAME_RE)].map((t) => t[1]);
+}
+
+// Loest eigene Hilfsfelder auf: hatg-*-Felder und unbekannte Felder, auf die
+// per var() verwiesen wird. In Theme-Feldern tritt je Modus der echte Wert an
+// die Stelle des Verweises - oder ein Verweis auf das HA-Feld, das denselben
+// Wert traegt, damit die Glasregler das Feld weiter mitbewegen. Stilziele
+// gelten fuer beide Modi; dort wird ein Verweis nur ersetzt, wenn ein HA-Feld
+// in beiden Modi denselben Wert traegt, der Wert in beiden Modi gleich ist
+// oder ein Ausweichwert dasteht. Eigene Felder, auf die danach nichts mehr
+// zeigt, fallen weg. bag: { light, dark, extra: { light, dark } }
+function hatgLoeseEigeneFelderAuf(bag) {
+  const modi = ["light", "dark"];
+  if (!bag) return { entfernt: 0, offen: [] };
+  if (!bag.extra) bag.extra = { light: {}, dark: {} };
+  const extra = bag.extra;
+  modi.forEach((m) => {
+    if (!bag[m]) bag[m] = {};
+    if (!extra[m]) extra[m] = {};
+  });
+  const bekannt = new Set(Object.keys(HATG_MANIFEST.light));
+  const verwiesen = new Set();
+  modi.forEach((m) =>
+    [bag[m], extra[m]].forEach((b) => Object.values(b).forEach((v) => hatgVarNamen(v).forEach((n) => verwiesen.add(n))))
+  );
+  const eigen = new Set();
+  modi.forEach((m) =>
+    [bag[m], extra[m]].forEach((b) =>
+      Object.keys(b).forEach((k) => {
+        if (bekannt.has(k) || hatgIstStilzielKey(k) || /^card-mod-/.test(k)) return;
+        if (k.startsWith("hatg-") || verwiesen.has(k)) eigen.add(k);
+      })
+    )
+  );
+  if (!eigen.size) return { entfernt: 0, offen: [] };
+
+  const wert = (m, k) => (bag[m][k] !== undefined ? bag[m][k] : extra[m][k]);
+  const hatEigenVerweis = (text) => hatgVarNamen(text).some((n) => eigen.has(n));
+  // nur eigene Felder aufloesen
+  const loese = (text, m, tiefe = 0) =>
+    hatgErsetzeVarAufrufe(text, (name, fallback) => {
+      if (!eigen.has(name)) return null;
+      const def = wert(m, name);
+      if (def !== undefined && tiefe < 12) return loese(String(def), m, tiefe + 1);
+      return fallback;
+    });
+  // fuer Vergleiche: alle bekannten Felder aufloesen
+  const loeseAlles = (text, m, tiefe = 0) =>
+    hatgErsetzeVarAufrufe(text, (name, fallback) => {
+      const def = wert(m, name);
+      if (def !== undefined && tiefe < 12) return loeseAlles(String(def), m, tiefe + 1);
+      return fallback;
+    }).trim();
+  const zuordnung = (name) => HATG_EIGENFELD_ZUORDNUNG[name.replace(/^[a-zA-Z0-9]+-/, "")];
+
+  // HA-Felder, die im Original direkt auf ein eigenes Feld zeigten - in beiden Modi.
+  const direkt = new Map();
+  const direktJeModus = modi.map((m) => {
+    const karte = new Map();
+    [bag[m], extra[m]].forEach((b) =>
+      Object.keys(b).forEach((k) => {
+        if (eigen.has(k) || hatgIstStilzielKey(k)) return;
+        const t = /^var\(\s*--([a-zA-Z0-9_-]+)\s*\)$/.exec(String(b[k] ?? "").trim());
+        if (t && eigen.has(t[1])) {
+          if (!karte.has(t[1])) karte.set(t[1], new Set());
+          karte.get(t[1]).add(k);
+        }
+      })
+    );
+    return karte;
+  });
+  direktJeModus[0].forEach((felder, name) => {
+    const beide = [...felder].filter((f) => direktJeModus[1].get(name)?.has(f));
+    if (beide.length) direkt.set(name, beide);
+  });
+
+  const offen = new Set();
+  // 1) Theme-Felder, je Modus
+  modi.forEach((m) =>
+    [bag[m], extra[m]].forEach((b) =>
+      Object.keys(b).forEach((k) => {
+        if (eigen.has(k) || hatgIstStilzielKey(k)) return;
+        const alt = String(b[k] ?? "");
+        if (!hatEigenVerweis(alt)) return;
+        let neu = loese(alt, m);
+        const t = /^var\(\s*--([a-zA-Z0-9_-]+)\s*\)$/.exec(alt.trim());
+        const ziel = t ? zuordnung(t[1]) : null;
+        if (ziel && ziel !== k && wert(m, ziel) !== undefined && loeseAlles(`var(--${ziel})`, m) === loeseAlles(neu, m)) {
+          neu = `var(--${ziel})`;
+        }
+        b[k] = neu;
+        if (hatEigenVerweis(neu)) offen.add(k);
+      })
+    )
+  );
+
+  // 2) Stilziele - dieselbe Zeile gilt fuer Light und Dark
+  // Welches HA-Feld traegt in einem Modus welchen Wert? Nichtssagende Werte
+  // zaehlen nicht - "none" in zwei Feldern heisst nicht, dass sie zusammengehoeren.
+  const normiere = (v) => String(v ?? "").trim().replace(/\s+/g, " ").toLowerCase();
+  const nichtssagend = new Set(["", "none", "0", "0px", "transparent", "inherit", "initial", "unset", "normal", "auto"]);
+  const wertIndex = modi.map((m) => {
+    const karte = new Map();
+    Object.keys(bag[m]).forEach((f) => {
+      if (!bekannt.has(f) || hatgIstStilzielKey(f) || f === (typeof HATG_CUSTOM_YAML_KEY !== "undefined" ? HATG_CUSTOM_YAML_KEY : "")) return;
+      const v = normiere(loeseAlles(`var(--${f})`, m));
+      if (nichtssagend.has(v) || v.length < 4 || /var\(/.test(v)) return;
+      if (!karte.has(v)) karte.set(v, []);
+      karte.get(v).push(f);
+    });
+    return karte;
+  });
+  const gleichesFeld = (soll) => {
+    const hell = wertIndex[0].get(normiere(soll[0])) || [];
+    const dunkel = new Set(wertIndex[1].get(normiere(soll[1])) || []);
+    const beide = hell.filter((f) => dunkel.has(f));
+    // HA-Felder vor Bubble- und Mushroom-Feldern, sonst die kuerzeste Kette
+    beide.sort((a, b) => (/^(bubble|mush)-/.test(a) ? 1 : 0) - (/^(bubble|mush)-/.test(b) ? 1 : 0) || a.length - b.length);
+    return beide[0] || null;
+  };
+  const imStilziel = (name, fallback) => {
+    if (!eigen.has(name)) return null;
+    const soll = modi.map((m) => loeseAlles(`var(--${name})`, m));
+    const kandidaten = [zuordnung(name), ...(direkt.get(name) || [])].filter(Boolean);
+    for (const f of kandidaten) {
+      if (modi.every((m, i) => wert(m, f) !== undefined && loeseAlles(`var(--${f})`, m) === soll[i])) return `var(--${f})`;
+    }
+    if (soll[0] !== soll[1]) {
+      const gleich = gleichesFeld(soll);
+      if (gleich) return `var(--${gleich})`;
+    }
+    const hell = loese(`var(--${name})`, "light");
+    const dunkel = loese(`var(--${name})`, "dark");
+    if (hell === dunkel && !hatEigenVerweis(hell)) return hell;
+    return fallback;
+  };
+  const selbstverweis = /(^|[;{\n])[ \t]*(--[a-zA-Z0-9_-]+)\s*:\s*var\(\s*\2\s*\)\s*(?:!important)?\s*;/g;
+  const stilziele = new Set();
+  modi.forEach((m) => [bag[m], extra[m]].forEach((b) => Object.keys(b).forEach((k) => hatgIstStilzielKey(k) && stilziele.add(k))));
+  stilziele.forEach((k) => {
+    const cache = new Map();
+    modi.forEach((m) =>
+      [bag[m], extra[m]].forEach((b) => {
+        if (b[k] === undefined) return;
+        const alt = String(b[k]);
+        if (!hatEigenVerweis(alt)) return;
+        if (!cache.has(alt)) {
+          let neu = hatgErsetzeVarAufrufe(alt, imStilziel);
+          neu = neu.replace(selbstverweis, "$1");
+          cache.set(alt, neu);
+        }
+        b[k] = cache.get(alt);
+        if (hatEigenVerweis(b[k])) offen.add(k);
+      })
+    );
+  });
+
+  // 3) Eigene Felder entfernen, auf die nichts mehr zeigt - auch ueber Ketten
+  const gebraucht = new Set();
+  modi.forEach((m) =>
+    [bag[m], extra[m]].forEach((b) =>
+      Object.keys(b).forEach((k) => {
+        if (eigen.has(k)) return;
+        hatgVarNamen(b[k]).forEach((n) => eigen.has(n) && gebraucht.add(n));
+      })
+    )
+  );
+  let gewachsen = true;
+  while (gewachsen) {
+    gewachsen = false;
+    [...gebraucht].forEach((k) =>
+      modi.forEach((m) =>
+        hatgVarNamen(wert(m, k)).forEach((n) => {
+          if (eigen.has(n) && !gebraucht.has(n)) {
+            gebraucht.add(n);
+            gewachsen = true;
+          }
+        })
+      )
+    );
+  }
+  let entfernt = 0;
+  eigen.forEach((k) => {
+    if (gebraucht.has(k)) return;
+    let weg = false;
+    modi.forEach((m) => {
+      if (k in bag[m]) {
+        delete bag[m][k];
+        weg = true;
+      }
+      if (k in extra[m]) {
+        delete extra[m][k];
+        weg = true;
+      }
+    });
+    if (weg) entfernt++;
+  });
+  // Unbenutzte Geschwister einer aufgeloesten Familie (horizon-success neben
+  // horizon-primary) fallen mit weg. Fremde Familien bleiben unberuehrt - dazu
+  // muessen mindestens drei Felder derselben Vorsilbe aufgeloest worden sein.
+  const familie = (k) => (/^([a-zA-Z0-9]+)-/.exec(k) || [])[1];
+  const zaehler = new Map();
+  eigen.forEach((k) => {
+    if (gebraucht.has(k)) return;
+    const f = familie(k);
+    if (f) zaehler.set(f, (zaehler.get(f) || 0) + 1);
+  });
+  modi.forEach((m) =>
+    Object.keys(extra[m]).forEach((k) => {
+      if (eigen.has(k) || bekannt.has(k) || hatgIstStilzielKey(k)) return;
+      const f = familie(k);
+      if (!f || (zaehler.get(f) || 0) < 3) return;
+      delete extra[m][k];
+      if (!(k in extra[m === "light" ? "dark" : "light"])) entfernt++;
+      else if (m === "light") entfernt++;
+    })
+  );
+  return { entfernt, offen: [...offen], behalten: [...gebraucht] };
+}
+
+// Nach dem Auffrischen der Vorlagen zeigt oft nichts mehr auf eigene Felder,
+// die der Import noch stehen lassen musste. Diese fallen dann weg - auch ueber
+// Ketten. Rueckgabe wie bei hatgLoeseEigeneFelderAuf.
+function hatgEntferneVerwaisteEigenfelder(bag, namen) {
+  const modi = ["light", "dark"];
+  const kandidaten = new Set(namen || []);
+  if (!bag || !kandidaten.size) return { entfernt: 0, offen: [] };
+  const extra = bag.extra || { light: {}, dark: {} };
+  const felder = (m) => [bag[m] || {}, extra[m] || {}];
+  const gebraucht = new Set();
+  const offen = new Set();
+  modi.forEach((m) =>
+    felder(m).forEach((b) =>
+      Object.keys(b).forEach((k) => {
+        if (kandidaten.has(k)) return;
+        const treffer = hatgVarNamen(b[k]).filter((n) => kandidaten.has(n));
+        treffer.forEach((n) => gebraucht.add(n));
+        if (treffer.length) offen.add(k);
+      })
+    )
+  );
+  let gewachsen = true;
+  while (gewachsen) {
+    gewachsen = false;
+    [...gebraucht].forEach((k) =>
+      modi.forEach((m) =>
+        felder(m).forEach((b) =>
+          hatgVarNamen(b[k]).forEach((n) => {
+            if (kandidaten.has(n) && !gebraucht.has(n)) {
+              gebraucht.add(n);
+              gewachsen = true;
+            }
+          })
+        )
+      )
+    );
+  }
+  let entfernt = 0;
+  kandidaten.forEach((k) => {
+    if (gebraucht.has(k)) return;
+    let weg = false;
+    modi.forEach((m) =>
+      felder(m).forEach((b) => {
+        if (k in b) {
+          delete b[k];
+          weg = true;
+        }
+      })
+    );
+    if (weg) entfernt++;
+  });
+  return { entfernt, offen: [...offen] };
+}
+
 // Vorlagenbloecke werden im Theme mit Kommentaren eingefasst, damit HATG sie
 // spaeter wiederfindet. Bis v1.0.3 hiess die Marke CARDMOD - alte Themes werden
 // weiter erkannt, geschrieben wird ab jetzt UIX.
@@ -1588,6 +1929,249 @@ function hatgLeseVorlagenBlock(text, id) {
   ).exec(String(text || ""));
   return m ? m[1].trim() : null;
 }
+// Umbenannte Kopien eines HATG-Themes tragen die Marker unter anderer Vorsilbe
+// (/* HORIZON:UIX:glas-bubble:START */). HATG erkannte diese Bloecke nicht und
+// haengte beim Einschalten dieselbe Vorlage ein zweites Mal an. Der Import
+// setzt die Vorsilbe deshalb auf HATG zurueck und laesst von doppelten Bloecken
+// nur den letzten stehen - den, den HATG zuletzt geschrieben hat.
+const HATG_FREMDE_MARKE_RE = /(\/\*\s*|#\s*)([A-Z][A-Z0-9_]*):(UIX|CARDMOD):([a-z0-9][a-z0-9-]*):(START|END)/g;
+function hatgVereinheitlicheVorlagenMarken(bag) {
+  let umbenannt = 0;
+  let doppelt = 0;
+  if (!bag) return { umbenannt, doppelt };
+  ["light", "dark"].forEach((m) =>
+    [bag[m], bag.extra?.[m]].forEach((b) => {
+      if (!b) return;
+      Object.keys(b).forEach((k) => {
+        if (!hatgIstStilzielKey(k)) return;
+        const alt = String(b[k] ?? "");
+        const ids = new Set();
+        let neu = alt.replace(HATG_FREMDE_MARKE_RE, (ganz, vor, marke, art, id, pos) => {
+          ids.add(id);
+          if (marke === "HATG") return ganz;
+          if (pos === "START" && m === "light") umbenannt++;
+          return `${vor}HATG:${art}:${id}:${pos}`;
+        });
+        ids.forEach((id) => {
+          const anzahl = (neu.match(hatgVorlagenBlockRegex(id)) || []).length;
+          if (anzahl < 2) return;
+          let uebrig = anzahl - 1;
+          neu = neu.replace(hatgVorlagenBlockRegex(id), (block) => (uebrig-- > 0 ? "" : block)).trim();
+          if (m === "light") doppelt += anzahl - 1;
+        });
+        if (neu !== alt) b[k] = neu;
+      });
+    })
+  );
+  return { umbenannt, doppelt };
+}
+
+// Verlauf fuer aktive Flaechen: eingeschaltete Bubble-Karten, Sub-Buttons mit
+// Hintergrund, Schieberfuellungen, das Gewaehlte der HA-Karten und der aktive
+// Eintrag der Seitenleiste. HA selbst faerbt seine Knoepfe nur ueber
+// Farbvariablen, die keinen Verlauf annehmen - die bleiben in der Primaerfarbe.
+// Die HA-Karten fuellen ihr Gewaehltes ueber --XX-gewaehlt (Kurzform
+// background), daher nehmen sie den Verlauf an. Gleich fuer Light und Dark,
+// weil UIX-Felder fuer beide Modi gelten.
+const HATG_VERLAUF_ID = "verlauf-akzent";
+const HATG_VERLAUF_ZIELE = ["uix-card", "uix-sidebar"];
+const HATG_VERLAUF_STANDARD = { von: "#4FE3C8", bis: "#38A8FF", winkel: 135, vorn: "#0A2230" };
+function hatgVerlaufHex(wert, ersatz) {
+  const m = /^#?([0-9a-f]{6})$/i.exec(String(wert || "").trim());
+  return m ? `#${m[1].toUpperCase()}` : ersatz;
+}
+function hatgVerlaufNormal(p) {
+  const w = Math.round(Number(p && p.winkel));
+  return {
+    von: hatgVerlaufHex(p && p.von, HATG_VERLAUF_STANDARD.von),
+    bis: hatgVerlaufHex(p && p.bis, HATG_VERLAUF_STANDARD.bis),
+    winkel: isFinite(w) ? ((w % 360) + 360) % 360 : HATG_VERLAUF_STANDARD.winkel,
+    vorn: hatgVerlaufHex(p && p.vorn, HATG_VERLAUF_STANDARD.vorn),
+  };
+}
+function hatgVerlaufCss(ziel, werte) {
+  const p = hatgVerlaufNormal(werte);
+  const kopf = `:host {
+  --verlauf-akzent: linear-gradient(${p.winkel}deg, ${p.von} 0%, ${p.bis} 100%);
+  --verlauf-vorn: ${p.vorn};
+}`;
+  if (ziel === "uix-sidebar") {
+    return `${kopf}
+ha-list-item-button.selected::before {
+  background-color: transparent !important;
+  background-image: var(--verlauf-akzent) !important;
+}
+ha-list-item-button.selected {
+  --sidebar-selected-text-color: var(--verlauf-vorn);
+  --sidebar-selected-icon-color: var(--verlauf-vorn);
+  color: var(--verlauf-vorn) !important;
+}`;
+  }
+  const karten = [
+    ["heizzentrale-karte", "hz"],
+    ["heizung-karte", "hk"],
+    ["uhr-karte", "uk"],
+    ["shelly-karte", "sk"],
+  ]
+    .map(
+      ([tag, k]) => `${tag},
+:host(${tag}) {
+  --${k}-gewaehlt: var(--verlauf-akzent) !important;
+  --${k}-gewaehlt-vorn: var(--verlauf-vorn) !important;
+}`
+    )
+    .join("\n");
+  return `${kopf}
+ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-background {
+  background-color: transparent !important;
+  background-image: var(--verlauf-akzent) !important;
+}
+ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-name,
+ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-state,
+ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-main-icon {
+  color: var(--verlauf-vorn) !important;
+}
+ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-main-icon-container {
+  background-color: rgba(0, 0, 0, 0.14) !important;
+}
+.bubble-sub-button.background-on {
+  background-color: transparent !important;
+  background-image: var(--verlauf-akzent) !important;
+  color: var(--verlauf-vorn) !important;
+}
+.bubble-range-fill {
+  background: var(--verlauf-akzent) !important;
+}
+${karten}
+.menue-kapsel {
+  background-color: transparent !important;
+  background-image: var(--verlauf-akzent) !important;
+}
+.menue-leiste .menue-knopf.is-active {
+  color: var(--verlauf-vorn) !important;
+}
+:host(schieber-karte) .fuellung {
+  background: var(--verlauf-akzent) !important;
+}`;
+}
+// Werte aus einem Block lesen; null, wenn kein Block da ist. Liest auch die
+// erste, von Hand gesetzte Fassung (Verlauf als fester Wert).
+function hatgLeseVerlauf(text) {
+  const block = hatgLeseVorlagenBlock(text, HATG_VERLAUF_ID);
+  if (block === null) return null;
+  const g = /linear-gradient\(\s*(-?\d+(?:\.\d+)?)deg\s*,\s*(#[0-9a-f]{6})[^,]*,\s*(#[0-9a-f]{6})/i.exec(block);
+  const v = /--verlauf-vorn:\s*(#[0-9a-f]{6})/i.exec(block) || /--sidebar-selected-text-color:\s*(#[0-9a-f]{6})/i.exec(block);
+  return hatgVerlaufNormal({ winkel: g ? g[1] : NaN, von: g && g[2], bis: g && g[3], vorn: v && v[1] });
+}
+// Beim Laden: vorhandene Verlaufsbloecke auf den aktuellen Stand bringen, in
+// beiden Zielen. Die Werte kommen aus uix-card, sonst aus der Seitenleiste.
+function hatgMigriereAkzentVerlauf(bag) {
+  let geaendert = 0;
+  if (!bag) return geaendert;
+  ["light", "dark"].forEach((m) => {
+    const b = bag[m];
+    if (!b) return;
+    const werte = hatgLeseVerlauf(b["uix-card"]) || hatgLeseVerlauf(b["uix-sidebar"]);
+    if (!werte) return;
+    HATG_VERLAUF_ZIELE.forEach((k) => {
+      const alt = String(b[k] ?? "");
+      const neu = hatgHaengeVorlagenBlockAn(alt, HATG_VERLAUF_ID, hatgVerlaufCss(k, werte));
+      if (neu !== alt) {
+        b[k] = neu;
+        if (m === "light") geaendert++;
+      }
+    });
+  });
+  return geaendert;
+}
+
+// Bewegter Hintergrund. Dashboards malen ihren Hintergrund in
+// hui-view-background (Shadow Root von hui-root, erreichbar ueber uix-root),
+// die Einstellungsseiten in :host::before von ha-drawer (Vorlage
+// ansicht-hintergrundbild). Bewegt wird nur per transform: das laeuft auf der
+// Grafikkarte und laesst Bild, Verlauf und die Abdunkel-Schicht der Ansicht
+// unangetastet. Die Flaeche ist rundum 14 % groesser als der Bildschirm, damit
+// beim Verschieben kein Rand sichtbar wird. Gemessen am 2026-09-16: HA kappt
+// hui-view-background per max-width auf Bildschirmbreite, dessen Rand lief
+// sonst als gerade Kante durchs Bild.
+const HATG_BEWEGUNG_ID = "hintergrund-bewegung";
+const HATG_BEWEGUNG_ZIELE = ["uix-root", "uix-drawer"];
+const HATG_BEWEGUNG_STUFE_STANDARD = 4;
+function hatgBewegungDauer(stufe) {
+  const s = Math.min(10, Math.max(1, Math.round(Number(stufe) || HATG_BEWEGUNG_STUFE_STANDARD)));
+  return Math.round(60 / s);
+}
+function hatgBewegungStufe(dauer) {
+  const d = Number(dauer);
+  if (!isFinite(d) || d <= 0) return HATG_BEWEGUNG_STUFE_STANDARD;
+  return Math.min(10, Math.max(1, Math.round(60 / d)));
+}
+function hatgBewegungCss(ziel, stufe) {
+  const dauer = hatgBewegungDauer(stufe);
+  const element = ziel === "uix-root" ? "hui-view-background" : ":host::before";
+  const groesse =
+    ziel === "uix-root"
+      ? `
+  width: 128% !important;
+  height: 128% !important;
+  max-width: none !important;
+  max-height: none !important;`
+      : "";
+  return `${element} {
+  inset: -14% !important;${groesse}
+  animation: hatg-hintergrund-drift ${dauer}s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes hatg-hintergrund-drift {
+  0% { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
+  33% { transform: translate3d(-7%, 4%, 0) scale(1.08) rotate(-3deg); }
+  66% { transform: translate3d(6%, -4%, 0) scale(1.04) rotate(2deg); }
+  100% { transform: translate3d(-3%, 7%, 0) scale(1.12) rotate(-1.5deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  ${element} { animation: none !important; }
+}`;
+}
+// Stand aus einem Stilziel lesen: null, wenn die Bewegung aus ist.
+function hatgLeseBewegung(text) {
+  const block = hatgLeseVorlagenBlock(text, HATG_BEWEGUNG_ID);
+  if (block === null) return null;
+  const m = /hatg-hintergrund-drift\s+([\d.]+)s/.exec(block);
+  return { stufe: hatgBewegungStufe(m ? m[1] : NaN) };
+}
+// Beim Laden: Bewegungsbloecke auf den aktuellen Stand bringen. Eine fruehere,
+// von Hand eingesetzte Fassung (Block liquid-hintergrund mit horizon-drift,
+// 2026-09-16 im Theme horizon_linen) wird dabei uebernommen; ihre Groessen
+// fuer einzelne Lichtflaechen verkleinerten ein Bild und liessen Raender frei.
+function hatgMigriereHintergrundBewegung(bag) {
+  let geaendert = 0;
+  if (!bag) return geaendert;
+  ["light", "dark"].forEach((m) =>
+    [bag[m], bag.extra?.[m]].forEach((b) => {
+      if (!b) return;
+      HATG_BEWEGUNG_ZIELE.forEach((k) => {
+        if (b[k] === undefined) return;
+        let text = String(b[k] ?? "");
+        let stufe = null;
+        const alt = hatgLeseVorlagenBlock(text, "liquid-hintergrund");
+        if (alt !== null && /horizon-drift/.test(alt)) {
+          const d = /horizon-drift\s+([\d.]+)s/.exec(alt);
+          stufe = hatgBewegungStufe(d ? d[1] : NaN);
+          text = hatgEntferneVorlagenBlock(text, "liquid-hintergrund");
+        }
+        const vorhanden = hatgLeseBewegung(text);
+        if (vorhanden) stufe = vorhanden.stufe;
+        if (stufe === null) return;
+        const neu = hatgHaengeVorlagenBlockAn(text, HATG_BEWEGUNG_ID, hatgBewegungCss(k, stufe));
+        if (neu !== b[k]) {
+          b[k] = neu;
+          if (m === "light") geaendert++;
+        }
+      });
+    })
+  );
+  return geaendert;
+}
 
 const HATG_VORLAGEN_STILLGELEGT = ["icon-farbe-hintergrund", "ansicht-hintergrund-daempfen", "einstellungen-liste-luftig"];
 // Ziele, in denen stillgelegte Vorlagen liegen koennen - sonst findet das
@@ -1616,62 +2200,66 @@ const HATG_PAKETE = { glas: { label: "Glas-Paket", labelEn: "Glass package" } };
 // Diese Felder faerben Flaechen, die kein UIX-Stilziel zuverlaessig erreicht -
 // die Kopfleiste eines Dashboards etwa holt ihre Farbe immer aus dem Theme.
 // Steht dort ein deckender Wert, ist jede Glas-Vorlage wirkungslos.
+// Grundfelder des Glaslooks. HATG schreibt hier die Werte aus den Reglern hinein;
+// Home Assistant liest sie selbst. Kopf- und Seitenleiste gehoeren zur
+// Navigationsebene. Die Flaechen INNERHALB einer Karte - Bedienknoepfe der
+// Tile-Karte und alles, was eigene Karten darauf aufbauen - brauchen die
+// staerkere Stufe, sonst waeren sie auf der Karte nicht zu sehen. Die
+// ha-color-fill-neutral-Familie gehoert NICHT hierher - die faerbt in Home
+// Assistant auch Menues und Listen, dieselbe Falle wie card-background-color.
+const HATG_GLAS_GRUNDFELDER = [
+  "ha-card-background",
+  "control-button-background-color",
+  "ha-dialog-surface-background",
+  "sidebar-background-color",
+  "app-header-background-color",
+];
+// Weichzeichnung, ebenfalls von Home Assistant selbst gelesen.
+const HATG_GLAS_FILTERFELDER = ["ha-card-backdrop-filter", "ha-dialog-surface-backdrop-filter", "app-header-backdrop-filter"];
+// Diese Felder zeigen per Verweis auf ein Grundfeld, damit die Regler sie mitbewegen.
 const HATG_GLAS_FLAECHENFELDER = [
   // card-background-color bleibt bewusst aussen vor: Home Assistant faerbt damit
   // auch ha-dropdown, also jedes Auswahlfeld. Halbtransparent wird die Liste unlesbar.
-  { key: "ha-card-background", quelle: "hatg-glas-fuellung" },
-  // Kopfleiste und Seitenleiste gehoeren zur Navigationsebene.
-  { key: "app-header-background-color", quelle: "hatg-glas-nav-fuellung" },
-  { key: "sidebar-background-color", quelle: "hatg-glas-nav-fuellung" },
-  // Die Flaechen INNERHALB einer Karte: Bedienknoepfe der Tile-Karte und alles,
-  // was eigene Karten darauf aufbauen. Ohne dieses Feld glasiert das Paket nur
-  // den Kartenkoerper, und die Knoepfe darin bleiben als deckende Bloecke stehen -
-  // in einer dunklen Basis schwarz, in einer hellen weiss.
-  // Bewusst die STARKE Fuellung: die Karte traegt schon die normale, eine zweite
-  // Lage derselben Staerke waere darauf nicht zu sehen.
-  // Die ha-color-fill-neutral-Familie gehoert NICHT hierher - die faerbt in Home
-  // Assistant auch Menues und Listen, dieselbe Falle wie card-background-color.
-  { key: "control-button-background-color", quelle: "hatg-glas-fuellung-stark" },
   // Bubble Card liest seine Flaechen aus eigenen Theme-Variablen. Bleiben die
   // auf den deckenden Werten der Basis stehen, sitzt neben glaesernen HA-Karten
   // eine sichtbar dunklere Bubble-Karte - derselbe Bruch wie bei den Knoepfen.
   // Kartenkoerper: dieselbe Fuellung wie ha-card.
-  { key: "bubble-card-background-color", quelle: "hatg-glas-fuellung" },
-  { key: "bubble-main-buttons-background-color", quelle: "hatg-glas-fuellung" },
-  { key: "bubble-button-card-background-color", quelle: "hatg-glas-fuellung" },
-  { key: "bubble-button-main-background-color", quelle: "hatg-glas-fuellung" },
-  { key: "bubble-climate-background-color", quelle: "hatg-glas-fuellung" },
-  { key: "bubble-climate-main-background-color", quelle: "hatg-glas-fuellung" },
-  { key: "bubble-cover-background-color", quelle: "hatg-glas-fuellung" },
-  { key: "bubble-cover-main-background-color", quelle: "hatg-glas-fuellung" },
-  { key: "bubble-media-player-background-color", quelle: "hatg-glas-fuellung" },
-  { key: "bubble-media-player-main-background-color", quelle: "hatg-glas-fuellung" },
-  { key: "bubble-select-background-color", quelle: "hatg-glas-fuellung" },
-  { key: "bubble-select-main-background-color", quelle: "hatg-glas-fuellung" },
-  { key: "bubble-separator-background-color", quelle: "hatg-glas-fuellung" },
-  { key: "bubble-horizontal-buttons-stack-background-color", quelle: "hatg-glas-fuellung" },
-  { key: "bubble-calendar-main-background-color", quelle: "hatg-glas-fuellung" },
-  { key: "bubble-sub-buttons-main-background-color", quelle: "hatg-glas-fuellung" },
+  { key: "bubble-card-background-color", quelle: "ha-card-background" },
+  { key: "bubble-main-buttons-background-color", quelle: "ha-card-background" },
+  { key: "bubble-button-card-background-color", quelle: "ha-card-background" },
+  { key: "bubble-button-main-background-color", quelle: "ha-card-background" },
+  { key: "bubble-climate-background-color", quelle: "ha-card-background" },
+  { key: "bubble-climate-main-background-color", quelle: "ha-card-background" },
+  { key: "bubble-cover-background-color", quelle: "ha-card-background" },
+  { key: "bubble-cover-main-background-color", quelle: "ha-card-background" },
+  { key: "bubble-media-player-background-color", quelle: "ha-card-background" },
+  { key: "bubble-media-player-main-background-color", quelle: "ha-card-background" },
+  { key: "bubble-select-background-color", quelle: "ha-card-background" },
+  { key: "bubble-select-main-background-color", quelle: "ha-card-background" },
+  { key: "bubble-separator-background-color", quelle: "ha-card-background" },
+  { key: "bubble-horizontal-buttons-stack-background-color", quelle: "ha-card-background" },
+  { key: "bubble-calendar-main-background-color", quelle: "ha-card-background" },
+  { key: "bubble-sub-buttons-main-background-color", quelle: "ha-card-background" },
   // Flaechen INNERHALB einer Bubble-Karte - Knoepfe, Symbolplatten, Regler,
   // dazu das Popup: die starke Fuellung, sonst waeren sie auf der Karte
   // nicht zu sehen.
-  { key: "bubble-button-background-color", quelle: "hatg-glas-fuellung-stark" },
-  { key: "bubble-sub-button-background-color", quelle: "hatg-glas-fuellung-stark" },
-  { key: "bubble-icon-background-color", quelle: "hatg-glas-fuellung-stark" },
-  { key: "bubble-button-icon-background-color", quelle: "hatg-glas-fuellung-stark" },
-  { key: "bubble-cover-icon-background-color", quelle: "hatg-glas-fuellung-stark" },
-  { key: "bubble-media-player-icon-background-color", quelle: "hatg-glas-fuellung-stark" },
-  { key: "bubble-select-icon-background-color", quelle: "hatg-glas-fuellung-stark" },
-  { key: "bubble-separator-icon-background-color", quelle: "hatg-glas-fuellung-stark" },
-  { key: "bubble-climate-button-background-color", quelle: "hatg-glas-fuellung-stark" },
-  { key: "bubble-cover-button-background-color", quelle: "hatg-glas-fuellung-stark" },
-  { key: "bubble-media-player-button-background-color", quelle: "hatg-glas-fuellung-stark" },
-  { key: "bubble-horizontal-buttons-stack-button-background-color", quelle: "hatg-glas-fuellung-stark" },
-  { key: "bubble-sub-slider-background-color", quelle: "hatg-glas-fuellung-stark" },
-  { key: "bubble-media-player-slider-background-color", quelle: "hatg-glas-fuellung-stark" },
-  { key: "bubble-secondary-background-color", quelle: "hatg-glas-fuellung-stark" },
-  { key: "bubble-pop-up-background-color", quelle: "hatg-glas-fuellung-stark" },
-  { key: "bubble-pop-up-main-background-color", quelle: "hatg-glas-fuellung-stark" },
+  { key: "bubble-button-background-color", quelle: "control-button-background-color" },
+  { key: "bubble-sub-button-background-color", quelle: "control-button-background-color" },
+  { key: "bubble-icon-background-color", quelle: "control-button-background-color" },
+  { key: "bubble-button-icon-background-color", quelle: "control-button-background-color" },
+  { key: "bubble-cover-icon-background-color", quelle: "control-button-background-color" },
+  { key: "bubble-media-player-icon-background-color", quelle: "control-button-background-color" },
+  { key: "bubble-select-icon-background-color", quelle: "control-button-background-color" },
+  { key: "bubble-separator-icon-background-color", quelle: "control-button-background-color" },
+  { key: "bubble-climate-button-background-color", quelle: "control-button-background-color" },
+  { key: "bubble-cover-button-background-color", quelle: "control-button-background-color" },
+  { key: "bubble-media-player-button-background-color", quelle: "control-button-background-color" },
+  { key: "bubble-horizontal-buttons-stack-button-background-color", quelle: "control-button-background-color" },
+  { key: "bubble-sub-slider-background-color", quelle: "control-button-background-color" },
+  { key: "bubble-media-player-slider-background-color", quelle: "control-button-background-color" },
+  { key: "bubble-secondary-background-color", quelle: "control-button-background-color" },
+  { key: "bubble-pop-up-background-color", quelle: "control-button-background-color" },
+  { key: "bubble-pop-up-main-background-color", quelle: "control-button-background-color" },
   // Aussen vor bleiben: bubble-select-list-background-color (Aufklappliste,
   // dieselbe Falle wie ha-dropdown), die beiden *-active-Farben (die tragen
   // den Zustand), bubble-backdrop (die Abdunklung hinter dem Popup) und
@@ -1712,6 +2300,17 @@ function hatgVorlagenFelder(tpl) {
   }
   return [...treffer];
 }
+// Vorlagen mit Text-Parameter (titel): der Text steht als content: "..." im CSS.
+const HATG_VORLAGE_TITEL_RE = /content:\s*"((?:[^"\\]|\\.)*)"/;
+function hatgVorlageTitelLesen(blockText) {
+  const m = HATG_VORLAGE_TITEL_RE.exec(String(blockText || ""));
+  return m ? m[1].replace(/\\(.)/g, "$1") : null;
+}
+function hatgVorlageMitTitel(tpl, titel) {
+  const text = String(titel ?? tpl.titel.standard).replace(/[\r\n]+/g, " ");
+  const css = `content: "${text.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
+  return String(tpl.css).replace(HATG_VORLAGE_TITEL_RE, () => css);
+}
 function hatgVorlagenZiel(tpl) {
   const ziel = tpl && tpl.ziel;
   if (!ziel || ziel === HATG_UIX_THEME_KEY) return HATG_VORLAGEN_STANDARDZIEL;
@@ -1738,24 +2337,24 @@ const HATG_EINSTELLUNGEN_ZEILEN = `  :host {
     /* Fruehere eigene Vorlage: Diese Variablen wirken nur, wenn sie ueber den
        Listeneintraegen sitzen. Am Ziel uix-config kamen sie nie an, weil
        ha-panel-config keinen Shadow Root hat - hier sitzen sie richtig. */
-    --ha-list-gap: var(--hatg-liste-abstand, 6px);
-    --ha-list-padding: var(--hatg-liste-innenrand, 8px);
+    --ha-list-gap: 6px;
+    --ha-list-padding: 8px;
     --ha-list-item-focus-radius: var(--ha-card-border-radius, 14px);
-    --ha-border-radius-circle: var(--hatg-icon-radius, 28%);
+    --ha-border-radius-circle: 28%;
   }
   ha-list-nav ha-list-item-button div.icon-background {
-    width: var(--hatg-icon-groesse, 34px) !important;
-    height: var(--hatg-icon-groesse, 34px) !important;
+    width: 34px !important;
+    height: 34px !important;
     /* iOS setzt abgerundete Quadrate statt Kreise */
-    border-radius: var(--hatg-icon-radius, 28%) !important;
+    border-radius: 28% !important;
     display: flex !important;
     align-items: center;
     justify-content: center;
-    background-image: var(--hatg-icon-glanz, linear-gradient(160deg, rgba(255,255,255,0.34) 0%, rgba(255,255,255,0.06) 52%, rgba(255,255,255,0) 78%)) !important;
+    background-image: linear-gradient(160deg, rgba(255,255,255,0.34) 0%, rgba(255,255,255,0.06) 52%, rgba(255,255,255,0) 78%) !important;
     box-shadow:
-      inset 0 0 0 1px var(--hatg-icon-rand, rgba(255, 255, 255, 0.16)),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.16),
       inset 0 1px 0 rgba(255, 255, 255, 0.34),
-      var(--hatg-icon-schatten, 0 1px 2px rgba(0, 0, 0, 0.35)) !important;
+      0 1px 2px rgba(0, 0, 0, 0.35) !important;
   }
   ha-list-nav ha-list-item-button div.icon-background ha-svg-icon {
     padding: 0 !important;
@@ -1763,17 +2362,17 @@ const HATG_EINSTELLUNGEN_ZEILEN = `  :host {
     height: 20px;
   }
   ha-list-nav ha-list-item-button span[slot="headline"] {
-    font-size: var(--hatg-liste-titel-groesse, 15px);
-    font-weight: var(--hatg-liste-titel-gewicht, 600);
+    font-size: 15px;
+    font-weight: 600;
   }
   ha-list-nav ha-list-item-button span[slot="supporting-text"] {
-    font-size: var(--hatg-liste-untertitel-groesse, 12.5px);
-    opacity: var(--hatg-liste-untertitel-deckkraft, 0.68);
+    font-size: 12.5px;
+    opacity: 0.68;
   }
   ha-list-nav ha-list-item-button ha-icon-next {
-    width: var(--hatg-liste-pfeil-groesse, 18px);
-    height: var(--hatg-liste-pfeil-groesse, 18px);
-    opacity: var(--hatg-liste-pfeil-deckkraft, 0.4);
+    width: 18px;
+    height: 18px;
+    opacity: 0.4;
   }`;
 const HATG_EINSTELLUNGEN_PFADE = [
   "ha-config-dashboard $$ ha-config-navigation-list $",
@@ -1807,7 +2406,7 @@ const HATG_VORLAGEN = [
     id: "glas-effekt",
     label: "Glas-Effekt (Blur)",
     desc: "Milchiges Glas mit Weichzeichner statt blickdichter Kartenfarbe. Deckt ab: native HA-Karten sowie saemtliche Bubble-Hintergruende inklusive Climate, Cover, Media Player, Select, Kalender, Popup und Horizontal Buttons Stack. Wirkt am staerksten auf einem Dashboard mit Hintergrundbild.",
-    css: ":host,\nha-card {\n  background: rgba(255, 255, 255, 0.10) !important;\n  backdrop-filter: blur(16px) saturate(160%);\n  -webkit-backdrop-filter: blur(16px) saturate(160%);\n  border: 1px solid rgba(255, 255, 255, 0.25) !important;\n  --bubble-card-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-main-buttons-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-button-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-sub-button-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-climate-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-climate-main-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-climate-button-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-cover-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-cover-main-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-media-player-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-media-player-main-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-select-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-select-main-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-horizontal-buttons-stack-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-calendar-main-background-color: rgba(255, 255, 255, 0.10);\n}\n.bubble-container {\n  background: rgba(255, 255, 255, 0.10) !important;\n  backdrop-filter: blur(16px) saturate(160%);\n  -webkit-backdrop-filter: blur(16px) saturate(160%);\n  -webkit-mask-image: -webkit-radial-gradient(white, black);\n}\n:host(hui-heading-card) ha-card,\n:host(mushroom-chips-card) ha-card,\n:host(mushroom-chip) ha-card,\n:host(:has(.chip-container)),\nha-card:has(.chip-container),\n:host(.type-heading) ha-card,\n:host(.type-heading),\nha-card.type-heading,\n:host(:has(.bubble-sub-button)),\nha-card:has(.bubble-sub-button),\n:host(:has(.bubble-separator)),\nha-card:has(.bubble-separator),\n:host(:has(.bubble-container)),\nha-card:has(.bubble-container) {\n  border: none !important;\n  box-shadow: none !important;\n  background: none !important;\n  background-image: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n}",
+    css: ":host,\nha-card {\n  background: rgba(255, 255, 255, 0.10) !important;\n  backdrop-filter: blur(16px) saturate(160%);\n  -webkit-backdrop-filter: blur(16px) saturate(160%);\n  border: 1px solid rgba(255, 255, 255, 0.25) !important;\n  --bubble-card-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-main-buttons-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-button-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-sub-button-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-climate-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-climate-main-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-climate-button-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-cover-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-cover-main-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-media-player-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-media-player-main-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-select-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-select-main-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-horizontal-buttons-stack-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-calendar-main-background-color: rgba(255, 255, 255, 0.10);\n}\n.bubble-container {\n  background: rgba(255, 255, 255, 0.10) !important;\n  backdrop-filter: blur(16px) saturate(160%);\n  -webkit-backdrop-filter: blur(16px) saturate(160%);\n  -webkit-mask-image: -webkit-radial-gradient(white, black);\n}\n:host(.type-custom-bubble-card) {\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n}\n:host(hui-heading-card) ha-card,\n:host(mushroom-chips-card) ha-card,\n:host(mushroom-chip) ha-card,\n:host(:has(.chip-container)),\nha-card:has(.chip-container),\n:host(.type-heading) ha-card,\n:host(.type-heading),\nha-card.type-heading,\n:host(:has(.bubble-sub-button)),\nha-card:has(.bubble-sub-button),\n:host(:has(.bubble-separator)),\nha-card:has(.bubble-separator),\n:host(:has(.bubble-container)),\nha-card:has(.bubble-container) {\n  border: none !important;\n  box-shadow: none !important;\n  background: none !important;\n  background-image: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n}",
   },
   {
     id: "relief-tiefe",
@@ -1821,32 +2420,33 @@ const HATG_VORLAGEN = [
     label: "Glas: eigene Ebene unter der Karte",
     desc: "Milchiges Glas, das den Weichzeichner nicht auf die Karte selbst legt, sondern auf eine Ebene darunter. Anders als der einfache Glas-Effekt bleibt der Kartenhintergrund dadurch mit Hintergrundbildern und Verläufen verträglich. Hüllen-Karten (Überschriften, Mushroom-Titel und -Chips, reine Textkarten) sind bewusst ausgenommen, damit sie nicht plötzlich als Kachel erscheinen.",
     ziel: "uix-card",
-    css: `:host {
-  /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
-     deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-  --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-}
-:host,
+    css: `
+/* Nur die Karte selbst, nicht ihr Wirt. Auf Dashboards patcht UIX das
+   Karten-Element unter hui-card: :host ist dann dieses Element, ha-card die
+   Karte darin. ":host, ha-card" bemalte beide - Fuellung, Glanz und
+   Weichzeichnung lagen doppelt uebereinander, die Karten wirkten
+   ausgewaschen. Wo UIX ha-card selbst patcht, greift :host(ha-card).
+   Ohne Filter am Wirt bleiben ausserdem Bubble-Pop-ups intakt: ein
+   backdrop-filter macht ein Element zum Bezugsrahmen fuer position: fixed,
+   und das Pop-up fiel auf die Groesse des Wirts zusammen. */
+:host(ha-card),
 ha-card {
   background-color: rgba(255, 255, 255, 0.5) !important;
-  background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-  background-image:
-    linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-    var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-  backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-  -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+  background-color: var(--ha-card-background) !important;
+  background-image: none !important;
+  backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
+  -webkit-backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
   /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
      Layout um seine Breite verschieben - bei eigenen Panels rutscht damit der
      gesamte Inhalt nach unten. */
-  box-shadow:
-    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-    var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+  box-shadow: var(--ha-card-box-shadow) !important;
 }
+/* Auch bubble-card hat im Shadow Root eine ha-card, die ihre Container
+   umschliesst. Die zeichnet "Bubble Card in Glas" schon - ohne Ausnahme lag
+   darunter ein zweites Glas. */
+:host(.type-custom-bubble-card) ha-card,
 :host(hui-heading-card) ha-card,
 :host(mushroom-title-card) ha-card,
 :host(mushroom-chips-card) ha-card,
@@ -1866,10 +2466,60 @@ vaadin-combo-box-overlay,
 .mdc-menu-surface,
 mwc-menu-surface {
   /* Auswahlfelder und Menues bleiben deckend - durchscheinend sind sie unlesbar. */
-  --card-background-color: var(--hatg-glas-menuegrund, #FFFFFF) !important;
-  --ha-card-background: var(--hatg-glas-menuegrund, #FFFFFF) !important;
-  background-color: var(--hatg-glas-menuegrund, #FFFFFF) !important;
+
+  --ha-card-background: var(--card-background-color) !important;
+  background-color: var(--card-background-color) !important;
   background-image: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+/* Bubble Card legt ein unsichtbares ha-select als Klickflaeche ueber runde
+   Auswahl-Sub-Buttons. Mit deckender Farbe wird daraus ein eckiges dunkles
+   Quadrat. Die Variablen oben halten die aufgeklappte Liste trotzdem deckend. */
+ha-select.bubble-dropdown-select {
+  background-color: transparent !important;
+}`,
+  },
+  {
+    id: "glas-weichzeichnung-karten",
+    label: "Glas: nur Weichzeichnung unter der Karte",
+    desc: "Legt nur den Weichzeichner unter die Karte - ohne eigene Füllung, Glanz oder Kanten. Für Karten, die ihre Fläche selbst malen, etwa HA-Karten, Proxmox- oder Shelly-Karten: Ohne Weichzeichnung liegt das Hintergrundbild scharf dahinter, und sie wirken neben Bubble-Karten durchsichtiger. Bubble-Karten, Überschriften, Mushroom-Titel und -Chips sowie reine Textkarten sind ausgenommen. Nicht zusammen mit „Glas: eigene Ebene unter der Karte“ nötig, die bringt die Weichzeichnung schon mit. Die Menüleiste der HA-Karten bekommt zusätzlich den Kartenschatten des Themes, ihre Kapsel eine plastische Kante.",
+    ziel: "uix-card",
+    css: `/* Nur die Karte selbst, nicht ihr Wirt: Ein backdrop-filter auf dem Wirt
+   macht ihn zum Bezugsrahmen fuer position: fixed. */
+:host(ha-card),
+ha-card {
+  backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
+  -webkit-backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
+  /* Die Weichzeichnung folgt der Rundung dieses Elements. Karten, deren
+     Flaeche tiefer liegt (HA-Karten), runden ihre leere ha-card sonst mit
+     16 px, die Flaeche darin mit 24 px - die Ecken lagen dann ausserhalb. */
+  border-radius: var(--ha-card-border-radius, 12px) !important;
+}
+/* Die Menueleiste der HA-Karten ist eine Pille. Ihre Flaeche liest keinen
+   Kartenschatten und blieb neben den uebrigen Karten ohne Kontur - sie
+   bekommt den des Themes, die Kapsel des aktiven Punkts die plastische
+   Innenkante des Gewaehlten. */
+ha-card:has(.menue-leiste) {
+  border-radius: 9999px !important;
+}
+.menue-leiste {
+  box-shadow: var(--ha-card-box-shadow, 0 8px 32px rgba(0, 0, 0, 0.28)) !important;
+}
+.menue-kapsel {
+  box-shadow:
+    inset 3px 3px 7px color-mix(in srgb, var(--accent-color) 62%, #000000),
+    inset -2px -2px 6px color-mix(in srgb, var(--accent-color) 74%, #ffffff) !important;
+}
+/* Bubble Card: Das ha-card in bubble-card umschliesst die Container, die
+   "Bubble Card in Glas" schon weichzeichnet. Huellen-Karten sollen nicht
+   als Kachel erscheinen. */
+:host(.type-custom-bubble-card) ha-card,
+:host(hui-heading-card) ha-card,
+:host(mushroom-title-card) ha-card,
+:host(mushroom-chips-card) ha-card,
+:host(.text-only),
+ha-card.text-only {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }`,
@@ -1883,30 +2533,23 @@ mwc-menu-surface {
     css: `:host {
   /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
      deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --ha-dialog-surface-background: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-  --ha-color-surface-default: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-  --wa-color-surface-raised: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-  --card-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-  --ha-dialog-surface-backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%)) !important;
+
+  --ha-color-surface-default: var(--ha-dialog-surface-background) !important;
+  --wa-color-surface-raised: var(--ha-dialog-surface-background) !important;
+
 }
 ha-card {
   background-color: rgba(255, 255, 255, 0.68) !important;
-  background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-  background-image:
-    linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-    var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-  backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
-  -webkit-backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
+  background-color: var(--ha-dialog-surface-background) !important;
+  background-image: none !important;
+  backdrop-filter: var(--ha-dialog-surface-backdrop-filter, blur(32px));
+  -webkit-backdrop-filter: var(--ha-dialog-surface-backdrop-filter, blur(32px));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
   /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
      Layout um seine Breite verschieben - bei eigenen Panels rutscht damit der
      gesamte Inhalt nach unten. */
-  box-shadow:
-    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-    var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+  box-shadow: var(--ha-card-box-shadow) !important;
 }
 ha-dropdown,
 ha-combo-box,
@@ -1915,9 +2558,9 @@ vaadin-combo-box-overlay,
 .mdc-menu-surface,
 mwc-menu-surface {
   /* Auswahlfelder und Menues bleiben deckend - durchscheinend sind sie unlesbar. */
-  --card-background-color: var(--hatg-glas-menuegrund, #FFFFFF) !important;
-  --ha-card-background: var(--hatg-glas-menuegrund, #FFFFFF) !important;
-  background-color: var(--hatg-glas-menuegrund, #FFFFFF) !important;
+
+  --ha-card-background: var(--card-background-color) !important;
+  background-color: var(--card-background-color) !important;
   background-image: none !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
@@ -1932,32 +2575,25 @@ mwc-menu-surface {
     css: `:host {
   /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
      deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --ha-dialog-surface-background: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-  --ha-color-surface-default: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-  --wa-color-surface-raised: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-  --card-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-  --ha-dialog-surface-backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%)) !important;
+
+  --ha-color-surface-default: var(--ha-dialog-surface-background) !important;
+  --wa-color-surface-raised: var(--ha-dialog-surface-background) !important;
+
 }
 ha-dialog,
 ha-adaptive-dialog,
 .mdc-dialog__surface {
   background-color: rgba(255, 255, 255, 0.68) !important;
-  background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-  background-image:
-    linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-    var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-  backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
-  -webkit-backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
+  background-color: var(--ha-dialog-surface-background) !important;
+  background-image: none !important;
+  backdrop-filter: var(--ha-dialog-surface-backdrop-filter, blur(32px));
+  -webkit-backdrop-filter: var(--ha-dialog-surface-backdrop-filter, blur(32px));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
   /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
      Layout um seine Breite verschieben - bei eigenen Panels rutscht damit der
      gesamte Inhalt nach unten. */
-  box-shadow:
-    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-    var(--hatg-glas-schatten-hoch, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+  box-shadow: var(--dialog-box-shadow) !important;
 }
 ha-dropdown,
 ha-combo-box,
@@ -1966,9 +2602,9 @@ vaadin-combo-box-overlay,
 .mdc-menu-surface,
 mwc-menu-surface {
   /* Auswahlfelder und Menues bleiben deckend - durchscheinend sind sie unlesbar. */
-  --card-background-color: var(--hatg-glas-menuegrund, #FFFFFF) !important;
-  --ha-card-background: var(--hatg-glas-menuegrund, #FFFFFF) !important;
-  background-color: var(--hatg-glas-menuegrund, #FFFFFF) !important;
+
+  --ha-card-background: var(--card-background-color) !important;
+  background-color: var(--card-background-color) !important;
   background-image: none !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
@@ -1983,27 +2619,21 @@ mwc-menu-surface {
     css: `:host {
   /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
      deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --ha-card-background: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
-  --card-background-color: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
+  --ha-card-background: var(--app-header-background-color) !important;
+
 }
 .mdc-snackbar__surface {
   background-color: rgba(255, 255, 255, 0.5) !important;
-  background-color: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
-  background-image:
-    linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-    var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-  backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
-  -webkit-backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
+  background-color: var(--app-header-background-color) !important;
+  background-image: none !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
   /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
      Layout um seine Breite verschieben - bei eigenen Panels rutscht damit der
      gesamte Inhalt nach unten. */
-  box-shadow:
-    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-    var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+  box-shadow: var(--ha-card-box-shadow) !important;
 }`,
   },
   {
@@ -2012,30 +2642,38 @@ mwc-menu-surface {
     label: "Benachrichtigungen in Glas",
     desc: "Die Einträge in der Benachrichtigungsliste der Seitenleiste. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.",
     ziel: "uix-persistent-notification-item",
-    css: `:host {
-  /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
-     deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-  --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-}
+    css: `
 ha-card {
   background-color: rgba(255, 255, 255, 0.5) !important;
-  background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-  background-image:
-    linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-    var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-  backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-  -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+  background-color: var(--ha-card-background) !important;
+  background-image: none !important;
+  backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
+  -webkit-backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
   /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
      Layout um seine Breite verschieben - bei eigenen Panels rutscht damit der
      gesamte Inhalt nach unten. */
-  box-shadow:
-    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-    var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+  box-shadow: var(--ha-card-box-shadow) !important;
+}`,
+  },
+  {
+    id: "glas-kartenmarker",
+    paket: "glas",
+    label: "Kartenmarker in Glas",
+    desc: "Die runden Marker von Personen und Geräten auf der Karte - im Panel Karte und in Kartenkarten. Legt Glasfüllung, Glanz, Weichzeichnung und Lichtkanten auf den Marker. Der farbige Ring, an dem man die Entität erkennt, bleibt, und Marker mit Bild zeigen weiter ihr Bild. Gruppierte Marker und Zonen zeichnet die Karte selbst, sie sind nicht betroffen.",
+    ziel: "uix-entity-marker",
+    css: `/* Das Stylesheet landet im Shadow Root von ha-entity-marker. Die sichtbare
+   Flaeche ist .marker - deckend in der Kartenfarbe, mit einem 1 px Ring in
+   --ha-marker-color. Den Ring laesst die Vorlage stehen: an seiner Farbe
+   erkennt man die Entitaet. */
+.marker {
+  background-color: rgba(255, 255, 255, 0.68) !important;
+  background-color: var(--control-button-background-color) !important;
+  background-image: none !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: var(--ha-card-box-shadow) !important;
 }`,
   },
   {
@@ -2044,30 +2682,19 @@ ha-card {
     label: "Badges in Glas",
     desc: "Die runden Anzeigen oberhalb der Karten. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.",
     ziel: "uix-badge",
-    css: `:host {
-  /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
-     deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-  --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-}
+    css: `
 ha-badge {
   background-color: rgba(255, 255, 255, 0.35) !important;
-  background-color: var(--hatg-glas-fuellung-leicht, rgba(255, 255, 255, 0.35)) !important;
-  background-image:
-    linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-    var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-  backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
-  -webkit-backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
+  background-color: color-mix(in srgb, var(--ha-card-background) 70%, transparent) !important;
+  background-image: none !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
   /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
      Layout um seine Breite verschieben - bei eigenen Panels rutscht damit der
      gesamte Inhalt nach unten. */
-  box-shadow:
-    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-    var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+  box-shadow: var(--ha-card-box-shadow) !important;
 }`,
   },
   {
@@ -2076,30 +2703,19 @@ ha-badge {
     label: "Überschriften-Badges in Glas",
     desc: "Die kleinen Anzeigen in Überschriften-Karten. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.",
     ziel: "uix-heading-badge",
-    css: `:host {
-  /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
-     deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-  --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-}
+    css: `
 :host {
   background-color: rgba(255, 255, 255, 0.35) !important;
-  background-color: var(--hatg-glas-fuellung-leicht, rgba(255, 255, 255, 0.35)) !important;
-  background-image:
-    linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-    var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-  backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
-  -webkit-backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
+  background-color: color-mix(in srgb, var(--ha-card-background) 70%, transparent) !important;
+  background-image: none !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
   /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
      Layout um seine Breite verschieben - bei eigenen Panels rutscht damit der
      gesamte Inhalt nach unten. */
-  box-shadow:
-    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-    var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+  box-shadow: var(--ha-card-box-shadow) !important;
 }`,
   },
   {
@@ -2110,14 +2726,12 @@ ha-badge {
     ziel: "uix-root",
     css: `/* Nur .header - .toolbar liegt darin und wuerde die Flaeche verdoppeln. */
 .header {
-  background-color: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
+  background-color: var(--app-header-background-color) !important;
   /* Kein Reflex: ueber die Breite einer Leiste wird der Glanz zum Farbverlauf. */
   background-image: none !important;
-  backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
-  -webkit-backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
-  box-shadow:
-    inset 0 -1px 0 var(--hatg-glas-rand, rgba(255, 255, 255, 0.55)),
-    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)) !important;
+  backdrop-filter: var(--app-header-backdrop-filter, blur(32px));
+  -webkit-backdrop-filter: var(--app-header-backdrop-filter, blur(32px));
+  box-shadow: var(--bar-box-shadow, none) !important;
 }
 .toolbar {
   background: none !important;
@@ -2129,34 +2743,42 @@ ha-badge {
     id: "glas-bubble",
     paket: "glas",
     label: "Bubble Card in Glas",
-    desc: "Bubble Card zeichnet seine Flächen selbst und liest dafür eigene Variablen - ohne diese Vorlage bleiben Bubble-Karten deckend, auch wenn die Karte darunter längst Glas ist. Setzt die Variablen auf die gemeinsamen Glaswerte und legt Weichzeichnung, Reflex und Kanten auf Karten, Icons, Sub-Buttons sowie Climate-, Cover-, Media-Player-, Select- und Kalender-Flächen. Schaltet außerdem den Rahmen ab, den Bubble Card aus dem Theme-Feld bubble-border zieht: Er ist deckend und liegt genau auf der Lichtkante, die diese Vorlage als inneren Ring zeichnet - ohne ihn steuern die Regler im Bereich Glaslook auch die Kante. Die Variablennamen stammen aus Bubble Cards eigenem CSS und wurden in einer laufenden Instanz geprüft.",
+    desc: "Bubble Card zeichnet seine Flächen selbst und liest dafür eigene Variablen - ohne diese Vorlage bleiben Bubble-Karten deckend, auch wenn die Karte darunter längst Glas ist. Setzt die Variablen auf die gemeinsamen Glaswerte und gibt Karten, Sub-Buttons sowie Climate-, Cover-, Media-Player-, Select- und Kalender-Flächen Weichzeichnung, die Rundung der Karten sowie Rahmen und Schatten der HA-Karten aus ha-card-border-width, ha-card-border-color und ha-card-box-shadow - ohne Glanz. Icons werden zu abgerundeten Kästchen mit leiser Tönung. Eingeschaltete Karten und Sub-Buttons mit Hintergrund werden deckend in der Akzentfarbe mit plastischer Innenkante, Schrift und Symbol darauf in der Textfarbe für Akzentflächen. Schieber bekommen eine vertiefte Glasmulde als Spur und eine deckende Füllung mit plastischer Kante. Separatoren bleiben ohne Hintergrund. Den Rahmen, den Bubble Card aus dem Theme-Feld bubble-border zieht, schaltet sie ab - er würde auch Pop-ups und deren Knöpfe einfassen. Die Variablennamen stammen aus Bubble Cards eigenem CSS und wurden in einer laufenden Instanz geprüft.",
     ziel: "uix-card",
     css: `:host {
   /* Bubble Card faerbt seine Flaechen ueber eigene Variablen. Ohne diese Zeilen
      bleibt jede Bubble-Karte deckend, egal wie transparent ha-card ist.
      Die Namen stammen aus den Regeln im Shadow-Root von bubble-card. */
-  --bubble-main-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-  --bubble-button-main-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-  --bubble-climate-main-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-  --bubble-separator-main-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-  --bubble-button-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-  --bubble-secondary-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-  --bubble-icon-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-  --bubble-button-icon-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-  --bubble-climate-icon-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-  --bubble-separator-icon-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-  --bubble-sub-button-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-  --bubble-main-buttons-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-  --bubble-climate-button-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
+  --bubble-main-background-color: var(--ha-card-background) !important;
+  --bubble-button-main-background-color: var(--ha-card-background) !important;
+  --bubble-climate-main-background-color: var(--ha-card-background) !important;
+  --bubble-separator-main-background-color: var(--ha-card-background) !important;
+  --bubble-button-background-color: var(--ha-card-background) !important;
+  --bubble-secondary-background-color: var(--control-button-background-color) !important;
+  --bubble-icon-background-color: var(--control-button-background-color) !important;
+  --bubble-button-icon-background-color: var(--control-button-background-color) !important;
+  --bubble-climate-icon-background-color: var(--control-button-background-color) !important;
+  --bubble-separator-icon-background-color: var(--control-button-background-color) !important;
+  --bubble-sub-button-background-color: var(--control-button-background-color) !important;
+  --bubble-main-buttons-background-color: var(--control-button-background-color) !important;
+  --bubble-climate-button-background-color: var(--control-button-background-color) !important;
   /* Aus --bubble-border zieht Bubble Card einen echten border - auf
-     .bubble-container jeder Karte, auf .bubble-pop-up, auf die Schliessen-
-     Knoepfe der Pop-ups und auf das Menueleisten-Panel. Der Wert aus dem
-     Theme-Feld ist deckend und liegt genau auf der Lichtkante, die diese
-     Vorlage weiter unten als inneren Ring in den box-shadow legt. Er wuerde
-     sie also ueberdecken. Bubbles eigener Standard ist ohnehin none - mit
-     dieser Zeile kommt die Kante wieder aus dem Bereich Glaslook. */
+     .bubble-container jeder Karte, aber auch auf .bubble-pop-up und die
+     Schliessen-Knoepfe der Pop-ups. Den Rahmen der Karten setzt diese
+     Vorlage weiter unten direkt aus den HA-Feldern, die Variable bleibt
+     deshalb aus. */
   --bubble-border: none !important;
+  /* Rundung wie die Raumzeilen eigener Karten (Heizzentrale: 11,5 px bei
+     50 px Hoehe, auf 56 px hohe Bubble-Karten umgerechnet). Bubble rechnet
+     Hintergrund und Schieberspur aus diesen Variablen. */
+  --bubble-button-border-radius: 13px;
+  --bubble-border-radius: 13px;
 }
+/* Flaechen wie HA-Karten: Weichzeichnung, Rahmen und Schatten aus denselben
+   Theme-Feldern, die ha-card liest - ohne diese Zeilen standen Bubble-Karten
+   am 2026-09-16 rahmenlos neben HA-Karten mit 8 px breitem Rahmen. Das
+   Klappfeld der Menueleiste gehoert dazu: seine einzige Kontur war der
+   Rahmen, den diese Vorlage oben abschaltet. */
 .bubble-container,
 .bubble-button-container,
 .bubble-climate-container,
@@ -2168,23 +2790,34 @@ ha-badge {
 .bubble-temperature-container,
 .bubble-low-temp-container,
 .bubble-high-temp-container,
-.bubble-icon-container,
-.bubble-main-icon-container,
-.bubble-sub-button,
-/* Das Klappfeld der Menueleiste faerbt sich ueber --bubble-main-background-color
-   schon mit, bekam aber weder Weichzeichnung noch Kante - seine einzige Kontur
-   war der Rahmen, den diese Vorlage oben abschaltet. */
 .bubble-menu-bar-panel {
-  backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%)) !important;
-  -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%)) !important;
-  background-image:
-    linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-    var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-  box-shadow:
-    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.55)),
-    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-    var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+  backdrop-filter: var(--ha-card-backdrop-filter, blur(18px)) !important;
+  -webkit-backdrop-filter: var(--ha-card-backdrop-filter, blur(18px)) !important;
+  background-image: none !important;
+  border: var(--ha-card-border-width, 1px) solid var(--ha-card-border-color, var(--divider-color, transparent)) !important;
+  border-radius: 13px !important;
+  box-shadow: var(--ha-card-box-shadow, none) !important;
+}
+.bubble-background {
+  border-radius: inherit !important;
+}
+/* Icons als abgerundete Kaestchen mit leiser Toenung, ohne Rand und Glanz. */
+.bubble-icon-container,
+.bubble-main-icon-container {
+  background-color: color-mix(in srgb, var(--secondary-text-color, rgba(255, 255, 255, 0.55)) 15%, transparent) !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+  border-radius: 14px !important;
+}
+/* Sub-Buttons wie ruhende Knoepfe. */
+.bubble-sub-button {
+  background-image: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-radius: 11px !important;
+  box-shadow: 0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3) !important;
 }
 ha-dropdown,
 ha-combo-box,
@@ -2193,12 +2826,76 @@ vaadin-combo-box-overlay,
 .mdc-menu-surface,
 mwc-menu-surface {
   /* Auswahlfelder und Menues bleiben deckend - durchscheinend sind sie unlesbar. */
-  --card-background-color: var(--hatg-glas-menuegrund, #FFFFFF) !important;
-  --ha-card-background: var(--hatg-glas-menuegrund, #FFFFFF) !important;
-  background-color: var(--hatg-glas-menuegrund, #FFFFFF) !important;
+
+  --ha-card-background: var(--card-background-color) !important;
+  background-color: var(--card-background-color) !important;
   background-image: none !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
+}
+/* Bubble Card legt ein unsichtbares ha-select als Klickflaeche ueber runde
+   Auswahl-Sub-Buttons. Mit deckender Farbe wird daraus ein eckiges dunkles
+   Quadrat. Die Variablen oben halten die aufgeklappte Liste trotzdem deckend. */
+ha-select.bubble-dropdown-select {
+  background-color: transparent !important;
+}
+/* Eingefaerbte Karten, etwa ein eingeschalteter Schalter: Bubble setzt dann
+   inline opacity: 1 auf .bubble-background, sonst 0.5. Zustandskarten melden
+   ebenfalls is-on, bleiben aber farblos - an is-on allein haengt die Regel
+   deshalb nicht, sonst stuende dunkle Schrift auf dunklem Glas. Wie das
+   Gewaehlte eigener Karten: deckend in der Akzentfarbe mit plastischer
+   Innenkante, Schrift und Symbol in --text-primary-color. */
+ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-background {
+  background-color: var(--bubble-button-background-color) !important;
+  box-shadow:
+    inset 3px 3px 7px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) 62%, #000000),
+    inset -2px -2px 6px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) 74%, #ffffff) !important;
+}
+ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-name,
+ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-state,
+ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-main-icon {
+  color: var(--text-primary-color, #ffffff) !important;
+  opacity: 1 !important;
+}
+ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-main-icon-container {
+  background-color: rgba(0, 0, 0, 0.16) !important;
+}
+/* Separatoren sind Ueberschriften mit Linie, keine Kacheln. */
+.bubble-container.separator-container {
+  background: none !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+/* Sub-Buttons mit Hintergrund (etwa ein Sensorwert im Separator): gewaehlt
+   wie die Karten. */
+.bubble-sub-button.background-on {
+  background-color: var(--bubble-sub-button-light-background-color, var(--bubble-accent-color, var(--bubble-default-color))) !important;
+  color: var(--text-primary-color, #ffffff) !important;
+  box-shadow:
+    inset 3px 3px 7px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) 62%, #000000),
+    inset -2px -2px 6px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) 74%, #ffffff) !important;
+}
+/* Schieber wie die Schieber eigener Karten: Spur als vertiefte Glasmulde,
+   deren heller Innenschatten --neumorph-hell liest (ohne Theme-Wert aus der
+   Kartenflaeche gemischt). Die Fuellung behaelt Bubbles Farbe - Akzent oder
+   Lichtfarbe -, wird deckend und bekommt die plastische Innenkante.
+   Farbschieber setzen opacity 0 mit hoeherer Spezifitaet und bleiben
+   unberuehrt. */
+.bubble-range-slider {
+  background-color: var(--control-button-background-color) !important;
+  box-shadow:
+    inset 5px 5px 11px color-mix(in srgb, var(--ha-card-background, var(--card-background-color)) 88%, #000000),
+    inset -5px -5px 11px var(--neumorph-hell, color-mix(in srgb, var(--ha-card-background, var(--card-background-color)) 58%, #ffffff)) !important;
+}
+.bubble-range-fill {
+  opacity: 1 !important;
+  border-radius: inherit !important;
+  box-shadow:
+    inset 3px 3px 7px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) 62%, #000000),
+    inset -2px -2px 6px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) 74%, #ffffff) !important;
 }`,
   },
   {
@@ -2207,30 +2904,19 @@ mwc-menu-surface {
     label: "Glance-Karten in Glas",
     desc: "Glance-Karten bringen ihre eigene Fläche mit und brauchen deshalb einen eigenen Eintrag. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.",
     ziel: "uix-glance",
-    css: `:host {
-  /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
-     deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-  --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-}
+    css: `
 ha-card {
   background-color: rgba(255, 255, 255, 0.5) !important;
-  background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-  background-image:
-    linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-    var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-  backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-  -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+  background-color: var(--ha-card-background) !important;
+  background-image: none !important;
+  backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
+  -webkit-backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
   /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
      Layout um seine Breite verschieben - bei eigenen Panels rutscht damit der
      gesamte Inhalt nach unten. */
-  box-shadow:
-    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-    var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+  box-shadow: var(--ha-card-box-shadow) !important;
 }
 :host(hui-heading-card) ha-card,
 :host(mushroom-title-card) ha-card,
@@ -2252,27 +2938,21 @@ ha-card.text-only {
     css: `:host {
   /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
      deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --ha-section-background-color: var(--hatg-glas-fuellung-leicht, rgba(255, 255, 255, 0.35)) !important;
-  --section-background-color: var(--hatg-glas-fuellung-leicht, rgba(255, 255, 255, 0.35)) !important;
+  --ha-section-background-color: color-mix(in srgb, var(--ha-card-background) 70%, transparent) !important;
+  --section-background-color: color-mix(in srgb, var(--ha-card-background) 70%, transparent) !important;
 }
 .container {
   background-color: rgba(255, 255, 255, 0.35) !important;
-  background-color: var(--hatg-glas-fuellung-leicht, rgba(255, 255, 255, 0.35)) !important;
-  background-image:
-    linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-    var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-  backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-  -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+  background-color: color-mix(in srgb, var(--ha-card-background) 70%, transparent) !important;
+  background-image: none !important;
+  backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
+  -webkit-backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
   /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
      Layout um seine Breite verschieben - bei eigenen Panels rutscht damit der
      gesamte Inhalt nach unten. */
-  box-shadow:
-    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-    var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+  box-shadow: var(--ha-card-box-shadow) !important;
 }`,
   },
   {
@@ -2281,30 +2961,19 @@ ha-card.text-only {
     label: "Kalender in Glas",
     desc: "Das Kalender-Panel in der Seitenleiste. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.",
     ziel: "uix-calendar",
-    css: `:host {
-  /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
-     deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-  --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-}
+    css: `
 ha-card {
   background-color: rgba(255, 255, 255, 0.5) !important;
-  background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-  background-image:
-    linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-    var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-  backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-  -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+  background-color: var(--ha-card-background) !important;
+  background-image: none !important;
+  backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
+  -webkit-backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
   /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
      Layout um seine Breite verschieben - bei eigenen Panels rutscht damit der
      gesamte Inhalt nach unten. */
-  box-shadow:
-    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-    var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+  box-shadow: var(--ha-card-box-shadow) !important;
 }`,
   },
   {
@@ -2313,30 +2982,19 @@ ha-card {
     label: "To-do-Listen in Glas",
     desc: "Das Listen-Panel in der Seitenleiste. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.",
     ziel: "uix-todo",
-    css: `:host {
-  /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
-     deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-  --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-}
+    css: `
 ha-card {
   background-color: rgba(255, 255, 255, 0.5) !important;
-  background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-  background-image:
-    linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-    var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-  backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-  -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+  background-color: var(--ha-card-background) !important;
+  background-image: none !important;
+  backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
+  -webkit-backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
   /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
      Layout um seine Breite verschieben - bei eigenen Panels rutscht damit der
      gesamte Inhalt nach unten. */
-  box-shadow:
-    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-    var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+  box-shadow: var(--ha-card-box-shadow) !important;
 }`,
   },
   {
@@ -2345,30 +3003,19 @@ ha-card {
     label: "Verlauf in Glas",
     desc: "Das Verlaufs-Panel mit seinen Zeitleisten. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.",
     ziel: "uix-history",
-    css: `:host {
-  /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
-     deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-  --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-}
+    css: `
 ha-card {
   background-color: rgba(255, 255, 255, 0.5) !important;
-  background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-  background-image:
-    linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-    var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-  backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-  -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+  background-color: var(--ha-card-background) !important;
+  background-image: none !important;
+  backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
+  -webkit-backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
   /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
      Layout um seine Breite verschieben - bei eigenen Panels rutscht damit der
      gesamte Inhalt nach unten. */
-  box-shadow:
-    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-    var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+  box-shadow: var(--ha-card-box-shadow) !important;
 }`,
   },
   {
@@ -2377,30 +3024,19 @@ ha-card {
     label: "Verlaufs-Diagramme in Glas",
     desc: "Die Diagrammflächen im Verlauf und in Verlaufskarten. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.",
     ziel: "uix-states-history-charts",
-    css: `:host {
-  /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
-     deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-  --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-}
+    css: `
 ha-card {
   background-color: rgba(255, 255, 255, 0.5) !important;
-  background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-  background-image:
-    linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-    var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-  backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-  -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+  background-color: var(--ha-card-background) !important;
+  background-image: none !important;
+  backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
+  -webkit-backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
   /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
      Layout um seine Breite verschieben - bei eigenen Panels rutscht damit der
      gesamte Inhalt nach unten. */
-  box-shadow:
-    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-    var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+  box-shadow: var(--ha-card-box-shadow) !important;
 }`,
   },
   {
@@ -2409,30 +3045,19 @@ ha-card {
     label: "Eigene Panels in Glas",
     desc: "Panels von Erweiterungen in der Seitenleiste - auch HATG selbst. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.",
     ziel: "uix-panel-custom",
-    css: `:host {
-  /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
-     deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-  --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-}
+    css: `
 ha-card {
   background-color: rgba(255, 255, 255, 0.5) !important;
-  background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-  background-image:
-    linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-    var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-  backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-  -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+  background-color: var(--ha-card-background) !important;
+  background-image: none !important;
+  backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
+  -webkit-backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
   /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
      Layout um seine Breite verschieben - bei eigenen Panels rutscht damit der
      gesamte Inhalt nach unten. */
-  box-shadow:
-    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-    var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+  box-shadow: var(--ha-card-box-shadow) !important;
 }
 ha-dropdown,
 ha-combo-box,
@@ -2441,9 +3066,9 @@ vaadin-combo-box-overlay,
 .mdc-menu-surface,
 mwc-menu-surface {
   /* Auswahlfelder und Menues bleiben deckend - durchscheinend sind sie unlesbar. */
-  --card-background-color: var(--hatg-glas-menuegrund, #FFFFFF) !important;
-  --ha-card-background: var(--hatg-glas-menuegrund, #FFFFFF) !important;
-  background-color: var(--hatg-glas-menuegrund, #FFFFFF) !important;
+
+  --ha-card-background: var(--card-background-color) !important;
+  background-color: var(--card-background-color) !important;
   background-image: none !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
@@ -2453,17 +3078,15 @@ mwc-menu-surface {
     id: "glas-buttons-karten",
     paket: "glas",
     label: "Bedienelemente in Glas: Karten",
-    desc: "Gibt Schaltflächen denselben Aufbau wie dem aktiven Eintrag der Seitenleiste: Eckenradius der Karten, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Betrifft die Bedienelemente in Karten: Tile-Regler, Buttons in Entities- und Glance-Karten, Assist-Chips. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.",
+    desc: "Gibt Schaltflächen den Aufbau der Knöpfe eigener Karten: kleine Rundung, feine Lichtkante oben und ein kleiner weicher Schatten. Betrifft die Bedienelemente in Karten: Tile-Regler, Buttons in Entities- und Glance-Karten, Assist-Chips. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.",
     ziel: "uix-card",
     css: `ha-button,
 ha-icon-button,
 ha-assist-chip {
-  --ha-button-border-radius: var(--ha-card-border-radius, 14px);
-  --ha-button-box-shadow:
-    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)),
-    var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7));
+  --ha-button-border-radius: 11px;
+  /* Wie die ruhenden Knoepfe eigener Karten: kleiner weicher Schatten mit
+     feiner Lichtkante - ein Sechstel des Kartenschattens -, kein Ring. */
+  --ha-button-box-shadow: 0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3);
 }
 ha-control-button,
 ha-control-select,
@@ -2479,17 +3102,15 @@ ha-control-slider {
     id: "glas-buttons-rahmen",
     paket: "glas",
     label: "Bedienelemente in Glas: Kopfleiste und Rahmen",
-    desc: "Gibt Schaltflächen denselben Aufbau wie dem aktiven Eintrag der Seitenleiste: Eckenradius der Karten, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Betrifft die Icon-Buttons der Kopfleiste - Suche, Assist, Bearbeiten, Benachrichtigungen - und alles Übrige am Dashboard-Rahmen. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.",
+    desc: "Gibt Schaltflächen den Aufbau der Knöpfe eigener Karten: kleine Rundung, feine Lichtkante oben und ein kleiner weicher Schatten. Betrifft die Icon-Buttons der Kopfleiste - Suche, Assist, Bearbeiten, Benachrichtigungen - und alles Übrige am Dashboard-Rahmen. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.",
     ziel: "uix-root",
     css: `ha-button,
 ha-icon-button,
 ha-assist-chip {
-  --ha-button-border-radius: var(--ha-card-border-radius, 14px);
-  --ha-button-box-shadow:
-    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)),
-    var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7));
+  --ha-button-border-radius: 11px;
+  /* Wie die ruhenden Knoepfe eigener Karten: kleiner weicher Schatten mit
+     feiner Lichtkante - ein Sechstel des Kartenschattens -, kein Ring. */
+  --ha-button-box-shadow: 0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3);
 }
 ha-control-button,
 ha-control-select,
@@ -2505,17 +3126,15 @@ ha-control-slider {
     id: "glas-buttons-dialoge",
     paket: "glas",
     label: "Bedienelemente in Glas: Dialoge",
-    desc: "Gibt Schaltflächen denselben Aufbau wie dem aktiven Eintrag der Seitenleiste: Eckenradius der Karten, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Betrifft die Schaltflächen in Dialogen, also Abbrechen, Speichern und das Schließen-Kreuz. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.",
+    desc: "Gibt Schaltflächen den Aufbau der Knöpfe eigener Karten: kleine Rundung, feine Lichtkante oben und ein kleiner weicher Schatten. Betrifft die Schaltflächen in Dialogen, also Abbrechen, Speichern und das Schließen-Kreuz. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.",
     ziel: "uix-dialog",
     css: `ha-button,
 ha-icon-button,
 ha-assist-chip {
-  --ha-button-border-radius: var(--ha-card-border-radius, 14px);
-  --ha-button-box-shadow:
-    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)),
-    var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7));
+  --ha-button-border-radius: 11px;
+  /* Wie die ruhenden Knoepfe eigener Karten: kleiner weicher Schatten mit
+     feiner Lichtkante - ein Sechstel des Kartenschattens -, kein Ring. */
+  --ha-button-box-shadow: 0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3);
 }
 ha-control-button,
 ha-control-select,
@@ -2531,18 +3150,24 @@ ha-control-slider {
     id: "glas-buttons-einstellungen",
     paket: "glas",
     label: "Bedienelemente in Glas: Einstellungen und Rest der Oberfläche",
-    desc: "Gibt Schaltflächen denselben Aufbau wie dem aktiven Eintrag der Seitenleiste: Eckenradius der Karten, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Betrifft alles außerhalb von Karten, Kopfleiste und Dialogen - die Einstellungsseiten samt ihrer Aktionsknöpfe, eigene Panels und die Knöpfe der Seitenleiste. Sitzt am App Drawer, weil die Einstellungsseiten selbst kein eigenes Stilziel haben: ha-panel-config hat keinen Shadow Root, dort kommt nichts an. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht.",
+    desc: "Gibt Schaltflächen den Aufbau der Knöpfe eigener Karten: kleine Rundung, feine Lichtkante oben und ein kleiner weicher Schatten. Betrifft alles außerhalb von Karten, Kopfleiste und Dialogen - die Einstellungsseiten samt ihrer Aktionsknöpfe, eigene Panels und die Knöpfe der Seitenleiste. Sitzt am App Drawer, weil die Einstellungsseiten selbst kein eigenes Stilziel haben: ha-panel-config hat keinen Shadow Root, dort kommt nichts an. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht.",
     ziel: "uix-drawer",
-    css: `ha-button,
+    css: `/* Das Stylesheet liegt im Shadow Root von ha-drawer. Die Knoepfe der
+   Einstellungsseiten liegen mehrere Shadow Roots tiefer - ein Selektor
+   ha-button traf dort keinen einzigen. Auf :host gesetzt erben sie die
+   Variablen. */
+:host,
+ha-button,
 ha-icon-button,
 ha-assist-chip {
-  --ha-button-border-radius: var(--ha-card-border-radius, 14px);
-  --ha-button-box-shadow:
-    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)),
-    var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7));
+  --ha-button-border-radius: 11px;
+  /* Wie die ruhenden Knoepfe eigener Karten: kleiner weicher Schatten mit
+     feiner Lichtkante - ein Sechstel des Kartenschattens -, kein Ring. */
+  --ha-button-box-shadow: 0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3);
 }
+/* Bewusst nicht auf :host: Eigene Karten wie die HA-Karten faerben ihre
+   Mulden ueber --control-button-background-color. Vom App Drawer vererbt,
+   wurden sie in der Markenfarbe blau. */
 ha-control-button,
 ha-control-select,
 ha-control-slider {
@@ -2561,21 +3186,24 @@ ha-control-slider {
     ziel: "uix-card-yaml",
     css: `ha-button $: |
   .button {
-    background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%));
-    backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
-    -webkit-backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
+    background-image: none;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
   }`,
   },
   {
     id: "seitenleiste-titel",
     label: "Eigener Titel in der Seitenleiste",
-    desc: "Ersetzt das \"Home Assistant\" oben in der Seitenleiste durch einen eigenen Text. Der Text steht im Feld hatg-sidebar-titel im Bereich Glaslook - mit Anführungszeichen, so verlangt es CSS. Home Assistant selbst bietet dafür keine Einstellung.",
+    // Der Titel steht als CSS-Text im Block. Frueher kam er aus dem eigenen
+    // Feld hatg-sidebar-titel; der Import setzt dessen Wert dort ein.
+    titel: { standard: "Home Assistant" },
+    desc: "Ersetzt das \"Home Assistant\" oben in der Seitenleiste durch einen eigenen Text. Den Text trägst du in der aufgeklappten Zeile unter Titel ein; er bleibt beim Auffrischen der Vorlagen erhalten. Home Assistant selbst bietet dafür keine Einstellung.",
     ziel: "uix-sidebar",
     css: `.menu .title {
   font-size: 0 !important;
 }
 .menu .title::after {
-  content: var(--hatg-sidebar-titel, "Home Assistant");
+  content: "Home Assistant";
   font-size: var(--ha-font-size-xl, 20px);
   font-weight: var(--ha-font-weight-normal, 400);
   color: var(--sidebar-text-color, var(--primary-text-color));
@@ -2589,13 +3217,13 @@ ha-control-slider {
     css: `ha-user-badge {
   /* Initialen und Bild nehmen ihren Radius aus --ha-border-radius-circle. Ueber
      diese Variable bekommt das Icon seine Form, ganz ohne Shadow-DOM-Pfad. */
-  --ha-border-radius-circle: var(--hatg-icon-radius, 28%);
-  border-radius: var(--hatg-icon-radius, 28%);
+  --ha-border-radius-circle: 28%;
+  border-radius: 28%;
   /* Die Kante als outline: die Flaeche im Baustein ist deckend, ein
      inset-Schatten laege darunter. Outlines zeichnet der Browser darueber. */
-  outline: 1px solid var(--hatg-icon-rand, rgba(255, 255, 255, 0.16));
+  outline: 1px solid rgba(255, 255, 255, 0.16);
   outline-offset: -1px;
-  box-shadow: var(--hatg-icon-schatten, 0 1px 2px rgba(0, 0, 0, 0.35));
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
 }`,
   },
   {
@@ -2604,25 +3232,17 @@ ha-control-slider {
     label: "Seitenleiste in Glas",
     desc: "Die Seitenleiste wird durchscheinend und weichgezeichnet, die Einträge übernehmen den Eckenradius deiner Karten. Wirkt nur, wenn hinter der Seitenleiste etwas zu sehen ist - also mit Hintergrundbild oder einem farbigen Verlauf.",
     ziel: "uix-sidebar",
-    css: `:host {
-  /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
-     deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --sidebar-background-color: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
-}
+    css: `
 :host {
   background-color: rgba(255, 255, 255, 0.5) !important;
-  background-color: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
+  background-color: var(--sidebar-background-color) !important;
   /* Kein Reflex auf langen Leisten: ein diagonaler Verlauf ueber 1200 Pixel
      Breite liest sich als Farbverlauf, nicht als Glanz. */
   background-image: none !important;
-  backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
-  -webkit-backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
-  box-shadow:
-    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-    var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+  box-shadow: var(--ha-card-box-shadow) !important;
 }
 ha-md-list-item,
 ha-md-list-item.selected::before,
@@ -2634,26 +3254,30 @@ ha-list-item-button.selected::before {
   {
     id: "seitenleiste-aktiv-liquid",
     paket: "glas",
-    label: "Seitenleiste: aktiver Eintrag als Glaskörper",
-    desc: "Der markierte Eintrag wird zum Glaskörper statt zur flachen Farbfläche: Verlauf in der Auswahlfarbe, Lichtkante oben, Schattenkante unten, feiner Rand und ein weicher Schlagschatten. Home Assistant zeichnet diese Fläche als Overlay mit fester Deckkraft - die Vorlage hebt sie auf und ersetzt sie durch die Schichten.",
+    label: "Seitenleiste: aktiver Eintrag in der Akzentfarbe",
+    desc: "Der markierte Eintrag sieht aus wie das Gewählte eigener Karten und die Kapsel einer Menüleiste: deckend in der Akzentfarbe mit plastischer Innenkante, Schrift und Symbol darauf in der Textfarbe für Akzentflächen. Einen Schlagschatten gibt es bewusst nicht - die Liste der Seitenleiste schneidet ihn ab, übrig bliebe ein dunkles Rechteck. Home Assistant zeichnet diese Fläche als Overlay mit fester Deckkraft - die Vorlage hebt sie auf.",
     ziel: "uix-sidebar",
     css: `ha-list-item-button.selected::before {
   border-radius: var(--ha-card-border-radius, 14px) !important;
   /* Home Assistant faerbt diese Flaeche selbst und daempft sie ueber opacity -
      ohne !important bleibt davon nichts uebrig. */
   opacity: 1 !important;
-  background-color: rgba(10, 132, 255, 0.28) !important;
-  background-color: color-mix(in srgb, var(--sidebar-selected-icon-color, var(--primary-color)) 38%, transparent) !important;
-  background-image:
-    linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-    var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+  /* Wie das Gewaehlte eigener Karten und die Kapsel einer Menueleiste:
+     deckend in der Akzentfarbe mit plastischer Innenkante. Kein
+     Schlagschatten: Die Liste der Seitenleiste schneidet alles ab, was ueber
+     den Eintrag hinausragt - von einem weichen Schatten blieb an einer
+     laufenden Instanz nur ein dunkles Rechteck hinter der Pille. */
+  background-color: var(--accent-color, var(--primary-color)) !important;
+  background-image: none !important;
   box-shadow:
-    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)),
-    var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
-  backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
-  -webkit-backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
+    inset 3px 3px 7px color-mix(in srgb, var(--accent-color, var(--primary-color)) 62%, #000000),
+    inset -2px -2px 6px color-mix(in srgb, var(--accent-color, var(--primary-color)) 74%, #ffffff) !important;
+}
+/* Schrift und Symbol auf der Akzentflaeche in der Textfarbe fuer Akzentflaechen. */
+ha-list-item-button.selected {
+  --sidebar-selected-text-color: var(--text-primary-color);
+  --sidebar-selected-icon-color: var(--text-primary-color);
+  color: var(--text-primary-color) !important;
 }
 ha-list-item-button::before {
   transition: opacity 160ms ease, box-shadow 160ms ease;
@@ -2668,23 +3292,19 @@ ha-list-item-button::before {
     css: `:host {
   /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
      deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --app-header-background-color: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
-  --sidebar-background-color: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
+  --app-header-background-color: var(--sidebar-background-color) !important;
+
 }
 .mdc-drawer {
   background-color: rgba(255, 255, 255, 0.5) !important;
-  background-color: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
+  background-color: var(--sidebar-background-color) !important;
   /* Kein Reflex auf langen Leisten: ein diagonaler Verlauf ueber 1200 Pixel
      Breite liest sich als Farbverlauf, nicht als Glanz. */
   background-image: none !important;
-  backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
-  -webkit-backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
-  box-shadow:
-    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-    var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+  box-shadow: var(--ha-card-box-shadow) !important;
 }
 .sidebar-shell {
   background-color: transparent !important;
@@ -2710,15 +3330,30 @@ ha-adaptive-dialog {
     desc: "Übernimmt das Hintergrundbild von der Startseite und legt es hinter die ganze Oberfläche - auch hinter Einstellungsseiten, HACS, Verlauf und alle anderen Panels, wo das Dashboard-Hintergrundbild nicht hinreicht. Es muss nichts doppelt eingetragen werden: Die Vorlage greift auf das zu, was unter Hintergrund eingestellt ist, samt Abdunkelung. Ohne gesetztes Bild bewirkt sie nichts.",
     ziel: "uix-drawer",
     css: `:host {
-  /* Nimmt das Bild, das unter "Hintergrund" auf der Startseite eingestellt ist,
-     und legt es hinter alles - auch hinter Einstellungsseiten, HACS und Verlauf.
-     ha-drawer umschliesst alle Panels und ist selbst durchsichtig, die Panels
-     darin ebenso; die graue Flaeche kommt sonst von html. Ist nichts gesetzt,
-     greift der Rueckfall und es passiert nichts.
+  /* ha-drawer umschliesst alle Panels und ist selbst durchsichtig, die Panels
+     darin ebenso; die graue Flaeche kommt sonst von html. Der Host bleibt
+     durchsichtig, das Bild sitzt auf einer eigenen Ebene darunter. */
+  background: transparent !important;
+}
+:host::before {
+  /* Frueher lag das Bild mit background-attachment: fixed direkt auf dem Host.
+     Das zwingt den Browser, bei jedem Scrollschritt die ganze Flaeche neu zu
+     malen - es ruckelte ueberall, nicht nur in den Einstellungen. Ausserdem ist
+     ha-drawer nur so hoch wie das Fenster: wurde eine Seite laenger, riss das
+     Bild nach einer Bildschirmhoehe ab.
+     Eine fest stehende Ebene mit eigener GPU-Schicht behebt beides - sie bewegt
+     sich beim Scrollen nicht und muss nicht neu gemalt werden.
      --lovelace-background ist ein background-Kurzwert (Bild, Position, Groesse),
-     deshalb background und nicht background-image. Live geprueft. */
+     deshalb background und nicht background-image. attachment danach auf
+     scroll, falls ein eigener Wert fixed mitbringt - die Ebene steht ohnehin. */
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
   background: var(--lovelace-background, transparent) !important;
-  background-attachment: fixed !important;
+  background-attachment: scroll !important;
+  will-change: transform;
 }`,
   },
   {
@@ -2736,30 +3371,71 @@ ha-adaptive-dialog {
 }`,
   },
   {
+    id: "bubble-popup-hintergrundbild",
+    label: "Bubble-Pop-ups mit Hintergrundbild",
+    desc: "Legt ein Hintergrundbild in die Pop-ups von Bubble Card. Ohne weitere Angabe ist es das Bild, das unter Hintergrund auf der Startseite eingestellt ist. Soll ein Pop-up ein anderes Bild zeigen, einen eigenen Theme-Eintrag popup-custom-wallpaper setzen - getrennt für Light und Dark möglich. Bubble Card färbt die Pop-up-Fläche nur über Farbvariablen, ein Bild geht deshalb nur über diese Vorlage. Die Kopfzeile des Pop-ups wird durchsichtig, damit das Bild bis oben reicht. Die Deckkraft, die in Bubble Card für den Pop-up-Hintergrund eingestellt ist, wirkt mit dieser Vorlage nicht mehr - das Bild deckt die Fläche ganz.",
+    ziel: "uix-card",
+    css: `.bubble-pop-up-background {
+  /* Bubble Card faerbt diese Flaeche ausschliesslich ueber background-color:
+     --bubble-pop-up-main-background-color, dahinter Rueckfaelle. Die
+     eingestellte Deckkraft steckt als Alphawert in dieser Farbe. Eine Variable
+     kann kein Bild tragen - es braucht diese Regel, und der Kurzwert
+     background ersetzt dabei auch die Farbe.
+     --lovelace-background ist ein background-Kurzwert (Bild, Position,
+     Groesse), deshalb background und nicht background-image. Ein eigener
+     Theme-Eintrag popup-custom-wallpaper geht vor. */
+  background: var(--popup-custom-wallpaper, var(--lovelace-background, none)) !important;
+  background-attachment: scroll !important;
+}
+.bubble-pop-up .bubble-header-container,
+.bubble-pop-up .bubble-header {
+  /* bubble-header vergibt Bubble Card nur im Aufbau des Pop-ups - andere
+     Kopfzeilen im Dashboard bleiben unberuehrt. Nachgesehen in v3.3.0. */
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}`,
+  },
+  // UIX haengt die Styles des Info-Dialogs an ha-adaptive-dialog, nicht an
+  // ha-more-info-dialog. Der eigentliche Dialog liegt in dessen Shadow Root,
+  // deshalb beginnen die Pfade mit einem fuehrenden $ - ohne greift nichts
+  // (an einer Instanz mit Markierungen je Variante nachgemessen). Die Flaeche
+  // faerbt HA nur ueber background-color: --ha-dialog-surface-background landet
+  // als Farb-Token auf wa-dialog, das Bottom-Sheet setzt background-color direkt.
+  // Ein Bild braucht also eine Regel auf dem Part der Flaeche.
+  {
+    id: "info-dialog-hintergrundbild",
+    label: "Info-Dialog mit Hintergrundbild",
+    desc: "Legt das Hintergrundbild in den Dialog, der beim Antippen einer Entität aufgeht - am Desktop wie im Bottom-Sheet auf Tablet und Handy. Ohne weitere Angabe ist es das Bild, das unter Hintergrund auf der Startseite eingestellt ist; ein eigener Theme-Eintrag popup-custom-wallpaper geht vor, derselbe wie bei den Bubble-Pop-ups. Home Assistant färbt die Dialogfläche nur über background-color, ein Bild braucht deshalb eine Regel direkt auf der Fläche. Zusammen mit Info-Dialog in Glas zeigt die Fläche das Bild statt Glas; endet der Hintergrundwert mit einer Vollfarbe, wird sie deckend.",
+    ziel: "uix-more-info-yaml",
+    css: `"$ ha-dialog $": |
+  wa-dialog::part(dialog) {
+    background: var(--popup-custom-wallpaper, var(--lovelace-background, none)) !important;
+    background-attachment: scroll !important;
+  }
+"$ ha-bottom-sheet $": |
+  wa-drawer::part(dialog) {
+    background: var(--popup-custom-wallpaper, var(--lovelace-background, none)) !important;
+    background-attachment: scroll !important;
+  }`,
+  },
+  {
     id: "kopfleiste-glas",
     paket: "glas",
     label: "Kopfleiste in Glas",
     desc: "Die obere Leiste wird durchscheinend und weichgezeichnet, passend zu Seitenleiste und App Drawer. Zusammen ergeben die drei eine durchgehende Glasfläche um das Dashboard herum.",
     ziel: "uix-top-app-bar-fixed",
-    css: `:host {
-  /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
-     deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --app-header-background-color: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
-}
+    css: `
 .mdc-top-app-bar {
   background-color: rgba(255, 255, 255, 0.5) !important;
-  background-color: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
+  background-color: var(--app-header-background-color) !important;
   /* Kein Reflex auf langen Leisten: ein diagonaler Verlauf ueber 1200 Pixel
      Breite liest sich als Farbverlauf, nicht als Glanz. */
   background-image: none !important;
-  backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
-  -webkit-backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
+  backdrop-filter: var(--app-header-backdrop-filter, blur(32px));
+  -webkit-backdrop-filter: var(--app-header-backdrop-filter, blur(32px));
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
-  box-shadow:
-    inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-    inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-    inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-    var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+  box-shadow: var(--ha-card-box-shadow) !important;
 }`,
   },
   {
@@ -3612,6 +4288,55 @@ function hatgMergeStilzielYaml(einfachesCss, yamlKarte) {
   return karte ? `${punktEintrag}\n${karte}` : punktEintrag;
 }
 
+// UIX liest die Karte mit einem strengen YAML-Parser: steht ein Pfad zweimal
+// darin, verwirft es das ganze Feld, und keine Vorlage des Stilziels kommt an.
+// Am 2026-09-16 legte ein doppelter Eintrag "ha-button $" so das komplette
+// uix-card-yaml still. Doppelte Pfade werden deshalb beim Schreiben zu einem
+// zusammengefasst; das CSS des zweiten haengt am ersten.
+function hatgYamlPfadeZusammenfuehren(yamlKarte) {
+  const zeilen = String(yamlKarte ?? "").split("\n");
+  const kopf = /^("(?:[^"\\]|\\.)*"|'[^']*'|[^\s#'"][^\n]*?):\s*\|[-+]?\s*$/;
+  const abschnitte = [];
+  const nachPfad = new Map();
+  let aktuell = null;
+  for (const zeile of zeilen) {
+    const eingerueckt = /^\s/.test(zeile) || zeile.trim() === "";
+    if (aktuell && eingerueckt) {
+      aktuell.rumpf.push(zeile);
+      continue;
+    }
+    const m = kopf.exec(zeile);
+    if (!m) {
+      aktuell = null;
+      abschnitte.push({ zeilen: [zeile] });
+      continue;
+    }
+    const pfad = m[1].replace(/^(["'])([\s\S]*)\1$/, "$2");
+    const vorher = nachPfad.get(pfad);
+    if (vorher) {
+      aktuell = { rumpf: [] };
+      aktuell.ziel = vorher;
+      abschnitte.push(aktuell);
+      continue;
+    }
+    aktuell = { kopf: zeile, rumpf: [] };
+    nachPfad.set(pfad, aktuell);
+    abschnitte.push(aktuell);
+  }
+  if (!abschnitte.some((a) => a.ziel)) return String(yamlKarte ?? "");
+  abschnitte.forEach((a) => {
+    if (!a.ziel) return;
+    const rumpf = a.rumpf.slice();
+    while (rumpf.length && rumpf[rumpf.length - 1].trim() === "") rumpf.pop();
+    while (a.ziel.rumpf.length && a.ziel.rumpf[a.ziel.rumpf.length - 1].trim() === "") a.ziel.rumpf.pop();
+    a.ziel.rumpf.push(...rumpf);
+  });
+  return abschnitte
+    .filter((a) => !a.ziel)
+    .flatMap((a) => (a.zeilen ? a.zeilen : [a.kopf, ...a.rumpf]))
+    .join("\n");
+}
+
 // Gegenstueck dazu. Beim Import muss der "."-Eintrag zurueck ins einfache Feld,
 // sonst findet HATG seine Vorlagenmarken dort nicht wieder und haelt jede
 // Kartenvorlage fuer abgeschaltet.
@@ -3793,7 +4518,7 @@ function hatgIsGradient(value) {
   return HATG_GRADIENT_RE.test(String(value ?? "").trim());
 }
 
-const HATG_CSS_BACKGROUND_KEYS = new Set(["lovelace-background", "bubble-event-background-image"]);
+const HATG_CSS_BACKGROUND_KEYS = new Set(["lovelace-background", "popup-custom-wallpaper", "bubble-event-background-image"]);
 
 function hatgSplitTopLevelCommas(value) {
   const text = String(value ?? "");
@@ -4028,6 +4753,11 @@ class HATGPanel extends HTMLElement {
       if (saved.values) {
         hatgMigriereStilzielKeys(saved.values.light);
         hatgMigriereStilzielKeys(saved.values.dark);
+        if (!saved.extraValues) saved.extraValues = { light: {}, dark: {} };
+        hatgVereinheitlicheVorlagenMarken({ light: saved.values.light, dark: saved.values.dark, extra: saved.extraValues });
+        hatgMigriereHintergrundBewegung({ light: saved.values.light, dark: saved.values.dark, extra: saved.extraValues });
+        hatgMigriereAkzentVerlauf({ light: saved.values.light, dark: saved.values.dark });
+        hatgLoeseEigeneFelderAuf({ light: saved.values.light, dark: saved.values.dark, extra: saved.extraValues });
         this._state.values.light = { ...this._state.values.light, ...(saved.values.light || {}) };
         this._state.values.dark = { ...this._state.values.dark, ...(saved.values.dark || {}) };
         hatgNormalizeRgbaLegacyHex(this._state.values.light);
@@ -4361,6 +5091,20 @@ class HATGPanel extends HTMLElement {
       ? `<input type="checkbox" class="select-checkbox" data-select-key="${key}" ${this._state.selectedKeys.includes(key) ? "checked" : ""} />`
       : "";
     const originalFormat = hatgGetKeyFormats()[key];
+
+    // Hintergrundfelder: Bild aus der Galerie waehlen, direkt an der Zeile -
+    // auch in den aufgeklappten Hintergrund-Vorlagen.
+    if (key === "lovelace-background" || key === "popup-custom-wallpaper") {
+      return `
+        <div class="field-row" data-key="${key}" data-type="${type}">
+          ${checkbox}
+          <span class="field-key">${key}${badge}</span>
+          <span class="field-input">
+            <input class="text-input" type="text" value="${hatgEscape(value)}" spellcheck="false" data-text-field="${key}" />
+          </span>
+          <button class="apply-button" type="button" data-bild-waehlen="${key}" title="Bild wählen"><ha-icon icon="mdi:image-plus-outline"></ha-icon></button>
+        </div>`;
+    }
 
     const isDynamicColorValue = hatgIsGradient(value) || /^\s*var\(/i.test(String(value ?? ""));
     if ((originalFormat === "hex" || originalFormat === "rgba") && isDynamicColorValue) {
@@ -5299,6 +6043,7 @@ class HATGPanel extends HTMLElement {
     try {
       const result = await this._hass.callWS({ type: "hatg/list_uix_templates" });
       this._state.eigeneVorlagenListe = (result && result.templates) || [];
+      this._state.eigeneVorlagenGeladen = true;
       this.render();
     } catch (error) {
       console.error("HATG ladeEigeneVorlagen failed", error);
@@ -5332,7 +6077,9 @@ class HATGPanel extends HTMLElement {
         .normalize("NFKD")
         .replace(/[̀-ͯ]/g, "")
         .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "") || "vorlage";
+        .replace(/^-+|-+$/g, "")
+        .slice(0, 48)
+        .replace(/-+$/g, "") || "vorlage";
     const belegt = new Set(
       this.alleVorlagen().map((t) => t.id).filter((id) => id !== ignoriereId)
     );
@@ -5380,6 +6127,7 @@ class HATGPanel extends HTMLElement {
 
     const vorherigeListe = [...this.eigeneVorlagen()];
     const liste = [...vorherigeListe];
+    const warAktiv = dialog.id ? this.vorlageIrgendwoAktiv(dialog.id) : false;
     const eintrag = {
       id: dialog.id || this.vorlagenIdAusName(label),
       label,
@@ -5400,20 +6148,90 @@ class HATGPanel extends HTMLElement {
       return;
     }
 
-    if (index >= 0 && hatgVorlagenBlockActive(String(this.currentValues()[hatgVorlagenZiel(eintrag)] || ""), eintrag.id)) {
-      this.frischeVorlagenAuf({ still: true });
+    // Eine aktive Vorlage wird ueberall entfernt und mit dem neuen CSS im
+    // (vielleicht neuen) Stilziel wieder eingesetzt - sonst blieb nach einem
+    // Zielwechsel der alte Block stehen und die Vorlage galt als aus.
+    if (index >= 0 && warAktiv) {
+      this.entferneVorlageUeberall(eintrag.id);
+      const ziel = hatgVorlagenZiel(eintrag);
+      const currentMode = this._state.editorMode;
+      ["light", "dark"].forEach((mode) => {
+        this._state.editorMode = mode;
+        const text = String(this.currentValues()[ziel] || "");
+        this.commitField(ziel, hatgHaengeVorlagenBlockAn(text, eintrag.id, eintrag.css, hatgIstYamlZiel(ziel)));
+      });
+      this._state.editorMode = currentMode;
+      this.applyPreviewTheme();
     }
     this._state.vorlagenDialog = null;
     this.render();
     this.showToast(index >= 0 ? `"${eintrag.label}" gespeichert.` : `"${eintrag.label}" angelegt.`);
   }
 
+  // Steckt ein Block dieser Vorlage in irgendeinem Stilziel, in einem der
+  // beiden Modi? Nach einem Wechsel des Stilziels liegt er nicht mehr dort,
+  // wo die Vorlage heute hinschreibt.
+  vorlageIrgendwoAktiv(id) {
+    const ziele = hatgVorlagenZieleAlle(this.alleVorlagen());
+    return ["light", "dark"].some((m) =>
+      ziele.some((k) => hatgVorlagenBlockActive(String(this._state.values[m]?.[k] || ""), id))
+    );
+  }
+
+  // Entfernt jeden Block dieser Vorlage aus allen Stilzielen beider Modi.
+  entferneVorlageUeberall(id) {
+    const ziele = hatgVorlagenZieleAlle(this.alleVorlagen());
+    const currentMode = this._state.editorMode;
+    let anzahl = 0;
+    ["light", "dark"].forEach((mode) => {
+      this._state.editorMode = mode;
+      ziele.forEach((k) => {
+        const text = String(this.currentValues()[k] || "");
+        if (!hatgVorlagenBlockActive(text, id)) return;
+        this.commitField(k, hatgEntferneVorlagenBlock(text, id));
+        anzahl++;
+      });
+    });
+    this._state.editorMode = currentMode;
+    return anzahl;
+  }
+
+  // Bloecke eigener Vorlagen, die es in hatg-uix-vorlagen.json nicht mehr
+  // gibt - etwa von Hand geloescht oder in einem anderen Browser. Nur wenn die
+  // Liste wirklich geladen ist, sonst sahe jede eigene Vorlage verwaist aus.
+  verwaisteEigeneBloecke() {
+    if (!this._state.eigeneVorlagenGeladen) return [];
+    const bekannt = new Set(this.alleVorlagen().map((t) => t.id));
+    const ziele = hatgVorlagenZieleAlle(this.alleVorlagen());
+    const ids = new Set();
+    ["light", "dark"].forEach((m) =>
+      ziele.forEach((k) => {
+        for (const t of String(this._state.values[m]?.[k] || "").matchAll(/(?:\/\*|#)\s*HATG:(?:UIX|CARDMOD):(eigene-[A-Za-z0-9_-]+):START/g)) {
+          if (!bekannt.has(t[1])) ids.add(t[1]);
+        }
+      })
+    );
+    return [...ids];
+  }
+
+  entferneVerwaisteEigeneBloecke() {
+    const ids = this.verwaisteEigeneBloecke();
+    ids.forEach((id) => this.entferneVorlageUeberall(id));
+    this.applyPreviewTheme();
+    this.render();
+    this.showToast(
+      ids.length === 1
+        ? "1 Rest einer gelöschten eigenen Vorlage entfernt. Jetzt speichern und Themes neu laden."
+        : `${ids.length} Reste gelöschter eigener Vorlagen entfernt. Jetzt speichern und Themes neu laden.`
+    );
+  }
+
   async loescheEigeneVorlage(id) {
     const eintrag = this.eigeneVorlagen().find((t) => t.id === id);
     if (!eintrag) return;
     const vorherigeListe = [...this.eigeneVorlagen()];
-    const aktiv = hatgVorlagenBlockActive(String(this.currentValues()[hatgVorlagenZiel(eintrag)] || ""), id);
-    if (aktiv) this.schalteVorlage(id, { still: true });
+    const aktiv = this.vorlageIrgendwoAktiv(id);
+    if (aktiv) this.entferneVorlageUeberall(id);
     this._state.eigeneVorlagenListe = this.eigeneVorlagen().filter((t) => t.id !== id);
     const gespeichert = await this.speichereEigeneVorlagen();
     if (!gespeichert) {
@@ -5423,6 +6241,7 @@ class HATGPanel extends HTMLElement {
     }
     this._state.vorlagenDialog = null;
     this.render();
+    this.applyPreviewTheme();
     this.showToast(`"${eintrag.label}" gelöscht${aktiv ? " und aus dem Theme entfernt" : ""}.`);
   }
 
@@ -5464,6 +6283,10 @@ class HATGPanel extends HTMLElement {
         anzahl++;
       }
     });
+    if (name === "glas") {
+      if (alleAktiv) this.glasFelderZuruecksetzen();
+      else this.glasFelderSetzen({ still: true });
+    }
     this.render();
     const meta = HATG_PAKETE[name];
     const bezeichnung = this._sprache === "en" && meta.labelEn ? meta.labelEn : meta.label;
@@ -5502,8 +6325,9 @@ class HATGPanel extends HTMLElement {
       const p = profil[mode];
       this.setzeGlasWerte({ mode, ton: p.inhaltTon, deckkraft: p.inhalt, blur: p.inhaltBlur });
       this._state.editorMode = mode;
-      this.commitField("hatg-glas-nav-fuellung", hatgComposeRgba(p.navTon, p.nav / 100));
-      this.commitField("hatg-glas-nav-blur", `${p.navBlur}px`);
+      this.commitField("sidebar-background-color", hatgComposeRgba(p.navTon, p.nav / 100));
+      this.commitField("app-header-background-color", hatgComposeRgba(p.navTon, p.nav / 100));
+      this.commitField("app-header-backdrop-filter", p.navBlur > 0 ? `blur(${p.navBlur}px)` : "none");
     });
     this._state.editorMode = vorher;
     this.render();
@@ -5513,30 +6337,20 @@ class HATGPanel extends HTMLElement {
         : "Glas überall: auch Karten und Badges bleiben durchscheinend."
     );
   }
-  glasAbdunkeln(an) {
-    const vorher = this._state.editorMode;
-    ["light", "dark"].forEach((mode) => {
-      this._state.editorMode = mode;
-      this.commitField("hatg-glas-abdunkeln", an ? "0.35" : "0");
-    });
-    this._state.editorMode = vorher;
-    this.render();
-    this.showToast(
-      an
-        ? "Abdunkelung an: 35 Prozent hinter dem Glas, wie Apple es für helle Hintergründe empfiehlt."
-        : "Abdunkelung aus."
-    );
-  }
-  abdunkelungAn() {
-    return Number(String(this.currentValues()["hatg-glas-abdunkeln"] || "0")) > 0;
-  }
 
   // Der Glaslook laesst sich aus drei Angaben ableiten: Farbton, Deckkraft und
-  // Weichzeichnung. Die uebrigen Werte sind Abstufungen davon.
+  // Weichzeichnung. Sie stehen in den Feldern, die Home Assistant selbst liest -
+  // ha-card-background und ha-card-backdrop-filter -, und werden von dort
+  // zurueckgelesen. Die uebrigen Werte sind Abstufungen davon.
   glasReglerStand(mode) {
     const werte = mode ? this._state.values[mode] : this.currentValues();
-    const fuellung = hatgParseRgba(String(werte["hatg-glas-fuellung"] || "rgba(255, 255, 255, 0.5)"));
-    const blur = parseInt(String(werte["hatg-glas-blur"] || "18px"), 10) || 0;
+    const roh = String(werte["ha-card-background"] || "").trim();
+    const fuellung = hatgIsHex(roh)
+      ? { hex: hatgNormalizeHex6(roh), alpha: 1 }
+      : hatgParseRgba(roh.startsWith("rgba(") ? roh : "rgba(255, 255, 255, 0.5)");
+    const filter = String(werte["ha-card-backdrop-filter"] || "").trim();
+    const treffer = /blur\(\s*([\d.]+)px\s*\)/.exec(filter);
+    const blur = treffer ? Math.round(Number(treffer[1])) : filter === "none" ? 0 : 18;
     return {
       ton: fuellung.hex || "#FFFFFF",
       deckkraft: Math.round((fuellung.alpha ?? 0.5) * 100),
@@ -5552,12 +6366,12 @@ class HATGPanel extends HTMLElement {
     const vorher = this._state.editorMode;
     this._state.editorMode = ziel;
     const mit = (faktor) => hatgComposeRgba(farbe, Math.max(0, Math.min(1, Number((alpha * faktor).toFixed(2)))));
-    this.commitField("hatg-glas-fuellung-leicht", mit(0.7));
-    this.commitField("hatg-glas-fuellung", mit(1));
-    this.commitField("hatg-glas-fuellung-stark", mit(1.36));
-    this.commitField("hatg-glas-blur-klein", `${Math.round(px * 0.45)}px`);
-    this.commitField("hatg-glas-blur", `${px}px`);
-    this.commitField("hatg-glas-blur-gross", `${Math.round(px * 1.8)}px`);
+    const filter = (wert) => (wert > 0 ? `blur(${wert}px)` : "none");
+    this.commitField("ha-card-background", mit(1));
+    this.commitField("control-button-background-color", mit(1.36));
+    this.commitField("ha-dialog-surface-background", mit(1.36));
+    this.commitField("ha-card-backdrop-filter", filter(px));
+    this.commitField("ha-dialog-surface-backdrop-filter", filter(Math.round(px * 1.8)));
     this._state.editorMode = vorher;
     this.applyPreviewTheme?.();
   }
@@ -5565,7 +6379,7 @@ class HATGPanel extends HTMLElement {
   // Ist eine dieser Flaechenfarben noch deckend?
   deckendeFlaechenfarben() {
     const treffer = [];
-    HATG_GLAS_FLAECHENFELDER.forEach(({ key }) => {
+    [...HATG_GLAS_GRUNDFELDER.map((key) => ({ key })), ...HATG_GLAS_FLAECHENFELDER].forEach(({ key }) => {
       const deckend = ["light", "dark"].some((mode) => {
         const wert = String(this._state.values[mode][key] || "").trim();
         if (!wert || wert.startsWith("var(")) return false;
@@ -5582,7 +6396,7 @@ class HATGPanel extends HTMLElement {
   // durch geoeffnete Listen hindurch. Mit aktivem Glas-Paket wird sie nicht gebraucht.
   zuDurchsichtigeGrundfarben() {
     const treffer = [];
-    ["card-background-color", "hatg-glas-menuegrund"].forEach((key) => {
+    ["card-background-color"].forEach((key) => {
       const duenn = ["light", "dark"].some((mode) => {
         const wert = String(this._state.values[mode][key] || "").trim();
         const rgba = /^rgba\(\s*[\d.]+\s*,\s*[\d.]+\s*,\s*[\d.]+\s*,\s*([\d.]+)\s*\)$/.exec(wert);
@@ -5615,28 +6429,80 @@ class HATGPanel extends HTMLElement {
     );
   }
 
-  // Uebernimmt die Glasfuellung des jeweiligen Modus in diese Felder.
-  flaechenfarbenAufGlas() {
+  // Schreibt den Glaslook in die HA-Felder beider Modi: die Grundfelder aus den
+  // Reglern, die Flaechenfelder als Verweis auf ein Grundfeld - so bewegen die
+  // Regler sie spaeter mit. Steht die Kartenfarbe noch deckend, ist das Profil
+  // "Glas ueberall" der Ausgangspunkt, sonst bleiben Farbton, Deckkraft und
+  // Weichzeichnung, wie sie sind.
+  glasFelderSetzen({ still = false } = {}) {
     const currentMode = this._state.editorMode;
+    const profil = this.glasProfile().ueberall;
+    const undurchsichtig = (wert) => {
+      const v = String(wert || "").trim();
+      if (!v || hatgIsHex(v)) return true;
+      const rgba = /^rgba\(\s*[\d.]+\s*,\s*[\d.]+\s*,\s*[\d.]+\s*,\s*([\d.]+)\s*\)$/.exec(v);
+      return rgba ? Number(rgba[1]) >= 0.9 : false;
+    };
     let anzahl = 0;
     ["light", "dark"].forEach((mode) => {
+      const p = profil[mode];
+      const stand = this.glasReglerStand(mode);
+      if (stand.deckkraft >= 90) this.setzeGlasWerte({ mode, ton: p.inhaltTon, deckkraft: p.inhalt, blur: p.inhaltBlur });
+      else this.setzeGlasWerte({ mode });
       this._state.editorMode = mode;
+      const werte = this._state.values[mode];
+      if (undurchsichtig(werte["sidebar-background-color"])) this.commitField("sidebar-background-color", hatgComposeRgba(p.navTon, p.nav / 100));
+      if (undurchsichtig(werte["app-header-background-color"])) this.commitField("app-header-background-color", hatgComposeRgba(p.navTon, p.nav / 100));
+      if (!/blur\(/.test(String(werte["app-header-backdrop-filter"] || ""))) this.commitField("app-header-backdrop-filter", `blur(${p.navBlur}px)`);
       HATG_GLAS_FLAECHENFELDER.forEach(({ key, quelle }) => {
-        // Als Verweis, nicht als Kopie: sonst friert der Wert ein und der
-        // Regler bewegt spaeter nur noch die Flaechen, die die Variable nutzen.
         const verweis = `var(--${quelle})`;
-        if (String(this._state.values[mode][key] || "").trim() === verweis) return;
+        if (String(werte[key] || "").trim() === verweis) return;
         this.commitField(key, verweis);
         if (mode === "light") anzahl++;
       });
     });
     this._state.editorMode = currentMode;
+    if (still) return anzahl;
     this.render();
     this.showToast(
       anzahl
-        ? `${anzahl} Flächenfarben auf die Glasfüllung gesetzt. Jetzt speichern und Themes neu laden.`
-        : "Die Flächenfarben stehen bereits auf der Glasfüllung."
+        ? `${anzahl} Flächenfarben auf Glas gesetzt. Jetzt speichern und Themes neu laden.`
+        : "Die Flächenfarben stehen bereits auf Glas."
     );
+    return anzahl;
+  }
+
+  // Gegenstueck beim Ausschalten des Glas-Pakets: Weichzeichnung zurueck auf den
+  // Standard, glaeserne Flaechen wieder deckend - abgeleitet aus der Kartenfarbe,
+  // wo es eine Regel dafuer gibt, sonst der Standardwert des Feldes. Ohne diesen
+  // Schritt blieben die Verweise stehen, obwohl das Paket aus ist.
+  glasFelderZuruecksetzen() {
+    const currentMode = this._state.editorMode;
+    const istGlas = (wert) => {
+      const v = String(wert || "").trim();
+      if (v.startsWith("var(")) return true;
+      const rgba = /^rgba\(\s*[\d.]+\s*,\s*[\d.]+\s*,\s*[\d.]+\s*,\s*([\d.]+)\s*\)$/.exec(v);
+      return rgba ? Number(rgba[1]) < 0.9 : false;
+    };
+    let anzahl = 0;
+    ["light", "dark"].forEach((mode) => {
+      this._state.editorMode = mode;
+      const werte = this._state.values[mode];
+      const standard = HATG_MANIFEST[mode];
+      HATG_GLAS_FILTERFELDER.forEach((key) => {
+        const ziel = standard[key] ?? "";
+        if (String(werte[key] ?? "") !== ziel) this.commitField(key, ziel);
+      });
+      [...HATG_GLAS_GRUNDFELDER, ...HATG_GLAS_FLAECHENFELDER.map((f) => f.key)].forEach((key) => {
+        if (!istGlas(werte[key])) return;
+        // Eine Ableitung kann selbst wieder glaesern sein - dann gilt der Standardwert.
+        if (HATG_DERIVE_REVERSE[key]) this.resetFieldToDerived(key);
+        if (istGlas(werte[key])) this.commitField(key, standard[key] ?? "");
+        if (mode === "light") anzahl++;
+      });
+    });
+    this._state.editorMode = currentMode;
+    return anzahl;
   }
 
   // Aktive -yaml-Vorlagen, die sich denselben Pfad teilen.
@@ -5760,8 +6626,10 @@ class HATGPanel extends HTMLElement {
         const ziel = hatgVorlagenZiel(tpl);
         const text = String(this.currentValues()[ziel] || "");
         const vorhanden = hatgLeseVorlagenBlock(text, tpl.id);
-        if (vorhanden === null || hatgCssOhneKommentare(vorhanden) === hatgCssOhneKommentare(tpl.css)) return;
-        this.commitField(ziel, hatgHaengeVorlagenBlockAn(text, tpl.id, tpl.css, hatgIstYamlZiel(ziel)));
+        if (vorhanden === null) return;
+        const soll = tpl.titel ? hatgVorlageMitTitel(tpl, hatgVorlageTitelLesen(vorhanden)) : tpl.css;
+        if (hatgCssOhneKommentare(vorhanden) === hatgCssOhneKommentare(soll)) return;
+        this.commitField(ziel, hatgHaengeVorlagenBlockAn(text, tpl.id, soll, hatgIstYamlZiel(ziel)));
         if (mode === "light") anzahl++;
       });
     });
@@ -5774,6 +6642,34 @@ class HATGPanel extends HTMLElement {
         : "Alle aktiven Vorlagen sind bereits aktuell."
     );
     return anzahl;
+  }
+
+  renderVorlageTitel(tpl) {
+    const text = hatgVorlageTitelLesen(hatgLeseVorlagenBlock(this.currentValues()[hatgVorlagenZiel(tpl)] || "", tpl.id)) ?? tpl.titel.standard;
+    const en = this._sprache === "en";
+    return `
+      <div class="field-row" data-roh>
+        <span class="field-key">${en ? "Title" : "Titel"}</span>
+        <span class="field-input"><input type="text" class="text-input" value="${hatgEscape(text)}" spellcheck="false" data-vorlage-titel="${tpl.id}" /></span>
+      </div>`;
+  }
+
+  // Schreibt den Titel in den Block beider Modi; ist die Vorlage aus, wird sie
+  // dabei eingeschaltet.
+  setzeVorlageTitel(id, titel) {
+    const tpl = this.alleVorlagen().find((t) => t.id === id);
+    if (!tpl || !tpl.titel) return;
+    const ziel = hatgVorlagenZiel(tpl);
+    const css = hatgVorlageMitTitel(tpl, String(titel ?? "").trim() || tpl.titel.standard);
+    const currentMode = this._state.editorMode;
+    ["light", "dark"].forEach((mode) => {
+      this._state.editorMode = mode;
+      const text = String(this.currentValues()[ziel] || "");
+      const neu = hatgHaengeVorlagenBlockAn(text, id, css, hatgIstYamlZiel(ziel));
+      if (neu !== text) this.commitField(ziel, neu);
+    });
+    this._state.editorMode = currentMode;
+    this.applyPreviewTheme();
   }
 
   renderVorlagenDialog() {
@@ -6082,6 +6978,20 @@ uix:
     const gruppe = this.vorlagenGruppeMeta(sektion);
     const werte = this.currentValues();
     const istAktiv = (tpl) => hatgVorlagenBlockActive(String(werte[hatgVorlagenZiel(tpl)] || ""), tpl.id);
+    const verwaist = this.verwaisteEigeneBloecke();
+    const verwaistHinweis = verwaist.length
+      ? `<div class="vorlage-veraltet-bar">
+          <ha-icon icon="mdi:delete-clock-outline"></ha-icon>
+          <span data-roh>${
+            this._sprache === "en"
+              ? `The theme still contains ${verwaist.length === 1 ? "a block" : `${verwaist.length} blocks`} of custom presets that no longer exist (${hatgEscape(verwaist.join(", "))}).`
+              : `Im Theme ${verwaist.length === 1 ? "steht noch ein Block" : `stehen noch ${verwaist.length} Blöcke`} eigener Vorlagen, die es nicht mehr gibt (${hatgEscape(verwaist.join(", "))}).`
+          }</span>
+          <button type="button" class="vorlage-veraltet-button" data-verwaiste-entfernen>
+            <ha-icon icon="mdi:delete-outline"></ha-icon><span data-roh>${this._sprache === "en" ? "Remove" : "Entfernen"}</span>
+          </button>
+        </div>`
+      : "";
     const veraltet = this.veralteteVorlagen();
     const hinweis = veraltet.length
       ? `<div class="vorlage-veraltet-bar">
@@ -6118,7 +7028,7 @@ uix:
             }
             ${eigen ? `<button type="button" class="vorlage-edit" data-bearbeite-vorlage="${tpl.id}" title="Bearbeiten"><ha-icon icon="mdi:pencil-outline"></ha-icon></button>` : ""}
           </div>
-          ${offen && felder.length ? `<div class="vorlage-zeile-felder">${this.renderFieldList(felder, null, true)}</div>` : ""}
+          ${offen && felder.length ? `<div class="vorlage-zeile-felder">${tpl.titel ? this.renderVorlageTitel(tpl) : ""}${this.renderFieldList(felder, null, true)}</div>` : ""}
         </div>`;
     };
     const kachel = (tpl, eigen) => {
@@ -6252,10 +7162,6 @@ uix:
               <button type="button" class="${this.aktivesGlasProfil() === "richtlinie" ? "active" : ""}" data-glas-profil="richtlinie">${this._sprache === "en" ? "Apple guideline" : "Apple-Richtlinie"}</button>
               <button type="button" class="${this.aktivesGlasProfil() === "ueberall" ? "active" : ""}" data-glas-profil="ueberall">${this._sprache === "en" ? "Glass everywhere" : "Glas überall"}</button>
             </div>
-            <label class="glas-schalter">
-              <input type="checkbox" data-glas-abdunkeln ${this.abdunkelungAn() ? "checked" : ""} />
-              <span>${this._sprache === "en" ? "Dim behind glass (35 %, for light backgrounds)" : "Abdunkeln hinter Glas (35 %, für helle Hintergründe)"}</span>
-            </label>
           </div>
           <div class="glas-regler-reihe">
             <div class="generator-control">
@@ -6318,7 +7224,9 @@ uix:
         ${paketLeiste}
         ${pfadHinweis}
         ${kollisionsHinweis}
+        ${verwaistHinweis}
         ${glasRegler}
+        ${stand.gesamt ? this.renderAkzentVerlauf() : ""}
         ${farbHinweis}
         ${duennHinweis}
         ${hinweis}
@@ -6326,6 +7234,76 @@ uix:
         ${nurEigene || !gruppe || eigene.length ? eigenerBlock : ""}
         ${leer && gruppe && !gruppe.eigen ? `<p class="vorlage-desc">Für dieses Stilziel gibt es noch keine Vorlage.</p>` : ""}
       </section>`;
+  }
+
+  akzentVerlaufStand() {
+    const v = this.currentValues();
+    return hatgLeseVerlauf(v["uix-card"] || "") || hatgLeseVerlauf(v["uix-sidebar"] || "");
+  }
+
+  // Schreibt den Verlauf in beide Ziele und beide Modi oder nimmt ihn heraus.
+  setzeAkzentVerlauf(werte) {
+    const currentMode = this._state.editorMode;
+    ["light", "dark"].forEach((mode) => {
+      this._state.editorMode = mode;
+      HATG_VERLAUF_ZIELE.forEach((ziel) => {
+        const text = String(this.currentValues()[ziel] || "");
+        const neu = werte
+          ? hatgHaengeVorlagenBlockAn(text, HATG_VERLAUF_ID, hatgVerlaufCss(ziel, werte))
+          : hatgEntferneVorlagenBlock(text, HATG_VERLAUF_ID);
+        if (neu !== text) this.commitField(ziel, neu);
+      });
+    });
+    this._state.editorMode = currentMode;
+    this.applyPreviewTheme();
+  }
+
+  renderAkzentVerlauf() {
+    const en = this._sprache === "en";
+    const stand = this.akzentVerlaufStand();
+    const p = stand || HATG_VERLAUF_STANDARD;
+    const farbe = (attr, wert, hell, dunkel) => `
+                <label class="glas-ton" title="${en ? hell : dunkel}">
+                  <input type="color" value="${hatgEscape(wert)}" ${attr} />
+                  <span>${en ? hell : dunkel}</span>
+                </label>`;
+    return `
+        <div class="glas-regler" data-roh>
+          <div class="glas-regler-kopf">
+            <strong>${en ? "Gradient for active surfaces" : "Verlauf für aktive Flächen"}</strong>
+            <span>${
+              en
+                ? "Fills Bubble cards that are on, sub-buttons with a background, slider fills, the selected items of HA-Karten cards and the active sidebar entry with a gradient. Home Assistant's own buttons only take colours and keep the primary colour. Applies to light and dark alike."
+                : "Füllt eingeschaltete Bubble-Karten, Sub-Buttons mit Hintergrund, Schieberfüllungen, das Gewählte der HA-Karten und den aktiven Eintrag der Seitenleiste mit einem Verlauf. Die Knöpfe von Home Assistant selbst nehmen nur Farben an und bleiben in der Primärfarbe. Gilt für Light und Dark gleich."
+            }</span>
+          </div>
+          <div class="glas-profile">
+            <div class="mode-toggle-group inline" role="group">
+              <button type="button" class="${stand ? "" : "active"}" data-verlauf="aus">${en ? "Off" : "Aus"}</button>
+              <button type="button" class="${stand ? "active" : ""}" data-verlauf="an">${en ? "On" : "An"}</button>
+            </div>
+          </div>
+          ${
+            stand
+              ? `
+          <div class="glas-regler-reihe verlauf-reihe">
+            <div class="generator-control glas-regler-farbe">
+              <label>${en ? "Colours" : "Farben"}</label>
+              <div class="glas-toene">
+                ${farbe("data-verlauf-von", p.von, "Start", "Anfang")}
+                ${farbe("data-verlauf-bis", p.bis, "End", "Ende")}
+                ${farbe("data-verlauf-vorn", p.vorn, "Text", "Schrift")}
+              </div>
+            </div>
+            <div class="generator-control">
+              <label>${en ? "Direction" : "Richtung"} <span class="generator-value" data-verlauf-winkel-wert>${p.winkel}°</span></label>
+              <input type="range" min="0" max="345" step="15" value="${p.winkel}" data-verlauf-winkel />
+            </div>
+            <div class="verlauf-vorschau" data-verlauf-vorschau style="background: linear-gradient(${p.winkel}deg, ${p.von}, ${p.bis}); color: ${p.vorn};">${en ? "Active" : "Aktiv"}</div>
+          </div>`
+              : ""
+          }
+        </div>`;
   }
 
   generatorBlurTransparencyState() {
@@ -6491,6 +7469,8 @@ uix:
         </div>
         ${customField}
         ${this.renderBackgroundOpacitySlider()}
+        ${this.renderHintergrundBewegung()}
+        ${this.renderPopupHintergrund()}
       </div>`;
   }
 
@@ -6505,6 +7485,108 @@ uix:
         <label>Deckkraft des Bildes <span class="generator-value" data-bg-opacity-value>${p} %</span></label>
         <input type="range" min="0" max="100" step="1" value="${p}" data-bg-opacity />
         <small>Bei 0 % bleibt nur die Hintergrundfarbe stehen, bei 100 % das Bild in voller Stärke.</small>
+      </div>`;
+  }
+
+  // Eigenes Bild fuer Bubble-Pop-ups und Info-Dialoge. Die beiden Vorlagen
+  // lesen popup-custom-wallpaper vor dem Dashboard-Hintergrund; ohne sie kaeme
+  // das Bild nirgends an, deshalb werden sie mit eingeschaltet.
+  setzePopupBild(url, prozent) {
+    const alt = this.currentValues()["popup-custom-wallpaper"] || "";
+    const p = prozent ?? (this.backgroundImageUrl(alt) ? this.backgroundImageOpacity(alt) : 100);
+    this.commitField("popup-custom-wallpaper", this.composeBackgroundImage(url, p));
+    ["bubble-popup-hintergrundbild", "info-dialog-hintergrundbild"].forEach((id) => {
+      const tpl = this.alleVorlagen().find((t) => t.id === id);
+      if (!tpl) return;
+      if (!hatgVorlagenBlockActive(this.currentValues()[hatgVorlagenZiel(tpl)] || "", id)) this.schalteVorlage(id, { still: true });
+    });
+    this.applyPreviewTheme();
+  }
+
+  renderPopupHintergrund() {
+    const en = this._sprache === "en";
+    const wert = this.currentValues()["popup-custom-wallpaper"] || "";
+    const url = this.backgroundImageUrl(wert);
+    const p = url ? this.backgroundImageOpacity(wert) : 100;
+    return `
+      <div class="bg-opacity-row" data-roh>
+        <label>${en ? "Pop-up background" : "Pop-up-Hintergrund"}
+          <span class="mode-toggle-group inline" role="group">
+            <button type="button" class="${url ? "" : "active"}" data-popup-bg="dashboard">${en ? "Like dashboard" : "Wie Dashboard"}</button>
+            <button type="button" class="${url ? "active" : ""}" data-popup-bg="bild">${en ? (url ? "Change image" : "Own image") : url ? "Bild ändern" : "Eigenes Bild"}</button>
+          </span>
+        </label>
+        ${
+          url
+            ? `
+        <div class="popup-bg-vorschau" style="background-image:${hatgCssUrl(url)};"></div>
+        <label>${en ? "Image opacity" : "Deckkraft des Bildes"} <span class="generator-value" data-popup-opacity-value>${p} %</span></label>
+        <input type="range" min="0" max="100" step="1" value="${p}" data-popup-opacity />`
+            : ""
+        }
+        <small>${
+          en
+            ? `Bubble pop-ups and the entity info dialog show this image instead of the dashboard background. Set separately for light and dark - you are editing ${this._state.editorMode === "dark" ? "dark" : "light"}. Choosing an image switches on the two pop-up background presets.`
+            : `Bubble-Pop-ups und der Info-Dialog einer Entität zeigen dieses Bild statt des Dashboard-Hintergrunds. Getrennt für Light und Dark - gerade bearbeitet: ${this._state.editorMode === "dark" ? "Dark" : "Light"}. Beim Wählen eines Bildes gehen die beiden Pop-up-Hintergrund-Vorlagen mit an.`
+        }</small>
+      </div>`;
+  }
+
+  // Stand der Hintergrund-Bewegung, gelesen aus uix-root des bearbeiteten Modus.
+  hintergrundBewegungStand() {
+    return hatgLeseBewegung(this.currentValues()["uix-root"] || "");
+  }
+
+  // Schreibt oder entfernt die Bewegung in beiden Modi und beiden Zielen.
+  setzeHintergrundBewegung(an, stufe = HATG_BEWEGUNG_STUFE_STANDARD) {
+    const currentMode = this._state.editorMode;
+    ["light", "dark"].forEach((mode) => {
+      this._state.editorMode = mode;
+      HATG_BEWEGUNG_ZIELE.forEach((ziel) => {
+        const text = String(this.currentValues()[ziel] || "");
+        const neu = an
+          ? hatgHaengeVorlagenBlockAn(text, HATG_BEWEGUNG_ID, hatgBewegungCss(ziel, stufe))
+          : hatgEntferneVorlagenBlock(text, HATG_BEWEGUNG_ID);
+        if (neu !== text) this.commitField(ziel, neu);
+      });
+    });
+    this._state.editorMode = currentMode;
+    this.applyPreviewTheme();
+  }
+
+  renderHintergrundBewegung() {
+    const values = this.currentValues();
+    if ((values["background-style"] || "off") === "off") return "";
+    const en = this._sprache === "en";
+    const stand = this.hintergrundBewegungStand();
+    const stufe = stand ? stand.stufe : HATG_BEWEGUNG_STUFE_STANDARD;
+    const zieheAn = hatgVorlagenBlockActive(values["uix-drawer"] || "", "ansicht-hintergrundbild");
+    return `
+      <div class="bg-opacity-row" data-roh>
+        <label>${en ? "Move background" : "Hintergrund bewegen"}
+          <span class="mode-toggle-group inline" role="group">
+            <button type="button" class="${stand ? "" : "active"}" data-bg-bewegung="aus">${en ? "Off" : "Aus"}</button>
+            <button type="button" class="${stand ? "active" : ""}" data-bg-bewegung="an">${en ? "On" : "An"}</button>
+          </span>
+        </label>
+        ${
+          stand
+            ? `
+        <label>${en ? "Speed" : "Geschwindigkeit"} <span class="generator-value" data-bg-bewegung-wert>${en ? "Level" : "Stufe"} ${stufe} · ${hatgBewegungDauer(stufe)} s</span></label>
+        <input type="range" min="1" max="10" step="1" value="${stufe}" data-bg-bewegung-stufe />`
+            : ""
+        }
+        <small>${
+          en
+            ? "Slowly shifts, zooms and turns the background on dashboards - image or gradient alike. Runs on the graphics card; systems set to reduced motion keep it still. Higher level, faster movement; the seconds are one pass."
+            : "Verschiebt, zoomt und dreht den Hintergrund auf Dashboards langsam - Bild wie Verlauf. Läuft auf der Grafikkarte; ist im System reduzierte Bewegung eingestellt, steht er still. Höhere Stufe, schnellere Bewegung; die Sekunden sind ein Durchlauf."
+        }${
+          zieheAn
+            ? ""
+            : en
+              ? " Settings pages only move along with the preset Background image across the whole interface."
+              : " Die Einstellungsseiten bewegen sich nur mit der Vorlage Hintergrundbild über die ganze Oberfläche mit."
+        }</small>
       </div>`;
   }
 
@@ -6535,7 +7617,7 @@ uix:
       return `<p class="wallpaper-hint">Noch keine Bilder in <code>config/themes/Wallpaper/</code>. Lade unten das erste hoch.</p>`;
     }
     const doppelt = this.wallpaperDubletten(liste);
-    const aktuell = this.backgroundImageUrl(this.currentValues()["lovelace-background"] || "");
+    const aktuell = this.backgroundImageUrl(this.currentValues()[dialog.ziel || "lovelace-background"] || "");
     const anzahlDoppelt = Object.keys(doppelt).length;
     const auswahl = dialog.selected || [];
     const kacheln = liste
@@ -6575,7 +7657,7 @@ uix:
     return `
       <div class="modal-scrim" data-wallpaper-cancel></div>
       <div class="modal-box modal-box-breit">
-        <h3>Hintergrundbild</h3>
+        <h3>${dialog.ziel === "popup-custom-wallpaper" ? "Pop-up-Hintergrund" : "Hintergrundbild"}</h3>
         <p>Vorhandenes Bild anklicken oder ein neues hochladen. Alle Bilder liegen in <code>config/themes/Wallpaper/</code>.</p>
         ${this.renderWallpaperGalerie(dialog)}
         <div class="wp-trenner"></div>
@@ -6594,10 +7676,12 @@ uix:
       </div>`;
   }
 
-  openWallpaperDialog() {
+  // ziel: das Feld, in das das gewaehlte Bild kommt - der Dashboard-Hintergrund
+  // oder der eigene Hintergrund der Pop-ups.
+  openWallpaperDialog(ziel = "lovelace-background") {
     this._state.wallpaperDialog = {
       fileName: null, dataUrl: null, uploading: false, processing: false,
-      error: null, gallery: [], selected: [], loading: true,
+      error: null, gallery: [], selected: [], loading: true, ziel,
     };
     this.render();
     this.loadWallpaperGallery();
@@ -6625,6 +7709,14 @@ uix:
 
   useWallpaperFromGallery(url, name) {
     if (!url) return;
+    if (this._state.wallpaperDialog?.ziel === "popup-custom-wallpaper") {
+      this.setzePopupBild(url);
+      this._state.wallpaperDialog = null;
+      this.render();
+      this.scheduleHaLiveRefresh();
+      if (name) this.showToast(`Pop-up-Hintergrund gesetzt: ${name}. Nicht vergessen zu speichern.`);
+      return;
+    }
     const alt = this.currentValues()["lovelace-background"] || "";
     const prozent = this.backgroundImageUrl(alt) ? this.backgroundImageOpacity(alt) : 100;
     this.commitField("background-style", "bild");
@@ -6654,9 +7746,11 @@ uix:
     const dialog = this._state.wallpaperDialog;
     if (!dialog || !dialog.selected || !dialog.selected.length) return;
     if (!this._hass || typeof this._hass.callWS !== "function") return;
-    const aktuell = this.backgroundImageUrl(this.currentValues()["lovelace-background"] || "");
+    const benutzt = ["lovelace-background", "popup-custom-wallpaper"]
+      .map((k) => this.backgroundImageUrl(this.currentValues()[k] || ""))
+      .filter(Boolean);
     const inBenutzung = dialog.selected.filter((name) =>
-      (dialog.gallery || []).some((b) => b.filename === name && b.url === aktuell)
+      (dialog.gallery || []).some((b) => b.filename === name && benutzt.includes(b.url))
     );
     if (inBenutzung.length) {
       dialog.error = `${inBenutzung[0]} wird gerade als Hintergrund benutzt - erst ein anderes Bild wählen.`;
@@ -6898,9 +7992,11 @@ uix:
     Object.keys(flatZiele).forEach((yamlName) => {
       if (!/-yaml$/.test(yamlName)) return;
       const basis = yamlName.replace(/-yaml$/, "");
-      if (!String(flatZiele[basis] ?? "").trim()) return;
-      flatZiele[yamlName] = hatgMergeStilzielYaml(flatZiele[basis], flatZiele[yamlName]);
-      delete flatZiele[basis];
+      if (String(flatZiele[basis] ?? "").trim()) {
+        flatZiele[yamlName] = hatgMergeStilzielYaml(flatZiele[basis], flatZiele[yamlName]);
+        delete flatZiele[basis];
+      }
+      flatZiele[yamlName] = hatgYamlPfadeZusammenfuehren(flatZiele[yamlName]);
     });
     const flatKeys = Object.keys(flatZiele);
     const flatUeberschrift =
@@ -7939,10 +9035,9 @@ uix:
         .glas-regler-kopf { display: flex; flex-direction: column; gap: 3px; margin-bottom: 12px; }
         .glas-regler-kopf strong { font-size: 14px; font-weight: 650; color: var(--hatg-text); }
         .glas-regler-kopf span { font-size: 12px; line-height: 1.5; color: var(--hatg-text-dim); }
+        .verlauf-vorschau { display: grid; place-items: center; min-width: 96px; height: 34px; padding: 0 14px; border-radius: 11px; font-size: 12px; font-weight: 650; }
         .glas-regler-reihe { display: grid; grid-template-columns: 1fr 1fr auto; gap: 18px; align-items: end; }
         .glas-profile { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; margin-bottom: 12px; }
-        .glas-schalter { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--hatg-text-dim); cursor: pointer; }
-        .glas-schalter input { accent-color: var(--hatg-blue); }
         .glas-toene { display: flex; gap: 10px; }
         .glas-ton { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; }
         .glas-ton span { font-size: 10px; letter-spacing: .03em; color: var(--hatg-muted); }
@@ -7988,6 +9083,7 @@ uix:
         .bg-opacity-row { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; padding: 12px 14px; border: 1px solid var(--hatg-border); border-radius: 12px; background: rgba(127,140,160,.06); }
         .bg-opacity-row label { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 12px; font-weight: 600; color: var(--hatg-text); }
         .bg-opacity-row input[type="range"] { width: 100%; }
+        .popup-bg-vorschau { height: 72px; border-radius: 10px; background-size: cover; background-position: center; border: 1px solid var(--hatg-border); }
         .bg-opacity-row small { font-size: 11px; line-height: 1.45; color: var(--hatg-muted); }
         .icon-master-hint { margin: 0 0 10px; font-size: 12px; line-height: 1.5; color: var(--hatg-muted); }
         .vorlage-veraltet-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; padding: 12px 14px; border: 1px solid #e6a23c; border-radius: 12px; background: rgba(230,162,60,.12); color: var(--hatg-text); font-size: 12px; line-height: 1.5; }
@@ -8607,6 +9703,88 @@ uix:
         this.resetDerivationsToAutomatic();
       });
     });
+    this.shadowRoot.querySelectorAll("[data-verlauf]").forEach((el) => {
+      el.addEventListener("click", () => {
+        const an = el.dataset.verlauf === "an";
+        const stand = this.akzentVerlaufStand();
+        if (!!stand === an) return;
+        this.setzeAkzentVerlauf(an ? stand || HATG_VERLAUF_STANDARD : null);
+        this.render();
+      });
+    });
+    const verlaufWerte = () => {
+      const q = (sel) => this.shadowRoot.querySelector(sel);
+      return {
+        von: q("[data-verlauf-von]")?.value,
+        bis: q("[data-verlauf-bis]")?.value,
+        vorn: q("[data-verlauf-vorn]")?.value,
+        winkel: q("[data-verlauf-winkel]")?.value,
+      };
+    };
+    const verlaufVorschau = () => {
+      const p = hatgVerlaufNormal(verlaufWerte());
+      const v = this.shadowRoot.querySelector("[data-verlauf-vorschau]");
+      if (v) {
+        v.style.background = `linear-gradient(${p.winkel}deg, ${p.von}, ${p.bis})`;
+        v.style.color = p.vorn;
+      }
+      const w = this.shadowRoot.querySelector("[data-verlauf-winkel-wert]");
+      if (w) w.textContent = `${p.winkel}°`;
+    };
+    this.shadowRoot.querySelectorAll("[data-verlauf-von], [data-verlauf-bis], [data-verlauf-vorn], [data-verlauf-winkel]").forEach((el) => {
+      el.addEventListener("input", verlaufVorschau);
+      el.addEventListener("change", () => {
+        this.setzeAkzentVerlauf(verlaufWerte());
+        this.render();
+      });
+    });
+    this.shadowRoot.querySelectorAll("[data-popup-bg]").forEach((el) => {
+      el.addEventListener("click", () => {
+        if (el.dataset.popupBg === "bild") {
+          this.openWallpaperDialog("popup-custom-wallpaper");
+          return;
+        }
+        if (!this.currentValues()["popup-custom-wallpaper"]) return;
+        this.commitField("popup-custom-wallpaper", "");
+        this.applyPreviewTheme();
+        this.render();
+      });
+    });
+    this.shadowRoot.querySelectorAll("[data-popup-opacity]").forEach((el) => {
+      const anzeige = this.shadowRoot.querySelector("[data-popup-opacity-value]");
+      el.addEventListener("input", () => {
+        const p = parseInt(el.value, 10) || 0;
+        if (anzeige) anzeige.textContent = p + " %";
+        const url = this.backgroundImageUrl(this.currentValues()["popup-custom-wallpaper"] || "");
+        if (url) {
+          this.commitField("popup-custom-wallpaper", this.composeBackgroundImage(url, p));
+          this.applyPreviewTheme();
+        }
+      });
+      el.addEventListener("change", () => this.render());
+    });
+    this.shadowRoot.querySelectorAll("[data-bg-bewegung]").forEach((el) => {
+      el.addEventListener("click", () => {
+        const an = el.dataset.bgBewegung === "an";
+        const stand = this.hintergrundBewegungStand();
+        if (!!stand === an) return;
+        this.setzeHintergrundBewegung(an, stand ? stand.stufe : HATG_BEWEGUNG_STUFE_STANDARD);
+        this.render();
+      });
+    });
+    this.shadowRoot.querySelectorAll("[data-bg-bewegung-stufe]").forEach((el) => {
+      const anzeige = this.shadowRoot.querySelector("[data-bg-bewegung-wert]");
+      const zeige = () => {
+        const st = parseInt(el.value, 10) || HATG_BEWEGUNG_STUFE_STANDARD;
+        if (anzeige) anzeige.textContent = `${this._sprache === "en" ? "Level" : "Stufe"} ${st} · ${hatgBewegungDauer(st)} s`;
+        return st;
+      };
+      el.addEventListener("input", zeige);
+      el.addEventListener("change", () => {
+        this.setzeHintergrundBewegung(true, zeige());
+        this.render();
+      });
+    });
     this.shadowRoot.querySelectorAll("[data-bg-opacity]").forEach((el) => {
       const anzeige = this.shadowRoot.querySelector("[data-bg-opacity-value]");
       el.addEventListener("input", () => {
@@ -8618,9 +9796,7 @@ uix:
     });
     this.shadowRoot.querySelectorAll("[data-glas-profil]").forEach((el) => {
       el.addEventListener("click", () => this.setzeGlasProfil(el.dataset.glasProfil));
-    });
-    this.shadowRoot.querySelector("[data-glas-abdunkeln]")?.addEventListener("change", (e) => this.glasAbdunkeln(e.target.checked));
-    const glasDeckkraft = this.shadowRoot.querySelector("[data-glas-deckkraft]");
+    });    const glasDeckkraft = this.shadowRoot.querySelector("[data-glas-deckkraft]");
     const glasBlur = this.shadowRoot.querySelector("[data-glas-blur]");
     const glasTonHell = this.shadowRoot.querySelector("[data-glas-ton-light]");
     const glasTonDunkel = this.shadowRoot.querySelector("[data-glas-ton-dark]");
@@ -8653,7 +9829,7 @@ uix:
       glasTonHell?.addEventListener("change", () => tonSetzen("light", glasTonHell));
       glasTonDunkel?.addEventListener("change", () => tonSetzen("dark", glasTonDunkel));
     }
-    this.shadowRoot.querySelector("[data-flaechenfarben-glas]")?.addEventListener("click", () => this.flaechenfarbenAufGlas());
+    this.shadowRoot.querySelector("[data-flaechenfarben-glas]")?.addEventListener("click", () => this.glasFelderSetzen());
     this.shadowRoot.querySelector("[data-grundfarben-deckend]")?.addEventListener("click", () => this.grundfarbenDeckendSetzen());
     this.shadowRoot.querySelector("[data-kollisionen-entfernen]")?.addEventListener("click", () => this.entferneKollisionen());
     this.shadowRoot.querySelectorAll("[data-vorlagen-ansicht]").forEach((el) => {
@@ -8661,6 +9837,15 @@ uix:
         this._state.vorlagenAnsicht = el.dataset.vorlagenAnsicht;
         this.render();
       });
+    });
+    this.shadowRoot.querySelectorAll("[data-vorlage-titel]").forEach((el) => {
+      el.addEventListener("change", () => {
+        this.setzeVorlageTitel(el.dataset.vorlageTitel, el.value);
+        this.render();
+      });
+    });
+    this.shadowRoot.querySelectorAll("[data-bild-waehlen]").forEach((el) => {
+      el.addEventListener("click", () => this.openWallpaperDialog(el.dataset.bildWaehlen));
     });
     this.shadowRoot.querySelectorAll("[data-vorlage-aufklappen]").forEach((el) => {
       el.addEventListener("click", () => {
@@ -8676,6 +9861,7 @@ uix:
     this.shadowRoot.querySelector("[data-neue-vorlage]")?.addEventListener("click", () => {
       this.oeffneVorlagenDialog(null);
     });
+    this.shadowRoot.querySelector("[data-verwaiste-entfernen]")?.addEventListener("click", () => this.entferneVerwaisteEigeneBloecke());
     this.shadowRoot.querySelectorAll("[data-bearbeite-vorlage]").forEach((el) => {
       el.addEventListener("click", () => this.oeffneVorlagenDialog(el.dataset.bearbeiteVorlage));
     });
@@ -8686,7 +9872,7 @@ uix:
       this.speichereVorlagenDialog();
     });
     this.shadowRoot.querySelector("[data-eigene-vorlage-delete]")?.addEventListener("click", (event) => {
-      this.loescheEigeneVorlage(event.currentTarget.dataset.vorlagenDelete);
+      this.loescheEigeneVorlage(event.currentTarget.dataset.eigeneVorlageDelete);
     });
     [["label", "vorlagenLabel"], ["desc", "vorlagenDesc"], ["css", "vorlagenCss"], ["ziel", "vorlagenZiel"]].forEach(([feld, attr]) => {
       const el = this.shadowRoot.querySelector(`[data-eigene-vorlage-${feld}]`);
@@ -9843,6 +11029,13 @@ uix:
     if (migrierteStilziele && parsed.unknownCount) {
       parsed.unknownCount = Math.max(0, parsed.unknownCount - migrierteStilziele);
     }
+    const marken = hatgVereinheitlicheVorlagenMarken(parsed);
+    hatgMigriereHintergrundBewegung(parsed);
+    hatgMigriereAkzentVerlauf(parsed);
+    const eigeneFelder = hatgLoeseEigeneFelderAuf(parsed);
+    if (eigeneFelder.entfernt && parsed.unknownCount) {
+      parsed.unknownCount = Math.max(0, parsed.unknownCount - eigeneFelder.entfernt);
+    }
     const lightKeys = Object.keys(parsed.light);
     const darkKeys = Object.keys(parsed.dark);
     lightKeys.forEach((k) => {
@@ -9866,12 +11059,29 @@ uix:
     const parts = parsed.flatSingleMode
       ? [`Flaches Theme ohne light:/dark:-Aufteilung erkannt`, `${lightKeys.length}/${totalKnown} Felder auf Light UND Dark übernommen`]
       : [`${lightKeys.length}/${totalKnown} Light-Felder`, `${darkKeys.length}/${totalKnown} Dark-Felder importiert`];
-    if (parsed.unknownCount) parts.push(`${parsed.unknownCount} unbekannte Felder aufbewahrt (werden beim Export wieder angehängt)`);
     if (migrierteStilziele)
       parts.push(
         `${migrierteStilziele} card-mod-Feld${migrierteStilziele === 1 ? "" : "er"} auf UIX umgestellt`
       );
     const aufgefrischt = this.frischeVorlagenAuf({ silent: true });
+    // Aufgefrischte Vorlagen verweisen nicht mehr auf eigene Felder des alten Themes.
+    const verwaist = hatgEntferneVerwaisteEigenfelder(
+      { light: this._state.values.light, dark: this._state.values.dark, extra: this._state.extraValues },
+      eigeneFelder.behalten
+    );
+    const entferntGesamt = eigeneFelder.entfernt + verwaist.entfernt;
+    if (entferntGesamt)
+      parts.push(`${entferntGesamt} eigene Hilfsfeld${entferntGesamt === 1 ? "" : "er"} aufgelöst und entfernt`);
+    const unbekannt = new Set([...Object.keys(this._state.extraValues.light), ...Object.keys(this._state.extraValues.dark)]).size;
+    if (unbekannt) parts.push(`${unbekannt} unbekannte Felder aufbewahrt (werden beim Export wieder angehängt)`);
+    if (verwaist.offen.length)
+      parts.push(
+        `${verwaist.offen.length} Feld${verwaist.offen.length === 1 ? " verweist" : "er verweisen"} weiter auf eigene Werte (${hatgFelderNennen(verwaist.offen, "weitere")})`
+      );
+    if (marken.umbenannt)
+      parts.push(`${marken.umbenannt} Vorlage${marken.umbenannt === 1 ? "" : "n"} mit fremder Marke als HATG-Vorlage erkannt`);
+    if (marken.doppelt)
+      parts.push(marken.doppelt === 1 ? "1 doppelter Vorlagenblock entfernt" : `${marken.doppelt} doppelte Vorlagenblöcke entfernt`);
     if (aufgefrischt) parts.push(`${aufgefrischt} UIX-Vorlage${aufgefrischt === 1 ? "" : "n"} auf den aktuellen Stand gebracht`);
     this.showToast(parts.join(", ") + ".");
   }
@@ -9999,6 +11209,13 @@ uix:
       hatgMigriereStilzielKeys(loaded.values?.dark);
       hatgMigriereStilzielKeys(loaded.extraValues?.light);
       hatgMigriereStilzielKeys(loaded.extraValues?.dark);
+      if (loaded.values) {
+        if (!loaded.extraValues) loaded.extraValues = { light: {}, dark: {} };
+        hatgVereinheitlicheVorlagenMarken({ light: loaded.values.light, dark: loaded.values.dark, extra: loaded.extraValues });
+        hatgMigriereHintergrundBewegung({ light: loaded.values.light, dark: loaded.values.dark, extra: loaded.extraValues });
+        hatgMigriereAkzentVerlauf({ light: loaded.values.light, dark: loaded.values.dark });
+        hatgLoeseEigeneFelderAuf({ light: loaded.values.light, dark: loaded.values.dark, extra: loaded.extraValues });
+      }
       this._state.values.light = { ...hatgDeepClone(HATG_MANIFEST.light), ...(loaded.values?.light || {}) };
       this._state.values.dark = { ...hatgDeepClone(HATG_MANIFEST.dark), ...(loaded.values?.dark || {}) };
       this._state.source.light = { ...hatgInitSource(), ...(loaded.source?.light || {}) };
