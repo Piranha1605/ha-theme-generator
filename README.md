@@ -5,7 +5,7 @@
 <p align="center">
   <img src="https://img.shields.io/github/v/release/Piranha1605/ha-theme-generator?include_prereleases&label=Version&color=2F80ED" alt="Version" />
   <img src="https://img.shields.io/badge/HACS-Custom%20Repository-2F80ED?logo=home-assistant&logoColor=white" alt="HACS" />
-  <img src="https://img.shields.io/badge/Variablen-575%20gepr%C3%BCft-2F80ED" alt="575 geprüfte Variablen" />
+  <img src="https://img.shields.io/badge/Variablen-577%20gepr%C3%BCft-2F80ED" alt="577 geprüfte Variablen" />
   <img src="https://img.shields.io/github/stars/Piranha1605/ha-theme-generator?color=2F80ED" alt="Stars" />
   <img src="https://img.shields.io/github/issues/Piranha1605/ha-theme-generator?color=2F80ED" alt="Issues" />
 </p>
@@ -24,7 +24,7 @@
 
 HATG ist ein eigenes Panel in deiner Home-Assistant-Seitenleiste, mit dem du komplette Themes visuell aufbaust — für Home Assistant selbst, für **Bubble Card**, für **Mushroom** und für globale Anpassungen per **UI eXtension (UIX)**. Kein Springen zwischen YAML-Dateien, kein Raten, welche Variable welche Karte trifft: Du stellst Farben, Formen und Zustände an einer Stelle ein, HATG verteilt sie an alle drei Welten und zeigt dir das Ergebnis live — auf Wunsch direkt in deinem echten Dashboard.
 
-Jedes der 575 Felder wurde gegen den echten Quellcode von Home Assistant, Bubble Card und Mushroom beziehungsweise gegen die UIX-Dokumentation geprüft. Es sind ausschließlich real existierende Variablen enthalten — was du einstellst, kommt auch an.
+Jedes der 577 Felder wurde gegen den echten Quellcode von Home Assistant, Bubble Card und Mushroom beziehungsweise gegen die UIX-Dokumentation geprüft. Es sind ausschließlich real existierende Variablen enthalten — was du einstellst, kommt auch an.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/unified-theme-demo.png" alt="Ein Theme, gleichzeitig angewendet auf HA-Karten, Mushroom und Bubble Card" width="70%" />
@@ -137,7 +137,7 @@ Neben Verläufen (Sonnenaufgang, Nachthimmel, Radial) kannst du ein **eigenes Bi
 
 ## Alle Bereiche im Überblick
 
-Die Seitenleiste gliedert alle 575 Felder in thematische Sektionen — Bubble Card mit eigenen Unterseiten pro Kartentyp, die UIX-Vorlagen mit einer Unterseite pro Stilziel:
+Die Seitenleiste gliedert alle 577 Felder in thematische Sektionen — Bubble Card mit eigenen Unterseiten pro Kartentyp, die UIX-Vorlagen mit einer Unterseite pro Stilziel:
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-navigation.png" alt="Die Navigation des Panels mit allen Bereichen" width="22%" />
@@ -158,7 +158,7 @@ Die Seitenleiste gliedert alle 575 Felder in thematische Sektionen — Bubble Ca
 
 ### Alle Felder — finden statt suchen
 
-Der **Wortbaustein-Filter** kombiniert Bausteine wie `color`, `background` oder `button` mit einschränkenden Zusatz-Tags (`bubble`, `climate`, `stack`) — so ist auch unter 575 Variablen die richtige in Sekunden gefunden. Mit der Mehrfachauswahl bekommen ganze Feldgruppen in einem Schritt denselben Wert.
+Der **Wortbaustein-Filter** kombiniert Bausteine wie `color`, `background` oder `button` mit einschränkenden Zusatz-Tags (`bubble`, `climate`, `stack`) — so ist auch unter 577 Variablen die richtige in Sekunden gefunden. Mit der Mehrfachauswahl bekommen ganze Feldgruppen in einem Schritt denselben Wert.
 
 ### Code-Editor
 

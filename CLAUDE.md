@@ -31,7 +31,7 @@ Die Versionsnummer steht an vier Stellen und muss überall gleich sein: `manifes
 
 - **Startseite** — Grundfarben, Basis-Einstellungen, Zustände, Hintergründe
 - **Thematische Bereiche** — HA-Grundgerüst, Bubble Card mit Unterseiten, Mushroom
-- **Alle Felder** — Volltext- und Filtersuche über sämtliche 575 verifizierten Variablen
+- **Alle Felder** — Volltext- und Filtersuche über sämtliche 577 verifizierten Variablen
 - **Verlauf für aktive Flächen** — im Glas-Bereich: zwei Farben, Richtung, Schriftfarbe; Block `verlauf-akzent` in `uix-card` und `uix-sidebar`. HA-Karten nehmen ihn über `--XX-gewaehlt` (Kurzform `background`) an, HA-eigene Knöpfe nicht (nur Farbvariablen)
 - **Code-Editor** — textbasierte Bearbeitung mit Syntax-Highlighting
 - **Vorlagen** — vorgefertigte CSS-Effekte, eine Unterseite je Stilziel
