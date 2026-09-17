@@ -1991,6 +1991,12 @@ function hatgVerlaufNormal(p) {
 }
 function hatgVerlaufCss(ziel, werte) {
   const p = hatgVerlaufNormal(werte);
+  // Die plastische Innenkante mischt sonst aus der Akzentfarbe. Auf einem
+  // Verlauf passt das nicht mehr - sie kommt deshalb aus denselben Feldern
+  // wie die Mulde der Schieber.
+  const kante = `box-shadow:
+    inset 3px 3px 7px var(--neumorph-tiefe, rgba(0, 0, 0, 0.22)),
+    inset -2px -2px 6px var(--neumorph-hell, rgba(255, 255, 255, 0.28)) !important;`;
   const kopf = `:host {
   --verlauf-akzent: linear-gradient(${p.winkel}deg, ${p.von} 0%, ${p.bis} 100%);
   --verlauf-vorn: ${p.vorn};
@@ -2018,6 +2024,9 @@ ha-list-item-button.selected {
 :host(${tag}) {
   --${k}-gewaehlt: var(--verlauf-akzent) !important;
   --${k}-gewaehlt-vorn: var(--verlauf-vorn) !important;
+  --${k}-gewaehlt-schatten:
+      inset 3px 3px 7px var(--neumorph-tiefe, rgba(0, 0, 0, 0.22)),
+      inset -2px -2px 6px var(--neumorph-hell, rgba(255, 255, 255, 0.28)) !important;
 }`
     )
     .join("\n");
@@ -2025,6 +2034,7 @@ ha-list-item-button.selected {
 ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-background {
   background-color: transparent !important;
   background-image: var(--verlauf-akzent) !important;
+  ${kante}
 }
 ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-name,
 ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-state,
@@ -2038,9 +2048,11 @@ ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-main-icon-container
   background-color: transparent !important;
   background-image: var(--verlauf-akzent) !important;
   color: var(--verlauf-vorn) !important;
+  ${kante}
 }
 .bubble-range-fill {
   background: var(--verlauf-akzent) !important;
+  ${kante}
 }
 ${karten}
 .menue-kapsel {
@@ -2052,6 +2064,7 @@ ${karten}
 }
 :host(schieber-karte) .fuellung {
   background: var(--verlauf-akzent) !important;
+  ${kante}
 }`;
 }
 // Werte aus einem Block lesen; null, wenn kein Block da ist. Liest auch die
