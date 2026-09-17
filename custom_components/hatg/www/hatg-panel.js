@@ -2006,6 +2006,7 @@ function hatgVerlaufCss(ziel, werte) {
 ha-list-item-button.selected::before {
   background-color: transparent !important;
   background-image: var(--verlauf-akzent) !important;
+  ${kante}
 }
 ha-list-item-button.selected {
   --sidebar-selected-text-color: var(--verlauf-vorn);
