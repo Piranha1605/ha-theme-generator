@@ -43,6 +43,7 @@ const HATG_TEXTE = {
   "Kartentransparenz": "Card transparency",
   "Hintergrund": "Background",
   "Pop-up-Hintergrund": "Pop-up background",
+  "1 Rest einer gelöschten eigenen Vorlage entfernt. Jetzt speichern und Themes neu laden.": "1 leftover of a deleted custom preset removed. Now save and reload themes.",
   "Bild wählen": "Choose image",
   "Hintergrundbild": "Background image",
   "Bausteine": "Blocks",
@@ -459,6 +460,7 @@ const HATG_TEXT_MUSTER = {
     [/^Theme gespeichert:\s*(.+)$/, "Theme saved: $1"],
     [/^Bild hochgeladen:\s*(.+)$/, "Image uploaded: $1"],
     [/^Hintergrundbild gesetzt:\s*(.+?)\.\s*Nicht vergessen zu speichern\.$/, "Background image set: $1. Remember to save."],
+    [/^(\d+) Reste gelöschter eigener Vorlagen entfernt\. Jetzt speichern und Themes neu laden\.$/, "$1 leftovers of deleted custom presets removed. Now save and reload themes."],
     [/^Pop-up-Hintergrund gesetzt:\s*(.+?)\.\s*Nicht vergessen zu speichern\.$/, "Pop-up background set: $1. Remember to save."],
     [/^Rückgängig:\s*(\d+) Felder \(inkl\. automatischer Ableitungen\)\.$/, "Undone: $1 fields (including automatic derivations)."],
     [/^Rückgängig:\s*(.+?)\.$/, "Undone: $1."],
@@ -6041,6 +6043,7 @@ class HATGPanel extends HTMLElement {
     try {
       const result = await this._hass.callWS({ type: "hatg/list_uix_templates" });
       this._state.eigeneVorlagenListe = (result && result.templates) || [];
+      this._state.eigeneVorlagenGeladen = true;
       this.render();
     } catch (error) {
       console.error("HATG ladeEigeneVorlagen failed", error);
@@ -6074,7 +6077,9 @@ class HATGPanel extends HTMLElement {
         .normalize("NFKD")
         .replace(/[̀-ͯ]/g, "")
         .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "") || "vorlage";
+        .replace(/^-+|-+$/g, "")
+        .slice(0, 48)
+        .replace(/-+$/g, "") || "vorlage";
     const belegt = new Set(
       this.alleVorlagen().map((t) => t.id).filter((id) => id !== ignoriereId)
     );
@@ -6122,6 +6127,7 @@ class HATGPanel extends HTMLElement {
 
     const vorherigeListe = [...this.eigeneVorlagen()];
     const liste = [...vorherigeListe];
+    const warAktiv = dialog.id ? this.vorlageIrgendwoAktiv(dialog.id) : false;
     const eintrag = {
       id: dialog.id || this.vorlagenIdAusName(label),
       label,
@@ -6142,20 +6148,90 @@ class HATGPanel extends HTMLElement {
       return;
     }
 
-    if (index >= 0 && hatgVorlagenBlockActive(String(this.currentValues()[hatgVorlagenZiel(eintrag)] || ""), eintrag.id)) {
-      this.frischeVorlagenAuf({ still: true });
+    // Eine aktive Vorlage wird ueberall entfernt und mit dem neuen CSS im
+    // (vielleicht neuen) Stilziel wieder eingesetzt - sonst blieb nach einem
+    // Zielwechsel der alte Block stehen und die Vorlage galt als aus.
+    if (index >= 0 && warAktiv) {
+      this.entferneVorlageUeberall(eintrag.id);
+      const ziel = hatgVorlagenZiel(eintrag);
+      const currentMode = this._state.editorMode;
+      ["light", "dark"].forEach((mode) => {
+        this._state.editorMode = mode;
+        const text = String(this.currentValues()[ziel] || "");
+        this.commitField(ziel, hatgHaengeVorlagenBlockAn(text, eintrag.id, eintrag.css, hatgIstYamlZiel(ziel)));
+      });
+      this._state.editorMode = currentMode;
+      this.applyPreviewTheme();
     }
     this._state.vorlagenDialog = null;
     this.render();
     this.showToast(index >= 0 ? `"${eintrag.label}" gespeichert.` : `"${eintrag.label}" angelegt.`);
   }
 
+  // Steckt ein Block dieser Vorlage in irgendeinem Stilziel, in einem der
+  // beiden Modi? Nach einem Wechsel des Stilziels liegt er nicht mehr dort,
+  // wo die Vorlage heute hinschreibt.
+  vorlageIrgendwoAktiv(id) {
+    const ziele = hatgVorlagenZieleAlle(this.alleVorlagen());
+    return ["light", "dark"].some((m) =>
+      ziele.some((k) => hatgVorlagenBlockActive(String(this._state.values[m]?.[k] || ""), id))
+    );
+  }
+
+  // Entfernt jeden Block dieser Vorlage aus allen Stilzielen beider Modi.
+  entferneVorlageUeberall(id) {
+    const ziele = hatgVorlagenZieleAlle(this.alleVorlagen());
+    const currentMode = this._state.editorMode;
+    let anzahl = 0;
+    ["light", "dark"].forEach((mode) => {
+      this._state.editorMode = mode;
+      ziele.forEach((k) => {
+        const text = String(this.currentValues()[k] || "");
+        if (!hatgVorlagenBlockActive(text, id)) return;
+        this.commitField(k, hatgEntferneVorlagenBlock(text, id));
+        anzahl++;
+      });
+    });
+    this._state.editorMode = currentMode;
+    return anzahl;
+  }
+
+  // Bloecke eigener Vorlagen, die es in hatg-uix-vorlagen.json nicht mehr
+  // gibt - etwa von Hand geloescht oder in einem anderen Browser. Nur wenn die
+  // Liste wirklich geladen ist, sonst sahe jede eigene Vorlage verwaist aus.
+  verwaisteEigeneBloecke() {
+    if (!this._state.eigeneVorlagenGeladen) return [];
+    const bekannt = new Set(this.alleVorlagen().map((t) => t.id));
+    const ziele = hatgVorlagenZieleAlle(this.alleVorlagen());
+    const ids = new Set();
+    ["light", "dark"].forEach((m) =>
+      ziele.forEach((k) => {
+        for (const t of String(this._state.values[m]?.[k] || "").matchAll(/(?:\/\*|#)\s*HATG:(?:UIX|CARDMOD):(eigene-[A-Za-z0-9_-]+):START/g)) {
+          if (!bekannt.has(t[1])) ids.add(t[1]);
+        }
+      })
+    );
+    return [...ids];
+  }
+
+  entferneVerwaisteEigeneBloecke() {
+    const ids = this.verwaisteEigeneBloecke();
+    ids.forEach((id) => this.entferneVorlageUeberall(id));
+    this.applyPreviewTheme();
+    this.render();
+    this.showToast(
+      ids.length === 1
+        ? "1 Rest einer gelöschten eigenen Vorlage entfernt. Jetzt speichern und Themes neu laden."
+        : `${ids.length} Reste gelöschter eigener Vorlagen entfernt. Jetzt speichern und Themes neu laden.`
+    );
+  }
+
   async loescheEigeneVorlage(id) {
     const eintrag = this.eigeneVorlagen().find((t) => t.id === id);
     if (!eintrag) return;
     const vorherigeListe = [...this.eigeneVorlagen()];
-    const aktiv = hatgVorlagenBlockActive(String(this.currentValues()[hatgVorlagenZiel(eintrag)] || ""), id);
-    if (aktiv) this.schalteVorlage(id, { still: true });
+    const aktiv = this.vorlageIrgendwoAktiv(id);
+    if (aktiv) this.entferneVorlageUeberall(id);
     this._state.eigeneVorlagenListe = this.eigeneVorlagen().filter((t) => t.id !== id);
     const gespeichert = await this.speichereEigeneVorlagen();
     if (!gespeichert) {
@@ -6165,6 +6241,7 @@ class HATGPanel extends HTMLElement {
     }
     this._state.vorlagenDialog = null;
     this.render();
+    this.applyPreviewTheme();
     this.showToast(`"${eintrag.label}" gelöscht${aktiv ? " und aus dem Theme entfernt" : ""}.`);
   }
 
@@ -6901,6 +6978,20 @@ uix:
     const gruppe = this.vorlagenGruppeMeta(sektion);
     const werte = this.currentValues();
     const istAktiv = (tpl) => hatgVorlagenBlockActive(String(werte[hatgVorlagenZiel(tpl)] || ""), tpl.id);
+    const verwaist = this.verwaisteEigeneBloecke();
+    const verwaistHinweis = verwaist.length
+      ? `<div class="vorlage-veraltet-bar">
+          <ha-icon icon="mdi:delete-clock-outline"></ha-icon>
+          <span data-roh>${
+            this._sprache === "en"
+              ? `The theme still contains ${verwaist.length === 1 ? "a block" : `${verwaist.length} blocks`} of custom presets that no longer exist (${hatgEscape(verwaist.join(", "))}).`
+              : `Im Theme ${verwaist.length === 1 ? "steht noch ein Block" : `stehen noch ${verwaist.length} Blöcke`} eigener Vorlagen, die es nicht mehr gibt (${hatgEscape(verwaist.join(", "))}).`
+          }</span>
+          <button type="button" class="vorlage-veraltet-button" data-verwaiste-entfernen>
+            <ha-icon icon="mdi:delete-outline"></ha-icon><span data-roh>${this._sprache === "en" ? "Remove" : "Entfernen"}</span>
+          </button>
+        </div>`
+      : "";
     const veraltet = this.veralteteVorlagen();
     const hinweis = veraltet.length
       ? `<div class="vorlage-veraltet-bar">
@@ -7133,6 +7224,7 @@ uix:
         ${paketLeiste}
         ${pfadHinweis}
         ${kollisionsHinweis}
+        ${verwaistHinweis}
         ${glasRegler}
         ${stand.gesamt ? this.renderAkzentVerlauf() : ""}
         ${farbHinweis}
@@ -9769,6 +9861,7 @@ uix:
     this.shadowRoot.querySelector("[data-neue-vorlage]")?.addEventListener("click", () => {
       this.oeffneVorlagenDialog(null);
     });
+    this.shadowRoot.querySelector("[data-verwaiste-entfernen]")?.addEventListener("click", () => this.entferneVerwaisteEigeneBloecke());
     this.shadowRoot.querySelectorAll("[data-bearbeite-vorlage]").forEach((el) => {
       el.addEventListener("click", () => this.oeffneVorlagenDialog(el.dataset.bearbeiteVorlage));
     });
@@ -9779,7 +9872,7 @@ uix:
       this.speichereVorlagenDialog();
     });
     this.shadowRoot.querySelector("[data-eigene-vorlage-delete]")?.addEventListener("click", (event) => {
-      this.loescheEigeneVorlage(event.currentTarget.dataset.vorlagenDelete);
+      this.loescheEigeneVorlage(event.currentTarget.dataset.eigeneVorlageDelete);
     });
     [["label", "vorlagenLabel"], ["desc", "vorlagenDesc"], ["css", "vorlagenCss"], ["ziel", "vorlagenZiel"]].forEach(([feld, attr]) => {
       const el = this.shadowRoot.querySelector(`[data-eigene-vorlage-${feld}]`);

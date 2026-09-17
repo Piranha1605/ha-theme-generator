@@ -322,6 +322,17 @@ pruefe("Aktiver Seitenleisten-Eintrag deckend in der Akzentfarbe mit Textfarbe f
   assert.ok(text && /--sidebar-selected-text-color:\s*var\(--text-primary-color\)/.test(text[2]), "Schrift nicht in --text-primary-color");
 });
 
+pruefe("Jeder dataset-Zugriff hat ein passendes data-Attribut", () => {
+  // Der Loeschknopf eigener Vorlagen las seit der Umstellung auf UIX
+  // dataset.vorlagenDelete, das Attribut hiess data-eigene-vorlage-delete -
+  // geloescht wurde nichts.
+  const alles = fs.readFileSync(PANEL, "utf8");
+  const camel = (a) => a.replace(/-([a-z0-9])/g, (_, c) => c.toUpperCase());
+  const bekannt = new Set([...alles.matchAll(/data-([a-z0-9-]+)/g)].map((m) => camel(m[1])));
+  const fremd = [...new Set([...alles.matchAll(/\.dataset\.([A-Za-z0-9]+)/g)].map((m) => m[1]))].filter((k) => !bekannt.has(k));
+  assert.deepEqual(fremd, []);
+});
+
 pruefe("Seitenleisten-Titel ist ein Parameter der Vorlage, keine Beschreibung nennt hatg-Felder", () => {
   const tpl = vorlagen.find((x) => x.id === "seitenleiste-titel");
   assert.ok(tpl, "Vorlage seitenleiste-titel fehlt");
