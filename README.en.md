@@ -5,7 +5,7 @@
 <p align="center">
   <img src="https://img.shields.io/github/v/release/Piranha1605/ha-theme-generator?include_prereleases&label=Version&color=2F80ED" alt="Version" />
   <img src="https://img.shields.io/badge/HACS-Custom%20Repository-2F80ED?logo=home-assistant&logoColor=white" alt="HACS" />
-  <img src="https://img.shields.io/badge/Variables-601%20verified-2F80ED" alt="601 verified variables" />
+  <img src="https://img.shields.io/badge/Variables-574%20verified-2F80ED" alt="574 verified variables" />
   <img src="https://img.shields.io/github/stars/Piranha1605/ha-theme-generator?color=2F80ED" alt="Stars" />
   <img src="https://img.shields.io/github/issues/Piranha1605/ha-theme-generator?color=2F80ED" alt="Issues" />
 </p>
@@ -24,7 +24,7 @@
 
 HATG is a dedicated panel in your Home Assistant sidebar for building complete themes visually — for Home Assistant itself, for **Bubble Card**, for **Mushroom** and for global tweaks via **UI eXtension (UIX)**. No jumping between YAML files, no guessing which variable hits which card: you set colours, shapes and states in one place, HATG distributes them across all three worlds and shows you the result live — optionally right inside your real dashboard.
 
-Every one of the 601 fields was verified against the actual source code of Home Assistant, Bubble Card and Mushroom, or against the UIX documentation. Only variables that genuinely exist are included — what you set is what arrives.
+Every one of the 574 fields was verified against the actual source code of Home Assistant, Bubble Card and Mushroom, or against the UIX documentation. Only variables that genuinely exist are included — what you set is what arrives.
 
 > **Language:** HATG speaks English and German. The interface follows your Home Assistant language automatically and can be switched at any time under the gear icon.
 
@@ -131,11 +131,15 @@ Semantic colours — weather, alarm, battery, lock, climate modes — are delibe
 
 Besides gradients (sunrise, night sky, radial) you can set your **own image**. The gallery shows every image already uploaded to `config/themes/Wallpaper/` as a clickable preview — upload once, reuse in every theme. Identical duplicates are detected by checksum, flagged and removable in one click. The **opacity slider** lays a colour veil over the image — from full strength down to "background colour only", live in the preview.
 
+**Move background** slowly shifts, zooms and turns the dashboard background, in ten speed levels. The movement runs on the graphics card and stays still when the system is set to reduced motion.
+
+**Pop-up background** gives Bubble pop-ups and the more-info dialog an image of their own with its own opacity, separately for light and dark. Without one they show the dashboard background. Images can also be chosen right at the fields `lovelace-background` and `popup-custom-wallpaper`.
+
 ---
 
 ## All sections at a glance
 
-The sidebar organises all 601 fields into thematic sections — Bubble Card with its own subpage per card type, the UIX presets with one subpage per style target:
+The sidebar organises all 574 fields into thematic sections — Bubble Card with its own subpage per card type, the UIX presets with one subpage per style target:
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-navigation.png" alt="Navigation with all sections" width="22%" />
@@ -156,7 +160,7 @@ The sidebar organises all 601 fields into thematic sections — Bubble Card with
 
 ### All fields — finding instead of searching
 
-The **word-fragment filter** combines building blocks such as `color`, `background` or `button` with narrowing tags (`bubble`, `climate`, `stack`) — so even among 601 variables the right one is found in seconds. With multi-select, entire groups of fields get the same value in a single step.
+The **word-fragment filter** combines building blocks such as `color`, `background` or `button` with narrowing tags (`bubble`, `climate`, `stack`) — so even among 574 variables the right one is found in seconds. With multi-select, entire groups of fields get the same value in a single step.
 
 ### Code editor
 
@@ -176,21 +180,22 @@ In the sidebar every style target has its own subpage, with the number of its pr
 
 ### The glass package
 
-One click on **Activate all** switches every surface of the system to glass with 24 presets: cards, sidebar, app drawer, top bar, dialogs and the more-info dialog, badges and heading badges, toast messages, notifications, glance cards, calendar, to-do lists, history including its charts, custom panels — and the controls in cards, top bar, dialogs and settings.
+One click on **Activate all** switches every surface of the system to glass with 25 presets: cards, sidebar, app drawer, top bar, dialogs and the more-info dialog, badges and heading badges, toast messages, notifications, glance cards, map markers, calendar, to-do lists, history including its charts, custom panels — and the controls in cards, top bar, dialogs and settings.
 
-All 24 hang on the same **glass values** shown above the list:
+All 25 hang on the same **glass values** shown above the list. The sliders write to the fields Home Assistant reads itself – `ha-card-background`, `ha-card-backdrop-filter`, `control-button-background-color`, `ha-dialog-surface-background` and the sidebar and top bar fields. The theme needs no helper fields of its own, and **Remove all** resets the fields.
 
 | Control | Effect |
 |---|---|
-| **Opacity** | how much surface the glass has — one value from which HATG derives three grades (light, normal, strong) |
-| **Blur** | the blur behind the glass, graded the same way |
+| **Opacity** | how much surface the glass has — cards, with controls and dialogs slightly stronger |
+| **Blur** | the blur behind cards, slightly stronger behind dialogs |
 | **Tint light / dark** | separate base colours for light and dark |
 | **Apple guideline / glass everywhere** | Apple puts glass on the functional layer only — navigation and controls. "Glass everywhere" adds the content surfaces |
-| **Dim behind glass** | the 35 % dimming Apple asks for over bright backgrounds |
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-glaswerte.jpg" alt="The glass values above the preset list, with the live preview beside them" width="62%" />
 </p>
+
+**Gradient for active surfaces** fills Bubble cards that are on, sub-buttons with a background, slider fills, the selected items of HA-Karten cards and the active sidebar entry with a colour gradient – two colours, direction and text colour, the same for light and dark. Home Assistant's own buttons only take colours and keep the primary colour.
 
 ### What is possible beyond cards
 

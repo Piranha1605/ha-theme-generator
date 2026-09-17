@@ -5,7 +5,7 @@
 <p align="center">
   <img src="https://img.shields.io/github/v/release/Piranha1605/ha-theme-generator?include_prereleases&label=Version&color=2F80ED" alt="Version" />
   <img src="https://img.shields.io/badge/HACS-Custom%20Repository-2F80ED?logo=home-assistant&logoColor=white" alt="HACS" />
-  <img src="https://img.shields.io/badge/Variablen-601%20gepr%C3%BCft-2F80ED" alt="601 geprüfte Variablen" />
+  <img src="https://img.shields.io/badge/Variablen-574%20gepr%C3%BCft-2F80ED" alt="574 geprüfte Variablen" />
   <img src="https://img.shields.io/github/stars/Piranha1605/ha-theme-generator?color=2F80ED" alt="Stars" />
   <img src="https://img.shields.io/github/issues/Piranha1605/ha-theme-generator?color=2F80ED" alt="Issues" />
 </p>
@@ -24,7 +24,7 @@
 
 HATG ist ein eigenes Panel in deiner Home-Assistant-Seitenleiste, mit dem du komplette Themes visuell aufbaust — für Home Assistant selbst, für **Bubble Card**, für **Mushroom** und für globale Anpassungen per **UI eXtension (UIX)**. Kein Springen zwischen YAML-Dateien, kein Raten, welche Variable welche Karte trifft: Du stellst Farben, Formen und Zustände an einer Stelle ein, HATG verteilt sie an alle drei Welten und zeigt dir das Ergebnis live — auf Wunsch direkt in deinem echten Dashboard.
 
-Jedes der 601 Felder wurde gegen den echten Quellcode von Home Assistant, Bubble Card und Mushroom beziehungsweise gegen die UIX-Dokumentation geprüft. Es sind ausschließlich real existierende Variablen enthalten — was du einstellst, kommt auch an.
+Jedes der 574 Felder wurde gegen den echten Quellcode von Home Assistant, Bubble Card und Mushroom beziehungsweise gegen die UIX-Dokumentation geprüft. Es sind ausschließlich real existierende Variablen enthalten — was du einstellst, kommt auch an.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/unified-theme-demo.png" alt="Ein Theme, gleichzeitig angewendet auf HA-Karten, Mushroom und Bubble Card" width="70%" />
@@ -129,11 +129,15 @@ Semantische Farben — Wetter, Alarm, Batterie, Schloss, Klima-Modi — bleiben 
 
 Neben Verläufen (Sonnenaufgang, Nachthimmel, Radial) kannst du ein **eigenes Bild** hinterlegen. Die Galerie zeigt alle bereits hochgeladenen Bilder aus `config/themes/Wallpaper/` als anklickbare Vorschau — einmal hochladen, in jedem Theme wiederverwenden. Inhaltsgleiche Duplikate werden per Prüfsumme erkannt, markiert und lassen sich mit einem Klick aufräumen. Der **Deckkraft-Regler** legt einen Farbschleier über das Bild — von voller Stärke bis „nur noch Hintergrundfarbe", live in der Vorschau.
 
+**Hintergrund bewegen** verschiebt, zoomt und dreht den Hintergrund von Dashboards langsam, in zehn Geschwindigkeitsstufen. Die Bewegung läuft auf der Grafikkarte und steht still, wenn im System reduzierte Bewegung eingestellt ist.
+
+**Pop-up-Hintergrund** gibt Bubble-Pop-ups und dem Info-Dialog ein eigenes Bild mit eigener Deckkraft, getrennt für Light und Dark. Ohne eigenes Bild zeigen sie den Dashboard-Hintergrund. Bilder lassen sich außerdem direkt an den Feldern `lovelace-background` und `popup-custom-wallpaper` wählen.
+
 ---
 
 ## Alle Bereiche im Überblick
 
-Die Seitenleiste gliedert alle 601 Felder in thematische Sektionen — Bubble Card mit eigenen Unterseiten pro Kartentyp, die UIX-Vorlagen mit einer Unterseite pro Stilziel:
+Die Seitenleiste gliedert alle 574 Felder in thematische Sektionen — Bubble Card mit eigenen Unterseiten pro Kartentyp, die UIX-Vorlagen mit einer Unterseite pro Stilziel:
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-navigation.png" alt="Die Navigation des Panels mit allen Bereichen" width="22%" />
@@ -154,7 +158,7 @@ Die Seitenleiste gliedert alle 601 Felder in thematische Sektionen — Bubble Ca
 
 ### Alle Felder — finden statt suchen
 
-Der **Wortbaustein-Filter** kombiniert Bausteine wie `color`, `background` oder `button` mit einschränkenden Zusatz-Tags (`bubble`, `climate`, `stack`) — so ist auch unter 601 Variablen die richtige in Sekunden gefunden. Mit der Mehrfachauswahl bekommen ganze Feldgruppen in einem Schritt denselben Wert.
+Der **Wortbaustein-Filter** kombiniert Bausteine wie `color`, `background` oder `button` mit einschränkenden Zusatz-Tags (`bubble`, `climate`, `stack`) — so ist auch unter 574 Variablen die richtige in Sekunden gefunden. Mit der Mehrfachauswahl bekommen ganze Feldgruppen in einem Schritt denselben Wert.
 
 ### Code-Editor
 
@@ -174,21 +178,22 @@ In der Seitenleiste steht jedes Stilziel als eigene Unterseite, mit der Anzahl s
 
 ### Das Glas-Paket
 
-Ein Klick auf **Alle aktivieren** stellt mit 24 Vorlagen jede Fläche des Systems auf Glas: Karten, Seitenleiste, App Drawer, Kopfleiste, Dialoge und Info-Dialog, Badges und Überschriften-Badges, Toast-Meldungen, Benachrichtigungen, Glance-Karten, Kalender, To-do-Listen, Verlauf samt Diagrammen, eigene Panels — und die Bedienelemente in Karten, Kopfleiste, Dialogen und Einstellungen.
+Ein Klick auf **Alle aktivieren** stellt mit 25 Vorlagen jede Fläche des Systems auf Glas: Karten, Seitenleiste, App Drawer, Kopfleiste, Dialoge und Info-Dialog, Badges und Überschriften-Badges, Toast-Meldungen, Benachrichtigungen, Glance-Karten, Kartenmarker, Kalender, To-do-Listen, Verlauf samt Diagrammen, eigene Panels — und die Bedienelemente in Karten, Kopfleiste, Dialogen und Einstellungen.
 
-Alle 24 hängen an denselben **Glaswerten**, die über der Liste stehen:
+Alle 25 hängen an denselben **Glaswerten**, die über der Liste stehen. Die Regler schreiben in die Felder, die Home Assistant selbst liest – `ha-card-background`, `ha-card-backdrop-filter`, `control-button-background-color`, `ha-dialog-surface-background` und die Felder von Seitenleiste und Kopfleiste. Das Theme braucht dafür keine eigenen Hilfsfelder, und **Alle entfernen** setzt die Felder wieder zurück.
 
 | Regler | Wirkung |
 |---|---|
-| **Deckkraft** | wie viel Fläche das Glas hat — ein Wert, aus dem HATG drei Abstufungen ableitet (leicht, normal, stark) |
-| **Weichzeichnung** | die Unschärfe hinter dem Glas, ebenfalls dreifach abgestuft |
+| **Deckkraft** | wie viel Fläche das Glas hat — Karten, dazu etwas kräftiger Bedienelemente und Dialoge |
+| **Weichzeichnung** | die Unschärfe hinter Karten, hinter Dialogen etwas stärker |
 | **Farbton hell / dunkel** | getrennte Grundfarben für Light und Dark |
 | **Apple-Richtlinie / Glas überall** | nach Apples Vorgabe liegt Glas nur auf der Bedienebene — Navigation und Schaltflächen. „Glas überall" nimmt auch die Inhaltsflächen dazu |
-| **Abdunkeln hinter Glas** | die von Apple geforderten 35 % Abdunkelung für helle Hintergründe |
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-glaswerte.jpg" alt="Die Glaswerte über der Vorlagenliste, daneben die Live-Vorschau" width="62%" />
 </p>
+
+**Verlauf für aktive Flächen** füllt eingeschaltete Bubble-Karten, Sub-Buttons mit Hintergrund, Schieberfüllungen, das Gewählte der HA-Karten und den aktiven Eintrag der Seitenleiste mit einem Farbverlauf – zwei Farben, Richtung und Schriftfarbe, für Light und Dark gleich. Knöpfe von Home Assistant selbst nehmen nur Farben an und bleiben in der Primärfarbe.
 
 ### Was außerhalb der Karten möglich ist
 
