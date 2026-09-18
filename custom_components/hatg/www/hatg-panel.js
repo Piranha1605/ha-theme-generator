@@ -257,7 +257,7 @@ const HATG_TEXTE = {
   "Dialoge in Glas": "Dialogs in glass",
   "Die Fläche der Dialoge selbst. Ergänzt die Vorlage für Kartenradius und Schleier, die nur Variablen setzt. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "The surface of the dialogs themselves. Complements the preset for card radius and scrim, which only sets variables. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
   "Toast-Meldungen in Glas": "Toast messages in glass",
-  "Die kurzen Einblendungen am unteren Rand, etwa nach dem Speichern. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "The short messages that appear at the bottom edge, for instance after saving. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
+  "Die kurzen Einblendungen am unteren Rand, etwa nach dem Speichern. Home Assistant zeichnet sie seit 2026 als ha-toast und färbt sie nur über Variablen: Fläche in der Kartenfarbe, Schrift in der Textfarbe, Rundung und Schatten wie die Karten. Weichzeichnung und Hintergrundbild nehmen die Meldungen nicht an, die Fläche bleibt deshalb deckend und lesbar.": "The short messages at the bottom edge, for instance after saving. Since 2026 Home Assistant draws them as ha-toast and colours them through variables only: surface in the card colour, text in the text colour, radius and shadow like the cards. The messages take no blur and no background image, so the surface stays opaque and readable.",
   "Benachrichtigungen in Glas": "Notifications in glass",
   "Die Einträge in der Benachrichtigungsliste der Seitenleiste. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.": "The entries in the notification list of the sidebar. It uses the shared glass values from the Glass look group, so it stays in step with every other glass preset.",
   "Kartenmarker in Glas": "Map markers in glass",
@@ -2628,26 +2628,19 @@ mwc-menu-surface {
     id: "glas-toast",
     paket: "glas",
     label: "Toast-Meldungen in Glas",
-    desc: "Die kurzen Einblendungen am unteren Rand, etwa nach dem Speichern. Nutzt die gemeinsamen Glaswerte aus dem Bereich Glaslook, ist also mit allen anderen Glas-Vorlagen abgestimmt.",
+    desc: "Die kurzen Einblendungen am unteren Rand, etwa nach dem Speichern. Home Assistant zeichnet sie seit 2026 als ha-toast und färbt sie nur über Variablen: Fläche in der Kartenfarbe, Schrift in der Textfarbe, Rundung und Schatten wie die Karten. Weichzeichnung und Hintergrundbild nehmen die Meldungen nicht an, die Fläche bleibt deshalb deckend und lesbar.",
     ziel: "uix-toast",
     css: `:host {
-  /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
-     deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --ha-card-background: var(--app-header-background-color) !important;
-
-}
-.mdc-snackbar__surface {
-  background-color: rgba(255, 255, 255, 0.5) !important;
-  background-color: var(--app-header-background-color) !important;
-  background-image: none !important;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
-  border-radius: var(--ha-card-border-radius, 14px) !important;
-  /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
-     Layout um seine Breite verschieben - bei eigenen Panels rutscht damit der
-     gesamte Inhalt nach unten. */
-  box-shadow: var(--ha-card-box-shadow) !important;
+  /* uix-toast landet im Shadow Root von notification-manager. Die Meldung
+     selbst ist ha-toast mit eigenem Shadow Root; ihr div.toast liest nur
+     Variablen - die frueher hier angesprochene .mdc-snackbar__surface gibt es
+     seit HA 2026 nicht mehr (am 2026-09-18 gemessen). Ohne backdrop-filter
+     waere eine halbdurchsichtige Flaeche ueber Karten unlesbar, deshalb die
+     deckende Kartenfarbe. */
+  --ha-color-neutral-10: var(--card-background-color);
+  --ha-color-on-neutral-loud: var(--primary-text-color);
+  --ha-border-radius-sm: var(--ha-card-border-radius, 14px);
+  --wa-shadow-l: var(--ha-card-box-shadow, 0 8px 24px rgba(0, 0, 0, 0.2));
 }`,
   },
   {
