@@ -1,150 +1,18 @@
-# Erstellt mit HATG v1.2.0
-# Theme: Glas Basis – Grundfarbe #007AFF, Akzent #007AFF, Karten-Radius 16px
-# Generiert am 2026-09-07
+# Erstellt mit HATG v1.3.0
+# Theme: glas_basis – Grundfarbe #007AFF, Akzent #007AFF, Karten-Radius 16px
+# Generiert am 2026-09-18
 
 glas_basis:
   # UIX (theme-global; muss auf Theme-Ebene stehen, nicht unter modes.light/dark)
-  uix-card: |
-    /* HATG:UIX:glas-ebene:START */
-    :host {
-
-      --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-    }
-    :host,
-    ha-card {
-      background-color: rgba(255, 255, 255, 0.5) !important;
-      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      background-image:
-        linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-        var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-      backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-      -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-
-      border-radius: var(--ha-card-border-radius, 14px) !important;
-
-      box-shadow:
-        inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
-    }
-    :host(hui-heading-card) ha-card,
-    :host(mushroom-title-card) ha-card,
-    :host(mushroom-chips-card) ha-card,
-    :host(.text-only),
-    ha-card.text-only {
-      background: none !important;
-      background-image: none !important;
-      border: 0 !important;
-      box-shadow: none !important;
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-    }
-    ha-dropdown,
-    ha-combo-box,
-    ha-select,
-    vaadin-combo-box-overlay,
-    .mdc-menu-surface,
-    mwc-menu-surface {
-
-      --card-background-color: var(--hatg-glas-menuegrund, #FFFFFF) !important;
-      --ha-card-background: var(--hatg-glas-menuegrund, #FFFFFF) !important;
-      background-color: var(--hatg-glas-menuegrund, #FFFFFF) !important;
-      background-image: none !important;
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-    }
-    /* HATG:UIX:glas-ebene:END */
-    /* HATG:UIX:glas-bubble:START */
-    :host {
-
-      --bubble-main-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      --bubble-button-main-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      --bubble-climate-main-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      --bubble-separator-main-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      --bubble-button-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      --bubble-secondary-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-      --bubble-icon-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-      --bubble-button-icon-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-      --bubble-climate-icon-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-      --bubble-separator-icon-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-      --bubble-sub-button-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-      --bubble-main-buttons-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-      --bubble-climate-button-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-    }
-    .bubble-container,
-    .bubble-button-container,
-    .bubble-climate-container,
-    .bubble-cover-container,
-    .bubble-media-player-container,
-    .bubble-select-container,
-    .bubble-calendar-container,
-    .bubble-horizontal-buttons-stack-container,
-    .bubble-temperature-container,
-    .bubble-low-temp-container,
-    .bubble-high-temp-container,
-    .bubble-icon-container,
-    .bubble-main-icon-container,
-    .bubble-sub-button {
-      backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%)) !important;
-      -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%)) !important;
-      background-image:
-        linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-        var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-      box-shadow:
-        inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.55)),
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
-    }
-    ha-dropdown,
-    ha-combo-box,
-    ha-select,
-    vaadin-combo-box-overlay,
-    .mdc-menu-surface,
-    mwc-menu-surface {
-
-      --card-background-color: var(--hatg-glas-menuegrund, #FFFFFF) !important;
-      --ha-card-background: var(--hatg-glas-menuegrund, #FFFFFF) !important;
-      background-color: var(--hatg-glas-menuegrund, #FFFFFF) !important;
-      background-image: none !important;
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-    }
-    /* HATG:UIX:glas-bubble:END */
-    /* HATG:UIX:glas-buttons-karten:START */
-    ha-button,
-    ha-icon-button,
-    ha-assist-chip {
-      --ha-button-border-radius: var(--ha-card-border-radius, 14px);
-      --ha-button-box-shadow:
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-        inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)),
-        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7));
-    }
-    ha-control-button,
-    ha-control-select,
-    ha-control-slider {
-      --control-button-border-radius: var(--ha-card-border-radius, 14px);
-      --control-select-border-radius: var(--ha-card-border-radius, 14px);
-      --control-slider-border-radius: var(--ha-card-border-radius, 14px);
-      --control-button-background-color: var(--primary-color);
-      --control-button-background-opacity: 0.22;
-    }
-    /* HATG:UIX:glas-buttons-karten:END */
   uix-root: |
     /* HATG:UIX:glas-dashboard-kopfleiste:START */
     .header {
-      background-color: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
+      background-color: var(--app-header-background-color) !important;
 
       background-image: none !important;
-      backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
-      -webkit-backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
-      box-shadow:
-        inset 0 -1px 0 var(--hatg-glas-rand, rgba(255, 255, 255, 0.55)),
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)) !important;
+      backdrop-filter: var(--app-header-backdrop-filter, blur(32px));
+      -webkit-backdrop-filter: var(--app-header-backdrop-filter, blur(32px));
+      box-shadow: var(--bar-box-shadow, none) !important;
     }
     .toolbar {
       background: none !important;
@@ -156,12 +24,9 @@ glas_basis:
     ha-button,
     ha-icon-button,
     ha-assist-chip {
-      --ha-button-border-radius: var(--ha-card-border-radius, 14px);
-      --ha-button-box-shadow:
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-        inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)),
-        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7));
+      --ha-button-border-radius: 11px;
+
+      --ha-button-box-shadow: 0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3);
     }
     ha-control-button,
     ha-control-select,
@@ -175,48 +40,29 @@ glas_basis:
     /* HATG:UIX:glas-buttons-rahmen:END */
   uix-badge: |
     /* HATG:UIX:glas-badges:START */
-    :host {
-
-      --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-    }
     ha-badge {
       background-color: rgba(255, 255, 255, 0.35) !important;
-      background-color: var(--hatg-glas-fuellung-leicht, rgba(255, 255, 255, 0.35)) !important;
-      background-image:
-        linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-        var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-      backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
-      -webkit-backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
+      background-color: color-mix(in srgb, var(--ha-card-background) 70%, transparent) !important;
+      background-image: none !important;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
 
       border-radius: var(--ha-card-border-radius, 14px) !important;
 
-      box-shadow:
-        inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+      box-shadow: var(--ha-card-box-shadow) !important;
     }
     /* HATG:UIX:glas-badges:END */
   uix-sidebar: |
     /* HATG:UIX:seitenleiste-glas:START */
     :host {
-
-      --sidebar-background-color: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
-    }
-    :host {
       background-color: rgba(255, 255, 255, 0.5) !important;
-      background-color: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
+      background-color: var(--sidebar-background-color) !important;
 
       background-image: none !important;
-      backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
-      -webkit-backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
+      backdrop-filter: blur(32px);
+      -webkit-backdrop-filter: blur(32px);
 
-      box-shadow:
-        inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+      box-shadow: var(--ha-card-box-shadow) !important;
     }
     ha-md-list-item,
     ha-md-list-item.selected::before,
@@ -230,18 +76,18 @@ glas_basis:
       border-radius: var(--ha-card-border-radius, 14px) !important;
 
       opacity: 1 !important;
-      background-color: rgba(10, 132, 255, 0.28) !important;
-      background-color: color-mix(in srgb, var(--sidebar-selected-icon-color, var(--primary-color)) 38%, transparent) !important;
-      background-image:
-        linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-        var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
+
+      background-color: var(--accent-color, var(--primary-color)) !important;
+      background-image: none !important;
       box-shadow:
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-        inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)),
-        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7)) !important;
-      backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
-      -webkit-backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
+        inset 3px 3px 7px color-mix(in srgb, var(--accent-color, var(--primary-color)) 62%, #000000),
+        inset -2px -2px 6px color-mix(in srgb, var(--accent-color, var(--primary-color)) 74%, #ffffff) !important;
+    }
+
+    ha-list-item-button.selected {
+      --sidebar-selected-text-color: var(--text-primary-color);
+      --sidebar-selected-icon-color: var(--text-primary-color);
+      color: var(--text-primary-color) !important;
     }
     ha-list-item-button::before {
       transition: opacity 160ms ease, box-shadow 160ms ease;
@@ -251,28 +97,20 @@ glas_basis:
     /* HATG:UIX:glas-more-info:START */
     :host {
 
-      --ha-dialog-surface-background: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-      --ha-color-surface-default: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-      --wa-color-surface-raised: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-      --card-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-      --ha-dialog-surface-backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%)) !important;
+      --ha-color-surface-default: var(--ha-dialog-surface-background) !important;
+      --wa-color-surface-raised: var(--ha-dialog-surface-background) !important;
+
     }
     ha-card {
       background-color: rgba(255, 255, 255, 0.68) !important;
-      background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-      background-image:
-        linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-        var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-      backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
-      -webkit-backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
+      background-color: var(--ha-dialog-surface-background) !important;
+      background-image: none !important;
+      backdrop-filter: var(--ha-dialog-surface-backdrop-filter, blur(32px));
+      -webkit-backdrop-filter: var(--ha-dialog-surface-backdrop-filter, blur(32px));
 
       border-radius: var(--ha-card-border-radius, 14px) !important;
 
-      box-shadow:
-        inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+      box-shadow: var(--ha-card-box-shadow) !important;
     }
     ha-dropdown,
     ha-combo-box,
@@ -281,9 +119,8 @@ glas_basis:
     .mdc-menu-surface,
     mwc-menu-surface {
 
-      --card-background-color: var(--hatg-glas-menuegrund, #FFFFFF) !important;
-      --ha-card-background: var(--hatg-glas-menuegrund, #FFFFFF) !important;
-      background-color: var(--hatg-glas-menuegrund, #FFFFFF) !important;
+      --ha-card-background: var(--card-background-color) !important;
+      background-color: var(--card-background-color) !important;
       background-image: none !important;
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
@@ -293,30 +130,22 @@ glas_basis:
     /* HATG:UIX:glas-dialoge:START */
     :host {
 
-      --ha-dialog-surface-background: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-      --ha-color-surface-default: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-      --wa-color-surface-raised: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-      --card-background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-      --ha-dialog-surface-backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%)) !important;
+      --ha-color-surface-default: var(--ha-dialog-surface-background) !important;
+      --wa-color-surface-raised: var(--ha-dialog-surface-background) !important;
+
     }
     ha-dialog,
     ha-adaptive-dialog,
     .mdc-dialog__surface {
       background-color: rgba(255, 255, 255, 0.68) !important;
-      background-color: var(--hatg-glas-fuellung-stark, rgba(255, 255, 255, 0.68)) !important;
-      background-image:
-        linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-        var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-      backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
-      -webkit-backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
+      background-color: var(--ha-dialog-surface-background) !important;
+      background-image: none !important;
+      backdrop-filter: var(--ha-dialog-surface-backdrop-filter, blur(32px));
+      -webkit-backdrop-filter: var(--ha-dialog-surface-backdrop-filter, blur(32px));
 
       border-radius: var(--ha-card-border-radius, 14px) !important;
 
-      box-shadow:
-        inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-        var(--hatg-glas-schatten-hoch, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+      box-shadow: var(--dialog-box-shadow) !important;
     }
     ha-dropdown,
     ha-combo-box,
@@ -325,9 +154,8 @@ glas_basis:
     .mdc-menu-surface,
     mwc-menu-surface {
 
-      --card-background-color: var(--hatg-glas-menuegrund, #FFFFFF) !important;
-      --ha-card-background: var(--hatg-glas-menuegrund, #FFFFFF) !important;
-      background-color: var(--hatg-glas-menuegrund, #FFFFFF) !important;
+      --ha-card-background: var(--card-background-color) !important;
+      background-color: var(--card-background-color) !important;
       background-image: none !important;
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
@@ -337,12 +165,9 @@ glas_basis:
     ha-button,
     ha-icon-button,
     ha-assist-chip {
-      --ha-button-border-radius: var(--ha-card-border-radius, 14px);
-      --ha-button-box-shadow:
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-        inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)),
-        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7));
+      --ha-button-border-radius: 11px;
+
+      --ha-button-box-shadow: 0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3);
     }
     ha-control-button,
     ha-control-select,
@@ -356,16 +181,15 @@ glas_basis:
     /* HATG:UIX:glas-buttons-dialoge:END */
   uix-drawer: |
     /* HATG:UIX:glas-buttons-einstellungen:START */
+    :host,
     ha-button,
     ha-icon-button,
     ha-assist-chip {
-      --ha-button-border-radius: var(--ha-card-border-radius, 14px);
-      --ha-button-box-shadow:
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.3)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.3)),
-        inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.16)),
-        var(--hatg-glas-schatten, 0 8px 28px -12px rgba(0, 0, 0, 0.7));
+      --ha-button-border-radius: 11px;
+
+      --ha-button-box-shadow: 0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3);
     }
+
     ha-control-button,
     ha-control-select,
     ha-control-slider {
@@ -379,22 +203,18 @@ glas_basis:
     /* HATG:UIX:drawer-glas:START */
     :host {
 
-      --app-header-background-color: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
-      --sidebar-background-color: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
+      --app-header-background-color: var(--sidebar-background-color) !important;
+
     }
     .mdc-drawer {
       background-color: rgba(255, 255, 255, 0.5) !important;
-      background-color: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
+      background-color: var(--sidebar-background-color) !important;
 
       background-image: none !important;
-      backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
-      -webkit-backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
+      backdrop-filter: blur(32px);
+      -webkit-backdrop-filter: blur(32px);
 
-      box-shadow:
-        inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+      box-shadow: var(--ha-card-box-shadow) !important;
     }
     .sidebar-shell {
       background-color: transparent !important;
@@ -402,27 +222,16 @@ glas_basis:
     /* HATG:UIX:drawer-glas:END */
   uix-glance: |
     /* HATG:UIX:glas-glance:START */
-    :host {
-
-      --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-    }
     ha-card {
       background-color: rgba(255, 255, 255, 0.5) !important;
-      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      background-image:
-        linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-        var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-      backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-      -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+      background-color: var(--ha-card-background) !important;
+      background-image: none !important;
+      backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
+      -webkit-backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
 
       border-radius: var(--ha-card-border-radius, 14px) !important;
 
-      box-shadow:
-        inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+      box-shadow: var(--ha-card-box-shadow) !important;
     }
     :host(hui-heading-card) ha-card,
     :host(mushroom-title-card) ha-card,
@@ -439,51 +248,29 @@ glas_basis:
   uix-heading-badge: |
     /* HATG:UIX:glas-heading-badges:START */
     :host {
-
-      --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-    }
-    :host {
       background-color: rgba(255, 255, 255, 0.35) !important;
-      background-color: var(--hatg-glas-fuellung-leicht, rgba(255, 255, 255, 0.35)) !important;
-      background-image:
-        linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-        var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-      backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
-      -webkit-backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
+      background-color: color-mix(in srgb, var(--ha-card-background) 70%, transparent) !important;
+      background-image: none !important;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
 
       border-radius: var(--ha-card-border-radius, 14px) !important;
 
-      box-shadow:
-        inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+      box-shadow: var(--ha-card-box-shadow) !important;
     }
     /* HATG:UIX:glas-heading-badges:END */
   uix-panel-custom: |
     /* HATG:UIX:glas-panels:START */
-    :host {
-
-      --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-    }
     ha-card {
       background-color: rgba(255, 255, 255, 0.5) !important;
-      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      background-image:
-        linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-        var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-      backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-      -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+      background-color: var(--ha-card-background) !important;
+      background-image: none !important;
+      backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
+      -webkit-backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
 
       border-radius: var(--ha-card-border-radius, 14px) !important;
 
-      box-shadow:
-        inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+      box-shadow: var(--ha-card-box-shadow) !important;
     }
     ha-dropdown,
     ha-combo-box,
@@ -492,9 +279,8 @@ glas_basis:
     .mdc-menu-surface,
     mwc-menu-surface {
 
-      --card-background-color: var(--hatg-glas-menuegrund, #FFFFFF) !important;
-      --ha-card-background: var(--hatg-glas-menuegrund, #FFFFFF) !important;
-      background-color: var(--hatg-glas-menuegrund, #FFFFFF) !important;
+      --ha-card-background: var(--card-background-color) !important;
+      background-color: var(--card-background-color) !important;
       background-image: none !important;
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
@@ -502,182 +288,296 @@ glas_basis:
     /* HATG:UIX:glas-panels:END */
   uix-top-app-bar-fixed: |
     /* HATG:UIX:kopfleiste-glas:START */
-    :host {
-
-      --app-header-background-color: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
-    }
     .mdc-top-app-bar {
       background-color: rgba(255, 255, 255, 0.5) !important;
-      background-color: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
+      background-color: var(--app-header-background-color) !important;
 
       background-image: none !important;
-      backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
-      -webkit-backdrop-filter: blur(var(--hatg-glas-nav-blur, 32px)) saturate(var(--hatg-glas-saettigung, 150%));
+      backdrop-filter: var(--app-header-backdrop-filter, blur(32px));
+      -webkit-backdrop-filter: var(--app-header-backdrop-filter, blur(32px));
 
-      box-shadow:
-        inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+      box-shadow: var(--ha-card-box-shadow) !important;
     }
     /* HATG:UIX:kopfleiste-glas:END */
   uix-toast: |
     /* HATG:UIX:glas-toast:START */
     :host {
 
-      --ha-card-background: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
-      --card-background-color: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
-    }
-    .mdc-snackbar__surface {
-      background-color: rgba(255, 255, 255, 0.5) !important;
-      background-color: var(--hatg-glas-nav-fuellung, var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5))) !important;
-      background-image:
-        linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-        var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-      backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
-      -webkit-backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
-
-      border-radius: var(--ha-card-border-radius, 14px) !important;
-
-      box-shadow:
-        inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+      --ha-color-neutral-10: var(--card-background-color);
+      --ha-color-on-neutral-loud: var(--primary-text-color);
+      --ha-border-radius-sm: var(--ha-card-border-radius, 14px);
+      --wa-shadow-l: var(--ha-card-box-shadow, 0 8px 24px rgba(0, 0, 0, 0.2));
     }
     /* HATG:UIX:glas-toast:END */
   uix-calendar: |
     /* HATG:UIX:glas-kalender:START */
-    :host {
-
-      --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-    }
     ha-card {
       background-color: rgba(255, 255, 255, 0.5) !important;
-      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      background-image:
-        linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-        var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-      backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-      -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+      background-color: var(--ha-card-background) !important;
+      background-image: none !important;
+      backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
+      -webkit-backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
 
       border-radius: var(--ha-card-border-radius, 14px) !important;
 
-      box-shadow:
-        inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+      box-shadow: var(--ha-card-box-shadow) !important;
     }
     /* HATG:UIX:glas-kalender:END */
   uix-todo: |
     /* HATG:UIX:glas-todo:START */
-    :host {
-
-      --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-    }
     ha-card {
       background-color: rgba(255, 255, 255, 0.5) !important;
-      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      background-image:
-        linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-        var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-      backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-      -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+      background-color: var(--ha-card-background) !important;
+      background-image: none !important;
+      backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
+      -webkit-backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
 
       border-radius: var(--ha-card-border-radius, 14px) !important;
 
-      box-shadow:
-        inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+      box-shadow: var(--ha-card-box-shadow) !important;
     }
     /* HATG:UIX:glas-todo:END */
   uix-history: |
     /* HATG:UIX:glas-verlauf:START */
-    :host {
-
-      --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-    }
     ha-card {
       background-color: rgba(255, 255, 255, 0.5) !important;
-      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      background-image:
-        linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-        var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-      backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-      -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+      background-color: var(--ha-card-background) !important;
+      background-image: none !important;
+      backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
+      -webkit-backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
 
       border-radius: var(--ha-card-border-radius, 14px) !important;
 
-      box-shadow:
-        inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+      box-shadow: var(--ha-card-box-shadow) !important;
     }
     /* HATG:UIX:glas-verlauf:END */
   uix-states-history-charts: |
     /* HATG:UIX:glas-verlaufsdiagramme:START */
-    :host {
-
-      --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-    }
     ha-card {
       background-color: rgba(255, 255, 255, 0.5) !important;
-      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      background-image:
-        linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-        var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-      backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-      -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+      background-color: var(--ha-card-background) !important;
+      background-image: none !important;
+      backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
+      -webkit-backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
 
       border-radius: var(--ha-card-border-radius, 14px) !important;
 
-      box-shadow:
-        inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+      box-shadow: var(--ha-card-box-shadow) !important;
     }
     /* HATG:UIX:glas-verlaufsdiagramme:END */
   uix-persistent-notification-item: |
     /* HATG:UIX:glas-benachrichtigungen:START */
-    :host {
-
-      --ha-card-background: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      --card-background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-    }
     ha-card {
       background-color: rgba(255, 255, 255, 0.5) !important;
-      background-color: var(--hatg-glas-fuellung, rgba(255, 255, 255, 0.5)) !important;
-      background-image:
-        linear-gradient(rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0)), rgba(0, 0, 0, var(--hatg-glas-abdunkeln, 0))),
-        var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)) !important;
-      backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
-      -webkit-backdrop-filter: blur(var(--hatg-glas-blur, 18px)) saturate(var(--hatg-glas-saettigung, 150%));
+      background-color: var(--ha-card-background) !important;
+      background-image: none !important;
+      backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
+      -webkit-backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
 
       border-radius: var(--ha-card-border-radius, 14px) !important;
 
-      box-shadow:
-        inset 0 0 0 1px var(--hatg-glas-rand, rgba(255, 255, 255, 0.4)),
-        inset 0 1px 0 var(--hatg-glas-kante-hell, rgba(255, 255, 255, 0.5)),
-        inset 0 -1px 0 var(--hatg-glas-kante-dunkel, rgba(0, 0, 0, 0.12)),
-        var(--hatg-glas-schatten, 0 8px 26px -12px rgba(0, 0, 0, 0.28)) !important;
+      box-shadow: var(--ha-card-box-shadow) !important;
     }
     /* HATG:UIX:glas-benachrichtigungen:END */
   uix-card-yaml: |
+    ".": |
+      /* HATG:UIX:glas-ebene:START */
+      :host(ha-card),
+      ha-card {
+        background-color: rgba(255, 255, 255, 0.5) !important;
+        background-color: var(--ha-card-background) !important;
+        background-image: none !important;
+        backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
+        -webkit-backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
+
+        border-radius: var(--ha-card-border-radius, 14px) !important;
+
+        box-shadow: var(--ha-card-box-shadow) !important;
+      }
+
+      :host(.type-custom-bubble-card) ha-card,
+      :host(hui-heading-card) ha-card,
+      :host(mushroom-title-card) ha-card,
+      :host(mushroom-chips-card) ha-card,
+      :host(.text-only),
+      ha-card.text-only {
+        background: none !important;
+        background-image: none !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+      }
+      ha-dropdown,
+      ha-combo-box,
+      ha-select,
+      vaadin-combo-box-overlay,
+      .mdc-menu-surface,
+      mwc-menu-surface {
+
+        --ha-card-background: var(--card-background-color) !important;
+        background-color: var(--card-background-color) !important;
+        background-image: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+      }
+
+      ha-select.bubble-dropdown-select {
+        background-color: transparent !important;
+      }
+      /* HATG:UIX:glas-ebene:END */
+      /* HATG:UIX:glas-bubble:START */
+      :host {
+
+        --bubble-main-background-color: var(--ha-card-background) !important;
+        --bubble-button-main-background-color: var(--ha-card-background) !important;
+        --bubble-climate-main-background-color: var(--ha-card-background) !important;
+        --bubble-separator-main-background-color: var(--ha-card-background) !important;
+        --bubble-button-background-color: var(--ha-card-background) !important;
+        --bubble-secondary-background-color: var(--control-button-background-color) !important;
+        --bubble-icon-background-color: var(--control-button-background-color) !important;
+        --bubble-button-icon-background-color: var(--control-button-background-color) !important;
+        --bubble-climate-icon-background-color: var(--control-button-background-color) !important;
+        --bubble-separator-icon-background-color: var(--control-button-background-color) !important;
+        --bubble-sub-button-background-color: var(--control-button-background-color) !important;
+        --bubble-main-buttons-background-color: var(--control-button-background-color) !important;
+        --bubble-climate-button-background-color: var(--control-button-background-color) !important;
+
+        --bubble-border: none !important;
+
+        --bubble-button-border-radius: 13px;
+        --bubble-border-radius: 13px;
+      }
+
+      .bubble-container,
+      .bubble-button-container,
+      .bubble-climate-container,
+      .bubble-cover-container,
+      .bubble-media-player-container,
+      .bubble-select-container,
+      .bubble-calendar-container,
+      .bubble-horizontal-buttons-stack-container,
+      .bubble-temperature-container,
+      .bubble-low-temp-container,
+      .bubble-high-temp-container,
+      .bubble-menu-bar-panel {
+        backdrop-filter: var(--ha-card-backdrop-filter, blur(18px)) !important;
+        -webkit-backdrop-filter: var(--ha-card-backdrop-filter, blur(18px)) !important;
+        background-image: none !important;
+        border: var(--ha-card-border-width, 1px) solid var(--ha-card-border-color, var(--divider-color, transparent)) !important;
+        border-radius: 13px !important;
+        box-shadow: var(--ha-card-box-shadow, none) !important;
+      }
+      .bubble-background {
+        border-radius: inherit !important;
+      }
+
+      .bubble-icon-container,
+      .bubble-main-icon-container {
+        background-color: color-mix(in srgb, var(--secondary-text-color, rgba(255, 255, 255, 0.55)) 15%, transparent) !important;
+        background-image: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        box-shadow: none !important;
+        border-radius: 14px !important;
+      }
+
+      .bubble-sub-button {
+        background-image: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border-radius: 11px !important;
+        box-shadow: 0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3) !important;
+      }
+      ha-dropdown,
+      ha-combo-box,
+      ha-select,
+      vaadin-combo-box-overlay,
+      .mdc-menu-surface,
+      mwc-menu-surface {
+
+        --ha-card-background: var(--card-background-color) !important;
+        background-color: var(--card-background-color) !important;
+        background-image: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+      }
+
+      ha-select.bubble-dropdown-select {
+        background-color: transparent !important;
+      }
+
+      ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-background {
+        background-color: var(--bubble-button-background-color) !important;
+        box-shadow:
+          inset 3px 3px 7px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) 62%, #000000),
+          inset -2px -2px 6px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) 74%, #ffffff) !important;
+      }
+      ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-name,
+      ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-state,
+      ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-main-icon {
+        color: var(--text-primary-color, #ffffff) !important;
+        opacity: 1 !important;
+      }
+      ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-main-icon-container {
+        background-color: rgba(0, 0, 0, 0.16) !important;
+      }
+
+      .bubble-container.separator-container {
+        background: none !important;
+        background-image: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border: 0 !important;
+        box-shadow: none !important;
+      }
+
+      .bubble-sub-button.background-on {
+        background-color: var(--bubble-sub-button-light-background-color, var(--bubble-accent-color, var(--bubble-default-color))) !important;
+        color: var(--text-primary-color, #ffffff) !important;
+        box-shadow:
+          inset 3px 3px 7px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) 62%, #000000),
+          inset -2px -2px 6px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) 74%, #ffffff) !important;
+      }
+
+      .bubble-range-slider {
+        background-color: var(--control-button-background-color) !important;
+        box-shadow:
+          inset 5px 5px 11px var(--neumorph-tiefe, color-mix(in srgb, var(--ha-card-background, var(--card-background-color)) 88%, #000000)),
+          inset -5px -5px 11px var(--neumorph-hell, color-mix(in srgb, var(--ha-card-background, var(--card-background-color)) 58%, #ffffff)) !important;
+      }
+      .bubble-range-fill {
+        opacity: 1 !important;
+        border-radius: inherit !important;
+        box-shadow:
+          inset 3px 3px 7px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) 62%, #000000),
+          inset -2px -2px 6px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) 74%, #ffffff) !important;
+      }
+      /* HATG:UIX:glas-bubble:END */
+      /* HATG:UIX:glas-buttons-karten:START */
+      ha-button,
+      ha-icon-button,
+      ha-assist-chip {
+        --ha-button-border-radius: 11px;
+
+        --ha-button-box-shadow: 0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3);
+      }
+      ha-control-button,
+      ha-control-select,
+      ha-control-slider {
+        --control-button-border-radius: var(--ha-card-border-radius, 14px);
+        --control-select-border-radius: var(--ha-card-border-radius, 14px);
+        --control-slider-border-radius: var(--ha-card-border-radius, 14px);
+        --control-button-background-color: var(--primary-color);
+        --control-button-background-opacity: 0.22;
+      }
+      /* HATG:UIX:glas-buttons-karten:END */
     # HATG:UIX:glas-buttons-glanz:START
     ha-button $: |
       .button {
-        background-image: var(--hatg-glas-reflex, linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%));
-        backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
-        -webkit-backdrop-filter: blur(var(--hatg-glas-blur-klein, 8px)) saturate(var(--hatg-glas-saettigung, 150%));
+        background-image: none;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
       }
     # HATG:UIX:glas-buttons-glanz:END
   uix-theme: "glas_basis"
@@ -728,7 +628,7 @@ glas_basis:
 
       # HA-Grundgerüst / Card
       card-background-color: "#FFFFFF"
-      ha-card-background: "var(--hatg-glas-fuellung)"
+      ha-card-background: "rgba(255, 255, 255, 0.5)"
       ha-card-background-color: "#FFFFFF"
       wa-color-surface-raised: "#FFFFFF"
       ha-card-border-color: "rgba(0, 0, 0, 0.12)"
@@ -752,7 +652,7 @@ glas_basis:
       mdc-theme-on-surface: "#000000"
 
       # HA-Grundgerüst / Header
-      app-header-background-color: "var(--hatg-glas-nav-fuellung)"
+      app-header-background-color: "var(--sidebar-background-color)"
       app-header-text-color: "#000000"
       app-header-backdrop-filter: "blur(8px) saturate(1.1)"
       app-header-edit-background-color: "rgba(30, 33, 54, 0.8)"
@@ -769,7 +669,7 @@ glas_basis:
       app-drawer-icon-color: "#007AFF"
 
       # HA-Grundgerüst / Sidebar
-      sidebar-background-color: "var(--hatg-glas-nav-fuellung)"
+      sidebar-background-color: "rgba(255, 255, 255, 0.45)"
       sidebar-selected-background-color: "#E5F1FF"
       sidebar-text-color: "#000000"
       sidebar-icon-color: "rgba(0, 0, 0, 0.6)"
@@ -912,7 +812,7 @@ glas_basis:
       slider-track-color: "#D1D1D6"
 
       # HA-Grundgerüst / Buttons & Chips
-      control-button-background-color: "var(--hatg-glas-fuellung-stark)"
+      control-button-background-color: "rgba(255, 255, 255, 0.68)"
       control-button-icon-color: "#007AFF"
       control-button-border-radius: "16px"
 
@@ -937,6 +837,7 @@ glas_basis:
       ha-color-form-background: "#F9F9FB"
       ha-color-form-background-hover: "#F9F9FB"
       ha-color-form-background-disabled: "rgba(249, 249, 251, 0.55)"
+      ha-color-border-neutral-loud: "#C6C6C8"
 
       # HA-Grundgerüst / Material, Paper & MDC
       mdc-theme-primary: "#007AFF"
@@ -1074,10 +975,10 @@ glas_basis:
       energy-water-color: "#5AC8FA"
 
       # Bubble Card / Karten & Hintergründe
-      bubble-card-background-color: "var(--hatg-glas-fuellung)"
-      bubble-main-buttons-background-color: "var(--hatg-glas-fuellung)"
-      bubble-secondary-background-color: "var(--hatg-glas-fuellung-stark)"
-      bubble-icon-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-card-background-color: "var(--ha-card-background)"
+      bubble-main-buttons-background-color: "var(--ha-card-background)"
+      bubble-secondary-background-color: "var(--control-button-background-color)"
+      bubble-icon-background-color: "var(--control-button-background-color)"
       bubble-icon-color: "#007AFF"
       bubble-name-color: "#000000"
       bubble-state-color: "rgba(60, 60, 67, 0.6)"
@@ -1093,8 +994,8 @@ glas_basis:
       bubble-icon-border-radius: "14px"
 
       # Bubble Card / Select (Auswahlkarte)
-      bubble-select-main-background-color: "var(--hatg-glas-fuellung)"
-      bubble-select-background-color: "var(--hatg-glas-fuellung)"
+      bubble-select-main-background-color: "var(--ha-card-background)"
+      bubble-select-background-color: "var(--ha-card-background)"
       bubble-select-border-radius: "16px"
       bubble-select-list-background-color: "#FFFFFF"
       bubble-select-list-border-radius: "18px"
@@ -1102,29 +1003,29 @@ glas_basis:
       bubble-select-list-item-accent-color: "#007AFF"
       bubble-select-arrow-background-color: "#FFFFFF"
       bubble-select-button-border-radius: "18px"
-      bubble-select-icon-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-select-icon-background-color: "var(--control-button-background-color)"
       bubble-select-icon-border-radius: "14px"
       bubble-select-box-shadow: "0 10px 28px rgba(60,60,67,.14)"
 
       # Bubble Card / Buttons
-      bubble-button-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-button-background-color: "var(--control-button-background-color)"
       bubble-button-active-background-color: "#007AFF"
       bubble-button-icon-color: "#007AFF"
       bubble-button-active-icon-color: "#FFFFFF"
       bubble-button-text-color: "#1C1C1E"
       bubble-button-active-text-color: "#FFFFFF"
       bubble-button-border-radius: "16px"
-      bubble-button-card-background-color: "var(--hatg-glas-fuellung)"
-      bubble-button-main-background-color: "var(--hatg-glas-fuellung)"
+      bubble-button-card-background-color: "var(--ha-card-background)"
+      bubble-button-main-background-color: "var(--ha-card-background)"
       bubble-button-active-color: "#007AFF"
       bubble-button-icon-border-radius: "14px"
-      bubble-button-icon-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-button-icon-background-color: "var(--control-button-background-color)"
       bubble-light-white-color: "#FFFFFF"
       bubble-light-color: "#FFC107"
       bubble-button-box-shadow: "0 10px 28px rgba(60,60,67,.14)"
 
       # Bubble Card / Sub-Buttons
-      bubble-sub-button-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-sub-button-background-color: "var(--control-button-background-color)"
       bubble-sub-button-active-background-color: "#007AFF"
       bubble-sub-button-icon-color: "#007AFF"
       bubble-sub-button-active-icon-color: "#FFFFFF"
@@ -1132,9 +1033,9 @@ glas_basis:
       bubble-sub-button-active-text-color: "#FFFFFF"
       bubble-sub-button-border-radius: "14px"
       bubble-sub-button-box-shadow: "0 4px 10px rgba(60,60,67,.16)"
-      bubble-sub-buttons-main-background-color: "var(--hatg-glas-fuellung)"
+      bubble-sub-buttons-main-background-color: "var(--ha-card-background)"
       bubble-sub-slider-border-radius: "18px"
-      bubble-sub-slider-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-sub-slider-background-color: "var(--control-button-background-color)"
       bubble-sub-slider-height: "48px"
       bubble-sub-button-dark-text-color: "#1C1C1E"
       bubble-footer-width: "320px"
@@ -1142,8 +1043,8 @@ glas_basis:
       bubble-footer-box-shadow: "0 10px 28px rgba(60,60,67,.14)"
 
       # Bubble Card / Separator
-      bubble-separator-background-color: "var(--hatg-glas-fuellung)"
-      bubble-separator-icon-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-separator-background-color: "var(--ha-card-background)"
+      bubble-separator-icon-background-color: "var(--control-button-background-color)"
       bubble-separator-icon-color: "#007AFF"
       bubble-separator-line-color: "rgba(60, 60, 67, 0.29)"
       bubble-separator-name-color: "#1C1C1E"
@@ -1151,7 +1052,7 @@ glas_basis:
       bubble-separator-border-radius: "16px"
 
       # Bubble Card / Popup & Dialog
-      bubble-pop-up-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-pop-up-background-color: "var(--control-button-background-color)"
       bubble-pop-up-backdrop-filter: "blur(18px)"
       bubble-pop-up-border-radius: "16px"
       bubble-pop-up-box-shadow: "0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 1px rgba(0, 0, 0, 0.04)"
@@ -1162,21 +1063,21 @@ glas_basis:
       ha-dialog-scrim-backdrop-filter: "blur(10px)"
       ha-dialog-surface-background: "rgba(255, 255, 255, 0.92)"
       mdc-dialog-scrim-color: "rgba(0, 0, 0, 0.35)"
-      bubble-pop-up-main-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-pop-up-main-background-color: "var(--control-button-background-color)"
       bubble-backdrop-background-color: "rgba(0, 0, 0, 0.32)"
 
       # Bubble Card / Horizontal Buttons Stack
-      bubble-horizontal-buttons-stack-background-color: "var(--hatg-glas-fuellung)"
-      bubble-horizontal-buttons-stack-button-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-horizontal-buttons-stack-background-color: "var(--ha-card-background)"
+      bubble-horizontal-buttons-stack-button-background-color: "var(--control-button-background-color)"
       bubble-horizontal-buttons-stack-button-icon-color: "#3C3C43"
       bubble-horizontal-buttons-stack-button-text-color: "#1C1C1E"
       bubble-horizontal-buttons-stack-border-radius: "16px"
       bubble-horizontal-buttons-stack-box-shadow: "0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 1px rgba(0, 0, 0, 0.04)"
 
       # Bubble Card / Climate
-      bubble-climate-background-color: "var(--hatg-glas-fuellung)"
-      bubble-climate-main-background-color: "var(--hatg-glas-fuellung)"
-      bubble-climate-button-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-climate-background-color: "var(--ha-card-background)"
+      bubble-climate-main-background-color: "var(--ha-card-background)"
+      bubble-climate-button-background-color: "var(--control-button-background-color)"
       bubble-climate-button-icon-color: "#3C3C43"
       bubble-climate-border-radius: "16px"
       bubble-climate-box-shadow: "0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 1px rgba(0, 0, 0, 0.04)"
@@ -1190,29 +1091,29 @@ glas_basis:
       bubble-climate-accent-color: "#007AFF"
 
       # Bubble Card / Cover
-      bubble-cover-background-color: "var(--hatg-glas-fuellung)"
-      bubble-cover-main-background-color: "var(--hatg-glas-fuellung)"
-      bubble-cover-button-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-cover-background-color: "var(--ha-card-background)"
+      bubble-cover-main-background-color: "var(--ha-card-background)"
+      bubble-cover-button-background-color: "var(--control-button-background-color)"
       bubble-cover-button-icon-color: "#3C3C43"
       bubble-cover-border-radius: "16px"
       bubble-cover-box-shadow: "0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 1px rgba(0, 0, 0, 0.04)"
       bubble-cover-icon-border-radius: "14px"
-      bubble-cover-icon-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-cover-icon-background-color: "var(--control-button-background-color)"
 
       # Bubble Card / Media Player
-      bubble-media-player-background-color: "var(--hatg-glas-fuellung)"
-      bubble-media-player-main-background-color: "var(--hatg-glas-fuellung)"
-      bubble-media-player-button-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-media-player-background-color: "var(--ha-card-background)"
+      bubble-media-player-main-background-color: "var(--ha-card-background)"
+      bubble-media-player-button-background-color: "var(--control-button-background-color)"
       bubble-media-player-button-icon-color: "#3C3C43"
       bubble-media-player-border-radius: "16px"
       bubble-media-player-box-shadow: "0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 1px rgba(0, 0, 0, 0.04)"
       bubble-media-player-buttons-border-radius: "14px"
-      bubble-media-player-slider-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-media-player-slider-background-color: "var(--control-button-background-color)"
       bubble-media-player-icon-border-radius: "14px"
-      bubble-media-player-icon-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-media-player-icon-background-color: "var(--control-button-background-color)"
 
       # Bubble Card / Calendar
-      bubble-calendar-main-background-color: "var(--hatg-glas-fuellung)"
+      bubble-calendar-main-background-color: "var(--ha-card-background)"
       bubble-calendar-height: "56px"
       bubble-calendar-mask-size: "16px"
       bubble-calendar-border-radius: "18px"
@@ -1268,40 +1169,6 @@ glas_basis:
       mush-rgb-disabled: "60, 60, 67"
       mush-rgb-info: "0, 122, 255"
 
-      # UIX & Generator / Glaslook
-      hatg-glas-blur-klein: "8px"
-      hatg-glas-blur: "18px"
-      hatg-glas-blur-gross: "32px"
-      hatg-glas-saettigung: "150%"
-      hatg-glas-fuellung-leicht: "rgba(255, 255, 255, 0.35)"
-      hatg-glas-fuellung: "rgba(255, 255, 255, 0.5)"
-      hatg-glas-fuellung-stark: "rgba(255, 255, 255, 0.68)"
-      hatg-glas-rand: "rgba(255, 255, 255, 0.55)"
-      hatg-glas-rand-hell: "rgba(255, 255, 255, 0.75)"
-      hatg-glas-kante-hell: "rgba(255, 255, 255, 0.5)"
-      hatg-glas-kante-dunkel: "rgba(0, 0, 0, 0.12)"
-      hatg-glas-schatten: "0 8px 26px -12px rgba(0, 0, 0, 0.28)"
-      hatg-glas-schatten-hoch: "0 20px 50px -20px rgba(0, 0, 0, 0.35)"
-      hatg-glas-reflex: "linear-gradient(135deg, rgba(255,255,255,0.42) 0%, rgba(255,255,255,0.08) 38%, rgba(255,255,255,0) 62%)"
-      hatg-glas-menuegrund: "#FFFFFF"
-      hatg-glas-nav-fuellung: "rgba(255, 255, 255, 0.45)"
-      hatg-glas-nav-blur: "32px"
-      hatg-glas-abdunkeln: "0"
-      hatg-sidebar-titel: "\"Home Assistant\""
-      hatg-icon-groesse: "34px"
-      hatg-icon-radius: "28%"
-      hatg-icon-glanz: "linear-gradient(160deg, rgba(255,255,255,0.34) 0%, rgba(255,255,255,0.06) 52%, rgba(255,255,255,0) 78%)"
-      hatg-icon-rand: "rgba(255, 255, 255, 0.16)"
-      hatg-icon-schatten: "0 1px 2px rgba(0, 0, 0, 0.35)"
-      hatg-liste-abstand: "6px"
-      hatg-liste-innenrand: "8px"
-      hatg-liste-titel-groesse: "15px"
-      hatg-liste-titel-gewicht: "600"
-      hatg-liste-untertitel-groesse: "12.5px"
-      hatg-liste-untertitel-deckkraft: "0.68"
-      hatg-liste-pfeil-groesse: "18px"
-      hatg-liste-pfeil-deckkraft: "0.4"
-
       # UIX & Generator / Generator & Eigenes
       card-backdrop-blur: "none"
 
@@ -1351,7 +1218,7 @@ glas_basis:
 
       # HA-Grundgerüst / Card
       card-background-color: "#1C1C1E"
-      ha-card-background: "var(--hatg-glas-fuellung)"
+      ha-card-background: "rgba(255, 255, 255, 0.1)"
       ha-card-background-color: "#1C1C1E"
       wa-color-surface-raised: "#1C1C1E"
       ha-card-border-color: "rgba(225, 225, 225, 0.12)"
@@ -1375,7 +1242,7 @@ glas_basis:
       mdc-theme-on-surface: "#FFFFFF"
 
       # HA-Grundgerüst / Header
-      app-header-background-color: "var(--hatg-glas-nav-fuellung)"
+      app-header-background-color: "var(--sidebar-background-color)"
       app-header-text-color: "#FFFFFF"
       app-header-backdrop-filter: "blur(8px) saturate(1.1)"
       app-header-edit-background-color: "rgba(30, 33, 54, 0.8)"
@@ -1392,7 +1259,7 @@ glas_basis:
       app-drawer-icon-color: "#ff9300"
 
       # HA-Grundgerüst / Sidebar
-      sidebar-background-color: "var(--hatg-glas-nav-fuellung)"
+      sidebar-background-color: "rgba(255, 255, 255, 0.12)"
       sidebar-selected-background-color: "#d5d5d5"
       sidebar-text-color: "#FFFFFF"
       sidebar-icon-color: "rgba(255, 255, 255, 0.6)"
@@ -1535,7 +1402,7 @@ glas_basis:
       slider-track-color: "#48484A"
 
       # HA-Grundgerüst / Buttons & Chips
-      control-button-background-color: "var(--hatg-glas-fuellung-stark)"
+      control-button-background-color: "rgba(255, 255, 255, 0.16)"
       control-button-icon-color: "#0A84FF"
       control-button-border-radius: "16px"
 
@@ -1560,6 +1427,7 @@ glas_basis:
       ha-color-form-background: "#2C2C2E"
       ha-color-form-background-hover: "#2C2C2E"
       ha-color-form-background-disabled: "rgba(44, 44, 46, 0.50)"
+      ha-color-border-neutral-loud: "#38383A"
 
       # HA-Grundgerüst / Material, Paper & MDC
       mdc-theme-primary: "#0A84FF"
@@ -1697,10 +1565,10 @@ glas_basis:
       energy-water-color: "#32ADE6"
 
       # Bubble Card / Karten & Hintergründe
-      bubble-card-background-color: "var(--hatg-glas-fuellung)"
-      bubble-main-buttons-background-color: "var(--hatg-glas-fuellung)"
-      bubble-secondary-background-color: "var(--hatg-glas-fuellung-stark)"
-      bubble-icon-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-card-background-color: "var(--ha-card-background)"
+      bubble-main-buttons-background-color: "var(--ha-card-background)"
+      bubble-secondary-background-color: "var(--control-button-background-color)"
+      bubble-icon-background-color: "var(--control-button-background-color)"
       bubble-icon-color: "#0A84FF"
       bubble-name-color: "#FFFFFF"
       bubble-state-color: "rgba(235, 235, 245, 0.6)"
@@ -1716,8 +1584,8 @@ glas_basis:
       bubble-icon-border-radius: "14px"
 
       # Bubble Card / Select (Auswahlkarte)
-      bubble-select-main-background-color: "var(--hatg-glas-fuellung)"
-      bubble-select-background-color: "var(--hatg-glas-fuellung)"
+      bubble-select-main-background-color: "var(--ha-card-background)"
+      bubble-select-background-color: "var(--ha-card-background)"
       bubble-select-border-radius: "16px"
       bubble-select-list-background-color: "#1C1C1E"
       bubble-select-list-border-radius: "18px"
@@ -1725,29 +1593,29 @@ glas_basis:
       bubble-select-list-item-accent-color: "#0A84FF"
       bubble-select-arrow-background-color: "#1C1C1E"
       bubble-select-button-border-radius: "18px"
-      bubble-select-icon-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-select-icon-background-color: "var(--control-button-background-color)"
       bubble-select-icon-border-radius: "14px"
       bubble-select-box-shadow: "0 10px 30px rgba(0,0,0,.50)"
 
       # Bubble Card / Buttons
-      bubble-button-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-button-background-color: "var(--control-button-background-color)"
       bubble-button-active-background-color: "#0A84FF"
       bubble-button-icon-color: "#0A84FF"
       bubble-button-active-icon-color: "#000000"
       bubble-button-text-color: "#feffff"
       bubble-button-active-text-color: "#000000"
       bubble-button-border-radius: "16px"
-      bubble-button-card-background-color: "var(--hatg-glas-fuellung)"
-      bubble-button-main-background-color: "var(--hatg-glas-fuellung)"
+      bubble-button-card-background-color: "var(--ha-card-background)"
+      bubble-button-main-background-color: "var(--ha-card-background)"
       bubble-button-active-color: "#0A84FF"
       bubble-button-icon-border-radius: "14px"
-      bubble-button-icon-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-button-icon-background-color: "var(--control-button-background-color)"
       bubble-light-white-color: "#FFFFFF"
       bubble-light-color: "#FFC107"
       bubble-button-box-shadow: "0 10px 30px rgba(0,0,0,.50)"
 
       # Bubble Card / Sub-Buttons
-      bubble-sub-button-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-sub-button-background-color: "var(--control-button-background-color)"
       bubble-sub-button-active-background-color: "#0A84FF"
       bubble-sub-button-icon-color: "#0A84FF"
       bubble-sub-button-active-icon-color: "#000000"
@@ -1755,9 +1623,9 @@ glas_basis:
       bubble-sub-button-active-text-color: "#000000"
       bubble-sub-button-border-radius: "14px"
       bubble-sub-button-box-shadow: "0 4px 11px rgba(0,0,0,.45)"
-      bubble-sub-buttons-main-background-color: "var(--hatg-glas-fuellung)"
+      bubble-sub-buttons-main-background-color: "var(--ha-card-background)"
       bubble-sub-slider-border-radius: "18px"
-      bubble-sub-slider-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-sub-slider-background-color: "var(--control-button-background-color)"
       bubble-sub-slider-height: "48px"
       bubble-sub-button-dark-text-color: "#1C1C1E"
       bubble-footer-width: "320px"
@@ -1765,8 +1633,8 @@ glas_basis:
       bubble-footer-box-shadow: "0 10px 30px rgba(0,0,0,.50)"
 
       # Bubble Card / Separator
-      bubble-separator-background-color: "var(--hatg-glas-fuellung)"
-      bubble-separator-icon-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-separator-background-color: "var(--ha-card-background)"
+      bubble-separator-icon-background-color: "var(--control-button-background-color)"
       bubble-separator-icon-color: "#0A84FF"
       bubble-separator-line-color: "rgba(84, 84, 88, 0.65)"
       bubble-separator-name-color: "#feffff"
@@ -1774,7 +1642,7 @@ glas_basis:
       bubble-separator-border-radius: "16px"
 
       # Bubble Card / Popup & Dialog
-      bubble-pop-up-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-pop-up-background-color: "var(--control-button-background-color)"
       bubble-pop-up-backdrop-filter: "blur(18px)"
       bubble-pop-up-border-radius: "16px"
       bubble-pop-up-box-shadow: "0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.3)"
@@ -1785,21 +1653,21 @@ glas_basis:
       ha-dialog-scrim-backdrop-filter: "blur(10px)"
       ha-dialog-surface-background: "rgba(28, 28, 30, 0.92)"
       mdc-dialog-scrim-color: "rgba(0, 0, 0, 0.60)"
-      bubble-pop-up-main-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-pop-up-main-background-color: "var(--control-button-background-color)"
       bubble-backdrop-background-color: "rgba(0, 0, 0, 0.55)"
 
       # Bubble Card / Horizontal Buttons Stack
-      bubble-horizontal-buttons-stack-background-color: "var(--hatg-glas-fuellung)"
-      bubble-horizontal-buttons-stack-button-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-horizontal-buttons-stack-background-color: "var(--ha-card-background)"
+      bubble-horizontal-buttons-stack-button-background-color: "var(--control-button-background-color)"
       bubble-horizontal-buttons-stack-button-icon-color: "#C7C7CC"
       bubble-horizontal-buttons-stack-button-text-color: "#F2F2F7"
       bubble-horizontal-buttons-stack-border-radius: "16px"
       bubble-horizontal-buttons-stack-box-shadow: "0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.3)"
 
       # Bubble Card / Climate
-      bubble-climate-background-color: "var(--hatg-glas-fuellung)"
-      bubble-climate-main-background-color: "var(--hatg-glas-fuellung)"
-      bubble-climate-button-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-climate-background-color: "var(--ha-card-background)"
+      bubble-climate-main-background-color: "var(--ha-card-background)"
+      bubble-climate-button-background-color: "var(--control-button-background-color)"
       bubble-climate-button-icon-color: "#C7C7CC"
       bubble-climate-border-radius: "16px"
       bubble-climate-box-shadow: "0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.3)"
@@ -1813,29 +1681,29 @@ glas_basis:
       bubble-climate-accent-color: "#0A84FF"
 
       # Bubble Card / Cover
-      bubble-cover-background-color: "var(--hatg-glas-fuellung)"
-      bubble-cover-main-background-color: "var(--hatg-glas-fuellung)"
-      bubble-cover-button-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-cover-background-color: "var(--ha-card-background)"
+      bubble-cover-main-background-color: "var(--ha-card-background)"
+      bubble-cover-button-background-color: "var(--control-button-background-color)"
       bubble-cover-button-icon-color: "#C7C7CC"
       bubble-cover-border-radius: "16px"
       bubble-cover-box-shadow: "0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.3)"
       bubble-cover-icon-border-radius: "14px"
-      bubble-cover-icon-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-cover-icon-background-color: "var(--control-button-background-color)"
 
       # Bubble Card / Media Player
-      bubble-media-player-background-color: "var(--hatg-glas-fuellung)"
-      bubble-media-player-main-background-color: "var(--hatg-glas-fuellung)"
-      bubble-media-player-button-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-media-player-background-color: "var(--ha-card-background)"
+      bubble-media-player-main-background-color: "var(--ha-card-background)"
+      bubble-media-player-button-background-color: "var(--control-button-background-color)"
       bubble-media-player-button-icon-color: "#C7C7CC"
       bubble-media-player-border-radius: "16px"
       bubble-media-player-box-shadow: "0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.3)"
       bubble-media-player-buttons-border-radius: "14px"
-      bubble-media-player-slider-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-media-player-slider-background-color: "var(--control-button-background-color)"
       bubble-media-player-icon-border-radius: "14px"
-      bubble-media-player-icon-background-color: "var(--hatg-glas-fuellung-stark)"
+      bubble-media-player-icon-background-color: "var(--control-button-background-color)"
 
       # Bubble Card / Calendar
-      bubble-calendar-main-background-color: "var(--hatg-glas-fuellung)"
+      bubble-calendar-main-background-color: "var(--ha-card-background)"
       bubble-calendar-height: "56px"
       bubble-calendar-mask-size: "16px"
       bubble-calendar-border-radius: "18px"
@@ -1890,40 +1758,6 @@ glas_basis:
       mush-rgb-danger: "255, 69, 58"
       mush-rgb-disabled: "235, 235, 245"
       mush-rgb-info: "10, 132, 255"
-
-      # UIX & Generator / Glaslook
-      hatg-glas-blur-klein: "8px"
-      hatg-glas-blur: "18px"
-      hatg-glas-blur-gross: "32px"
-      hatg-glas-saettigung: "150%"
-      hatg-glas-fuellung-leicht: "rgba(255, 255, 255, 0.06)"
-      hatg-glas-fuellung: "rgba(255, 255, 255, 0.1)"
-      hatg-glas-fuellung-stark: "rgba(255, 255, 255, 0.16)"
-      hatg-glas-rand: "rgba(255, 255, 255, 0.14)"
-      hatg-glas-rand-hell: "rgba(255, 255, 255, 0.28)"
-      hatg-glas-kante-hell: "rgba(255, 255, 255, 0.28)"
-      hatg-glas-kante-dunkel: "rgba(0, 0, 0, 0.35)"
-      hatg-glas-schatten: "0 8px 28px -12px rgba(0, 0, 0, 0.7)"
-      hatg-glas-schatten-hoch: "0 22px 55px -22px rgba(0, 0, 0, 0.8)"
-      hatg-glas-reflex: "linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 62%)"
-      hatg-glas-menuegrund: "#1C1C1E"
-      hatg-glas-nav-fuellung: "rgba(255, 255, 255, 0.12)"
-      hatg-glas-nav-blur: "32px"
-      hatg-glas-abdunkeln: "0"
-      hatg-sidebar-titel: "\"Home Assistant\""
-      hatg-icon-groesse: "34px"
-      hatg-icon-radius: "28%"
-      hatg-icon-glanz: "linear-gradient(160deg, rgba(255,255,255,0.34) 0%, rgba(255,255,255,0.06) 52%, rgba(255,255,255,0) 78%)"
-      hatg-icon-rand: "rgba(255, 255, 255, 0.16)"
-      hatg-icon-schatten: "0 1px 2px rgba(0, 0, 0, 0.35)"
-      hatg-liste-abstand: "6px"
-      hatg-liste-innenrand: "8px"
-      hatg-liste-titel-groesse: "15px"
-      hatg-liste-titel-gewicht: "600"
-      hatg-liste-untertitel-groesse: "12.5px"
-      hatg-liste-untertitel-deckkraft: "0.68"
-      hatg-liste-pfeil-groesse: "18px"
-      hatg-liste-pfeil-deckkraft: "0.4"
 
       # UIX & Generator / Generator & Eigenes
       card-backdrop-blur: "none"
