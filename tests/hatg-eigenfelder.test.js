@@ -249,7 +249,11 @@ pruefe("Akzent-Verlauf: Handfassung der Seitenleiste wird gelesen und in beide Z
   assert.equal(helfer.hatgMigriereAkzentVerlauf(bag), 2);
   assert.ok(/--verlauf-akzent: linear-gradient\(135deg, #4FE3C8 0%, #38A8FF 100%\)/.test(bag.light["uix-card"]), bag.light["uix-card"]);
   assert.ok(bag.light["uix-card"].startsWith(".alt { color: red; }"));
-  assert.ok(/--hz-gewaehlt: var\(--verlauf-akzent\)/.test(bag.light["uix-card"]));
+  // Die HA-Karten lesen seit Sammlung v2.6.1 die gemeinsame Kette
+  // --karten-gewaehlt / -vorn / -schatten statt einzelner Kartennamen.
+  assert.ok(/--karten-gewaehlt: var\(--verlauf-akzent\)/.test(bag.light["uix-card"]), bag.light["uix-card"]);
+  assert.ok(/--karten-gewaehlt-schatten:[^;]*--neumorph-tiefe/.test(bag.light["uix-card"]), "Kante kommt nicht aus neumorph-tiefe");
+  assert.ok(!/--hz-gewaehlt/.test(bag.light["uix-card"]), "alte Einzelregel steht noch drin");
   assert.ok(/background-image: var\(--verlauf-akzent\)/.test(bag.dark["uix-sidebar"]));
   assert.equal(helfer.hatgMigriereAkzentVerlauf(bag), 0, "zweiter Lauf aendert nichts");
 });

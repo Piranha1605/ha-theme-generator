@@ -1970,9 +1970,12 @@ function hatgVereinheitlicheVorlagenMarken(bag) {
 // Hintergrund, Schieberfuellungen, das Gewaehlte der HA-Karten und der aktive
 // Eintrag der Seitenleiste. HA selbst faerbt seine Knoepfe nur ueber
 // Farbvariablen, die keinen Verlauf annehmen - die bleiben in der Primaerfarbe.
-// Die HA-Karten fuellen ihr Gewaehltes ueber --XX-gewaehlt (Kurzform
-// background), daher nehmen sie den Verlauf an. Gleich fuer Light und Dark,
-// weil UIX-Felder fuer beide Modi gelten.
+// Die HA-Karten (ha-karten) lesen ihr Gewaehltes - gewaehlte Betriebsart,
+// eingeschalteter Knopf, Menue-Kapsel, Schieberfuellung - aus einer
+// gemeinsamen Kette: --karten-gewaehlt, -vorn, -schatten. Die Vorlage setzt
+// diese drei einmal, statt jede Karte beim Namen anzusprechen: Bis 09/2026
+// stand hier eine Liste von Karten, und jede neue fiel durch. Gleich fuer
+// Light und Dark, weil UIX-Felder fuer beide Modi gelten.
 const HATG_VERLAUF_ID = "verlauf-akzent";
 const HATG_VERLAUF_ZIELE = ["uix-card", "uix-sidebar"];
 const HATG_VERLAUF_STANDARD = { von: "#4FE3C8", bis: "#38A8FF", winkel: 135, vorn: "#0A2230" };
@@ -2014,24 +2017,14 @@ ha-list-item-button.selected {
   color: var(--verlauf-vorn) !important;
 }`;
   }
-  const karten = [
-    ["heizzentrale-karte", "hz"],
-    ["heizung-karte", "hk"],
-    ["uhr-karte", "uk"],
-    ["shelly-karte", "sk"],
-  ]
-    .map(
-      ([tag, k]) => `${tag},
-:host(${tag}) {
-  --${k}-gewaehlt: var(--verlauf-akzent) !important;
-  --${k}-gewaehlt-vorn: var(--verlauf-vorn) !important;
-  --${k}-gewaehlt-schatten:
-      inset 3px 3px 7px var(--neumorph-tiefe, rgba(0, 0, 0, 0.22)),
-      inset -2px -2px 6px var(--neumorph-hell, rgba(255, 255, 255, 0.28)) !important;
-}`
-    )
-    .join("\n");
   return `${kopf}
+:host {
+  --karten-gewaehlt: var(--verlauf-akzent);
+  --karten-gewaehlt-vorn: var(--verlauf-vorn);
+  --karten-gewaehlt-schatten:
+      inset 3px 3px 7px var(--neumorph-tiefe, rgba(0, 0, 0, 0.22)),
+      inset -2px -2px 6px var(--neumorph-hell, rgba(255, 255, 255, 0.28));
+}
 ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-background {
   background-color: transparent !important;
   background-image: var(--verlauf-akzent) !important;
@@ -2052,18 +2045,6 @@ ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-main-icon-container
   ${kante}
 }
 .bubble-range-fill {
-  background: var(--verlauf-akzent) !important;
-  ${kante}
-}
-${karten}
-.menue-kapsel {
-  background-color: transparent !important;
-  background-image: var(--verlauf-akzent) !important;
-}
-.menue-leiste .menue-knopf.is-active {
-  color: var(--verlauf-vorn) !important;
-}
-:host(schieber-karte) .fuellung {
   background: var(--verlauf-akzent) !important;
   ${kante}
 }`;
@@ -2570,7 +2551,9 @@ ha-card {
 /* Die Menueleiste der HA-Karten ist eine Pille. Ihre Flaeche liest keinen
    Kartenschatten und blieb neben den uebrigen Karten ohne Kontur - sie
    bekommt den des Themes, die Kapsel des aktiven Punkts die plastische
-   Innenkante des Gewaehlten. */
+   Innenkante des Gewaehlten. Die kommt aus --karten-gewaehlt-schatten, der
+   gemeinsamen Kette der HA-Karten - sonst ueberstimmte diese Regel den
+   Verlauf fuer aktive Flaechen. */
 ha-card:has(.menue-leiste) {
   border-radius: 9999px !important;
 }
@@ -2578,9 +2561,9 @@ ha-card:has(.menue-leiste) {
   box-shadow: var(--ha-card-box-shadow, 0 8px 32px rgba(0, 0, 0, 0.28)) !important;
 }
 .menue-kapsel {
-  box-shadow:
+  box-shadow: var(--karten-gewaehlt-schatten,
     inset 3px 3px 7px color-mix(in srgb, var(--accent-color) 62%, #000000),
-    inset -2px -2px 6px color-mix(in srgb, var(--accent-color) 74%, #ffffff) !important;
+    inset -2px -2px 6px color-mix(in srgb, var(--accent-color) 74%, #ffffff)) !important;
 }
 /* Bubble Card: Das ha-card in bubble-card umschliesst die Container, die
    "Bubble Card in Glas" schon weichzeichnet. Huellen-Karten sollen nicht
