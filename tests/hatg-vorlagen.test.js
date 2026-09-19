@@ -333,6 +333,21 @@ pruefe("Jeder dataset-Zugriff hat ein passendes data-Attribut", () => {
   assert.deepEqual(fremd, []);
 });
 
+pruefe("Eigener Titel gilt nicht als veraltete Vorlage", () => {
+  // Hinweis und Auffrischen muessen dasselbe Soll vergleichen.
+  const alles = fs.readFileSync(PANEL, "utf8");
+  const start = alles.indexOf("const HATG_VORLAGE_TITEL_RE");
+  const ende = alles.indexOf("function hatgVorlagenZiel(");
+  assert.ok(start !== -1 && ende > start, "Titel-Helfer nicht gefunden");
+  const kontext = {};
+  require("node:vm").runInNewContext(`${alles.slice(start, ende)}\nthis.soll = hatgVorlageSoll; this.mitTitel = hatgVorlageMitTitel;`, kontext);
+  const tpl = { css: ".menu .title::after {\n  content: \"Home Assistant\";\n}", titel: { standard: "Home Assistant" } };
+  const block = kontext.mitTitel(tpl, "Horizon HA");
+  assert.equal(kontext.soll(tpl, block), block, "eigener Titel wird als Abweichung gewertet");
+  assert.equal(kontext.soll({ css: "a{}" }, "b{}"), "a{}");
+  assert.ok(/hatgVorlageSoll\(tpl, vorhanden\)\)/.test(alles.slice(alles.indexOf("veralteteVorlagen() {"), alles.indexOf("veralteteVorlagen() {") + 1500)), "Hinweis nutzt das Soll nicht");
+});
+
 pruefe("Seitenleisten-Titel ist ein Parameter der Vorlage, keine Beschreibung nennt hatg-Felder", () => {
   const tpl = vorlagen.find((x) => x.id === "seitenleiste-titel");
   assert.ok(tpl, "Vorlage seitenleiste-titel fehlt");

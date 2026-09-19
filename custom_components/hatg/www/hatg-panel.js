@@ -2363,6 +2363,14 @@ function hatgVorlageMitTitel(tpl, titel) {
   const css = `content: "${text.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
   return String(tpl.css).replace(HATG_VORLAGE_TITEL_RE, () => css);
 }
+// Das CSS, das fuer eine Vorlage im Theme stehen soll: bei Vorlagen mit
+// Text-Parameter mit dem Titel, der im vorhandenen Block steht. Auffrischen und
+// der Hinweis auf veraltete Vorlagen muessen dasselbe vergleichen - sonst
+// meldete der Hinweis jeden eigenen Seitenleisten-Titel dauerhaft als
+// veraltet, waehrend Auffrischen "alle aktuell" sagte (Forum, 2026-09-19).
+function hatgVorlageSoll(tpl, vorhanden) {
+  return tpl && tpl.titel ? hatgVorlageMitTitel(tpl, hatgVorlageTitelLesen(vorhanden)) : String((tpl && tpl.css) || "");
+}
 function hatgVorlagenZiel(tpl) {
   const ziel = tpl && tpl.ziel;
   if (!ziel || ziel === HATG_UIX_THEME_KEY) return HATG_VORLAGEN_STANDARDZIEL;
@@ -6617,7 +6625,7 @@ class HATGPanel extends HTMLElement {
         .some((fremd) => hatgLeseVorlagenBlock(String(werte[fremd] || ""), tpl.id) !== null);
       if (verwaist) return true;
       const vorhanden = hatgLeseVorlagenBlock(String(werte[ziel] || ""), tpl.id);
-      return vorhanden !== null && hatgCssOhneKommentare(vorhanden) !== hatgCssOhneKommentare(tpl.css);
+      return vorhanden !== null && hatgCssOhneKommentare(vorhanden) !== hatgCssOhneKommentare(hatgVorlageSoll(tpl, vorhanden));
     }).map((tpl) => tpl.id);
   }
 
@@ -6678,7 +6686,7 @@ class HATGPanel extends HTMLElement {
         const text = String(this.currentValues()[ziel] || "");
         const vorhanden = hatgLeseVorlagenBlock(text, tpl.id);
         if (vorhanden === null) return;
-        const soll = tpl.titel ? hatgVorlageMitTitel(tpl, hatgVorlageTitelLesen(vorhanden)) : tpl.css;
+        const soll = hatgVorlageSoll(tpl, vorhanden);
         if (hatgCssOhneKommentare(vorhanden) === hatgCssOhneKommentare(soll)) return;
         this.commitField(ziel, hatgHaengeVorlagenBlockAn(text, tpl.id, soll, hatgIstYamlZiel(ziel)));
         if (mode === "light") anzahl++;
