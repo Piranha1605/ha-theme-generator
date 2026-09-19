@@ -39,11 +39,19 @@ function feld(block, name) {
   return m ? m[1] : null;
 }
 
+// Einstellbare Werte stehen als [[id]] im Quelltext; geprueft wird mit den
+// Standardwerten, so wie die Vorlage eingeschaltet wird.
+function mitStandardwerten(block, text) {
+  const standard = {};
+  for (const m of block.matchAll(/\{ id: "([a-z0-9-]+)", label: "[^"]*", labelEn: "[^"]*", standard: "([^"]*)" \}/g)) standard[m[1]] = m[2];
+  return text.replace(/\[\[([a-z0-9-]+)\]\]/g, (ganz, id) => standard[id] ?? ganz);
+}
+
 function css(block) {
   const vorlage = /\bcss:\s*`([\s\S]*?)`,/.exec(block);
-  if (vorlage) return vorlage[1];
+  if (vorlage) return mitStandardwerten(block, vorlage[1]);
   const literal = new RegExp(`\\bcss:\\s*${LITERAL}`).exec(block);
-  return literal ? JSON.parse(`"${literal[1]}"`) : null;
+  return literal ? mitStandardwerten(block, JSON.parse(`"${literal[1]}"`)) : null;
 }
 
 function ohneKommentare(text) {

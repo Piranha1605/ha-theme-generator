@@ -319,7 +319,7 @@ const HATG_TEXTE = {
   "Rahmen: Akzentfarbe mit Leuchtkante": "Border: accent colour with glowing edge",
   "Dünner Rahmen in der Akzentfarbe mit innerer Leuchtkante, bei Bubble Card als innerer Ring.": "Thin frame in the accent colour with a glowing inner edge, drawn as an inner ring on Bubble Card.",
   "Glas-Effekt (Blur)": "Glass effect (blur)",
-  "Einfaches Milchglas mit fester Weichzeichnung und hellem Rand für HA- und Bubble-Karten. Einstellbares Glas bietet das Glas-Paket.": "Simple frosted glass with a fixed blur and light border for HA and Bubble cards. Adjustable glass comes with the glass package.",
+  "Einfaches Milchglas mit hellem Rand für HA- und Bubble-Karten, unabhängig vom Glas-Paket.": "Simple frosted glass with a light border for HA and Bubble cards, independent of the glass package.",
   "Relief: Weiche Tiefenwirkung": "Relief: soft depth",
   "Weicher Schatten mit feiner Glanzkante oben, Karten wirken leicht erhaben.": "Soft shadow with a fine highlight at the top; cards look slightly raised.",
   "Slider-Enden abrunden": "Round the slider ends",
@@ -2520,31 +2520,56 @@ const HATG_VORLAGEN = [
     id: "kartenfarben-verlauf",
     label: "Kartenfarben: Sanfter Verlauf",
     desc: "Dezenter Verlauf von der Kartenfarbe zu leichtem Schwarz über HA- und Bubble-Karten.",
-    css: ":host(ha-card),\nha-card {\n  background-image: linear-gradient(160deg, var(--card-background-color, var(--ha-card-background)) 0%, rgba(0, 0, 0, 0.12) 100%) !important;\n  --bubble-card-background-color: linear-gradient(160deg, var(--card-background-color, var(--ha-card-background)) 0%, rgba(0, 0, 0, 0.12) 100%);\n  --bubble-main-buttons-background-color: linear-gradient(160deg, var(--card-background-color, var(--ha-card-background)) 0%, rgba(0, 0, 0, 0.12) 100%);\n  --bubble-button-background-color: linear-gradient(160deg, var(--card-background-color, var(--ha-card-background)) 0%, rgba(0, 0, 0, 0.12) 100%);\n  --bubble-sub-button-background-color: linear-gradient(160deg, var(--card-background-color, var(--ha-card-background)) 0%, rgba(0, 0, 0, 0.12) 100%);\n  --bubble-climate-background-color: linear-gradient(160deg, var(--card-background-color, var(--ha-card-background)) 0%, rgba(0, 0, 0, 0.12) 100%);\n  --bubble-climate-main-background-color: linear-gradient(160deg, var(--card-background-color, var(--ha-card-background)) 0%, rgba(0, 0, 0, 0.12) 100%);\n  --bubble-climate-button-background-color: linear-gradient(160deg, var(--card-background-color, var(--ha-card-background)) 0%, rgba(0, 0, 0, 0.12) 100%);\n  --bubble-cover-background-color: linear-gradient(160deg, var(--card-background-color, var(--ha-card-background)) 0%, rgba(0, 0, 0, 0.12) 100%);\n  --bubble-cover-main-background-color: linear-gradient(160deg, var(--card-background-color, var(--ha-card-background)) 0%, rgba(0, 0, 0, 0.12) 100%);\n  --bubble-media-player-background-color: linear-gradient(160deg, var(--card-background-color, var(--ha-card-background)) 0%, rgba(0, 0, 0, 0.12) 100%);\n  --bubble-media-player-main-background-color: linear-gradient(160deg, var(--card-background-color, var(--ha-card-background)) 0%, rgba(0, 0, 0, 0.12) 100%);\n  --bubble-select-background-color: linear-gradient(160deg, var(--card-background-color, var(--ha-card-background)) 0%, rgba(0, 0, 0, 0.12) 100%);\n  --bubble-select-main-background-color: linear-gradient(160deg, var(--card-background-color, var(--ha-card-background)) 0%, rgba(0, 0, 0, 0.12) 100%);\n  --bubble-horizontal-buttons-stack-background-color: linear-gradient(160deg, var(--card-background-color, var(--ha-card-background)) 0%, rgba(0, 0, 0, 0.12) 100%);\n  --bubble-calendar-main-background-color: linear-gradient(160deg, var(--card-background-color, var(--ha-card-background)) 0%, rgba(0, 0, 0, 0.12) 100%);\n}\n.bubble-container,\n.bubble-button-card-container {\n  background-image: linear-gradient(160deg, var(--card-background-color, var(--ha-card-background)) 0%, rgba(0, 0, 0, 0.12) 100%) !important;\n  -webkit-mask-image: -webkit-radial-gradient(white, black);\n}\n:host(hui-heading-card) ha-card,\n:host(mushroom-chips-card) ha-card,\n:host(mushroom-chip) ha-card,\n:host(:has(.chip-container)),\nha-card:has(.chip-container),\n:host(.type-heading) ha-card,\n:host(.type-heading),\nha-card.type-heading,\n:host(:has(.bubble-sub-button)),\nha-card:has(.bubble-sub-button),\n:host(:has(.bubble-separator)),\nha-card:has(.bubble-separator),\n:host(:has(.bubble-container)),\nha-card:has(.bubble-container) {\n  border: none !important;\n  box-shadow: none !important;\n  background: none !important;\n  background-image: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n}",
+    werte: [
+      { id: "winkel", label: "Richtung", labelEn: "Direction", standard: "160deg" },
+      { id: "dunkel", label: "Dunkles Ende", labelEn: "Dark end", standard: "rgba(0, 0, 0, 0.12)" },
+    ],
+    css: ":host(ha-card),\nha-card {\n  background-image: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%) !important;\n  --bubble-card-background-color: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%);\n  --bubble-main-buttons-background-color: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%);\n  --bubble-button-background-color: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%);\n  --bubble-sub-button-background-color: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%);\n  --bubble-climate-background-color: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%);\n  --bubble-climate-main-background-color: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%);\n  --bubble-climate-button-background-color: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%);\n  --bubble-cover-background-color: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%);\n  --bubble-cover-main-background-color: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%);\n  --bubble-media-player-background-color: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%);\n  --bubble-media-player-main-background-color: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%);\n  --bubble-select-background-color: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%);\n  --bubble-select-main-background-color: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%);\n  --bubble-horizontal-buttons-stack-background-color: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%);\n  --bubble-calendar-main-background-color: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%);\n}\n.bubble-container,\n.bubble-button-card-container {\n  background-image: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%) !important;\n  -webkit-mask-image: -webkit-radial-gradient(white, black);\n}\n:host(hui-heading-card) ha-card,\n:host(mushroom-chips-card) ha-card,\n:host(mushroom-chip) ha-card,\n:host(:has(.chip-container)),\nha-card:has(.chip-container),\n:host(.type-heading) ha-card,\n:host(.type-heading),\nha-card.type-heading,\n:host(:has(.bubble-sub-button)),\nha-card:has(.bubble-sub-button),\n:host(:has(.bubble-separator)),\nha-card:has(.bubble-separator),\n:host(:has(.bubble-container)),\nha-card:has(.bubble-container) {\n  border: none !important;\n  box-shadow: none !important;\n  background: none !important;\n  background-image: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n}",
   },
   {
     id: "glow-schatten",
     label: "Glow / Leucht-Schatten",
     desc: "Weicher Leuchtschatten in der Akzentfarbe um HA- und Bubble-Karten, an Sub-Buttons schwächer.",
-    css: ":host(ha-card),\nha-card {\n  box-shadow: 0 0 18px 2px color-mix(in srgb, var(--accent-color) 28%, transparent) !important;\n  --bubble-box-shadow: 0 0 18px 2px color-mix(in srgb, var(--accent-color) 28%, transparent);\n  --bubble-button-box-shadow: 0 0 18px 2px color-mix(in srgb, var(--accent-color) 28%, transparent);\n  --bubble-sub-button-box-shadow: 0 0 10px 1px color-mix(in srgb, var(--accent-color) 30%, transparent);\n  --bubble-footer-box-shadow: 0 0 18px 2px color-mix(in srgb, var(--accent-color) 28%, transparent);\n  --bubble-climate-box-shadow: 0 0 18px 2px color-mix(in srgb, var(--accent-color) 28%, transparent);\n  --bubble-cover-box-shadow: 0 0 18px 2px color-mix(in srgb, var(--accent-color) 28%, transparent);\n  --bubble-media-player-box-shadow: 0 0 18px 2px color-mix(in srgb, var(--accent-color) 28%, transparent);\n  --bubble-select-box-shadow: 0 0 18px 2px color-mix(in srgb, var(--accent-color) 28%, transparent);\n  --bubble-horizontal-buttons-stack-box-shadow: 0 0 18px 2px color-mix(in srgb, var(--accent-color) 28%, transparent);\n}\n.bubble-container {\n  box-shadow: 0 0 18px 2px color-mix(in srgb, var(--accent-color) 28%, transparent) !important;\n}\n.bubble-sub-button {\n  box-shadow: 0 0 10px 1px color-mix(in srgb, var(--accent-color) 30%, transparent) !important;\n}\n:host(hui-heading-card) ha-card,\n:host(mushroom-chips-card) ha-card,\n:host(mushroom-chip) ha-card,\n:host(:has(.chip-container)),\nha-card:has(.chip-container),\n:host(.type-heading) ha-card,\n:host(.type-heading),\nha-card.type-heading,\n:host(:has(.bubble-sub-button)),\nha-card:has(.bubble-sub-button),\n:host(:has(.bubble-separator)),\nha-card:has(.bubble-separator),\n:host(:has(.bubble-container)),\nha-card:has(.bubble-container) {\n  border: none !important;\n  box-shadow: none !important;\n  background: none !important;\n  background-image: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n}",
+    werte: [
+      { id: "glow", label: "Leuchtschatten (Versatz, Weite, Ausdehnung)", labelEn: "Glow (offset, blur, spread)", standard: "0 0 18px 2px" },
+      { id: "glow-staerke", label: "Stärke", labelEn: "Strength", standard: "28%" },
+      { id: "glow-klein", label: "Leuchtschatten Sub-Buttons", labelEn: "Sub-button glow", standard: "0 0 10px 1px" },
+      { id: "glow-klein-staerke", label: "Stärke Sub-Buttons", labelEn: "Sub-button strength", standard: "30%" },
+    ],
+    css: ":host(ha-card),\nha-card {\n  box-shadow: [[glow]] color-mix(in srgb, var(--accent-color) [[glow-staerke]], transparent) !important;\n  --bubble-box-shadow: [[glow]] color-mix(in srgb, var(--accent-color) [[glow-staerke]], transparent);\n  --bubble-button-box-shadow: [[glow]] color-mix(in srgb, var(--accent-color) [[glow-staerke]], transparent);\n  --bubble-sub-button-box-shadow: [[glow-klein]] color-mix(in srgb, var(--accent-color) [[glow-klein-staerke]], transparent);\n  --bubble-footer-box-shadow: [[glow]] color-mix(in srgb, var(--accent-color) [[glow-staerke]], transparent);\n  --bubble-climate-box-shadow: [[glow]] color-mix(in srgb, var(--accent-color) [[glow-staerke]], transparent);\n  --bubble-cover-box-shadow: [[glow]] color-mix(in srgb, var(--accent-color) [[glow-staerke]], transparent);\n  --bubble-media-player-box-shadow: [[glow]] color-mix(in srgb, var(--accent-color) [[glow-staerke]], transparent);\n  --bubble-select-box-shadow: [[glow]] color-mix(in srgb, var(--accent-color) [[glow-staerke]], transparent);\n  --bubble-horizontal-buttons-stack-box-shadow: [[glow]] color-mix(in srgb, var(--accent-color) [[glow-staerke]], transparent);\n}\n.bubble-container {\n  box-shadow: [[glow]] color-mix(in srgb, var(--accent-color) [[glow-staerke]], transparent) !important;\n}\n.bubble-sub-button {\n  box-shadow: [[glow-klein]] color-mix(in srgb, var(--accent-color) [[glow-klein-staerke]], transparent) !important;\n}\n:host(hui-heading-card) ha-card,\n:host(mushroom-chips-card) ha-card,\n:host(mushroom-chip) ha-card,\n:host(:has(.chip-container)),\nha-card:has(.chip-container),\n:host(.type-heading) ha-card,\n:host(.type-heading),\nha-card.type-heading,\n:host(:has(.bubble-sub-button)),\nha-card:has(.bubble-sub-button),\n:host(:has(.bubble-separator)),\nha-card:has(.bubble-separator),\n:host(:has(.bubble-container)),\nha-card:has(.bubble-container) {\n  border: none !important;\n  box-shadow: none !important;\n  background: none !important;\n  background-image: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n}",
   },
   {
     id: "rahmen-akzent",
     label: "Rahmen: Akzentfarbe mit Leuchtkante",
     desc: "Dünner Rahmen in der Akzentfarbe mit innerer Leuchtkante, bei Bubble Card als innerer Ring.",
-    css: ":host(ha-card),\nha-card {\n  border: 1px solid color-mix(in srgb, var(--accent-color) 55%, transparent) !important;\n  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-color) 55%, transparent) !important;\n  --bubble-border: 1px solid color-mix(in srgb, var(--accent-color) 55%, transparent);\n  --bubble-border-color: color-mix(in srgb, var(--accent-color) 55%, transparent);\n  --bubble-box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-color) 55%, transparent);\n  --bubble-button-box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-color) 55%, transparent);\n  --bubble-sub-button-box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-color) 55%, transparent);\n  --bubble-footer-box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-color) 55%, transparent);\n  --bubble-climate-box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-color) 55%, transparent);\n  --bubble-cover-box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-color) 55%, transparent);\n  --bubble-media-player-box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-color) 55%, transparent);\n  --bubble-select-box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-color) 55%, transparent);\n  --bubble-horizontal-buttons-stack-box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-color) 55%, transparent);\n}\n.bubble-container,\n.bubble-sub-button {\n  border: 1px solid color-mix(in srgb, var(--accent-color) 55%, transparent) !important;\n}\n:host(hui-heading-card) ha-card,\n:host(mushroom-chips-card) ha-card,\n:host(mushroom-chip) ha-card,\n:host(:has(.chip-container)),\nha-card:has(.chip-container),\n:host(.type-heading) ha-card,\n:host(.type-heading),\nha-card.type-heading,\n:host(:has(.bubble-sub-button)),\nha-card:has(.bubble-sub-button),\n:host(:has(.bubble-separator)),\nha-card:has(.bubble-separator),\n:host(:has(.bubble-container)),\nha-card:has(.bubble-container) {\n  border: none !important;\n  box-shadow: none !important;\n  background: none !important;\n  background-image: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n}",
+    werte: [
+      { id: "breite", label: "Rahmenbreite", labelEn: "Border width", standard: "1px" },
+      { id: "staerke", label: "Anteil Akzentfarbe", labelEn: "Share of accent colour", standard: "55%" },
+    ],
+    css: ":host(ha-card),\nha-card {\n  border: [[breite]] solid color-mix(in srgb, var(--accent-color) [[staerke]], transparent) !important;\n  box-shadow: inset 0 0 0 [[breite]] color-mix(in srgb, var(--accent-color) [[staerke]], transparent) !important;\n  --bubble-border: [[breite]] solid color-mix(in srgb, var(--accent-color) [[staerke]], transparent);\n  --bubble-border-color: color-mix(in srgb, var(--accent-color) [[staerke]], transparent);\n  --bubble-box-shadow: inset 0 0 0 [[breite]] color-mix(in srgb, var(--accent-color) [[staerke]], transparent);\n  --bubble-button-box-shadow: inset 0 0 0 [[breite]] color-mix(in srgb, var(--accent-color) [[staerke]], transparent);\n  --bubble-sub-button-box-shadow: inset 0 0 0 [[breite]] color-mix(in srgb, var(--accent-color) [[staerke]], transparent);\n  --bubble-footer-box-shadow: inset 0 0 0 [[breite]] color-mix(in srgb, var(--accent-color) [[staerke]], transparent);\n  --bubble-climate-box-shadow: inset 0 0 0 [[breite]] color-mix(in srgb, var(--accent-color) [[staerke]], transparent);\n  --bubble-cover-box-shadow: inset 0 0 0 [[breite]] color-mix(in srgb, var(--accent-color) [[staerke]], transparent);\n  --bubble-media-player-box-shadow: inset 0 0 0 [[breite]] color-mix(in srgb, var(--accent-color) [[staerke]], transparent);\n  --bubble-select-box-shadow: inset 0 0 0 [[breite]] color-mix(in srgb, var(--accent-color) [[staerke]], transparent);\n  --bubble-horizontal-buttons-stack-box-shadow: inset 0 0 0 [[breite]] color-mix(in srgb, var(--accent-color) [[staerke]], transparent);\n}\n.bubble-container,\n.bubble-sub-button {\n  border: [[breite]] solid color-mix(in srgb, var(--accent-color) [[staerke]], transparent) !important;\n}\n:host(hui-heading-card) ha-card,\n:host(mushroom-chips-card) ha-card,\n:host(mushroom-chip) ha-card,\n:host(:has(.chip-container)),\nha-card:has(.chip-container),\n:host(.type-heading) ha-card,\n:host(.type-heading),\nha-card.type-heading,\n:host(:has(.bubble-sub-button)),\nha-card:has(.bubble-sub-button),\n:host(:has(.bubble-separator)),\nha-card:has(.bubble-separator),\n:host(:has(.bubble-container)),\nha-card:has(.bubble-container) {\n  border: none !important;\n  box-shadow: none !important;\n  background: none !important;\n  background-image: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n}",
   },
   {
     id: "glas-effekt",
     label: "Glas-Effekt (Blur)",
-    desc: "Einfaches Milchglas mit fester Weichzeichnung und hellem Rand für HA- und Bubble-Karten. Einstellbares Glas bietet das Glas-Paket.",
-    css: ":host(ha-card),\nha-card {\n  background: rgba(255, 255, 255, 0.10) !important;\n  backdrop-filter: blur(16px) saturate(160%);\n  -webkit-backdrop-filter: blur(16px) saturate(160%);\n  border: 1px solid rgba(255, 255, 255, 0.25) !important;\n  --bubble-card-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-main-buttons-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-button-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-sub-button-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-climate-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-climate-main-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-climate-button-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-cover-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-cover-main-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-media-player-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-media-player-main-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-select-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-select-main-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-horizontal-buttons-stack-background-color: rgba(255, 255, 255, 0.10);\n  --bubble-calendar-main-background-color: rgba(255, 255, 255, 0.10);\n}\n.bubble-container {\n  background: rgba(255, 255, 255, 0.10) !important;\n  backdrop-filter: blur(16px) saturate(160%);\n  -webkit-backdrop-filter: blur(16px) saturate(160%);\n  -webkit-mask-image: -webkit-radial-gradient(white, black);\n}\n:host(.type-custom-bubble-card) {\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n}\n:host(hui-heading-card) ha-card,\n:host(mushroom-chips-card) ha-card,\n:host(mushroom-chip) ha-card,\n:host(:has(.chip-container)),\nha-card:has(.chip-container),\n:host(.type-heading) ha-card,\n:host(.type-heading),\nha-card.type-heading,\n:host(:has(.bubble-sub-button)),\nha-card:has(.bubble-sub-button),\n:host(:has(.bubble-separator)),\nha-card:has(.bubble-separator),\n:host(:has(.bubble-container)),\nha-card:has(.bubble-container) {\n  border: none !important;\n  box-shadow: none !important;\n  background: none !important;\n  background-image: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n}",
+    desc: "Einfaches Milchglas mit hellem Rand für HA- und Bubble-Karten, unabhängig vom Glas-Paket.",
+    werte: [
+      { id: "flaeche", label: "Fläche", labelEn: "Surface", standard: "rgba(255, 255, 255, 0.10)" },
+      { id: "filter", label: "Filter", labelEn: "Filter", standard: "blur(16px) saturate(160%)" },
+      { id: "rand", label: "Randfarbe", labelEn: "Border colour", standard: "rgba(255, 255, 255, 0.25)" },
+    ],
+    css: ":host(ha-card),\nha-card {\n  background: [[flaeche]] !important;\n  backdrop-filter: [[filter]];\n  -webkit-backdrop-filter: [[filter]];\n  border: 1px solid [[rand]] !important;\n  --bubble-card-background-color: [[flaeche]];\n  --bubble-main-buttons-background-color: [[flaeche]];\n  --bubble-button-background-color: [[flaeche]];\n  --bubble-sub-button-background-color: [[flaeche]];\n  --bubble-climate-background-color: [[flaeche]];\n  --bubble-climate-main-background-color: [[flaeche]];\n  --bubble-climate-button-background-color: [[flaeche]];\n  --bubble-cover-background-color: [[flaeche]];\n  --bubble-cover-main-background-color: [[flaeche]];\n  --bubble-media-player-background-color: [[flaeche]];\n  --bubble-media-player-main-background-color: [[flaeche]];\n  --bubble-select-background-color: [[flaeche]];\n  --bubble-select-main-background-color: [[flaeche]];\n  --bubble-horizontal-buttons-stack-background-color: [[flaeche]];\n  --bubble-calendar-main-background-color: [[flaeche]];\n}\n.bubble-container {\n  background: [[flaeche]] !important;\n  backdrop-filter: [[filter]];\n  -webkit-backdrop-filter: [[filter]];\n  -webkit-mask-image: -webkit-radial-gradient(white, black);\n}\n:host(.type-custom-bubble-card) {\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n}\n:host(hui-heading-card) ha-card,\n:host(mushroom-chips-card) ha-card,\n:host(mushroom-chip) ha-card,\n:host(:has(.chip-container)),\nha-card:has(.chip-container),\n:host(.type-heading) ha-card,\n:host(.type-heading),\nha-card.type-heading,\n:host(:has(.bubble-sub-button)),\nha-card:has(.bubble-sub-button),\n:host(:has(.bubble-separator)),\nha-card:has(.bubble-separator),\n:host(:has(.bubble-container)),\nha-card:has(.bubble-container) {\n  border: none !important;\n  box-shadow: none !important;\n  background: none !important;\n  background-image: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n}",
   },
   {
     id: "relief-tiefe",
     label: "Relief: Weiche Tiefenwirkung",
     desc: "Weicher Schatten mit feiner Glanzkante oben, Karten wirken leicht erhaben.",
-    css: ":host(ha-card),\nha-card {\n  box-shadow: 0 6px 14px -4px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;\n  --bubble-box-shadow: 0 6px 14px -4px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);\n  --bubble-button-box-shadow: 0 6px 14px -4px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);\n  --bubble-sub-button-box-shadow: 0 3px 8px -2px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08);\n  --bubble-footer-box-shadow: 0 6px 14px -4px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);\n  --bubble-climate-box-shadow: 0 6px 14px -4px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);\n  --bubble-cover-box-shadow: 0 6px 14px -4px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);\n  --bubble-media-player-box-shadow: 0 6px 14px -4px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);\n  --bubble-select-box-shadow: 0 6px 14px -4px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);\n  --bubble-horizontal-buttons-stack-box-shadow: 0 6px 14px -4px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);\n}\n.bubble-container {\n  box-shadow: 0 6px 14px -4px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;\n}\n.bubble-sub-button {\n  box-shadow: 0 3px 8px -2px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;\n}\n:host(hui-heading-card) ha-card,\n:host(mushroom-chips-card) ha-card,\n:host(mushroom-chip) ha-card,\n:host(:has(.chip-container)),\nha-card:has(.chip-container),\n:host(.type-heading) ha-card,\n:host(.type-heading),\nha-card.type-heading,\n:host(:has(.bubble-sub-button)),\nha-card:has(.bubble-sub-button),\n:host(:has(.bubble-separator)),\nha-card:has(.bubble-separator),\n:host(:has(.bubble-container)),\nha-card:has(.bubble-container) {\n  border: none !important;\n  box-shadow: none !important;\n  background: none !important;\n  background-image: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n}",
+    werte: [
+      { id: "schatten", label: "Schatten", labelEn: "Shadow", standard: "0 6px 14px -4px rgba(0, 0, 0, 0.35)" },
+      { id: "glanz", label: "Glanzkante", labelEn: "Highlight edge", standard: "rgba(255, 255, 255, 0.06)" },
+      { id: "schatten-klein", label: "Schatten Sub-Buttons", labelEn: "Sub-button shadow", standard: "0 3px 8px -2px rgba(0, 0, 0, 0.3)" },
+      { id: "glanz-klein", label: "Glanzkante Sub-Buttons", labelEn: "Sub-button highlight edge", standard: "rgba(255, 255, 255, 0.08)" },
+    ],
+    css: ":host(ha-card),\nha-card {\n  box-shadow: [[schatten]], inset 0 1px 0 [[glanz]] !important;\n  --bubble-box-shadow: [[schatten]], inset 0 1px 0 [[glanz]];\n  --bubble-button-box-shadow: [[schatten]], inset 0 1px 0 [[glanz]];\n  --bubble-sub-button-box-shadow: [[schatten-klein]], inset 0 1px 0 [[glanz-klein]];\n  --bubble-footer-box-shadow: [[schatten]], inset 0 1px 0 [[glanz]];\n  --bubble-climate-box-shadow: [[schatten]], inset 0 1px 0 [[glanz]];\n  --bubble-cover-box-shadow: [[schatten]], inset 0 1px 0 [[glanz]];\n  --bubble-media-player-box-shadow: [[schatten]], inset 0 1px 0 [[glanz]];\n  --bubble-select-box-shadow: [[schatten]], inset 0 1px 0 [[glanz]];\n  --bubble-horizontal-buttons-stack-box-shadow: [[schatten]], inset 0 1px 0 [[glanz]];\n}\n.bubble-container {\n  box-shadow: [[schatten]], inset 0 1px 0 [[glanz]] !important;\n}\n.bubble-sub-button {\n  box-shadow: [[schatten-klein]], inset 0 1px 0 [[glanz-klein]] !important;\n}\n:host(hui-heading-card) ha-card,\n:host(mushroom-chips-card) ha-card,\n:host(mushroom-chip) ha-card,\n:host(:has(.chip-container)),\nha-card:has(.chip-container),\n:host(.type-heading) ha-card,\n:host(.type-heading),\nha-card.type-heading,\n:host(:has(.bubble-sub-button)),\nha-card:has(.bubble-sub-button),\n:host(:has(.bubble-separator)),\nha-card:has(.bubble-separator),\n:host(:has(.bubble-container)),\nha-card:has(.bubble-container) {\n  border: none !important;\n  box-shadow: none !important;\n  background: none !important;\n  background-image: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n}",
   },
   {
     id: "glas-ebene",
@@ -2789,6 +2814,9 @@ ha-card {
     paket: "glas",
     label: "Kartenmarker in Glas",
     desc: "Die runden Marker von Personen und Geräten auf der Karte als Glas. Der farbige Ring und Bilder bleiben.",
+    werte: [
+      { id: "weichzeichnung", label: "Weichzeichnung", labelEn: "Blur", standard: "8px" },
+    ],
     ziel: "uix-entity-marker",
     css: `/* Das Stylesheet landet im Shadow Root von ha-entity-marker. Die sichtbare
    Flaeche ist .marker - deckend in der Kartenfarbe, mit einem 1 px Ring in
@@ -2798,8 +2826,8 @@ ha-card {
   background-color: rgba(255, 255, 255, 0.68) !important;
   background-color: var(--control-button-background-color) !important;
   background-image: none !important;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur([[weichzeichnung]]);
+  -webkit-backdrop-filter: blur([[weichzeichnung]]);
   box-shadow: var(--ha-card-box-shadow) !important;
 }`,
   },
@@ -2808,14 +2836,18 @@ ha-card {
     paket: "glas",
     label: "Badges in Glas",
     desc: "Die Badges oberhalb der Karten als leichtes Glas.",
+    werte: [
+      { id: "weichzeichnung", label: "Weichzeichnung", labelEn: "Blur", standard: "8px" },
+      { id: "deckkraft", label: "Deckkraft der Fläche", labelEn: "Surface opacity", standard: "70%" },
+    ],
     ziel: "uix-badge",
     css: `
 ha-badge {
   background-color: rgba(255, 255, 255, 0.35) !important;
-  background-color: color-mix(in srgb, var(--ha-card-background) 70%, transparent) !important;
+  background-color: color-mix(in srgb, var(--ha-card-background) [[deckkraft]], transparent) !important;
   background-image: none !important;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur([[weichzeichnung]]);
+  -webkit-backdrop-filter: blur([[weichzeichnung]]);
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
   /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
@@ -2829,14 +2861,18 @@ ha-badge {
     paket: "glas",
     label: "Überschriften-Badges in Glas",
     desc: "Die kleinen Anzeigen in Überschriften-Karten als leichtes Glas.",
+    werte: [
+      { id: "weichzeichnung", label: "Weichzeichnung", labelEn: "Blur", standard: "8px" },
+      { id: "deckkraft", label: "Deckkraft der Fläche", labelEn: "Surface opacity", standard: "70%" },
+    ],
     ziel: "uix-heading-badge",
     css: `
 :host {
   background-color: rgba(255, 255, 255, 0.35) !important;
-  background-color: color-mix(in srgb, var(--ha-card-background) 70%, transparent) !important;
+  background-color: color-mix(in srgb, var(--ha-card-background) [[deckkraft]], transparent) !important;
   background-image: none !important;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur([[weichzeichnung]]);
+  -webkit-backdrop-filter: blur([[weichzeichnung]]);
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
   /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
@@ -2871,6 +2907,16 @@ ha-badge {
     paket: "glas",
     label: "Bubble Card in Glas",
     desc: "Bubble-Karten als Glas wie die HA-Karten: Fläche, Rahmen, Schatten und Rundung aus den Kartenwerten. Eingeschaltetes wird deckend in der Akzentfarbe, Schieber bekommen eine vertiefte Mulde.",
+    werte: [
+      { id: "rundung", label: "Rundung der Karten", labelEn: "Card rounding", standard: "13px" },
+      { id: "icon-rundung", label: "Rundung der Icons", labelEn: "Icon rounding", standard: "14px" },
+      { id: "icon-toenung", label: "Tönung der Icon-Fläche", labelEn: "Icon surface tint", standard: "15%" },
+      { id: "icon-aktiv", label: "Icon-Fläche eingeschaltet", labelEn: "Icon surface when on", standard: "rgba(0, 0, 0, 0.16)" },
+      { id: "sub-rundung", label: "Rundung der Sub-Buttons", labelEn: "Sub-button rounding", standard: "11px" },
+      { id: "sub-schatten", label: "Schatten der Sub-Buttons", labelEn: "Sub-button shadow", standard: "0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3)" },
+      { id: "kante-tiefe", label: "Dunkle Kante (Anteil Akzentfarbe)", labelEn: "Dark edge (share of accent colour)", standard: "62%" },
+      { id: "kante-hell", label: "Helle Kante (Anteil Akzentfarbe)", labelEn: "Light edge (share of accent colour)", standard: "74%" },
+    ],
     ziel: "uix-card",
     css: `:host {
   /* Bubble Card faerbt seine Flaechen ueber eigene Variablen. Ohne diese Zeilen
@@ -2898,8 +2944,8 @@ ha-badge {
   /* Rundung wie die Raumzeilen eigener Karten (Heizzentrale: 11,5 px bei
      50 px Hoehe, auf 56 px hohe Bubble-Karten umgerechnet). Bubble rechnet
      Hintergrund und Schieberspur aus diesen Variablen. */
-  --bubble-button-border-radius: 13px;
-  --bubble-border-radius: 13px;
+  --bubble-button-border-radius: [[rundung]];
+  --bubble-border-radius: [[rundung]];
 }
 /* Flaechen wie HA-Karten: Weichzeichnung, Rahmen und Schatten aus denselben
    Theme-Feldern, die ha-card liest - ohne diese Zeilen standen Bubble-Karten
@@ -2922,7 +2968,7 @@ ha-badge {
   -webkit-backdrop-filter: var(--ha-card-backdrop-filter, blur(18px)) !important;
   background-image: none !important;
   border: var(--ha-card-border-width, 1px) solid var(--ha-card-border-color, var(--divider-color, transparent)) !important;
-  border-radius: 13px !important;
+  border-radius: [[rundung]] !important;
   box-shadow: var(--ha-card-box-shadow, none) !important;
 }
 .bubble-background {
@@ -2931,20 +2977,20 @@ ha-badge {
 /* Icons als abgerundete Kaestchen mit leiser Toenung, ohne Rand und Glanz. */
 .bubble-icon-container,
 .bubble-main-icon-container {
-  background-color: color-mix(in srgb, var(--secondary-text-color, rgba(255, 255, 255, 0.55)) 15%, transparent) !important;
+  background-color: color-mix(in srgb, var(--secondary-text-color, rgba(255, 255, 255, 0.55)) [[icon-toenung]], transparent) !important;
   background-image: none !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   box-shadow: none !important;
-  border-radius: 14px !important;
+  border-radius: [[icon-rundung]] !important;
 }
 /* Sub-Buttons wie ruhende Knoepfe. */
 .bubble-sub-button {
   background-image: none !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
-  border-radius: 11px !important;
-  box-shadow: 0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3) !important;
+  border-radius: [[sub-rundung]] !important;
+  box-shadow: [[sub-schatten]] !important;
 }
 ha-dropdown,
 ha-combo-box,
@@ -2975,8 +3021,8 @@ ha-select.bubble-dropdown-select {
 ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-background {
   background-color: var(--bubble-button-background-color) !important;
   box-shadow:
-    inset 3px 3px 7px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) 62%, #000000),
-    inset -2px -2px 6px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) 74%, #ffffff) !important;
+    inset 3px 3px 7px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) [[kante-tiefe]], #000000),
+    inset -2px -2px 6px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) [[kante-hell]], #ffffff) !important;
 }
 ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-name,
 ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-state,
@@ -2985,7 +3031,7 @@ ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-main-icon {
   opacity: 1 !important;
 }
 ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-main-icon-container {
-  background-color: rgba(0, 0, 0, 0.16) !important;
+  background-color: [[icon-aktiv]] !important;
 }
 /* Separatoren sind Ueberschriften mit Linie, keine Kacheln. */
 .bubble-container.separator-container {
@@ -3002,8 +3048,8 @@ ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-main-icon-container
   background-color: var(--bubble-sub-button-light-background-color, var(--bubble-accent-color, var(--bubble-default-color))) !important;
   color: var(--text-primary-color, #ffffff) !important;
   box-shadow:
-    inset 3px 3px 7px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) 62%, #000000),
-    inset -2px -2px 6px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) 74%, #ffffff) !important;
+    inset 3px 3px 7px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) [[kante-tiefe]], #000000),
+    inset -2px -2px 6px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) [[kante-hell]], #ffffff) !important;
 }
 /* Schieber wie die Schieber eigener Karten: Spur als vertiefte Glasmulde.
    Ihre beiden Innenschatten lesen --neumorph-tiefe und --neumorph-hell. Ohne
@@ -3024,8 +3070,8 @@ ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-main-icon-container
   opacity: 1 !important;
   border-radius: inherit !important;
   box-shadow:
-    inset 3px 3px 7px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) 62%, #000000),
-    inset -2px -2px 6px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) 74%, #ffffff) !important;
+    inset 3px 3px 7px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) [[kante-tiefe]], #000000),
+    inset -2px -2px 6px color-mix(in srgb, var(--bubble-accent-color, var(--accent-color)) [[kante-hell]], #ffffff) !important;
 }`,
   },
   {
@@ -3064,16 +3110,19 @@ ha-card.text-only {
     id: "glas-abschnitte",
     label: "Grid-Abschnitte in Glas",
     desc: "Glasfläche hinter jedem Abschnitt eines Sections-Dashboards. Home Assistant zeichnet diese Fläche sonst nicht, deshalb gehört sie nicht zum Glas-Paket.",
+    werte: [
+      { id: "deckkraft", label: "Deckkraft der Fläche", labelEn: "Surface opacity", standard: "70%" },
+    ],
     ziel: "uix-grid-section",
     css: `:host {
   /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
      deckender Hex durch das Glas. Variablen vererben sich - deshalb auf :host. */
-  --ha-section-background-color: color-mix(in srgb, var(--ha-card-background) 70%, transparent) !important;
-  --section-background-color: color-mix(in srgb, var(--ha-card-background) 70%, transparent) !important;
+  --ha-section-background-color: color-mix(in srgb, var(--ha-card-background) [[deckkraft]], transparent) !important;
+  --section-background-color: color-mix(in srgb, var(--ha-card-background) [[deckkraft]], transparent) !important;
 }
 .container {
   background-color: rgba(255, 255, 255, 0.35) !important;
-  background-color: color-mix(in srgb, var(--ha-card-background) 70%, transparent) !important;
+  background-color: color-mix(in srgb, var(--ha-card-background) [[deckkraft]], transparent) !important;
   background-image: none !important;
   backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
   -webkit-backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
@@ -3209,14 +3258,19 @@ mwc-menu-surface {
     paket: "glas",
     label: "Bedienelemente in Glas: Karten",
     desc: "Knöpfe, Regler und Chips in Karten mit kleiner Rundung und weichem Schatten.",
+    werte: [
+      { id: "rundung", label: "Rundung der Knöpfe", labelEn: "Button rounding", standard: "11px" },
+      { id: "schatten", label: "Schatten der Knöpfe", labelEn: "Button shadow", standard: "0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3)" },
+      { id: "deckkraft", label: "Deckkraft der Regler-Fläche", labelEn: "Control surface opacity", standard: "0.22" },
+    ],
     ziel: "uix-card",
     css: `ha-button,
 ha-icon-button,
 ha-assist-chip {
-  --ha-button-border-radius: 11px;
+  --ha-button-border-radius: [[rundung]];
   /* Wie die ruhenden Knoepfe eigener Karten: kleiner weicher Schatten mit
      feiner Lichtkante - ein Sechstel des Kartenschattens -, kein Ring. */
-  --ha-button-box-shadow: 0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3);
+  --ha-button-box-shadow: [[schatten]];
 }
 ha-control-button,
 ha-control-select,
@@ -3225,7 +3279,7 @@ ha-control-slider {
   --control-select-border-radius: var(--ha-card-border-radius, 14px);
   --control-slider-border-radius: var(--ha-card-border-radius, 14px);
   --control-button-background-color: var(--primary-color);
-  --control-button-background-opacity: 0.22;
+  --control-button-background-opacity: [[deckkraft]];
 }`,
   },
   {
@@ -3233,14 +3287,19 @@ ha-control-slider {
     paket: "glas",
     label: "Bedienelemente in Glas: Kopfleiste und Rahmen",
     desc: "Die Knöpfe der Dashboard-Kopfleiste mit kleiner Rundung und weichem Schatten.",
+    werte: [
+      { id: "rundung", label: "Rundung der Knöpfe", labelEn: "Button rounding", standard: "11px" },
+      { id: "schatten", label: "Schatten der Knöpfe", labelEn: "Button shadow", standard: "0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3)" },
+      { id: "deckkraft", label: "Deckkraft der Regler-Fläche", labelEn: "Control surface opacity", standard: "0.22" },
+    ],
     ziel: "uix-root",
     css: `ha-button,
 ha-icon-button,
 ha-assist-chip {
-  --ha-button-border-radius: 11px;
+  --ha-button-border-radius: [[rundung]];
   /* Wie die ruhenden Knoepfe eigener Karten: kleiner weicher Schatten mit
      feiner Lichtkante - ein Sechstel des Kartenschattens -, kein Ring. */
-  --ha-button-box-shadow: 0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3);
+  --ha-button-box-shadow: [[schatten]];
 }
 ha-control-button,
 ha-control-select,
@@ -3249,7 +3308,7 @@ ha-control-slider {
   --control-select-border-radius: var(--ha-card-border-radius, 14px);
   --control-slider-border-radius: var(--ha-card-border-radius, 14px);
   --control-button-background-color: var(--primary-color);
-  --control-button-background-opacity: 0.22;
+  --control-button-background-opacity: [[deckkraft]];
 }`,
   },
   {
@@ -3257,14 +3316,19 @@ ha-control-slider {
     paket: "glas",
     label: "Bedienelemente in Glas: Dialoge",
     desc: "Die Knöpfe in Dialogen mit kleiner Rundung und weichem Schatten.",
+    werte: [
+      { id: "rundung", label: "Rundung der Knöpfe", labelEn: "Button rounding", standard: "11px" },
+      { id: "schatten", label: "Schatten der Knöpfe", labelEn: "Button shadow", standard: "0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3)" },
+      { id: "deckkraft", label: "Deckkraft der Regler-Fläche", labelEn: "Control surface opacity", standard: "0.22" },
+    ],
     ziel: "uix-dialog",
     css: `ha-button,
 ha-icon-button,
 ha-assist-chip {
-  --ha-button-border-radius: 11px;
+  --ha-button-border-radius: [[rundung]];
   /* Wie die ruhenden Knoepfe eigener Karten: kleiner weicher Schatten mit
      feiner Lichtkante - ein Sechstel des Kartenschattens -, kein Ring. */
-  --ha-button-box-shadow: 0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3);
+  --ha-button-box-shadow: [[schatten]];
 }
 ha-control-button,
 ha-control-select,
@@ -3273,7 +3337,7 @@ ha-control-slider {
   --control-select-border-radius: var(--ha-card-border-radius, 14px);
   --control-slider-border-radius: var(--ha-card-border-radius, 14px);
   --control-button-background-color: var(--primary-color);
-  --control-button-background-opacity: 0.22;
+  --control-button-background-opacity: [[deckkraft]];
 }`,
   },
   {
@@ -3281,6 +3345,11 @@ ha-control-slider {
     paket: "glas",
     label: "Bedienelemente in Glas: Einstellungen und Rest der Oberfläche",
     desc: "Die Knöpfe auf Einstellungsseiten, in eigenen Panels und in der Seitenleiste mit kleiner Rundung und weichem Schatten.",
+    werte: [
+      { id: "rundung", label: "Rundung der Knöpfe", labelEn: "Button rounding", standard: "11px" },
+      { id: "schatten", label: "Schatten der Knöpfe", labelEn: "Button shadow", standard: "0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3)" },
+      { id: "deckkraft", label: "Deckkraft der Regler-Fläche", labelEn: "Control surface opacity", standard: "0.22" },
+    ],
     ziel: "uix-drawer",
     css: `/* Das Stylesheet liegt im Shadow Root von ha-drawer. Die Knoepfe der
    Einstellungsseiten liegen mehrere Shadow Roots tiefer - ein Selektor
@@ -3290,10 +3359,10 @@ ha-control-slider {
 ha-button,
 ha-icon-button,
 ha-assist-chip {
-  --ha-button-border-radius: 11px;
+  --ha-button-border-radius: [[rundung]];
   /* Wie die ruhenden Knoepfe eigener Karten: kleiner weicher Schatten mit
      feiner Lichtkante - ein Sechstel des Kartenschattens -, kein Ring. */
-  --ha-button-box-shadow: 0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3);
+  --ha-button-box-shadow: [[schatten]];
 }
 /* Bewusst nicht auf :host: Eigene Karten wie die HA-Karten faerben ihre
    Mulden ueber --control-button-background-color. Vom App Drawer vererbt,
@@ -3305,7 +3374,7 @@ ha-control-slider {
   --control-select-border-radius: var(--ha-card-border-radius, 14px);
   --control-slider-border-radius: var(--ha-card-border-radius, 14px);
   --control-button-background-color: var(--primary-color);
-  --control-button-background-opacity: 0.22;
+  --control-button-background-opacity: [[deckkraft]];
 }`,
   },
   {
@@ -3313,12 +3382,15 @@ ha-control-slider {
     paket: "glas",
     label: "Bedienelemente in Glas: Glanz",
     desc: "Weichzeichnung auf der Fläche der Knöpfe in Karten. Wirkt nur zusammen mit der Vorlage für Knöpfe in Karten.",
+    werte: [
+      { id: "weichzeichnung", label: "Weichzeichnung", labelEn: "Blur", standard: "8px" },
+    ],
     ziel: "uix-card-yaml",
     css: `ha-button $: |
   .button {
     background-image: none;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur([[weichzeichnung]]);
+    -webkit-backdrop-filter: blur([[weichzeichnung]]);
   }`,
   },
   {
@@ -3366,6 +3438,9 @@ ha-control-slider {
     paket: "glas",
     label: "Seitenleiste in Glas",
     desc: "Die Seitenleiste als Glas; die Einträge übernehmen die Rundung der Karten.",
+    werte: [
+      { id: "weichzeichnung", label: "Weichzeichnung", labelEn: "Blur", standard: "32px" },
+    ],
     ziel: "uix-sidebar",
     css: `
 :host {
@@ -3374,8 +3449,8 @@ ha-control-slider {
   /* Kein Reflex auf langen Leisten: ein diagonaler Verlauf ueber 1200 Pixel
      Breite liest sich als Farbverlauf, nicht als Glanz. */
   background-image: none !important;
-  backdrop-filter: blur(32px);
-  -webkit-backdrop-filter: blur(32px);
+  backdrop-filter: blur([[weichzeichnung]]);
+  -webkit-backdrop-filter: blur([[weichzeichnung]]);
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   box-shadow: var(--ha-card-box-shadow) !important;
 }
@@ -3391,6 +3466,11 @@ ha-list-item-button.selected::before {
     paket: "glas",
     label: "Seitenleiste: aktiver Eintrag in der Akzentfarbe",
     desc: "Der aktive Eintrag der Seitenleiste deckend in der Akzentfarbe mit plastischer Kante.",
+    werte: [
+      { id: "kante-tiefe", label: "Dunkle Kante (Anteil Akzentfarbe)", labelEn: "Dark edge (share of accent colour)", standard: "62%" },
+      { id: "kante-hell", label: "Helle Kante (Anteil Akzentfarbe)", labelEn: "Light edge (share of accent colour)", standard: "74%" },
+      { id: "dauer", label: "Dauer des Übergangs", labelEn: "Transition duration", standard: "160ms" },
+    ],
     ziel: "uix-sidebar",
     css: `ha-list-item-button.selected::before {
   border-radius: var(--ha-card-border-radius, 14px) !important;
@@ -3405,8 +3485,8 @@ ha-list-item-button.selected::before {
   background-color: var(--accent-color, var(--primary-color)) !important;
   background-image: none !important;
   box-shadow:
-    inset 3px 3px 7px color-mix(in srgb, var(--accent-color, var(--primary-color)) 62%, #000000),
-    inset -2px -2px 6px color-mix(in srgb, var(--accent-color, var(--primary-color)) 74%, #ffffff) !important;
+    inset 3px 3px 7px color-mix(in srgb, var(--accent-color, var(--primary-color)) [[kante-tiefe]], #000000),
+    inset -2px -2px 6px color-mix(in srgb, var(--accent-color, var(--primary-color)) [[kante-hell]], #ffffff) !important;
 }
 /* Schrift und Symbol auf der Akzentflaeche in der Textfarbe fuer Akzentflaechen. */
 ha-list-item-button.selected {
@@ -3415,7 +3495,7 @@ ha-list-item-button.selected {
   color: var(--text-primary-color) !important;
 }
 ha-list-item-button::before {
-  transition: opacity 160ms ease, box-shadow 160ms ease;
+  transition: opacity [[dauer]] ease, box-shadow [[dauer]] ease;
 }`,
   },
   {
@@ -3423,6 +3503,9 @@ ha-list-item-button::before {
     paket: "glas",
     label: "App Drawer in Glas",
     desc: "Das ausklappbare Menü auf schmalen Bildschirmen als Glas wie die Seitenleiste.",
+    werte: [
+      { id: "weichzeichnung", label: "Weichzeichnung", labelEn: "Blur", standard: "32px" },
+    ],
     ziel: "uix-drawer",
     css: `:host {
   /* Faerbt Home Assistant die Flaeche ueber eine Theme-Variable, drueckt ein
@@ -3436,8 +3519,8 @@ ha-list-item-button::before {
   /* Kein Reflex auf langen Leisten: ein diagonaler Verlauf ueber 1200 Pixel
      Breite liest sich als Farbverlauf, nicht als Glanz. */
   background-image: none !important;
-  backdrop-filter: blur(32px);
-  -webkit-backdrop-filter: blur(32px);
+  backdrop-filter: blur([[weichzeichnung]]);
+  -webkit-backdrop-filter: blur([[weichzeichnung]]);
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   box-shadow: var(--ha-card-box-shadow) !important;
 }
