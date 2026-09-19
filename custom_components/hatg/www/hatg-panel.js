@@ -43,6 +43,10 @@ const HATG_TEXTE = {
   "Kartentransparenz": "Card transparency",
   "Hintergrund": "Background",
   "Pop-up-Hintergrund": "Pop-up background",
+  "Aktive Karten: Hintergrund-Glow": "Active cards: back glow",
+  "Eingeschaltete Karten bekommen einen weichen, langsam wandernden Lichtschein dahinter, in der Zustandsfarbe und der Akzentfarbe.": "Cards that are on get a soft, slowly drifting glow behind them, in the state colour and the accent colour.",
+  "Seitenleiste: aktiver Eintrag mit wanderndem Licht": "Sidebar: active entry with drifting light",
+  "Die Fläche des aktiven Eintrags wandert langsam zwischen Akzent- und Primärfarbe. Ein Schein nach außen geht hier nicht: die Liste schneidet ihn ab.": "The surface of the active entry drifts slowly between the accent and the primary colour. A glow beyond the entry is not possible here: the list clips it.",
   "1 Rest einer gelöschten eigenen Vorlage entfernt. Jetzt speichern und Themes neu laden.": "1 leftover of a deleted custom preset removed. Now save and reload themes.",
   "Bild wählen": "Choose image",
   "Hintergrundbild": "Background image",
@@ -2515,6 +2519,12 @@ const HATG_VORLAGEN_GRUPPEN = [
     ids: ["seitenleiste-titel", "benutzer-icon-ios", "dialog-weich", "einstellungen-icons-gross"],
   },
   {
+    id: "licht",
+    label: "Leuchten",
+    labelEn: "Glow",
+    ids: ["glow-aktiv-karten", "glow-aktiv-seitenleiste"],
+  },
+  {
     id: "aelter",
     label: "Ältere Einzeleffekte",
     labelEn: "Older single effects",
@@ -3445,6 +3455,92 @@ ha-control-slider {
   outline: 1px solid [[kante]];
   outline-offset: -1px;
   box-shadow: [[schatten]];
+}`,
+  },
+  {
+    id: "glow-aktiv-karten",
+    label: "Aktive Karten: Hintergrund-Glow",
+    desc: "Eingeschaltete Karten bekommen einen weichen, langsam wandernden Lichtschein dahinter, in der Zustandsfarbe und der Akzentfarbe.",
+    werte: [
+      { id: "farbe-b", label: "Zweite Farbe", labelEn: "Second colour", standard: "var(--accent-color)" },
+      { id: "ueberstand", label: "Überstand über die Karte", labelEn: "Bleed beyond the card", standard: "8px" },
+      { id: "weichzeichnung", label: "Weichzeichnung", labelEn: "Blur", standard: "14px" },
+      { id: "deckkraft", label: "Deckkraft", labelEn: "Opacity", standard: "0.85" },
+      { id: "dauer", label: "Dauer eines Durchlaufs", labelEn: "Duration of one pass", standard: "8s" },
+    ],
+    ziel: "uix-card",
+    css: `/* Der Schein liegt als ::after hinter der Karte, nicht auf ihr: Die
+   Weichzeichnung sitzt damit auf dem Pseudo-Element und macht die Karte
+   nicht zum Bezugsrahmen fuer position: fixed - Bubble-Pop-ups und
+   Auswahllisten bleiben heil. Home Assistant markiert eingeschaltete
+   Kacheln selbst mit ha-card.active, Bubble faerbt die Flaeche per
+   inline opacity: 1. */
+ha-card.active,
+ha-card:has(.bubble-background[style*="opacity: 1"]) {
+  position: relative;
+}
+ha-card.active::after,
+ha-card:has(.bubble-background[style*="opacity: 1"])::after {
+  content: "";
+  position: absolute;
+  inset: calc([[ueberstand]] * -1);
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  filter: blur([[weichzeichnung]]);
+  opacity: [[deckkraft]];
+  background: linear-gradient(
+    270deg,
+    var(--tile-icon-color, var(--bubble-accent-color, var(--state-active-color, var(--accent-color)))),
+    [[farbe-b]],
+    var(--tile-icon-color, var(--bubble-accent-color, var(--state-active-color, var(--accent-color))))
+  );
+  background-size: 300% 300%;
+  animation: hatg-glow-lauf [[dauer]] ease infinite;
+}
+@keyframes hatg-glow-lauf {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+/* Wer im System weniger Bewegung eingestellt hat, bekommt den Schein ruhig. */
+@media (prefers-reduced-motion: reduce) {
+  ha-card.active::after,
+  ha-card:has(.bubble-background[style*="opacity: 1"])::after {
+    animation: none;
+  }
+}`,
+  },
+  {
+    id: "glow-aktiv-seitenleiste",
+    label: "Seitenleiste: aktiver Eintrag mit wanderndem Licht",
+    desc: "Die Fläche des aktiven Eintrags wandert langsam zwischen Akzent- und Primärfarbe. Ein Schein nach außen geht hier nicht: die Liste schneidet ihn ab.",
+    werte: [
+      { id: "farbe-a", label: "Erste Farbe", labelEn: "First colour", standard: "var(--accent-color, var(--primary-color))" },
+      { id: "farbe-b", label: "Zweite Farbe", labelEn: "Second colour", standard: "var(--primary-color)" },
+      { id: "dauer", label: "Dauer eines Durchlaufs", labelEn: "Duration of one pass", standard: "8s" },
+    ],
+    ziel: "uix-sidebar",
+    css: `/* Kein Schein nach aussen: ha-list-nav scrollt und schneidet seitlich ab
+   (overflow: hidden auto, am 2026-09-20 gemessen) - von einem weichen
+   Schatten bleibt nur ein Rechteck. Das Licht wandert deshalb in der
+   Flaeche des Eintrags. Liegt die Vorlage hinter dem Verlauf oder dem
+   Glas-Paket, gewinnt sie, weil sie spaeter im Feld steht. */
+ha-list-item-button.selected::before {
+  opacity: 1 !important;
+  background-image: linear-gradient(270deg, [[farbe-a]], [[farbe-b]], [[farbe-a]]) !important;
+  background-size: 300% 300%;
+  animation: hatg-glow-leiste [[dauer]] ease infinite;
+}
+@keyframes hatg-glow-leiste {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  ha-list-item-button.selected::before {
+    animation: none;
+  }
 }`,
   },
   {
@@ -7562,7 +7658,7 @@ uix:
   renderVorlagenGruppen(vorlagen, istAktiv, zeichne, alsListe) {
     const en = this._sprache === "en";
     // Angezeigt wird in dieser Reihenfolge; die aelteren stehen zuletzt.
-    const reihenfolge = ["glas", "hintergrund", "oberflaeche", "weitere", "aelter"];
+    const reihenfolge = ["glas", "hintergrund", "oberflaeche", "licht", "weitere", "aelter"];
     return reihenfolge.map((id) => HATG_VORLAGEN_GRUPPEN.find((x) => x.id === id)).map((g) => {
       const liste = vorlagen.filter((t) => hatgVorlagenGruppeVon(t) === g.id);
       if (!liste.length) return "";
