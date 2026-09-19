@@ -333,6 +333,25 @@ pruefe("Jeder dataset-Zugriff hat ein passendes data-Attribut", () => {
   assert.deepEqual(fremd, []);
 });
 
+pruefe("Jede Vorlage liegt in einer angezeigten Gruppe der Vorlagenseite", () => {
+  const alles = fs.readFileSync(PANEL, "utf8");
+  const kollisionen = /const HATG_GLAS_KOLLISIONEN = (\[[^\]]*\]);/.exec(alles)[1];
+  const start = alles.indexOf("const HATG_VORLAGEN_GRUPPEN");
+  const ende = alles.indexOf("const HATG_VORLAGEN = [");
+  const kontext = {};
+  require("node:vm").runInNewContext(`const HATG_GLAS_KOLLISIONEN = ${kollisionen};\n${alles.slice(start, ende)}\nthis.gruppen = HATG_VORLAGEN_GRUPPEN; this.von = hatgVorlagenGruppeVon;`, kontext);
+  const reihenfolge = JSON.parse(/const reihenfolge = (\[[^\]]*\]);/.exec(alles)[1].replace(/'/g, '"'));
+  assert.deepEqual([...reihenfolge].sort(), Array.from(kontext.gruppen, (g) => g.id).sort(), "nicht jede Gruppe wird angezeigt");
+  const weitere = [];
+  for (const v of vorlagen) {
+    const paket = (/\bpaket:\s*"([^"]+)"/.exec(v.block) || [])[1];
+    const g = kontext.von({ id: v.id, paket });
+    if (g === "weitere") weitere.push(v.id);
+  }
+  // Der Auffangtopf soll klein bleiben - neue Vorlagen gehoeren in eine Gruppe.
+  assert.ok(weitere.length <= 3, `zu viele Vorlagen ohne Gruppe: ${weitere.join(", ")}`);
+});
+
 pruefe("Eigener Titel gilt nicht als veraltete Vorlage", () => {
   // Hinweis und Auffrischen muessen dasselbe Soll vergleichen.
   const alles = fs.readFileSync(PANEL, "utf8");

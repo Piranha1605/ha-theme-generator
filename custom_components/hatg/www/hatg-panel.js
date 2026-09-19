@@ -2448,6 +2448,38 @@ const HATG_EINSTELLUNGEN_CSS = HATG_EINSTELLUNGEN_PFADE.map(
   (pfad) => `"${pfad}": |\n${HATG_EINSTELLUNGEN_ZEILEN}`
 ).join("\n");
 
+// Gruppen der Vorlagenseite. Die Liste war auf rund 40 Eintraege gewachsen und
+// nur noch schwer zu ueberblicken; die Hauptseite zeigt sie deshalb in
+// einklappbaren Gruppen. Die Unterseiten je Stilziel bleiben flache Listen.
+const HATG_VORLAGEN_GRUPPEN = [
+  { id: "glas", label: "Glas-Paket", labelEn: "Glass package", passt: (t) => t.paket === "glas" },
+  {
+    id: "hintergrund",
+    label: "Hintergrund und Pop-ups",
+    labelEn: "Background and pop-ups",
+    ids: ["ansicht-hintergrundbild", "einstellungen-hintergrund-frei", "bubble-popup-hintergrundbild", "info-dialog-hintergrundbild"],
+  },
+  {
+    id: "oberflaeche",
+    label: "Seitenleiste, Dialoge und Einstellungen",
+    labelEn: "Sidebar, dialogs and settings",
+    ids: ["seitenleiste-titel", "benutzer-icon-ios", "dialog-weich", "einstellungen-icons-gross"],
+  },
+  {
+    id: "aelter",
+    label: "Ältere Einzeleffekte",
+    labelEn: "Older single effects",
+    hinweis: "Vor dem Glas-Paket entstanden; setzen dieselben Eigenschaften mit festen Werten und vertragen sich nicht mit ihm.",
+    hinweisEn: "Made before the glass package; they set the same properties with fixed values and do not go together with it.",
+    passt: (t) => HATG_GLAS_KOLLISIONEN.includes(t.id),
+  },
+  // Alles, was sonst nirgends hingehoert - zuletzt, damit keine Vorlage verloren geht.
+  { id: "weitere", label: "Weitere Effekte", labelEn: "Further effects", passt: () => true },
+];
+function hatgVorlagenGruppeVon(tpl) {
+  return HATG_VORLAGEN_GRUPPEN.find((g) => (g.ids ? g.ids.includes(tpl.id) : g.passt(tpl))).id;
+}
+
 const HATG_VORLAGEN = [
   {
     id: "kartenfarben-verlauf",
@@ -7293,15 +7325,65 @@ uix:
         ${pfadHinweis}
         ${kollisionsHinweis}
         ${verwaistHinweis}
-        ${glasRegler}
-        ${stand.gesamt ? this.renderAkzentVerlauf() : ""}
         ${farbHinweis}
         ${duennHinweis}
         ${hinweis}
-        ${cards ? (alsListe ? `<div class="vorlage-liste">${cards}</div>` : `<div class="plugin-grid vorlage-grid">${cards}</div>`) : ""}
+        ${stand.gesamt ? this.renderVorlagenEinstellungen(glasRegler + this.renderAkzentVerlauf()) : ""}
+        ${
+          !gruppe
+            ? this.renderVorlagenGruppen(werksVorlagen, istAktiv, zeichne, alsListe)
+            : cards
+              ? alsListe
+                ? `<div class="vorlage-liste">${cards}</div>`
+                : `<div class="plugin-grid vorlage-grid">${cards}</div>`
+              : ""
+        }
         ${nurEigene || !gruppe || eigene.length ? eigenerBlock : ""}
         ${leer && gruppe && !gruppe.eigen ? `<p class="vorlage-desc">Für dieses Stilziel gibt es noch keine Vorlage.</p>` : ""}
       </section>`;
+  }
+
+  // Offene Kaesten der Vorlagenseite merken, damit ein Neuzeichnen sie nicht
+  // wieder zuklappt.
+  vorlagenKastenOffen(id) {
+    return (this._state.offeneVorlagenKaesten || []).includes(id);
+  }
+
+  renderVorlagenEinstellungen(inhalt) {
+    const en = this._sprache === "en";
+    return `
+        <details class="vorlagen-kasten vorlagen-einstellungen" data-vorlagen-kasten="einstellungen" ${this.vorlagenKastenOffen("einstellungen") ? "open" : ""}>
+          <summary data-roh>
+            <ha-icon icon="mdi:tune-variant"></ha-icon>
+            <strong>${en ? "Settings" : "Einstellungen"}</strong>
+            <span>${en ? "Glass values and gradient for active surfaces" : "Glaswerte und Verlauf für aktive Flächen"}</span>
+          </summary>
+          <div class="vorlagen-kasten-inhalt">${inhalt}</div>
+        </details>`;
+  }
+
+  renderVorlagenGruppen(vorlagen, istAktiv, zeichne, alsListe) {
+    const en = this._sprache === "en";
+    // Angezeigt wird in dieser Reihenfolge; die aelteren stehen zuletzt.
+    const reihenfolge = ["glas", "hintergrund", "oberflaeche", "weitere", "aelter"];
+    return reihenfolge.map((id) => HATG_VORLAGEN_GRUPPEN.find((x) => x.id === id)).map((g) => {
+      const liste = vorlagen.filter((t) => hatgVorlagenGruppeVon(t) === g.id);
+      if (!liste.length) return "";
+      const aktiv = liste.filter(istAktiv).length;
+      const inhalt = liste.map((t) => zeichne(t, false)).join("");
+      const hinweis = g.hinweis ? `<p class="vorlagen-gruppe-hinweis" data-roh>${en ? g.hinweisEn : g.hinweis}</p>` : "";
+      return `
+        <details class="vorlagen-kasten vorlagen-gruppe ${g.id === "aelter" ? "ist-aelter" : ""}" data-vorlagen-kasten="${g.id}" ${this.vorlagenKastenOffen(g.id) ? "open" : ""}>
+          <summary data-roh>
+            <strong>${en ? g.labelEn : g.label}</strong>
+            <span class="vorlagen-gruppe-stand ${aktiv ? "hat-aktive" : ""}">${en ? `${aktiv} of ${liste.length} active` : `${aktiv} von ${liste.length} aktiv`}</span>
+          </summary>
+          <div class="vorlagen-kasten-inhalt">
+            ${hinweis}
+            ${alsListe ? `<div class="vorlage-liste">${inhalt}</div>` : `<div class="plugin-grid vorlage-grid">${inhalt}</div>`}
+          </div>
+        </details>`;
+    }).join("");
   }
 
   akzentVerlaufStand() {
@@ -9263,6 +9345,19 @@ uix:
         .hilfe-tabelle td { padding: 7px 10px; border-bottom: 1px solid var(--hatg-border); color: var(--hatg-text-dim); vertical-align: top; }
         .hilfe-tabelle tr:last-child td { border-bottom: 0; }
         .settings-note { margin: 2px 12px 10px; font-size: 11px; line-height: 1.5; color: var(--hatg-muted); }
+        .vorlagen-kasten { margin: 0 0 10px; border: 1px solid var(--hatg-border); border-radius: 12px; background: var(--hatg-field); }
+        .vorlagen-kasten > summary { display: flex; align-items: center; gap: 10px; padding: 12px 16px; cursor: pointer; list-style: none; font-size: 14px; color: var(--hatg-text); }
+        .vorlagen-kasten > summary::-webkit-details-marker { display: none; }
+        .vorlagen-kasten > summary::after { content: ""; margin-left: auto; width: 8px; height: 8px; border-right: 2px solid var(--hatg-text-dim); border-bottom: 2px solid var(--hatg-text-dim); transform: rotate(45deg); transition: transform .15s ease; }
+        .vorlagen-kasten[open] > summary::after { transform: rotate(225deg); }
+        .vorlagen-kasten > summary strong { font-weight: 650; }
+        .vorlagen-kasten > summary span { font-size: 12px; color: var(--hatg-text-dim); }
+        .vorlagen-kasten > summary ha-icon { --mdc-icon-size: 18px; color: var(--hatg-text-dim); }
+        .vorlagen-gruppe-stand.hat-aktive { color: #1fae63 !important; }
+        .vorlagen-kasten-inhalt { padding: 0 12px 12px; }
+        .vorlagen-kasten-inhalt .glas-regler { margin-bottom: 10px; }
+        .vorlagen-gruppe.ist-aelter > summary strong { color: var(--hatg-text-dim); }
+        .vorlagen-gruppe-hinweis { margin: 0 4px 10px; font-size: 12px; line-height: 1.5; color: var(--hatg-text-dim); }
         .vorlage-eigene-kopf { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 26px 0 10px; }
         .vorlage-eigene-kopf h2 { margin: 0; font-size: 15px; font-weight: 650; color: var(--hatg-text); }
         .vorlage-actions { display: flex; align-items: center; gap: 8px; }
@@ -9900,6 +9995,15 @@ uix:
     this.shadowRoot.querySelector("[data-flaechenfarben-glas]")?.addEventListener("click", () => this.glasFelderSetzen());
     this.shadowRoot.querySelector("[data-grundfarben-deckend]")?.addEventListener("click", () => this.grundfarbenDeckendSetzen());
     this.shadowRoot.querySelector("[data-kollisionen-entfernen]")?.addEventListener("click", () => this.entferneKollisionen());
+    this.shadowRoot.querySelectorAll("[data-vorlagen-kasten]").forEach((el) => {
+      el.addEventListener("toggle", () => {
+        const id = el.dataset.vorlagenKasten;
+        const offen = new Set(this._state.offeneVorlagenKaesten || []);
+        if (el.open) offen.add(id);
+        else offen.delete(id);
+        this._state.offeneVorlagenKaesten = [...offen];
+      });
+    });
     this.shadowRoot.querySelectorAll("[data-vorlagen-ansicht]").forEach((el) => {
       el.addEventListener("click", () => {
         this._state.vorlagenAnsicht = el.dataset.vorlagenAnsicht;
