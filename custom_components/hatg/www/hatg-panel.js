@@ -44,7 +44,7 @@ const HATG_TEXTE = {
   "Hintergrund": "Background",
   "Pop-up-Hintergrund": "Pop-up background",
   "Aktive Karten: Hintergrund-Glow": "Active cards: back glow",
-  "Eingeschaltete Karten bekommen einen weichen, langsam wandernden Lichtschein dahinter, in der Zustandsfarbe und der Akzentfarbe.": "Cards that are on get a soft, slowly drifting glow behind them, in the state colour and the accent colour.",
+  "Eingeschaltete Karten bekommen einen weichen, langsam wandernden Lichtschein dahinter, in der Zustandsfarbe und der Akzentfarbe. Auf gläsernen Karten scheint er durch, dann die Deckkraft klein halten.": "Cards that are on get a soft, slowly drifting glow behind them, in the state colour and the accent colour. On glass cards it shines through, so keep the opacity low.",
   "Seitenleiste: aktiver Eintrag mit wanderndem Licht": "Sidebar: active entry with drifting light",
   "Die Fläche des aktiven Eintrags wandert langsam zwischen Akzent- und Primärfarbe. Ein Schein nach außen geht hier nicht: die Liste schneidet ihn ab.": "The surface of the active entry drifts slowly between the accent and the primary colour. A glow beyond the entry is not possible here: the list clips it.",
   "1 Rest einer gelöschten eigenen Vorlage entfernt. Jetzt speichern und Themes neu laden.": "1 leftover of a deleted custom preset removed. Now save and reload themes.",
@@ -3460,12 +3460,15 @@ ha-control-slider {
   {
     id: "glow-aktiv-karten",
     label: "Aktive Karten: Hintergrund-Glow",
-    desc: "Eingeschaltete Karten bekommen einen weichen, langsam wandernden Lichtschein dahinter, in der Zustandsfarbe und der Akzentfarbe.",
+    desc: "Eingeschaltete Karten bekommen einen weichen, langsam wandernden Lichtschein dahinter, in der Zustandsfarbe und der Akzentfarbe. Auf gläsernen Karten scheint er durch, dann die Deckkraft klein halten.",
     werte: [
       { id: "farbe-b", label: "Zweite Farbe", labelEn: "Second colour", standard: "var(--accent-color)" },
-      { id: "ueberstand", label: "Überstand über die Karte", labelEn: "Bleed beyond the card", standard: "8px" },
-      { id: "weichzeichnung", label: "Weichzeichnung", labelEn: "Blur", standard: "14px" },
-      { id: "deckkraft", label: "Deckkraft", labelEn: "Opacity", standard: "0.85" },
+      { id: "ueberstand", label: "Überstand über die Karte", labelEn: "Bleed beyond the card", standard: "10px" },
+      { id: "weichzeichnung", label: "Weichzeichnung", labelEn: "Blur", standard: "18px" },
+      // Zurueckhaltend, weil gläserne Karten halbdurchsichtig sind: Der Schein
+      // liegt dahinter und scheint sonst durch die Karte, die Schrift
+      // verliert dann ihren Kontrast. An einer laufenden Instanz gemessen.
+      { id: "deckkraft", label: "Deckkraft", labelEn: "Opacity", standard: "0.5" },
       { id: "dauer", label: "Dauer eines Durchlaufs", labelEn: "Duration of one pass", standard: "8s" },
     ],
     ziel: "uix-card",
