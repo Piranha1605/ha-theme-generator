@@ -303,7 +303,7 @@ const HATG_TEXTE = {
   "App Drawer in Glas": "App drawer in glass",
   "Das ausklappbare Menü auf schmalen Bildschirmen als Glas wie die Seitenleiste.": "The slide-out menu on narrow screens as glass like the sidebar.",
   "Dialoge: Kartenradius und dunklerer Schleier": "Dialogs: card radius and a darker scrim",
-  "Dialoge mit der Rundung deiner Karten. Fest eingestellt sind ein dunklerer Schleier dahinter (55 %) und 40 px Abstand nach oben.": "Dialogs with your card radius. Fixed: a darker scrim behind them (55 %) and 40 px spacing at the top.",
+  "Dialoge mit der Rundung deiner Karten und einem dunkleren Schleier dahinter.": "Dialogs with your card radius and a darker scrim behind them.",
   "Hintergrundbild über die ganze Oberfläche": "Background image across the whole interface",
   "Legt das Hintergrundbild von der Startseite hinter die ganze Oberfläche, auch hinter Einstellungen und Panels.": "Puts the background image from the start page behind the whole interface, including settings and panels.",
   "Bubble-Pop-ups mit Hintergrundbild": "Bubble pop-ups with background image",
@@ -2363,10 +2363,44 @@ function hatgVorlageTitelLesen(blockText) {
   const m = HATG_VORLAGE_TITEL_RE.exec(String(blockText || ""));
   return m ? m[1].replace(/\\(.)/g, "$1") : null;
 }
-function hatgVorlageMitTitel(tpl, titel) {
+function hatgVorlageMitTitel(tpl, titel, basis = tpl.css) {
   const text = String(titel ?? tpl.titel.standard).replace(/[\r\n]+/g, " ");
   const css = `content: "${text.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
-  return String(tpl.css).replace(HATG_VORLAGE_TITEL_RE, () => css);
+  return String(basis).replace(HATG_VORLAGE_TITEL_RE, () => css);
+}
+// Vorlagen mit einstellbaren Werten (werte: [...]): Im Vorlagen-CSS steht
+// [[id]], im Theme der Wert zwischen zwei Marken. Nur Kommentare mit HATG:
+// ueberstehen das Einhaengen (hatgCssOhneKommentare), daran liest HATG den
+// Wert beim Aufklappen, Auffrischen und im Hinweis auf veraltete Vorlagen
+// zurueck. Die Werte stehen nur in der Vorlage, es entstehen keine Theme-Felder.
+const HATG_VORLAGE_WERT_PLATZHALTER_RE = /\[\[([a-z0-9-]+)\]\]/g;
+function hatgVorlageWertMarke(id, wert) {
+  return `/*HATG:WERT:${id}*/${wert}/*HATG:WERT*/`;
+}
+// Ein Wert darf keine Deklaration beenden und keinen Kommentar schliessen,
+// sonst zerlegt er das ganze Stilziel.
+function hatgVorlageWertSauber(wert) {
+  return String(wert ?? "").replace(/\*\//g, "").replace(/[\r\n;{}]+/g, " ").trim();
+}
+function hatgVorlageWerteLesen(tpl, blockText) {
+  const werte = {};
+  const text = String(blockText || "");
+  (tpl.werte || []).forEach((w) => {
+    const m = new RegExp(`/\\*[A-Z][A-Z0-9_]*:WERT:${w.id}\\*/([^\\n]*?)/\\*[A-Z][A-Z0-9_]*:WERT\\*/`).exec(text);
+    if (m) werte[w.id] = m[1].trim();
+  });
+  return werte;
+}
+function hatgVorlageMitWerten(tpl, werte) {
+  const standard = Object.fromEntries((tpl.werte || []).map((w) => [w.id, w.standard]));
+  return String(tpl.cssRoh ?? tpl.css).replace(HATG_VORLAGE_WERT_PLATZHALTER_RE, (ganz, id) =>
+    id in standard ? hatgVorlageWertMarke(id, hatgVorlageWertSauber(werte && werte[id]) || standard[id]) : ganz
+  );
+}
+// CSS einer Vorlage mit Titel und Werten; fehlende Angaben nehmen den Standard.
+function hatgVorlageBauen(tpl, titel, werte) {
+  const css = tpl.werte ? hatgVorlageMitWerten(tpl, werte) : String(tpl.css || "");
+  return tpl.titel ? hatgVorlageMitTitel(tpl, titel, css) : css;
 }
 // Das CSS, das fuer eine Vorlage im Theme stehen soll: bei Vorlagen mit
 // Text-Parameter mit dem Titel, der im vorhandenen Block steht. Auffrischen und
@@ -2374,7 +2408,8 @@ function hatgVorlageMitTitel(tpl, titel) {
 // meldete der Hinweis jeden eigenen Seitenleisten-Titel dauerhaft als
 // veraltet, waehrend Auffrischen "alle aktuell" sagte (Forum, 2026-09-19).
 function hatgVorlageSoll(tpl, vorhanden) {
-  return tpl && tpl.titel ? hatgVorlageMitTitel(tpl, hatgVorlageTitelLesen(vorhanden)) : String((tpl && tpl.css) || "");
+  if (!tpl) return "";
+  return hatgVorlageBauen(tpl, hatgVorlageTitelLesen(vorhanden), hatgVorlageWerteLesen(tpl, vorhanden));
 }
 function hatgVorlagenZiel(tpl) {
   const ziel = tpl && tpl.ziel;
@@ -2402,16 +2437,16 @@ const HATG_EINSTELLUNGEN_ZEILEN = `  :host {
     /* Fruehere eigene Vorlage: Diese Variablen wirken nur, wenn sie ueber den
        Listeneintraegen sitzen. Am Ziel uix-config kamen sie nie an, weil
        ha-panel-config keinen Shadow Root hat - hier sitzen sie richtig. */
-    --ha-list-gap: 6px;
-    --ha-list-padding: 8px;
+    --ha-list-gap: [[listen-abstand]];
+    --ha-list-padding: [[listen-innenabstand]];
     --ha-list-item-focus-radius: var(--ha-card-border-radius, 14px);
-    --ha-border-radius-circle: 28%;
+    --ha-border-radius-circle: [[icon-rundung]];
   }
   ha-list-nav ha-list-item-button div.icon-background {
-    width: 34px !important;
-    height: 34px !important;
+    width: [[icon-groesse]] !important;
+    height: [[icon-groesse]] !important;
     /* iOS setzt abgerundete Quadrate statt Kreise */
-    border-radius: 28% !important;
+    border-radius: [[icon-rundung]] !important;
     display: flex !important;
     align-items: center;
     justify-content: center;
@@ -2423,21 +2458,21 @@ const HATG_EINSTELLUNGEN_ZEILEN = `  :host {
   }
   ha-list-nav ha-list-item-button div.icon-background ha-svg-icon {
     padding: 0 !important;
-    width: 20px;
-    height: 20px;
+    width: [[symbol-groesse]];
+    height: [[symbol-groesse]];
   }
   ha-list-nav ha-list-item-button span[slot="headline"] {
-    font-size: 15px;
-    font-weight: 600;
+    font-size: [[titel-groesse]];
+    font-weight: [[titel-staerke]];
   }
   ha-list-nav ha-list-item-button span[slot="supporting-text"] {
-    font-size: 12.5px;
-    opacity: 0.68;
+    font-size: [[text-groesse]];
+    opacity: [[text-deckkraft]];
   }
   ha-list-nav ha-list-item-button ha-icon-next {
-    width: 18px;
-    height: 18px;
-    opacity: 0.4;
+    width: [[pfeil-groesse]];
+    height: [[pfeil-groesse]];
+    opacity: [[pfeil-deckkraft]];
   }`;
 const HATG_EINSTELLUNGEN_PFADE = [
   "ha-config-dashboard $$ ha-config-navigation-list $",
@@ -3308,17 +3343,22 @@ ha-control-slider {
     id: "benutzer-icon-ios",
     label: "Benutzer-Icon wie die Systemicons",
     desc: "Das Benutzerbild unten in der Seitenleiste als abgerundetes Quadrat mit feiner Kante.",
+    werte: [
+      { id: "rundung", label: "Rundung", labelEn: "Rounding", standard: "28%" },
+      { id: "kante", label: "Farbe der Kante", labelEn: "Edge colour", standard: "rgba(255, 255, 255, 0.16)" },
+      { id: "schatten", label: "Schatten", labelEn: "Shadow", standard: "0 1px 2px rgba(0, 0, 0, 0.35)" },
+    ],
     ziel: "uix-sidebar",
     css: `ha-user-badge {
   /* Initialen und Bild nehmen ihren Radius aus --ha-border-radius-circle. Ueber
      diese Variable bekommt das Icon seine Form, ganz ohne Shadow-DOM-Pfad. */
-  --ha-border-radius-circle: 28%;
-  border-radius: 28%;
+  --ha-border-radius-circle: [[rundung]];
+  border-radius: [[rundung]];
   /* Die Kante als outline: die Flaeche im Baustein ist deckend, ein
      inset-Schatten laege darunter. Outlines zeichnet der Browser darueber. */
-  outline: 1px solid rgba(255, 255, 255, 0.16);
+  outline: 1px solid [[kante]];
   outline-offset: -1px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  box-shadow: [[schatten]];
 }`,
   },
   {
@@ -3408,15 +3448,19 @@ ha-list-item-button::before {
   {
     id: "dialog-weich",
     label: "Dialoge: Kartenradius und dunklerer Schleier",
-    desc: "Dialoge mit der Rundung deiner Karten. Fest eingestellt sind ein dunklerer Schleier dahinter (55 %) und 40 px Abstand nach oben.",
+    desc: "Dialoge mit der Rundung deiner Karten und einem dunkleren Schleier dahinter.",
+    werte: [
+      { id: "schleier", label: "Schleier hinter dem Dialog", labelEn: "Scrim behind the dialog", standard: "rgba(0, 0, 0, 0.55)" },
+      { id: "abstand-oben", label: "Abstand nach oben", labelEn: "Top spacing", standard: "40px" },
+    ],
     ziel: "uix-dialog",
     css: `:host,
 ha-dialog,
 ha-adaptive-dialog {
   --ha-dialog-border-radius: var(--ha-card-border-radius, 18px);
   --mdc-shape-medium: var(--ha-card-border-radius, 18px);
-  --mdc-dialog-scrim-color: rgba(0, 0, 0, 0.55);
-  --dialog-surface-margin-top: 40px;
+  --mdc-dialog-scrim-color: [[schleier]];
+  --dialog-surface-margin-top: [[abstand-oben]];
 }`,
   },
   {
@@ -3537,10 +3581,31 @@ ha-adaptive-dialog {
     id: "einstellungen-icons-gross",
     label: "Einstellungsseiten im iOS-Stil",
     desc: "Einstellungsseiten im iOS-Stil: Icons als abgerundete Quadrate, kräftigere Überschriften, leisere Pfeile.",
+    werte: [
+      { id: "icon-groesse", label: "Icongröße", labelEn: "Icon size", standard: "34px" },
+      { id: "icon-rundung", label: "Icon-Rundung", labelEn: "Icon rounding", standard: "28%" },
+      { id: "symbol-groesse", label: "Symbolgröße im Icon", labelEn: "Symbol size in the icon", standard: "20px" },
+      { id: "titel-groesse", label: "Schriftgröße Titel", labelEn: "Title font size", standard: "15px" },
+      { id: "titel-staerke", label: "Schriftstärke Titel", labelEn: "Title font weight", standard: "600" },
+      { id: "text-groesse", label: "Schriftgröße Beschreibung", labelEn: "Description font size", standard: "12.5px" },
+      { id: "text-deckkraft", label: "Deckkraft Beschreibung", labelEn: "Description opacity", standard: "0.68" },
+      { id: "pfeil-groesse", label: "Pfeilgröße", labelEn: "Arrow size", standard: "18px" },
+      { id: "pfeil-deckkraft", label: "Deckkraft Pfeil", labelEn: "Arrow opacity", standard: "0.4" },
+      { id: "listen-abstand", label: "Abstand zwischen Einträgen", labelEn: "Gap between entries", standard: "6px" },
+      { id: "listen-innenabstand", label: "Innenabstand der Liste", labelEn: "List padding", standard: "8px" },
+    ],
     ziel: "uix-config-yaml",
     css: HATG_EINSTELLUNGEN_CSS,
   },
 ];
+// Vorlagen mit einstellbaren Werten: css traegt die Standardwerte samt Marken,
+// cssRoh die Platzhalter. So schaltet jeder bisherige Weg die Vorlage mit den
+// Standardwerten ein.
+HATG_VORLAGEN.forEach((tpl) => {
+  if (!tpl.werte) return;
+  tpl.cssRoh = tpl.css;
+  tpl.css = hatgVorlageMitWerten(tpl, {});
+});
 
 const HATG_APPLE_COLORS = {
   blue: ["#5AC8FA", "#0A84FF"],
@@ -6754,23 +6819,55 @@ class HATGPanel extends HTMLElement {
       </div>`;
   }
 
-  // Schreibt den Titel in den Block beider Modi; ist die Vorlage aus, wird sie
-  // dabei eingeschaltet.
-  setzeVorlageTitel(id, titel) {
+  renderVorlageWerte(tpl) {
+    const block = hatgLeseVorlagenBlock(this.currentValues()[hatgVorlagenZiel(tpl)] || "", tpl.id);
+    const werte = hatgVorlageWerteLesen(tpl, block);
+    const en = this._sprache === "en";
+    return tpl.werte
+      .map(
+        (w) => `
+      <div class="field-row" data-roh>
+        <span class="field-key">${hatgEscape(en ? w.labelEn : w.label)}</span>
+        <span class="field-input"><input type="text" class="text-input" value="${hatgEscape(werte[w.id] ?? w.standard)}" placeholder="${hatgEscape(w.standard)}" spellcheck="false" data-vorlage-wert="${tpl.id}" data-wert-id="${w.id}" /></span>
+      </div>`
+      )
+      .join("");
+  }
+
+  // Schreibt einen Wert in den Block beider Modi, die uebrigen Werte und der
+  // Titel bleiben. Ein leeres Feld setzt den Standard. Ist die Vorlage aus,
+  // wird sie dabei eingeschaltet - wie beim Titel.
+  setzeVorlageWert(id, wertId, wert) {
     const tpl = this.alleVorlagen().find((t) => t.id === id);
-    if (!tpl || !tpl.titel) return;
+    if (!tpl || !tpl.werte) return;
+    this.schreibeVorlageBeideModi(tpl, (vorhanden) =>
+      hatgVorlageBauen(tpl, hatgVorlageTitelLesen(vorhanden), { ...hatgVorlageWerteLesen(tpl, vorhanden), [wertId]: wert })
+    );
+  }
+
+  schreibeVorlageBeideModi(tpl, bauen) {
     const ziel = hatgVorlagenZiel(tpl);
-    const css = hatgVorlageMitTitel(tpl, String(titel ?? "").trim() || tpl.titel.standard);
     const currentMode = this._state.editorMode;
     ["light", "dark"].forEach((mode) => {
       this._state.editorMode = mode;
       const text = String(this.currentValues()[ziel] || "");
-      const neu = hatgHaengeVorlagenBlockAn(text, id, css, hatgIstYamlZiel(ziel));
+      const css = bauen(hatgLeseVorlagenBlock(text, tpl.id) || "");
+      const neu = hatgHaengeVorlagenBlockAn(text, tpl.id, css, hatgIstYamlZiel(ziel));
       if (neu !== text) this.commitField(ziel, neu);
     });
     this._state.editorMode = currentMode;
     this.applyPreviewTheme();
   }
+
+  // Schreibt den Titel in den Block beider Modi; ist die Vorlage aus, wird sie
+  // dabei eingeschaltet.
+  setzeVorlageTitel(id, titel) {
+    const tpl = this.alleVorlagen().find((t) => t.id === id);
+    if (!tpl || !tpl.titel) return;
+    const text = String(titel ?? "").trim() || tpl.titel.standard;
+    this.schreibeVorlageBeideModi(tpl, (vorhanden) => hatgVorlageBauen(tpl, text, hatgVorlageWerteLesen(tpl, vorhanden)));
+  }
+
 
   renderVorlagenDialog() {
     const dialog = this._state.vorlagenDialog;
@@ -7106,6 +7203,7 @@ uix:
       const active = istAktiv(tpl);
       const ziel = hatgVorlagenZiel(tpl);
       const felder = hatgVorlagenFelder(tpl);
+      const einstellbar = felder.length + (tpl.werte ? tpl.werte.length : 0);
       const offen = (this._state.offeneVorlagen || []).includes(tpl.id);
       return `
         <div class="vorlage-zeile ${active ? "is-selected" : ""}">
@@ -7119,16 +7217,16 @@ uix:
             </div>
             <span class="vorlage-zeile-ziel" data-roh><code>${ziel}</code></span>
             ${
-              felder.length
+              einstellbar
                 ? `<button type="button" class="vorlage-zeile-mehr" data-vorlage-aufklappen="${tpl.id}" aria-expanded="${offen}">
-                     <span data-roh>${felder.length}</span>
+                     <span data-roh>${einstellbar}</span>
                      <ha-icon icon="${offen ? "mdi:chevron-up" : "mdi:tune-variant"}"></ha-icon>
                    </button>`
                 : ""
             }
             ${eigen ? `<button type="button" class="vorlage-edit" data-bearbeite-vorlage="${tpl.id}" title="Bearbeiten"><ha-icon icon="mdi:pencil-outline"></ha-icon></button>` : ""}
           </div>
-          ${offen && felder.length ? `<div class="vorlage-zeile-felder">${tpl.titel ? this.renderVorlageTitel(tpl) : ""}${this.renderFieldList(felder, null, true)}</div>` : ""}
+          ${offen && einstellbar ? `<div class="vorlage-zeile-felder">${tpl.titel ? this.renderVorlageTitel(tpl) : ""}${tpl.werte ? this.renderVorlageWerte(tpl) : ""}${felder.length ? this.renderFieldList(felder, null, true) : ""}</div>` : ""}
         </div>`;
     };
     const kachel = (tpl, eigen) => {
@@ -10007,6 +10105,12 @@ uix:
     this.shadowRoot.querySelectorAll("[data-vorlagen-ansicht]").forEach((el) => {
       el.addEventListener("click", () => {
         this._state.vorlagenAnsicht = el.dataset.vorlagenAnsicht;
+        this.render();
+      });
+    });
+    this.shadowRoot.querySelectorAll("[data-vorlage-wert]").forEach((el) => {
+      el.addEventListener("change", () => {
+        this.setzeVorlageWert(el.dataset.vorlageWert, el.dataset.wertId, el.value);
         this.render();
       });
     });
