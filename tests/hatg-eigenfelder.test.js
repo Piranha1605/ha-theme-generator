@@ -292,7 +292,20 @@ pruefe("Altlasten: reines CSS im -yaml-Feld wandert ins einfache Feld, Selbstver
   assert.ok(neu.includes("--bubble-main-background-color: var(--bubble-main-buttons-background-color"), "fremder Verweis wurde entfernt");
   assert.equal(bericht.verschoben, 1);
   assert.equal(bericht.selbstverweise, 3);
-  assert.deepEqual({ ...helfer.hatgRepariereAlteStilziele(bag) }, { verschoben: 0, selbstverweise: 0 }, "zweiter Lauf aendert etwas");
+  assert.deepEqual(
+    { ...helfer.hatgRepariereAlteStilziele(bag) },
+    { verschoben: 0, selbstverweise: 0, dialogFilter: 0 },
+    "zweiter Lauf aendert etwas"
+  );
+
+  // Weichzeichnung auf der Dialogflaeche macht den Dialog zum Bezugsrahmen fuer
+  // position: fixed - Auswahllisten in Dialogen bleiben dann leer.
+  const dlg = { light: { "ha-dialog-surface-backdrop-filter": "blur(57px)" }, dark: { "ha-dialog-surface-backdrop-filter": "blur(57px)" }, extra: { light: {}, dark: {} } };
+  const b1 = helfer.hatgRepariereAlteStilziele(dlg);
+  assert.equal(b1.dialogFilter, 1, "Dialog-Weichzeichnung nicht zurueckgenommen");
+  assert.equal(dlg.light["ha-dialog-surface-backdrop-filter"], "none");
+  assert.equal(dlg.dark["ha-dialog-surface-backdrop-filter"], "none");
+  assert.equal(helfer.hatgRepariereAlteStilziele(dlg).dialogFilter, 0, "zweiter Lauf nimmt erneut etwas zurueck");
   assert.ok(helfer.hatgIstYamlKarte("# Kommentar\n\"$ ha-dialog $\": |\n  x {}"));
   assert.ok(!helfer.hatgIstYamlKarte("/* nur CSS */\nha-card { color: red; }"));
 });

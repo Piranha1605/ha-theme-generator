@@ -2105,13 +2105,27 @@ function hatgIstYamlKarte(text) {
   return HATG_YAML_KOPF_RE.test(erste);
 }
 const HATG_SELBSTVERWEIS_RE = /(^|[;{\n])[ \t]*(--[a-zA-Z0-9_-]+)[ \t]*:[ \t]*var\([ \t]*\2[ \t]*[,)][^;{}]*;/g;
+// Eine Weichzeichnung auf der Dialogflaeche macht den Dialog zum Bezugsrahmen
+// fuer position: fixed. Die Auswahllisten in Dialogen sind fixed und landen
+// dann neben dem Bildschirm - die Liste bleibt leer, in Home Assistant selbst
+// wie in eingebetteten Panels (HACS-Versionsauswahl, am 2026-09-20 gemessen).
+// Auch eine Weichzeichnung auf einem ::before der Flaeche hilft nicht.
+const HATG_DIALOG_FILTERFELD = "ha-dialog-surface-backdrop-filter";
+function hatgLoeseDialogWeichzeichnung(b) {
+  const wert = String(b[HATG_DIALOG_FILTERFELD] ?? "").trim();
+  if (!wert || wert === "none") return false;
+  b[HATG_DIALOG_FILTERFELD] = "none";
+  return true;
+}
 function hatgRepariereAlteStilziele(bag) {
   let verschoben = 0;
   let selbstverweise = 0;
-  if (!bag) return { verschoben, selbstverweise };
+  let dialogFilter = 0;
+  if (!bag) return { verschoben, selbstverweise, dialogFilter };
   ["light", "dark"].forEach((m) =>
     [bag[m], bag.extra?.[m]].forEach((b) => {
       if (!b) return;
+      if (hatgLoeseDialogWeichzeichnung(b) && m === "light") dialogFilter++;
       Object.keys(b).forEach((k) => {
         if (!/^uix-[a-z-]+-yaml$/.test(k)) return;
         const text = String(b[k] ?? "");
@@ -2139,7 +2153,7 @@ function hatgRepariereAlteStilziele(bag) {
       });
     })
   );
-  return { verschoben, selbstverweise };
+  return { verschoben, selbstverweise, dialogFilter };
 }
 
 // Bewegter Hintergrund. Dashboards malen ihren Hintergrund in
@@ -2701,8 +2715,8 @@ ha-card {
   background-color: rgba(255, 255, 255, 0.68) !important;
   background-color: var(--ha-dialog-surface-background) !important;
   background-image: none !important;
-  backdrop-filter: var(--ha-dialog-surface-backdrop-filter, blur(32px));
-  -webkit-backdrop-filter: var(--ha-dialog-surface-backdrop-filter, blur(32px));
+  backdrop-filter: var(--ha-dialog-surface-backdrop-filter, none);
+  -webkit-backdrop-filter: var(--ha-dialog-surface-backdrop-filter, none);
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
   /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
@@ -2745,8 +2759,8 @@ ha-adaptive-dialog,
   background-color: rgba(255, 255, 255, 0.68) !important;
   background-color: var(--ha-dialog-surface-background) !important;
   background-image: none !important;
-  backdrop-filter: var(--ha-dialog-surface-backdrop-filter, blur(32px));
-  -webkit-backdrop-filter: var(--ha-dialog-surface-backdrop-filter, blur(32px));
+  backdrop-filter: var(--ha-dialog-surface-backdrop-filter, none);
+  -webkit-backdrop-filter: var(--ha-dialog-surface-backdrop-filter, none);
   /* Ohne eigenen Radius zeichnet der Rand ein eckiges Rechteck um die runde Karte. */
   border-radius: var(--ha-card-border-radius, 14px) !important;
   /* Der Rand liegt als innerer Ring im Schatten. Ein echtes border wuerde das
@@ -6619,7 +6633,9 @@ class HATGPanel extends HTMLElement {
     this.commitField("control-button-background-color", mit(1.36));
     this.commitField("ha-dialog-surface-background", mit(1.36));
     this.commitField("ha-card-backdrop-filter", filter(px));
-    this.commitField("ha-dialog-surface-backdrop-filter", filter(Math.round(px * 1.8)));
+    // Dialoge bleiben ohne Weichzeichnung: sie waeren sonst Bezugsrahmen fuer
+    // position: fixed, und die Auswahllisten darin bleiben leer.
+    this.commitField("ha-dialog-surface-backdrop-filter", "none");
     this._state.editorMode = vorher;
     this.applyPreviewTheme?.();
   }
@@ -11450,6 +11466,8 @@ uix:
           ? "1 Variable, die sich selbst las, entfernt"
           : `${altlasten.selbstverweise} Variablen, die sich selbst lasen, entfernt`
       );
+    if (altlasten.dialogFilter)
+      parts.push("Weichzeichnung der Dialogfläche zurückgenommen, sonst bleiben Auswahllisten in Dialogen leer");
     if (marken.umbenannt)
       parts.push(`${marken.umbenannt} Vorlage${marken.umbenannt === 1 ? "" : "n"} mit fremder Marke als HATG-Vorlage erkannt`);
     if (marken.doppelt)
