@@ -39,11 +39,19 @@ function feld(block, name) {
   return m ? m[1] : null;
 }
 
+// Einstellbare Werte stehen als [[id]] im Quelltext; geprueft wird mit den
+// Standardwerten, so wie die Vorlage eingeschaltet wird.
+function mitStandardwerten(block, text) {
+  const standard = {};
+  for (const m of block.matchAll(/\{ id: "([a-z0-9-]+)", label: "[^"]*", labelEn: "[^"]*", standard: "([^"]*)" \}/g)) standard[m[1]] = m[2];
+  return text.replace(/\[\[([a-z0-9-]+)\]\]/g, (ganz, id) => standard[id] ?? ganz);
+}
+
 function css(block) {
   const vorlage = /\bcss:\s*`([\s\S]*?)`,/.exec(block);
-  if (vorlage) return vorlage[1];
+  if (vorlage) return mitStandardwerten(block, vorlage[1]);
   const literal = new RegExp(`\\bcss:\\s*${LITERAL}`).exec(block);
-  return literal ? JSON.parse(`"${literal[1]}"`) : null;
+  return literal ? mitStandardwerten(block, JSON.parse(`"${literal[1]}"`)) : null;
 }
 
 function ohneKommentare(text) {
@@ -331,6 +339,74 @@ pruefe("Jeder dataset-Zugriff hat ein passendes data-Attribut", () => {
   const bekannt = new Set([...alles.matchAll(/data-([a-z0-9-]+)/g)].map((m) => camel(m[1])));
   const fremd = [...new Set([...alles.matchAll(/\.dataset\.([A-Za-z0-9]+)/g)].map((m) => m[1]))].filter((k) => !bekannt.has(k));
   assert.deepEqual(fremd, []);
+});
+
+pruefe("Jede Vorlage liegt in einer angezeigten Gruppe der Vorlagenseite", () => {
+  const alles = fs.readFileSync(PANEL, "utf8");
+  const kollisionen = /const HATG_GLAS_KOLLISIONEN = (\[[^\]]*\]);/.exec(alles)[1];
+  const start = alles.indexOf("const HATG_VORLAGEN_GRUPPEN");
+  const ende = alles.indexOf("const HATG_VORLAGEN = [");
+  const kontext = {};
+  require("node:vm").runInNewContext(`const HATG_GLAS_KOLLISIONEN = ${kollisionen};\n${alles.slice(start, ende)}\nthis.gruppen = HATG_VORLAGEN_GRUPPEN; this.von = hatgVorlagenGruppeVon;`, kontext);
+  const reihenfolge = JSON.parse(/const reihenfolge = (\[[^\]]*\]);/.exec(alles)[1].replace(/'/g, '"'));
+  assert.deepEqual([...reihenfolge].sort(), Array.from(kontext.gruppen, (g) => g.id).sort(), "nicht jede Gruppe wird angezeigt");
+  const weitere = [];
+  for (const v of vorlagen) {
+    const paket = (/\bpaket:\s*"([^"]+)"/.exec(v.block) || [])[1];
+    const g = kontext.von({ id: v.id, paket });
+    if (g === "weitere") weitere.push(v.id);
+  }
+  // Der Auffangtopf soll klein bleiben - neue Vorlagen gehoeren in eine Gruppe.
+  assert.ok(weitere.length <= 3, `zu viele Vorlagen ohne Gruppe: ${weitere.join(", ")}`);
+});
+
+pruefe("Eigener Titel gilt nicht als veraltete Vorlage", () => {
+  // Hinweis und Auffrischen muessen dasselbe Soll vergleichen.
+  const alles = fs.readFileSync(PANEL, "utf8");
+  const start = alles.indexOf("const HATG_VORLAGE_TITEL_RE");
+  const ende = alles.indexOf("function hatgVorlagenZiel(");
+  assert.ok(start !== -1 && ende > start, "Titel-Helfer nicht gefunden");
+  const kontext = {};
+  require("node:vm").runInNewContext(`${alles.slice(start, ende)}\nthis.soll = hatgVorlageSoll; this.mitTitel = hatgVorlageMitTitel;`, kontext);
+  const tpl = { css: ".menu .title::after {\n  content: \"Home Assistant\";\n}", titel: { standard: "Home Assistant" } };
+  const block = kontext.mitTitel(tpl, "Horizon HA");
+  assert.equal(kontext.soll(tpl, block), block, "eigener Titel wird als Abweichung gewertet");
+  assert.equal(kontext.soll({ css: "a{}" }, "b{}"), "a{}");
+  assert.ok(/hatgVorlageSoll\(tpl, vorhanden\)\)/.test(alles.slice(alles.indexOf("veralteteVorlagen() {"), alles.indexOf("veralteteVorlagen() {") + 1500)), "Hinweis nutzt das Soll nicht");
+});
+
+pruefe("Einstellbare Werte bleiben beim Auffrischen und schliessen keine Deklaration", () => {
+  const alles = fs.readFileSync(PANEL, "utf8");
+  const start = alles.indexOf("const HATG_VORLAGE_TITEL_RE");
+  const ende = alles.indexOf("function hatgVorlagenZiel(");
+  const helfer = alles.slice(alles.indexOf("function hatgCssOhneKommentare("), alles.indexOf("function", alles.indexOf("function hatgCssOhneKommentare(") + 10));
+  const kontext = {};
+  require("node:vm").runInNewContext(
+    `${helfer}\n${alles.slice(start, ende)}\nthis.soll = hatgVorlageSoll; this.bauen = hatgVorlageBauen; this.ohne = hatgCssOhneKommentare;`,
+    kontext
+  );
+  const tpl = {
+    cssRoh: "a {\n  width: [[breite]];\n  height: [[breite]];\n  opacity: [[deckkraft]];\n}",
+    werte: [
+      { id: "breite", standard: "34px" },
+      { id: "deckkraft", standard: "0.4" },
+    ],
+  };
+  const block = kontext.bauen(tpl, null, { breite: "40px" });
+  assert.ok(/width: \/\*HATG:WERT:breite\*\/40px\/\*HATG:WERT\*\//.test(block), block);
+  assert.ok(/opacity: \/\*HATG:WERT:deckkraft\*\/0\.4\//.test(block), "Standard fehlt");
+  // Die Marken muessen das Einhaengen ueberstehen, sonst ist der Wert beim naechsten Laden weg.
+  assert.equal(kontext.soll(tpl, kontext.ohne(block)), block, "eigener Wert gilt als veraltet");
+  const boese = kontext.bauen(tpl, null, { breite: "1px; } b { color: red */" });
+  assert.ok(!/[;{}]\s*b\s*\{|\*\/\s*\/\*HATG:WERT\*\/.*red/.test(boese.replace(/\/\*HATG:WERT[^*]*\*\//g, "")), boese);
+  assert.equal((boese.match(/\{/g) || []).length, 1, "Wert oeffnet einen neuen Block");
+  // Jede Vorlage mit werte nutzt jeden Platzhalter und hat keine offenen Platzhalter.
+  for (const v of vorlagen) {
+    if (!/\bwerte:\s*\[/.test(v.block)) continue;
+    for (const m of v.block.matchAll(/\{ id: "([a-z0-9-]+)", label: "([^"]+)", labelEn: "([^"]+)", standard: "([^"]+)" \}/g)) {
+      assert.ok(alles.includes(`[[${m[1]}]]`), `${v.id}: Platzhalter [[${m[1]}]] fehlt im CSS`);
+    }
+  }
 });
 
 pruefe("Seitenleisten-Titel ist ein Parameter der Vorlage, keine Beschreibung nennt hatg-Felder", () => {

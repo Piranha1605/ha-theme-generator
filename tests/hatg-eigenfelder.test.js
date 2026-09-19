@@ -37,7 +37,7 @@ function ladeHelfer() {
     HATG_MANIFEST: { light: Object.fromEntries(bekannt.map((k) => [k, ""])) },
     hatgIstStilzielKey: (key) => /^uix-/.test(String(key || "")),
   };
-  vm.runInNewContext(`${quelle.slice(start, ende)}\nthis.hatgLoeseEigeneFelderAuf = hatgLoeseEigeneFelderAuf; this.hatgVereinheitlicheVorlagenMarken = hatgVereinheitlicheVorlagenMarken; this.hatgMigriereHintergrundBewegung = hatgMigriereHintergrundBewegung; this.hatgBewegungCss = hatgBewegungCss; this.hatgLeseBewegung = hatgLeseBewegung; this.hatgBewegungDauer = hatgBewegungDauer; this.hatgLeseVerlauf = hatgLeseVerlauf; this.hatgMigriereAkzentVerlauf = hatgMigriereAkzentVerlauf;`, kontext);
+  vm.runInNewContext(`${quelle.slice(start, ende)}\nthis.hatgLoeseEigeneFelderAuf = hatgLoeseEigeneFelderAuf; this.hatgVereinheitlicheVorlagenMarken = hatgVereinheitlicheVorlagenMarken; this.hatgMigriereHintergrundBewegung = hatgMigriereHintergrundBewegung; this.hatgBewegungCss = hatgBewegungCss; this.hatgLeseBewegung = hatgLeseBewegung; this.hatgBewegungDauer = hatgBewegungDauer; this.hatgLeseVerlauf = hatgLeseVerlauf; this.hatgMigriereAkzentVerlauf = hatgMigriereAkzentVerlauf; this.hatgRepariereAlteStilziele = hatgRepariereAlteStilziele; this.hatgIstYamlKarte = hatgIstYamlKarte;`, kontext);
   return kontext;
 }
 
@@ -249,9 +249,52 @@ pruefe("Akzent-Verlauf: Handfassung der Seitenleiste wird gelesen und in beide Z
   assert.equal(helfer.hatgMigriereAkzentVerlauf(bag), 2);
   assert.ok(/--verlauf-akzent: linear-gradient\(135deg, #4FE3C8 0%, #38A8FF 100%\)/.test(bag.light["uix-card"]), bag.light["uix-card"]);
   assert.ok(bag.light["uix-card"].startsWith(".alt { color: red; }"));
-  assert.ok(/--hz-gewaehlt: var\(--verlauf-akzent\)/.test(bag.light["uix-card"]));
+  // Die HA-Karten lesen seit Sammlung v2.6.1 die gemeinsame Kette
+  // --karten-gewaehlt / -vorn / -schatten statt einzelner Kartennamen.
+  assert.ok(/--karten-gewaehlt: var\(--verlauf-akzent\)/.test(bag.light["uix-card"]), bag.light["uix-card"]);
+  assert.ok(/--karten-gewaehlt-schatten:[^;]*--neumorph-tiefe/.test(bag.light["uix-card"]), "Kante kommt nicht aus neumorph-tiefe");
+  assert.ok(!/--hz-gewaehlt/.test(bag.light["uix-card"]), "alte Einzelregel steht noch drin");
   assert.ok(/background-image: var\(--verlauf-akzent\)/.test(bag.dark["uix-sidebar"]));
   assert.equal(helfer.hatgMigriereAkzentVerlauf(bag), 0, "zweiter Lauf aendert nichts");
+});
+
+pruefe("Altlasten: reines CSS im -yaml-Feld wandert ins einfache Feld, Selbstverweise fallen weg", () => {
+  // Aus einem Theme, das ein Nutzer aus HATG 0.2.x in 1.2.1 mitgebracht hatte.
+  const cssInYaml = [
+    "/* Erstellt mit HATG v0.2.19 - card-mod-card-yaml, zusammengesetzt aus einzelnen Cardmod-Bausteinen */",
+    "",
+    "/* HATG:CARDMOD:separator-fix:START */",
+    "  ha-card:has(.bubble-separator) {",
+    "    box-shadow: none !important;",
+    "  }",
+    "/* HATG:CARDMOD:separator-fix:END */",
+  ].join("\n");
+  const karte = [
+    "ha-card {",
+    "  --bubble-main-background-color: var(--bubble-main-buttons-background-color, var(--card-background-color));",
+    "  --bubble-accent-color: var(--bubble-accent-color, var(--accent-color));",
+    "  --bubble-icon-color: var(--bubble-icon-color, var(--accent-color)) !important;",
+    "  --bubble-border-radius: var(--bubble-border-radius);",
+    "}",
+  ].join("\n");
+  const gueltig = '".": |\n  :host { color: red; }\nha-button $: |\n  .button { color: blue; }';
+  const bag = {
+    light: { "uix-card": karte, "uix-card-yaml": cssInYaml, "uix-more-info-yaml": gueltig },
+    dark: { "uix-card": karte, "uix-card-yaml": cssInYaml },
+    extra: { light: {}, dark: {} },
+  };
+  const bericht = helfer.hatgRepariereAlteStilziele(bag);
+  assert.equal(bag.light["uix-card-yaml"], undefined, "kaputtes -yaml-Feld blieb stehen");
+  assert.ok(bag.light["uix-card"].includes("ha-card:has(.bubble-separator)"), bag.light["uix-card"]);
+  assert.equal(bag.light["uix-more-info-yaml"], gueltig, "gueltige YAML-Karte wurde angefasst");
+  const neu = bag.light["uix-card"];
+  assert.ok(!/--bubble-accent-color:|--bubble-icon-color:|--bubble-border-radius:/.test(neu), neu);
+  assert.ok(neu.includes("--bubble-main-background-color: var(--bubble-main-buttons-background-color"), "fremder Verweis wurde entfernt");
+  assert.equal(bericht.verschoben, 1);
+  assert.equal(bericht.selbstverweise, 3);
+  assert.deepEqual({ ...helfer.hatgRepariereAlteStilziele(bag) }, { verschoben: 0, selbstverweise: 0 }, "zweiter Lauf aendert etwas");
+  assert.ok(helfer.hatgIstYamlKarte("# Kommentar\n\"$ ha-dialog $\": |\n  x {}"));
+  assert.ok(!helfer.hatgIstYamlKarte("/* nur CSS */\nha-card { color: red; }"));
 });
 
 if (fehler) {

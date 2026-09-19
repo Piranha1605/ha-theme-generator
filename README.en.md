@@ -5,7 +5,7 @@
 <p align="center">
   <img src="https://img.shields.io/github/v/release/Piranha1605/ha-theme-generator?include_prereleases&label=Version&color=2F80ED" alt="Version" />
   <img src="https://img.shields.io/badge/HACS-Custom%20Repository-2F80ED?logo=home-assistant&logoColor=white" alt="HACS" />
-  <img src="https://img.shields.io/badge/Variables-574%20verified-2F80ED" alt="574 verified variables" />
+  <img src="https://img.shields.io/badge/Variables-608%20verified-2F80ED" alt="608 verified variables" />
   <img src="https://img.shields.io/github/stars/Piranha1605/ha-theme-generator?color=2F80ED" alt="Stars" />
   <img src="https://img.shields.io/github/issues/Piranha1605/ha-theme-generator?color=2F80ED" alt="Issues" />
 </p>
@@ -24,7 +24,7 @@
 
 HATG is a dedicated panel in your Home Assistant sidebar for building complete themes visually — for Home Assistant itself, for **Bubble Card**, for **Mushroom** and for global tweaks via **UI eXtension (UIX)**. No jumping between YAML files, no guessing which variable hits which card: you set colours, shapes and states in one place, HATG distributes them across all three worlds and shows you the result live — optionally right inside your real dashboard.
 
-Every one of the 574 fields was verified against the actual source code of Home Assistant, Bubble Card and Mushroom, or against the UIX documentation. Only variables that genuinely exist are included — what you set is what arrives.
+Every one of the 608 fields was verified against the actual source code of Home Assistant, Bubble Card and Mushroom, or against the UIX documentation. Only variables that genuinely exist are included — what you set is what arrives.
 
 > **Language:** HATG speaks English and German. The interface follows your Home Assistant language automatically and can be switched at any time under the gear icon.
 
@@ -139,7 +139,7 @@ Besides gradients (sunrise, night sky, radial) you can set your **own image**. T
 
 ## All sections at a glance
 
-The sidebar organises all 574 fields into thematic sections — Bubble Card with its own subpage per card type, the UIX presets with one subpage per style target:
+The sidebar organises all 608 fields into thematic sections — Bubble Card with its own subpage per card type, the UIX presets with one subpage per style target:
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-navigation.png" alt="Navigation with all sections" width="22%" />
@@ -151,6 +151,7 @@ The sidebar organises all 574 fields into thematic sections — Bubble Card with
 | **HA framework** | Cards, header, sidebar, input fields, switches, sliders, dialogs |
 | **Bubble Card** | Cards & backgrounds, select, buttons, sub-buttons, separator, popup & dialog, horizontal buttons stack, climate, cover, media player, calendar |
 | **Mushroom** | Cards, icons, chips, sliders, toggles, state colours |
+| **Button Card** | Click effect, loading spinner, tooltip – surface, radius and shadow come from the HA framework, icon colours from the states |
 | **All fields** | The complete list with full-text search, colour, type and word-fragment filters plus multi-select for bulk changes |
 | **Code editor** | Every value as text — type instead of click, changes apply instantly |
 | **UIX & generator** | The 25 style targets including their shadow DOM variants, the glass values and a free field for your own theme entries |
@@ -160,7 +161,7 @@ The sidebar organises all 574 fields into thematic sections — Bubble Card with
 
 ### All fields — finding instead of searching
 
-The **word-fragment filter** combines building blocks such as `color`, `background` or `button` with narrowing tags (`bubble`, `climate`, `stack`) — so even among 574 variables the right one is found in seconds. With multi-select, entire groups of fields get the same value in a single step.
+The **word-fragment filter** combines building blocks such as `color`, `background` or `button` with narrowing tags (`bubble`, `climate`, `stack`) — so even among 608 variables the right one is found in seconds. With multi-select, entire groups of fields get the same value in a single step.
 
 ### Code editor
 
