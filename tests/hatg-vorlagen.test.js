@@ -165,7 +165,12 @@ pruefe("glas-bubble: Flaechen mit Rahmen und Schatten der HA-Karten, ohne Glanz,
   const regeln = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)];
   assert.ok(!/--hatg-glas-reflex|--hatg-glas-rand/.test(c), "Glanz oder Ring steht wieder in glas-bubble");
   const flaeche = regeln.find((m) => m[1].split(",").map((s) => s.trim()).includes(".bubble-button-container"));
-  assert.ok(flaeche && /background-image:\s*none/.test(flaeche[2]) && /border-radius:\s*13px/.test(flaeche[2]), "Flaeche nicht im Knopfstil");
+  // Die Rundung kommt aus dem Kartenfeld, damit Bubble-Karten so rund sind wie
+  // HA-Karten und die Karten der Sammlung (2026-09-20).
+  assert.ok(
+    flaeche && /background-image:\s*none/.test(flaeche[2]) && /border-radius:\s*var\(--ha-card-border-radius/.test(flaeche[2]),
+    "Flaeche nicht im Knopfstil"
+  );
   assert.ok(/border:\s*var\(--ha-card-border-width[^;]*var\(--ha-card-border-color/.test(flaeche[2]), "Rahmen kommt nicht aus den HA-Kartenfeldern");
   assert.ok(/box-shadow:\s*var\(--ha-card-box-shadow/.test(flaeche[2]), "Schatten kommt nicht aus ha-card-box-shadow");
   const icon = regeln.find((m) => m[1].split(",").map((s) => s.trim()).includes(".bubble-main-icon-container") && /border-radius/.test(m[2]));
@@ -317,7 +322,7 @@ pruefe("Glas-Knoepfe: kleiner Schatten ohne Ring, kleine Rundung", () => {
     const c = ohneKommentare(css(v.block));
     const schatten = (c.match(/--ha-button-box-shadow:([^;]*);/) || [])[1] || "";
     assert.ok(!/--hatg-glas-rand|--hatg-glas-schatten/.test(schatten), `${v.id}: Ring oder Kartenschatten im Knopfschatten`);
-    assert.ok(/--ha-button-border-radius:\s*11px/.test(c), `${v.id}: Knopf nicht mit kleiner Rundung`);
+    assert.ok(/--ha-button-border-radius:\s*calc\(var\(--ha-card-border-radius[^)]*\) - 7px\)/.test(c), `${v.id}: Knopf nicht mit kleiner Rundung`);
   }
 });
 

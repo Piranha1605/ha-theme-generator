@@ -2932,11 +2932,11 @@ ha-badge {
     label: "Bubble Card in Glas",
     desc: "Bubble-Karten als Glas wie die HA-Karten: Fläche, Rahmen, Schatten und Rundung aus den Kartenwerten. Eingeschaltetes wird deckend in der Akzentfarbe, Schieber bekommen eine vertiefte Mulde.",
     werte: [
-      { id: "rundung", label: "Rundung der Karten", labelEn: "Card rounding", standard: "13px" },
-      { id: "icon-rundung", label: "Rundung der Icons", labelEn: "Icon rounding", standard: "14px" },
+      { id: "rundung", label: "Rundung der Karten", labelEn: "Card rounding", standard: "var(--ha-card-border-radius, 14px)" },
+      { id: "icon-rundung", label: "Rundung der Icons", labelEn: "Icon rounding", standard: "calc(var(--ha-card-border-radius, 14px) - 4px)" },
       { id: "icon-toenung", label: "Tönung der Icon-Fläche", labelEn: "Icon surface tint", standard: "15%" },
       { id: "icon-aktiv", label: "Icon-Fläche eingeschaltet", labelEn: "Icon surface when on", standard: "rgba(0, 0, 0, 0.16)" },
-      { id: "sub-rundung", label: "Rundung der Sub-Buttons", labelEn: "Sub-button rounding", standard: "11px" },
+      { id: "sub-rundung", label: "Rundung der Sub-Buttons", labelEn: "Sub-button rounding", standard: "calc(var(--ha-card-border-radius, 14px) - 7px)" },
       { id: "sub-schatten", label: "Schatten der Sub-Buttons", labelEn: "Sub-button shadow", standard: "0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3)" },
       { id: "kante-tiefe", label: "Dunkle Kante (Anteil Akzentfarbe)", labelEn: "Dark edge (share of accent colour)", standard: "62%" },
       { id: "kante-hell", label: "Helle Kante (Anteil Akzentfarbe)", labelEn: "Light edge (share of accent colour)", standard: "74%" },
@@ -3283,7 +3283,7 @@ mwc-menu-surface {
     label: "Bedienelemente in Glas: Karten",
     desc: "Knöpfe, Regler und Chips in Karten mit kleiner Rundung und weichem Schatten.",
     werte: [
-      { id: "rundung", label: "Rundung der Knöpfe", labelEn: "Button rounding", standard: "11px" },
+      { id: "rundung", label: "Rundung der Knöpfe", labelEn: "Button rounding", standard: "calc(var(--ha-card-border-radius, 14px) - 7px)" },
       { id: "schatten", label: "Schatten der Knöpfe", labelEn: "Button shadow", standard: "0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3)" },
       { id: "deckkraft", label: "Deckkraft der Regler-Fläche", labelEn: "Control surface opacity", standard: "0.22" },
     ],
@@ -3312,7 +3312,7 @@ ha-control-slider {
     label: "Bedienelemente in Glas: Kopfleiste und Rahmen",
     desc: "Die Knöpfe der Dashboard-Kopfleiste mit kleiner Rundung und weichem Schatten.",
     werte: [
-      { id: "rundung", label: "Rundung der Knöpfe", labelEn: "Button rounding", standard: "11px" },
+      { id: "rundung", label: "Rundung der Knöpfe", labelEn: "Button rounding", standard: "calc(var(--ha-card-border-radius, 14px) - 7px)" },
       { id: "schatten", label: "Schatten der Knöpfe", labelEn: "Button shadow", standard: "0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3)" },
       { id: "deckkraft", label: "Deckkraft der Regler-Fläche", labelEn: "Control surface opacity", standard: "0.22" },
     ],
@@ -3341,7 +3341,7 @@ ha-control-slider {
     label: "Bedienelemente in Glas: Dialoge",
     desc: "Die Knöpfe in Dialogen mit kleiner Rundung und weichem Schatten.",
     werte: [
-      { id: "rundung", label: "Rundung der Knöpfe", labelEn: "Button rounding", standard: "11px" },
+      { id: "rundung", label: "Rundung der Knöpfe", labelEn: "Button rounding", standard: "calc(var(--ha-card-border-radius, 14px) - 7px)" },
       { id: "schatten", label: "Schatten der Knöpfe", labelEn: "Button shadow", standard: "0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3)" },
       { id: "deckkraft", label: "Deckkraft der Regler-Fläche", labelEn: "Control surface opacity", standard: "0.22" },
     ],
@@ -3370,7 +3370,7 @@ ha-control-slider {
     label: "Bedienelemente in Glas: Einstellungen und Rest der Oberfläche",
     desc: "Die Knöpfe auf Einstellungsseiten, in eigenen Panels und in der Seitenleiste mit kleiner Rundung und weichem Schatten.",
     werte: [
-      { id: "rundung", label: "Rundung der Knöpfe", labelEn: "Button rounding", standard: "11px" },
+      { id: "rundung", label: "Rundung der Knöpfe", labelEn: "Button rounding", standard: "calc(var(--ha-card-border-radius, 14px) - 7px)" },
       { id: "schatten", label: "Schatten der Knöpfe", labelEn: "Button shadow", standard: "0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3)" },
       { id: "deckkraft", label: "Deckkraft der Regler-Fläche", labelEn: "Control surface opacity", standard: "0.22" },
     ],
