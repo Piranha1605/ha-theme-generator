@@ -7927,6 +7927,8 @@ uix:
             chip(en ? "Without image" : "Ohne Bild", !popups, 'data-hintergrund-popups="aus"') +
               chip(en ? "With image" : "Mit Bild", popups, 'data-hintergrund-popups="an"')
           )}
+          ${this.renderBackgroundOpacitySlider()}
+          ${this.renderPopupHintergrund()}
           ${this.renderHintergrundBewegung()}
           ${this.renderGlasVorlagenteil(vorlagen, istAktiv, zeichne, alsListe, "hintergrund")}
         </div>
@@ -10528,7 +10530,7 @@ uix:
       });
     });
     this.shadowRoot.querySelectorAll("[data-popup-opacity]").forEach((el) => {
-      const anzeige = this.shadowRoot.querySelector("[data-popup-opacity-value]");
+      const anzeige = (el.closest(".bg-opacity-row") || this.shadowRoot).querySelector("[data-popup-opacity-value]");
       el.addEventListener("input", () => {
         const p = parseInt(el.value, 10) || 0;
         if (anzeige) anzeige.textContent = p + " %";
@@ -10550,7 +10552,7 @@ uix:
       });
     });
     this.shadowRoot.querySelectorAll("[data-bg-bewegung-stufe]").forEach((el) => {
-      const anzeige = this.shadowRoot.querySelector("[data-bg-bewegung-wert]");
+      const anzeige = (el.closest(".bg-opacity-row") || this.shadowRoot).querySelector("[data-bg-bewegung-wert]");
       const zeige = () => {
         const st = parseInt(el.value, 10) || HATG_BEWEGUNG_STUFE_STANDARD;
         if (anzeige) anzeige.textContent = `${this._sprache === "en" ? "Level" : "Stufe"} ${st} · ${hatgBewegungDauer(st)} s`;
@@ -10563,7 +10565,7 @@ uix:
       });
     });
     this.shadowRoot.querySelectorAll("[data-bg-opacity]").forEach((el) => {
-      const anzeige = this.shadowRoot.querySelector("[data-bg-opacity-value]");
+      const anzeige = (el.closest(".bg-opacity-row") || this.shadowRoot).querySelector("[data-bg-opacity-value]");
       el.addEventListener("input", () => {
         const p = parseInt(el.value, 10) || 0;
         if (anzeige) anzeige.textContent = p + " %";
