@@ -364,7 +364,7 @@ pruefe("Jede Vorlage liegt in einer angezeigten Gruppe der Vorlagenseite", () =>
   // Gruppenliste - sie muessen aber weiterhin irgendwo auftauchen.
   const gruppenIds = Array.from(kontext.gruppen, (g) => g.id);
   const imKasten = [...alles.matchAll(/renderGlasVorlagenteil\([^)]*?"([a-z-]+)"/g)].map((m) => m[1]).filter((id) => gruppenIds.includes(id));
-  assert.ok(imKasten.includes("hintergrund"), "Gruppe hintergrund wird nirgends gezeichnet");
+  for (const id of ["glas", "hintergrund"]) assert.ok(imKasten.includes(id), `Gruppe ${id} wird nirgends gezeichnet`);
   assert.deepEqual([...new Set([...reihenfolge, ...imKasten])].sort(), gruppenIds.sort(), "nicht jede Gruppe wird angezeigt");
 
   // Die Vorlagen der Seitenleiste stehen quer ueber die Gruppen in ihrem
