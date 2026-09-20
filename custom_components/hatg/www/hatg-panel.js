@@ -6891,23 +6891,26 @@ class HATGPanel extends HTMLElement {
     if (!vorlagen.length) return;
     const werte = this.currentValues();
     const aktiv = (tpl) => hatgVorlagenBlockActive(String(werte[hatgVorlagenZiel(tpl)] || ""), tpl.id);
-    const alleAktiv = vorlagen.every(aktiv);
+    // Ist irgendetwas an, raeumt der Schalter alles ab; ist nichts an,
+    // schaltet er alles ein. Sonst liesse sich ein halb aktives Paket mit
+    // einem Klick nicht zuruecksetzen.
+    const etwasAktiv = vorlagen.some(aktiv);
     let anzahl = 0;
     vorlagen.forEach((tpl) => {
-      if (aktiv(tpl) === alleAktiv) {
+      if (aktiv(tpl) === etwasAktiv) {
         this.schalteVorlage(tpl.id, { still: true });
         anzahl++;
       }
     });
     if (name === "glas") {
-      if (alleAktiv) this.glasFelderZuruecksetzen();
+      if (etwasAktiv) this.glasFelderZuruecksetzen();
       else this.glasFelderSetzen({ still: true });
     }
     this.render();
     const meta = HATG_PAKETE[name];
     const bezeichnung = this._sprache === "en" && meta.labelEn ? meta.labelEn : meta.label;
     this.showToast(
-      alleAktiv
+      etwasAktiv
         ? `${bezeichnung}: ${anzahl} Vorlagen entfernt.`
         : `${bezeichnung}: ${anzahl} Vorlagen aktiviert. Jetzt speichern und Themes neu laden.`
     );
@@ -6968,8 +6971,11 @@ class HATGPanel extends HTMLElement {
   // setzt das Glas-Paket die Felder selbst auf seinen Standard - danach wuerde
   // es die gerade gewaehlte Variante wieder ueberschreiben.
   glasPaketSicherstellen() {
-    const stand = this.paketStand("glas");
-    if (stand.gesamt && stand.aktiv < stand.gesamt) this.schaltePaket("glas");
+    const vorlagen = this.alleVorlagen().filter((t) => hatgVorlagenPaket(t) === "glas");
+    const fehlend = vorlagen.filter((t) => !this.vorlageIrgendwoAktiv(t.id));
+    if (!fehlend.length) return;
+    fehlend.forEach((t) => this.schalteVorlage(t.id, { still: true }));
+    this.glasFelderSetzen({ still: true });
   }
   setzeGlasVariante(mode, id) {
     const v = HATG_GLAS_VARIANTEN[mode].find((x) => x.id === id);
@@ -8135,7 +8141,8 @@ uix:
   schalteGruppe(gruppeId) {
     const liste = HATG_VORLAGEN.filter((t) => hatgVorlagenGruppeVon(t) === gruppeId);
     const stand = this.gruppenStand(gruppeId);
-    const einschalten = stand.aktiv < stand.gesamt;
+    // Wie beim Paket: Ist etwas an, raeumt der Schalter ab.
+    const einschalten = stand.aktiv === 0;
     liste.forEach((t) => {
       if (this.vorlageIrgendwoAktiv(t.id) !== einschalten) this.schalteVorlage(t.id, { still: true });
     });
@@ -8295,7 +8302,7 @@ uix:
       if (this.vorlageIrgendwoAktiv(id) !== soll) this.schalteVorlage(id, { still: true });
     };
     if (wahl === "alle") {
-      const einschalten = HATG_KOPFLEISTE_VORLAGEN.filter((id) => this.vorlageIrgendwoAktiv(id)).length < HATG_KOPFLEISTE_VORLAGEN.length;
+      const einschalten = !HATG_KOPFLEISTE_VORLAGEN.some((id) => this.vorlageIrgendwoAktiv(id));
       HATG_KOPFLEISTE_VORLAGEN.forEach((id) => setze(id, einschalten));
     } else if (wahl === "dashboard-aus") setze("glas-dashboard-kopfleiste", false);
     else if (wahl === "dashboard-an") setze("glas-dashboard-kopfleiste", true);
@@ -8442,7 +8449,7 @@ uix:
       if (this.vorlageIrgendwoAktiv(id) !== soll) this.schalteVorlage(id, { still: true });
     };
     if (wahl === "alle") {
-      const einschalten = HATG_SEITENLEISTE_VORLAGEN.filter((id) => this.vorlageIrgendwoAktiv(id)).length < HATG_SEITENLEISTE_VORLAGEN.length;
+      const einschalten = !HATG_SEITENLEISTE_VORLAGEN.some((id) => this.vorlageIrgendwoAktiv(id));
       // Akzentfarbe und wanderndes Licht nicht beide: beim Einschalten gewinnt die Akzentfarbe.
       HATG_SEITENLEISTE_VORLAGEN.forEach((id) => setze(id, einschalten && id !== "glow-aktiv-seitenleiste"));
     } else if (wahl === "titel-standard") setze("seitenleiste-titel", false);
