@@ -7607,14 +7607,6 @@ uix:
             <button type="button" class="${(this._state.vorlagenAnsicht || "liste") === "liste" ? "active" : ""}" data-vorlagen-ansicht="liste" title="${this._sprache === "en" ? "List" : "Liste"}"><ha-icon icon="mdi:format-list-bulleted"></ha-icon></button>
             <button type="button" class="${this._state.vorlagenAnsicht === "kacheln" ? "active" : ""}" data-vorlagen-ansicht="kacheln" title="${this._sprache === "en" ? "Tiles" : "Kacheln"}"><ha-icon icon="mdi:view-grid-outline"></ha-icon></button>
           </div>
-          <button type="button" class="vorlage-veraltet-button" data-schalte-paket="glas">
-            <ha-icon icon="${stand.aktiv === stand.gesamt ? "mdi:close-circle-outline" : "mdi:auto-fix"}"></ha-icon>
-            <span>${
-              stand.aktiv === stand.gesamt
-                ? this._sprache === "en" ? "Remove all" : "Alle entfernen"
-                : this._sprache === "en" ? "Activate all" : "Alle aktivieren"
-            }</span>
-          </button>
         </div>`
       : "";
     const deckend = stand.aktiv ? this.deckendeFlaechenfarben() : [];
@@ -7673,14 +7665,17 @@ uix:
             <div class="generator-control glas-regler-farbe">
               <label data-roh>${this._sprache === "en" ? "Tint" : "Farbton"}</label>
               <div class="glas-toene">
-                <label class="glas-ton" data-roh title="${this._sprache === "en" ? "Light mode" : "Light-Modus"}">
-                  <input type="color" value="${hatgEscape(glasHell.ton)}" data-glas-ton-light />
-                  <span>${this._sprache === "en" ? "Light" : "Hell"}</span>
-                </label>
-                <label class="glas-ton" data-roh title="${this._sprache === "en" ? "Dark mode" : "Dark-Modus"}">
+                ${
+                  this._state.editorMode === "dark"
+                    ? `<label class="glas-ton" data-roh title="${this._sprache === "en" ? "Dark mode" : "Dark-Modus"}">
                   <input type="color" value="${hatgEscape(glasDunkel.ton)}" data-glas-ton-dark />
                   <span>${this._sprache === "en" ? "Dark" : "Dunkel"}</span>
-                </label>
+                </label>`
+                    : `<label class="glas-ton" data-roh title="${this._sprache === "en" ? "Light mode" : "Light-Modus"}">
+                  <input type="color" value="${hatgEscape(glasHell.ton)}" data-glas-ton-light />
+                  <span>${this._sprache === "en" ? "Light" : "Hell"}</span>
+                </label>`
+                }
               </div>
             </div>
           </div>
@@ -7719,7 +7714,7 @@ uix:
     return `
       <section class="editor-section">
         <div class="section-heading">${kopf}</div>
-        ${!gruppe ? this.renderStartpaket() : ""}
+        ${!gruppe ? this.renderStartpaket(glasRegler) : ""}
         ${paketLeiste}
         ${pfadHinweis}
         ${kollisionsHinweis}
@@ -7727,7 +7722,7 @@ uix:
         ${farbHinweis}
         ${duennHinweis}
         ${hinweis}
-        ${stand.gesamt ? this.renderVorlagenEinstellungen(glasRegler + this.renderAkzentVerlauf()) : ""}
+        ${stand.gesamt ? this.renderVorlagenEinstellungen(this.renderAkzentVerlauf()) : ""}
         ${
           !gruppe
             ? this.renderVorlagenGruppen(werksVorlagen, istAktiv, zeichne, alsListe)
@@ -7751,7 +7746,7 @@ uix:
   // Der Einstieg in die Vorlagenseite: ein Stil, ein paar Grundentscheidungen.
   // Was hier gesetzt wird, steht danach in den Feldern - die Liste darunter
   // zeigt, was daraus geworden ist.
-  renderStartpaket() {
+  renderStartpaket(glasRegler = "") {
     const en = this._sprache === "en";
     const stand = this.paketStand("glas");
     if (!stand.gesamt) return "";
@@ -7782,7 +7777,12 @@ uix:
               ? "Kind of glass, border and shadow. The glass applies to the mode you are editing, border and shadow to both."
               : "Art des Glases, Rahmen und Schatten. Das Glas gilt für den Modus, den du gerade bearbeitest, Rahmen und Schatten für beide."
           }</span>
-          ${stand.aktiv === stand.gesamt ? `<small class="vorlage-badge">${en ? "active" : "aktiv"}</small>` : ""}
+          <button type="button" class="vorlage-schalter startpaket-schalter ${stand.aktiv ? "is-active" : ""}" data-paket-schalter="glas"
+            title="${stand.aktiv ? (en ? "Switch glass off" : "Glas ausschalten") : en ? "Switch glass on" : "Glas einschalten"}"
+            aria-pressed="${stand.aktiv ? "true" : "false"}">
+            <ha-icon icon="${stand.aktiv === stand.gesamt ? "mdi:check-circle" : stand.aktiv ? "mdi:circle-slice-4" : "mdi:circle-outline"}"></ha-icon>
+            <span data-roh>${stand.aktiv}/${stand.gesamt}</span>
+          </button>
         </summary>
         <div class="vorlagen-kasten-inhalt">
           ${reihe(en ? "Preset" : "Voreinstellung", profile, this.aktivesGlasProfil(), "data-glas-profil")}
@@ -7794,6 +7794,7 @@ uix:
           )}
           ${reihe(en ? "Border" : "Rahmen", HATG_GLAS_RAHMEN, this.glasRahmenErkennen(), "data-glas-rahmen")}
           ${reihe(en ? "Shadow" : "Schatten", HATG_GLAS_SCHATTEN, this.glasSchattenErkennen(), "data-glas-schatten")}
+          ${glasRegler}
           <p class="vorlage-desc" data-roh>${
             eigen
               ? en
@@ -7814,7 +7815,7 @@ uix:
           <summary data-roh>
             <ha-icon icon="mdi:tune-variant"></ha-icon>
             <strong>${en ? "Settings" : "Einstellungen"}</strong>
-            <span>${en ? "Glass values and gradient for active surfaces" : "Glaswerte und Verlauf für aktive Flächen"}</span>
+            <span>${en ? "Gradient for active surfaces" : "Verlauf für aktive Flächen"}</span>
           </summary>
           <div class="vorlagen-kasten-inhalt">${inhalt}</div>
         </details>`;
@@ -9822,6 +9823,8 @@ uix:
         .startpaket-chip:hover { border-color: rgba(31, 158, 82, .45); }
         .startpaket-chip.active { color: #fff; border-color: transparent; background: linear-gradient(135deg, rgba(31,158,82,.85), rgba(31,158,82,.5)); }
         .startpaket .vorlage-desc { margin: 12px 0 0; }
+        .startpaket-schalter { display: inline-flex; align-items: center; gap: 6px; width: auto; padding: 4px 10px 4px 6px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+        .startpaket-schalter ha-icon { --mdc-icon-size: 18px; }
         @media (max-width: 720px) { .startpaket-titel { min-width: 0; flex-basis: 100%; padding-top: 0; } }
         .vorlagen-gruppe.ist-aelter > summary strong { color: var(--hatg-text-dim); }
         .vorlagen-gruppe-hinweis { margin: 0 4px 10px; font-size: 12px; line-height: 1.5; color: var(--hatg-text-dim); }
@@ -10475,6 +10478,14 @@ uix:
       el.addEventListener("click", () => {
         this._state.vorlagenAnsicht = el.dataset.vorlagenAnsicht;
         this.render();
+      });
+    });
+    this.shadowRoot.querySelectorAll("[data-paket-schalter]").forEach((el) => {
+      el.addEventListener("click", (ereignis) => {
+        // Der Schalter sitzt im summary - ohne das hier klappt der Kasten mit.
+        ereignis.preventDefault();
+        ereignis.stopPropagation();
+        this.schaltePaket(el.dataset.paketSchalter);
       });
     });
     this.shadowRoot.querySelectorAll("[data-glas-variante-light]").forEach((el) => {
