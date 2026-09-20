@@ -7980,6 +7980,7 @@ uix:
   // eingeschalteten Bubble-Karten und den aktiven Eintrag der Seitenleiste.
   renderGrundeinstellungen() {
     const en = this._sprache === "en";
+    const modus = this._state.editorMode === "dark" ? "dark" : "light";
     const inhalt = this.renderAkzentVerlauf();
     if (!inhalt) return "";
     return `
@@ -7993,7 +7994,27 @@ uix:
               : "Was überall gilt, unabhängig vom Stil."
           }</span>
         </summary>
-        <div class="vorlagen-kasten-inhalt">${inhalt}</div>
+        <div class="vorlagen-kasten-inhalt">
+          <p class="vorlage-feld-titel" data-roh>${en ? "Gradient for active surfaces" : "Verlauf für aktive Flächen"}</p>
+          ${inhalt}
+          <p class="vorlage-desc" data-roh>${
+            en
+              ? "The gradient counts for light and dark alike - UIX lines know no modes."
+              : "Der Verlauf gilt für hell und dunkel gleich - UIX-Zeilen kennen keine Modi."
+          }</p>
+          <div class="startpaket-trenner" data-roh></div>
+          <p class="vorlage-feld-titel" data-roh>${
+            en
+              ? `Card radius - ${modus === "dark" ? "dark" : "light"} mode`
+              : `Kartenradius - ${modus === "dark" ? "dunkler" : "heller"} Modus`
+          }</p>
+          ${this.renderBasisRow("radius")}
+          <p class="vorlage-desc" data-roh>${
+            en
+              ? "It sets the radius for cards, Bubble Card and Mushroom at once; nested elements get 4 px less. The arrows copy the value to the other mode."
+              : "Setzt den Radius für Karten, Bubble Card und Mushroom auf einmal; innen liegende Elemente bekommen 4 px weniger. Der Doppelpfeil überträgt den Wert in den anderen Modus."
+          }</p>
+        </div>
       </details>`;
   }
 
