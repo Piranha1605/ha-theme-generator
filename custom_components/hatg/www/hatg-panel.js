@@ -7538,9 +7538,7 @@ uix:
                   ${
                     tpl.titel || tpl.werte
                       ? `<p class="vorlage-feld-titel" data-roh>${
-                          this._sprache === "en"
-                            ? "Values of this preset — they exist only here"
-                            : "Eigene Werte dieser Vorlage — sie gibt es nur hier"
+                          this._sprache === "en" ? "Only here" : "Nur hier"
                         }</p>`
                       : ""
                   }
@@ -7548,9 +7546,7 @@ uix:
                   ${
                     felder.length
                       ? `<p class="vorlage-feld-titel" data-roh>${
-                          this._sprache === "en"
-                            ? "From the theme fields — shared with every preset that reads them"
-                            : "Aus den Theme-Feldern — geteilt mit jeder Vorlage, die sie liest"
+                          this._sprache === "en" ? "From the theme" : "Aus dem Theme"
                         }</p>${this.renderFieldList(felder, null, true)}`
                       : ""
                   }
@@ -7730,7 +7726,15 @@ uix:
     return `
       <section class="editor-section">
         <div class="section-heading">${kopf}</div>
-        ${!gruppe ? this.renderStartpaket(glasRegler, this.renderGlasVorlagenteil(werksVorlagen, istAktiv, zeichne, alsListe)) : ""}
+        ${
+          !gruppe
+            ? this.renderStartpaket(
+                glasRegler,
+                this.renderGlasVorlagenteil(werksVorlagen, istAktiv, zeichne, alsListe),
+                stand.gesamt ? this.renderAkzentVerlauf() : ""
+              )
+            : ""
+        }
         ${paketLeiste}
         ${pfadHinweis}
         ${kollisionsHinweis}
@@ -7738,7 +7742,6 @@ uix:
         ${farbHinweis}
         ${duennHinweis}
         ${hinweis}
-        ${stand.gesamt ? this.renderVorlagenEinstellungen(this.renderAkzentVerlauf()) : ""}
         ${
           !gruppe
             ? this.renderVorlagenGruppen(werksVorlagen, istAktiv, zeichne, alsListe)
@@ -7762,7 +7765,7 @@ uix:
   // Der Einstieg in die Vorlagenseite: ein Stil, ein paar Grundentscheidungen.
   // Was hier gesetzt wird, steht danach in den Feldern - die Liste darunter
   // zeigt, was daraus geworden ist.
-  renderStartpaket(glasRegler = "", vorlagenteil = "") {
+  renderStartpaket(glasRegler = "", vorlagenteil = "", verlauf = "") {
     const en = this._sprache === "en";
     const stand = this.paketStand("glas");
     if (!stand.gesamt) return "";
@@ -7811,6 +7814,7 @@ uix:
           ${reihe(en ? "Border" : "Rahmen", HATG_GLAS_RAHMEN, this.glasRahmenErkennen(), "data-glas-rahmen")}
           ${reihe(en ? "Shadow" : "Schatten", HATG_GLAS_SCHATTEN, this.glasSchattenErkennen(), "data-glas-schatten")}
           ${glasRegler}
+          ${verlauf}
           ${vorlagenteil}
           <p class="vorlage-desc" data-roh>${
             eigen
@@ -7825,18 +7829,6 @@ uix:
       </details>`;
   }
 
-  renderVorlagenEinstellungen(inhalt) {
-    const en = this._sprache === "en";
-    return `
-        <details class="vorlagen-kasten vorlagen-einstellungen" data-vorlagen-kasten="einstellungen" ${this.vorlagenKastenOffen("einstellungen") ? "open" : ""}>
-          <summary data-roh>
-            <ha-icon icon="mdi:tune-variant"></ha-icon>
-            <strong>${en ? "Settings" : "Einstellungen"}</strong>
-            <span>${en ? "Gradient for active surfaces" : "Verlauf für aktive Flächen"}</span>
-          </summary>
-          <div class="vorlagen-kasten-inhalt">${inhalt}</div>
-        </details>`;
-  }
 
   // Die einzelnen Glas-Vorlagen stehen im Glas-Kasten statt als eigene Gruppe:
   // Erst die Werte einstellen, dann - wenn noetig - einzelne Flaechen abwaehlen.
