@@ -356,8 +356,12 @@ pruefe("Jede Vorlage liegt in einer angezeigten Gruppe der Vorlagenseite", () =>
   const reihenfolge = JSON.parse(/const reihenfolge = (\[[^\]]*\]);/.exec(alles)[1].replace(/'/g, '"'));
   // Die Glas-Vorlagen stehen im Glas-Kasten oben, nicht in der Gruppenliste -
   // sie muessen aber weiterhin irgendwo auftauchen.
-  assert.ok(/renderGlasVorlagenteil\(/.test(alles) && /hatgVorlagenGruppeVon\(t\) === "glas"/.test(alles), "Glas-Gruppe wird nirgends gezeichnet");
-  assert.deepEqual([...reihenfolge, "glas"].sort(), Array.from(kontext.gruppen, (g) => g.id).sort(), "nicht jede Gruppe wird angezeigt");
+  // Glas und Hintergrund stehen in ihrem eigenen Kasten oben, nicht in der
+  // Gruppenliste - sie muessen aber weiterhin irgendwo auftauchen.
+  const imKasten = [...alles.matchAll(/renderGlasVorlagenteil\([^)]*"([a-z-]+)"\)/g)].map((m) => m[1]);
+  assert.ok(imKasten.includes("hintergrund"), "Hintergrund-Gruppe wird nirgends gezeichnet");
+  assert.ok(/renderGlasVorlagenteil\(vorlagen, istAktiv, zeichne, alsListe, gruppeId = "glas"\)/.test(alles), "Glas-Gruppe wird nirgends gezeichnet");
+  assert.deepEqual([...new Set([...reihenfolge, "glas", ...imKasten])].sort(), Array.from(kontext.gruppen, (g) => g.id).sort(), "nicht jede Gruppe wird angezeigt");
   const weitere = [];
   for (const v of vorlagen) {
     const paket = (/\bpaket:\s*"([^"]+)"/.exec(v.block) || [])[1];

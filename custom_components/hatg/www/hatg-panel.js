@@ -7736,6 +7736,7 @@ uix:
               )
             : ""
         }
+        ${!gruppe ? this.renderHintergrundKasten(werksVorlagen, istAktiv, zeichne, alsListe) : ""}
         ${pfadHinweis}
         ${kollisionsHinweis}
         ${verwaistHinweis}
@@ -7830,16 +7831,17 @@ uix:
   }
 
 
-  // Die einzelnen Glas-Vorlagen stehen im Glas-Kasten statt als eigene Gruppe:
-  // Erst die Werte einstellen, dann - wenn noetig - einzelne Flaechen abwaehlen.
-  renderGlasVorlagenteil(vorlagen, istAktiv, zeichne, alsListe) {
+  // Die einzelnen Vorlagen einer Gruppe stehen im Kasten ihres Stils statt als
+  // eigene Gruppe: Erst die Werte einstellen, dann - wenn noetig - einzelne
+  // Flaechen abwaehlen.
+  renderGlasVorlagenteil(vorlagen, istAktiv, zeichne, alsListe, gruppeId = "glas") {
     const en = this._sprache === "en";
-    const liste = vorlagen.filter((t) => hatgVorlagenGruppeVon(t) === "glas");
+    const liste = vorlagen.filter((t) => hatgVorlagenGruppeVon(t) === gruppeId);
     if (!liste.length) return "";
     const aktiv = liste.filter(istAktiv).length;
     const inhalt = liste.map((t) => zeichne(t, false)).join("");
     return `
-      <details class="vorlagen-kasten vorlagen-gruppe startpaket-vorlagen" data-vorlagen-kasten="glas" ${this.vorlagenKastenOffen("glas") ? "open" : ""}>
+      <details class="vorlagen-kasten vorlagen-gruppe startpaket-vorlagen" data-vorlagen-kasten="${gruppeId}-teil" ${this.vorlagenKastenOffen(gruppeId + "-teil") ? "open" : ""}>
         <summary data-roh>
           <strong>${en ? "Adjust single presets" : "Einzelne Vorlagen anpassen"}</strong>
           <span class="vorlagen-gruppe-stand ${aktiv ? "hat-aktive" : ""}">${en ? `${aktiv} of ${liste.length} active` : `${aktiv} von ${liste.length} aktiv`}</span>
@@ -7850,10 +7852,117 @@ uix:
       </details>`;
   }
 
+  // Die Vorlagen einer Gruppe als Ganzes schalten: Ist eine aktiv, gehen alle
+  // aus, sonst alle an.
+  gruppenStand(gruppeId) {
+    const liste = HATG_VORLAGEN.filter((t) => hatgVorlagenGruppeVon(t) === gruppeId);
+    const aktiv = liste.filter((t) => this.vorlageIrgendwoAktiv(t.id)).length;
+    return { aktiv, gesamt: liste.length };
+  }
+  schalteGruppe(gruppeId) {
+    const liste = HATG_VORLAGEN.filter((t) => hatgVorlagenGruppeVon(t) === gruppeId);
+    const stand = this.gruppenStand(gruppeId);
+    const einschalten = stand.aktiv < stand.gesamt;
+    liste.forEach((t) => {
+      if (this.vorlageIrgendwoAktiv(t.id) !== einschalten) this.schalteVorlage(t.id, { still: true });
+    });
+    this.render();
+    const en = this._sprache === "en";
+    this.showToast(
+      einschalten
+        ? en
+          ? `${liste.length} presets activated. Now save and reload themes.`
+          : `${liste.length} Vorlagen aktiviert. Jetzt speichern und Themes neu laden.`
+        : en
+          ? `${liste.length} presets removed.`
+          : `${liste.length} Vorlagen entfernt.`
+    );
+  }
+  // Hintergrund: dieselbe Reihenfolge wie beim Glas - erst die Entscheidungen,
+  // dann die Bewegung, zuletzt die einzelnen Vorlagen.
+  renderHintergrundKasten(vorlagen, istAktiv, zeichne, alsListe) {
+    const en = this._sprache === "en";
+    const stand = this.gruppenStand("hintergrund");
+    if (!stand.gesamt) return "";
+    const values = this.currentValues();
+    const an = (id) => hatgVorlagenBlockActive(values[hatgVorlagenZiel(HATG_VORLAGEN.find((t) => t.id === id))] || "", id);
+    const ueberall = an("ansicht-hintergrundbild");
+    const popups = an("bubble-popup-hintergrundbild") || an("info-dialog-hintergrundbild");
+    const reihe = (titel, inhalt) => `
+      <div class="startpaket-reihe" data-roh>
+        <span class="startpaket-titel">${hatgEscape(titel)}</span>
+        <div class="startpaket-chips" role="group">${inhalt}</div>
+      </div>`;
+    const chip = (text, aktiv, attribut) => `<button type="button" class="startpaket-chip ${aktiv ? "active" : ""}" ${attribut}>${hatgEscape(text)}</button>`;
+    return `
+      <details class="vorlagen-kasten startpaket" data-vorlagen-kasten="hintergrund-kasten" ${this.vorlagenKastenOffen("hintergrund-kasten") ? "open" : ""}>
+        <summary data-roh>
+          <ha-icon icon="mdi:image-outline"></ha-icon>
+          <strong>${en ? "Background" : "Hintergrund"}</strong>
+          <span>${
+            en
+              ? "Where the background image shows, whether pop-ups get one, and whether it moves."
+              : "Wo das Hintergrundbild zu sehen ist, ob Pop-ups eines bekommen und ob es sich bewegt."
+          }</span>
+          <button type="button" class="vorlage-schalter startpaket-schalter ${stand.aktiv ? "is-active" : ""}" data-gruppen-schalter="hintergrund"
+            title="${stand.aktiv ? (en ? "Switch all off" : "Alle ausschalten") : en ? "Switch all on" : "Alle einschalten"}"
+            aria-pressed="${stand.aktiv ? "true" : "false"}">
+            <ha-icon icon="${stand.aktiv === stand.gesamt ? "mdi:check-circle" : stand.aktiv ? "mdi:circle-slice-4" : "mdi:circle-outline"}"></ha-icon>
+            <span data-roh>${stand.aktiv}/${stand.gesamt}</span>
+          </button>
+        </summary>
+        <div class="vorlagen-kasten-inhalt">
+          ${reihe(
+            en ? "Image" : "Bild",
+            chip(en ? "Dashboard image" : "Dashboard-Bild", false, 'data-bild-waehlen="lovelace-background"') +
+              chip(en ? "Pop-up image" : "Pop-up-Bild", false, 'data-bild-waehlen="popup-custom-wallpaper"')
+          )}
+          ${reihe(
+            en ? "Where" : "Wo",
+            chip(en ? "Dashboard only" : "Nur Dashboard", !ueberall, 'data-hintergrund-wo="dashboard"') +
+              chip(en ? "Whole interface" : "Ganze Oberfläche", ueberall, 'data-hintergrund-wo="ueberall"')
+          )}
+          ${reihe(
+            en ? "Pop-ups" : "Pop-ups",
+            chip(en ? "Without image" : "Ohne Bild", !popups, 'data-hintergrund-popups="aus"') +
+              chip(en ? "With image" : "Mit Bild", popups, 'data-hintergrund-popups="an"')
+          )}
+          ${this.renderHintergrundBewegung()}
+          ${this.renderGlasVorlagenteil(vorlagen, istAktiv, zeichne, alsListe, "hintergrund")}
+        </div>
+      </details>`;
+  }
+
+  // Wo das Bild zu sehen ist: nur auf Dashboards oder ueberall. Die
+  // Einstellungsseiten brauchen beide Vorlagen - die zweite macht sie
+  // durchsichtig, ohne die erste liegt dort kein Bild.
+  setzeHintergrundWo(wahl) {
+    const soll = wahl === "ueberall";
+    ["ansicht-hintergrundbild", "einstellungen-hintergrund-frei"].forEach((id) => {
+      if (this.vorlageIrgendwoAktiv(id) !== soll) this.schalteVorlage(id, { still: true });
+    });
+    this.render();
+    const en = this._sprache === "en";
+    this.showToast(
+      soll
+        ? en ? "Background image across the whole interface." : "Hintergrundbild über die ganze Oberfläche."
+        : en ? "Background image on dashboards only." : "Hintergrundbild nur auf Dashboards."
+    );
+  }
+  setzeHintergrundPopups(wahl) {
+    const soll = wahl === "an";
+    ["bubble-popup-hintergrundbild", "info-dialog-hintergrundbild"].forEach((id) => {
+      if (this.vorlageIrgendwoAktiv(id) !== soll) this.schalteVorlage(id, { still: true });
+    });
+    this.render();
+    const en = this._sprache === "en";
+    this.showToast(soll ? (en ? "Pop-ups with a background image." : "Pop-ups mit Hintergrundbild.") : en ? "Pop-ups without an image." : "Pop-ups ohne Bild.");
+  }
+
   renderVorlagenGruppen(vorlagen, istAktiv, zeichne, alsListe) {
     const en = this._sprache === "en";
     // Angezeigt wird in dieser Reihenfolge; die aelteren stehen zuletzt.
-    const reihenfolge = ["hintergrund", "oberflaeche", "licht", "weitere", "aelter"];
+    const reihenfolge = ["oberflaeche", "licht", "weitere", "aelter"];
     return reihenfolge.map((id) => HATG_VORLAGEN_GRUPPEN.find((x) => x.id === id)).map((g) => {
       const liste = vorlagen.filter((t) => hatgVorlagenGruppeVon(t) === g.id);
       if (!liste.length) return "";
@@ -10514,6 +10623,19 @@ uix:
         this._state.vorlagenAnsicht = el.dataset.vorlagenAnsicht;
         this.render();
       });
+    });
+    this.shadowRoot.querySelectorAll("[data-gruppen-schalter]").forEach((el) => {
+      el.addEventListener("click", (ereignis) => {
+        ereignis.preventDefault();
+        ereignis.stopPropagation();
+        this.schalteGruppe(el.dataset.gruppenSchalter);
+      });
+    });
+    this.shadowRoot.querySelectorAll("[data-hintergrund-wo]").forEach((el) => {
+      el.addEventListener("click", () => this.setzeHintergrundWo(el.dataset.hintergrundWo));
+    });
+    this.shadowRoot.querySelectorAll("[data-hintergrund-popups]").forEach((el) => {
+      el.addEventListener("click", () => this.setzeHintergrundPopups(el.dataset.hintergrundPopups));
     });
     this.shadowRoot.querySelectorAll("[data-paket-schalter]").forEach((el) => {
       el.addEventListener("click", (ereignis) => {
