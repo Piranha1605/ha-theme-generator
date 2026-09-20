@@ -7953,8 +7953,7 @@ uix:
         </div>
         ${
           !gruppe
-            ? this.renderGrundeinstellungen() +
-              this.renderStartpaket(glasRegler, this.renderGlasVorlagenteil(werksVorlagen, istAktiv, zeichne, alsListe))
+            ? this.renderGrundeinstellungen() + this.renderStartpaket(glasRegler)
             : ""
         }
         ${!gruppe ? this.renderHintergrundKasten(werksVorlagen, istAktiv, zeichne, alsListe) : ""}
@@ -8060,8 +8059,8 @@ uix:
           <strong>${en ? "Glass" : "Glas"}</strong>
           <span>${
             en
-              ? "Kind of glass, border and shadow. The glass applies to the mode you are editing, border and shadow to both."
-              : "Art des Glases, Rahmen und Schatten. Das Glas gilt für den Modus, den du gerade bearbeitest, Rahmen und Schatten für beide."
+              ? "The base values: kind of glass, border and shadow. Each area has its own glass switch in its own box."
+              : "Die Grundwerte: Art des Glases, Rahmen und Schatten. Jeder Bereich hat seinen eigenen Glas-Schalter in seinem eigenen Kasten."
           }</span>
           <button type="button" class="vorlage-schalter startpaket-schalter ${stand.aktiv ? "is-active" : ""}" data-paket-schalter="glas"
             title="${stand.aktiv ? (en ? "Switch glass off" : "Glas ausschalten") : en ? "Switch glass on" : "Glas einschalten"}"
@@ -8087,11 +8086,11 @@ uix:
           <p class="vorlage-desc" data-roh>${
             eigen
               ? en
-                ? `Your values in the ${modus === "dark" ? "dark" : "light"} mode do not match any variant - that is fine, the sliders under Settings keep them.`
-                : `Deine Werte im ${modus === "dark" ? "dunklen" : "hellen"} Modus passen zu keiner Variante - das ist in Ordnung, die Regler unter Einstellungen behalten sie.`
+                ? `Your values in the ${modus === "dark" ? "dark" : "light"} mode do not match any variant - that is fine, the sliders below keep them.`
+                : `Deine Werte im ${modus === "dark" ? "dunklen" : "hellen"} Modus passen zu keiner Variante - das ist in Ordnung, die Regler darunter behalten sie.`
               : en
-                ? "Fine tuning stays below: the sliders under Settings, every single preset under the groups."
-                : "Der Feinschliff bleibt darunter: die Regler unter Einstellungen, jede einzelne Vorlage in den Gruppen."
+                ? "The switch at the top switches the whole package and resets the fields when off. Single presets sit in the group Glass package below."
+                : "Der Schalter oben schaltet das ganze Paket und setzt die Felder beim Ausschalten zurück. Die einzelnen Vorlagen stehen unten in der Gruppe Glas-Paket."
           }</p>
         </div>
       </details>`;
@@ -8487,7 +8486,7 @@ uix:
   renderVorlagenGruppen(vorlagen, istAktiv, zeichne, alsListe) {
     const en = this._sprache === "en";
     // Angezeigt wird in dieser Reihenfolge; die aelteren stehen zuletzt.
-    const reihenfolge = ["oberflaeche", "licht", "weitere", "aelter"];
+    const reihenfolge = ["glas", "oberflaeche", "licht", "weitere", "aelter"];
     return reihenfolge.map((id) => HATG_VORLAGEN_GRUPPEN.find((x) => x.id === id)).map((g) => {
       const liste = vorlagen.filter(
         (t) => hatgVorlagenGruppeVon(t) === g.id && !HATG_SEITENLEISTE_VORLAGEN.includes(t.id) && !HATG_KOPFLEISTE_VORLAGEN.includes(t.id)
