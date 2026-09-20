@@ -2329,6 +2329,16 @@ const HATG_SEITENLEISTE_VORLAGEN = [
   "seitenleiste-ohne-scrollbalken",
   "seitenleiste-ohne-trennlinie",
 ];
+// Die Kopfleiste: die Leiste ueber einem Dashboard und die auf den
+// Einstellungsseiten. Beide haben eigene Vorlagen, die Farben teilen sie sich.
+const HATG_KOPFLEISTE_VORLAGEN = ["glas-dashboard-kopfleiste", "kopfleiste-glas", "glas-buttons-rahmen"];
+const HATG_KOPFLEISTE_FELDER = [
+  "app-header-background-color",
+  "app-header-text-color",
+  "app-header-backdrop-filter",
+  "app-header-edit-background-color",
+  "app-header-edit-text-color",
+];
 const HATG_SEITENLEISTE_FELDER = [
   "sidebar-background-color",
   "sidebar-text-color",
@@ -7949,6 +7959,7 @@ uix:
         }
         ${!gruppe ? this.renderHintergrundKasten(werksVorlagen, istAktiv, zeichne, alsListe) : ""}
         ${!gruppe ? this.renderSeitenleisteKasten(werksVorlagen, istAktiv, zeichne, alsListe) : ""}
+        ${!gruppe ? this.renderKopfleisteKasten(werksVorlagen, istAktiv, zeichne, alsListe) : ""}
         ${pfadHinweis}
         ${kollisionsHinweis}
         ${verwaistHinweis}
@@ -8094,7 +8105,12 @@ uix:
     const en = this._sprache === "en";
     const liste = ids
       ? ids.map((id) => vorlagen.find((t) => t.id === id)).filter(Boolean)
-      : vorlagen.filter((t) => hatgVorlagenGruppeVon(t) === gruppeId && !HATG_SEITENLEISTE_VORLAGEN.includes(t.id));
+      : vorlagen.filter(
+          (t) =>
+            hatgVorlagenGruppeVon(t) === gruppeId &&
+            !HATG_SEITENLEISTE_VORLAGEN.includes(t.id) &&
+            !HATG_KOPFLEISTE_VORLAGEN.includes(t.id)
+        );
     if (!liste.length) return "";
     const aktiv = liste.filter(istAktiv).length;
     const inhalt = liste.map((t) => zeichne(t, false)).join("");
@@ -8219,6 +8235,76 @@ uix:
     this.render();
     const en = this._sprache === "en";
     this.showToast(soll ? (en ? "Pop-ups with a background image." : "Pop-ups mit Hintergrundbild.") : en ? "Pop-ups without an image." : "Pop-ups ohne Bild.");
+  }
+
+  // Kopfleiste: Glas ueber dem Dashboard, Glas auf den Einstellungsseiten und
+  // die Knoepfe darin. Die Farben liegen in denselben Feldern.
+  renderKopfleisteKasten(vorlagen, istAktiv, zeichne, alsListe) {
+    const en = this._sprache === "en";
+    const liste = HATG_KOPFLEISTE_VORLAGEN.map((id) => vorlagen.find((t) => t.id === id)).filter(Boolean);
+    if (!liste.length) return "";
+    const an = (id) => this.vorlageIrgendwoAktiv(id);
+    const aktiv = liste.filter((t) => an(t.id)).length;
+    const modus = this._state.editorMode === "dark" ? "dark" : "light";
+    const reihe = (titel, inhalt) => `
+      <div class="startpaket-reihe" data-roh>
+        <span class="startpaket-titel">${hatgEscape(titel)}</span>
+        <div class="startpaket-chips" role="group">${inhalt}</div>
+      </div>`;
+    const chip = (text, ist, wahl) => `<button type="button" class="startpaket-chip ${ist ? "active" : ""}" data-kopfleiste="${wahl}">${hatgEscape(text)}</button>`;
+    return `
+      <details class="vorlagen-kasten startpaket" data-vorlagen-kasten="kopfleiste-kasten" ${this.vorlagenKastenOffen("kopfleiste-kasten") ? "open" : ""}>
+        <summary data-roh>
+          <ha-icon icon="mdi:dock-top"></ha-icon>
+          <strong>${en ? "Top bar" : "Kopfleiste"}</strong>
+          <span>${en ? "Glass, buttons and the colours - above dashboards and on the settings pages." : "Glas, Knöpfe und die Farben - über Dashboards und auf den Einstellungsseiten."}</span>
+          <button type="button" class="vorlage-schalter startpaket-schalter ${aktiv ? "is-active" : ""}" data-kopfleiste="alle"
+            title="${aktiv ? (en ? "Switch all off" : "Alle ausschalten") : en ? "Switch all on" : "Alle einschalten"}" aria-pressed="${aktiv ? "true" : "false"}">
+            <ha-icon icon="${aktiv === liste.length ? "mdi:check-circle" : aktiv ? "mdi:circle-slice-4" : "mdi:circle-outline"}"></ha-icon>
+            <span data-roh>${aktiv}/${liste.length}</span>
+          </button>
+        </summary>
+        <div class="vorlagen-kasten-inhalt">
+          ${reihe(
+            en ? "Above dashboards" : "Über Dashboards",
+            chip(en ? "Off" : "Aus", !an("glas-dashboard-kopfleiste"), "dashboard-aus") +
+              chip(en ? "Glass" : "Glas", an("glas-dashboard-kopfleiste"), "dashboard-an")
+          )}
+          ${reihe(
+            en ? "Settings pages" : "Einstellungsseiten",
+            chip(en ? "Off" : "Aus", !an("kopfleiste-glas"), "einstellungen-aus") +
+              chip(en ? "Glass" : "Glas", an("kopfleiste-glas"), "einstellungen-an")
+          )}
+          ${reihe(
+            en ? "Buttons" : "Knöpfe",
+            chip(en ? "Standard" : "Standard", !an("glas-buttons-rahmen"), "knoepfe-aus") +
+              chip(en ? "Rounded with shadow" : "Rund mit Schatten", an("glas-buttons-rahmen"), "knoepfe-an")
+          )}
+          <div class="startpaket-trenner" data-roh></div>
+          <p class="vorlage-feld-titel" data-roh>${
+            en ? `Colours - ${modus === "dark" ? "dark" : "light"} mode` : `Farben - ${modus === "dark" ? "dunkler" : "heller"} Modus`
+          }</p>
+          ${this.renderFieldList(HATG_KOPFLEISTE_FELDER, null, true)}
+          <div class="startpaket-trenner" data-roh></div>
+          ${this.renderGlasVorlagenteil(vorlagen, istAktiv, zeichne, alsListe, "kopfleiste", HATG_KOPFLEISTE_VORLAGEN)}
+        </div>
+      </details>`;
+  }
+
+  setzeKopfleiste(wahl) {
+    const setze = (id, soll) => {
+      if (this.vorlageIrgendwoAktiv(id) !== soll) this.schalteVorlage(id, { still: true });
+    };
+    if (wahl === "alle") {
+      const einschalten = HATG_KOPFLEISTE_VORLAGEN.filter((id) => this.vorlageIrgendwoAktiv(id)).length < HATG_KOPFLEISTE_VORLAGEN.length;
+      HATG_KOPFLEISTE_VORLAGEN.forEach((id) => setze(id, einschalten));
+    } else if (wahl === "dashboard-aus") setze("glas-dashboard-kopfleiste", false);
+    else if (wahl === "dashboard-an") setze("glas-dashboard-kopfleiste", true);
+    else if (wahl === "einstellungen-aus") setze("kopfleiste-glas", false);
+    else if (wahl === "einstellungen-an") setze("kopfleiste-glas", true);
+    else if (wahl === "knoepfe-aus") setze("glas-buttons-rahmen", false);
+    else if (wahl === "knoepfe-an") setze("glas-buttons-rahmen", true);
+    this.render();
   }
 
   // Seitenleiste: Titel, Benutzerbild, Glas, aktiver Eintrag und die Farben an
@@ -8403,7 +8489,9 @@ uix:
     // Angezeigt wird in dieser Reihenfolge; die aelteren stehen zuletzt.
     const reihenfolge = ["oberflaeche", "licht", "weitere", "aelter"];
     return reihenfolge.map((id) => HATG_VORLAGEN_GRUPPEN.find((x) => x.id === id)).map((g) => {
-      const liste = vorlagen.filter((t) => hatgVorlagenGruppeVon(t) === g.id && !HATG_SEITENLEISTE_VORLAGEN.includes(t.id));
+      const liste = vorlagen.filter(
+        (t) => hatgVorlagenGruppeVon(t) === g.id && !HATG_SEITENLEISTE_VORLAGEN.includes(t.id) && !HATG_KOPFLEISTE_VORLAGEN.includes(t.id)
+      );
       if (!liste.length) return "";
       const aktiv = liste.filter(istAktiv).length;
       const inhalt = liste.map((t) => zeichne(t, false)).join("");
@@ -11062,6 +11150,13 @@ uix:
       el.addEventListener("click", () => {
         this._state.vorlagenAnsicht = el.dataset.vorlagenAnsicht;
         this.render();
+      });
+    });
+    this.shadowRoot.querySelectorAll("[data-kopfleiste]").forEach((el) => {
+      el.addEventListener("click", (ereignis) => {
+        ereignis.preventDefault();
+        ereignis.stopPropagation();
+        this.setzeKopfleiste(el.dataset.kopfleiste);
       });
     });
     this.shadowRoot.querySelectorAll("[data-seitenleiste]").forEach((el) => {
