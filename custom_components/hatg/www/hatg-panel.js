@@ -43,6 +43,12 @@ const HATG_TEXTE = {
   "Kartentransparenz": "Card transparency",
   "Hintergrund": "Background",
   "Pop-up-Hintergrund": "Pop-up background",
+  "Benutzerbild ohne Fläche": "User picture without a surface",
+  "Nimmt die farbige Fläche hinter den Initialen weg; ein hinterlegtes Bild bleibt.": "Removes the coloured surface behind the initials; a picture stays.",
+  "Seitenleiste: aktiver Eintrag eingedrückt": "Sidebar: active entry pressed in",
+  "Der aktive Eintrag sieht aus wie in die Leiste gedrückt, in der Farbe der Leiste mit Innenschatten.": "The active entry looks pressed into the bar, in the bar's colour with an inner shadow.",
+  "Seitenleiste: aktiver Eintrag als Glaspille": "Sidebar: active entry as a glass pill",
+  "Der aktive Eintrag als durchscheinende Pille mit heller Kante.": "The active entry as a translucent pill with a light edge.",
   "Aktive Karten: Hintergrund-Glow": "Active cards: back glow",
   "Eingeschaltete Karten bekommen einen weichen, langsam wandernden Lichtschein dahinter, in der Zustandsfarbe und der Akzentfarbe. Auf gläsernen Karten scheint er durch, dann die Deckkraft klein halten.": "Cards that are on get a soft, slowly drifting glow behind them, in the state colour and the accent colour. On glass cards it shines through, so keep the opacity low.",
   "Seitenleiste: aktiver Eintrag mit wanderndem Licht": "Sidebar: active entry with drifting light",
@@ -2297,6 +2303,9 @@ const HATG_GLAS_VARIANTEN = {
 const HATG_SEITENLEISTE_VORLAGEN = [
   "seitenleiste-titel",
   "benutzer-icon-ios",
+  "benutzer-icon-ohne-flaeche",
+  "seitenleiste-eintrag-gedrueckt",
+  "seitenleiste-eintrag-glaspille",
   "seitenleiste-glas",
   "seitenleiste-aktiv-liquid",
   "glow-aktiv-seitenleiste",
@@ -2565,7 +2574,15 @@ const HATG_VORLAGEN_GRUPPEN = [
     id: "oberflaeche",
     label: "Dialoge und Einstellungen",
     labelEn: "Dialogs and settings",
-    ids: ["seitenleiste-titel", "benutzer-icon-ios", "dialog-weich", "einstellungen-icons-gross"],
+    ids: [
+      "seitenleiste-titel",
+      "benutzer-icon-ios",
+      "benutzer-icon-ohne-flaeche",
+      "seitenleiste-eintrag-gedrueckt",
+      "seitenleiste-eintrag-glaspille",
+      "dialog-weich",
+      "einstellungen-icons-gross",
+    ],
   },
   {
     id: "licht",
@@ -3593,6 +3610,61 @@ ha-list-item-button.selected::before {
   ha-list-item-button.selected::before {
     animation: none;
   }
+}`,
+  },
+  {
+    id: "benutzer-icon-ohne-flaeche",
+    label: "Benutzerbild ohne Fläche",
+    desc: "Nimmt die farbige Fläche hinter den Initialen weg; ein hinterlegtes Bild bleibt.",
+    ziel: "uix-sidebar",
+    css: `/* Die Initialen liegen im Shadow Root von ha-user-badge, eine Regel kommt
+   dort nicht hin. Die Flaeche kommt aus --light-primary-color - die Variable
+   geht durch. Am 2026-09-20 an elementStyles von ha-user-badge geprueft. */
+ha-user-badge {
+  --light-primary-color: transparent;
+}`,
+  },
+  {
+    id: "seitenleiste-eintrag-gedrueckt",
+    label: "Seitenleiste: aktiver Eintrag eingedrückt",
+    desc: "Der aktive Eintrag sieht aus wie in die Leiste gedrückt, in der Farbe der Leiste mit Innenschatten.",
+    werte: [
+      { id: "tiefe", label: "Tiefe des Schattens", labelEn: "Shadow depth", standard: "4px 4px 9px" },
+      { id: "rundung", label: "Rundung", labelEn: "Rounding", standard: "var(--ha-card-border-radius, 14px)" },
+    ],
+    ziel: "uix-sidebar",
+    css: `/* Kein Schlagschatten nach aussen: ha-list-nav schneidet ihn ab. Die Tiefe
+   entsteht innen, aus denselben neumorph-Feldern wie die Mulden der Schieber. */
+ha-list-item-button.selected::before {
+  border-radius: [[rundung]] !important;
+  opacity: 1 !important;
+  background-color: var(--sidebar-background-color, var(--card-background-color)) !important;
+  background-image: none !important;
+  box-shadow:
+    inset [[tiefe]] var(--neumorph-tiefe, color-mix(in srgb, var(--sidebar-background-color, var(--card-background-color)) 86%, #000000)),
+    inset calc(-1 * 4px) calc(-1 * 4px) 9px var(--neumorph-hell, color-mix(in srgb, var(--sidebar-background-color, var(--card-background-color)) 60%, #ffffff)) !important;
+}`,
+  },
+  {
+    id: "seitenleiste-eintrag-glaspille",
+    label: "Seitenleiste: aktiver Eintrag als Glaspille",
+    desc: "Der aktive Eintrag als durchscheinende Pille mit heller Kante.",
+    werte: [
+      { id: "rundung", label: "Rundung", labelEn: "Rounding", standard: "999px" },
+      { id: "staerke", label: "Deckkraft der Fläche", labelEn: "Surface opacity", standard: "12%" },
+      { id: "weichzeichnung", label: "Weichzeichnung", labelEn: "Blur", standard: "10px" },
+    ],
+    ziel: "uix-sidebar",
+    css: `ha-list-item-button.selected::before {
+  border-radius: [[rundung]] !important;
+  opacity: 1 !important;
+  background-color: color-mix(in srgb, var(--sidebar-text-color, var(--primary-text-color)) [[staerke]], transparent) !important;
+  background-image: none !important;
+  /* Die Weichzeichnung liegt auf dem Pseudo-Element, nicht auf dem Eintrag -
+     ein Filter am Element selbst waere Bezugsrahmen fuer position: fixed. */
+  backdrop-filter: blur([[weichzeichnung]]);
+  -webkit-backdrop-filter: blur([[weichzeichnung]]);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, #ffffff 30%, transparent) !important;
 }`,
   },
   {
@@ -7998,7 +8070,18 @@ uix:
       </div>`;
     const chip = (text, ist, wahl) => `<button type="button" class="startpaket-chip ${ist ? "active" : ""}" data-seitenleiste="${wahl}">${hatgEscape(text)}</button>`;
     const glasAn = an("seitenleiste-glas") || an("drawer-glas");
-    const aktivEintrag = an("glow-aktiv-seitenleiste") ? "licht" : an("seitenleiste-aktiv-liquid") ? "akzent" : "standard";
+    const verlaufAn = !!this.akzentVerlaufStand();
+    const aktivEintrag = an("glow-aktiv-seitenleiste")
+      ? "licht"
+      : an("seitenleiste-eintrag-glaspille")
+        ? "glaspille"
+        : an("seitenleiste-eintrag-gedrueckt")
+          ? "gedrueckt"
+          : an("seitenleiste-aktiv-liquid")
+            ? verlaufAn
+              ? "verlauf"
+              : "akzent"
+            : "standard";
     return `
       <details class="vorlagen-kasten startpaket" data-vorlagen-kasten="seitenleiste-kasten" ${this.vorlagenKastenOffen("seitenleiste-kasten") ? "open" : ""}>
         <summary data-roh>
@@ -8025,6 +8108,11 @@ uix:
               chip(en ? "Rounded square" : "Abgerundetes Quadrat", an("benutzer-icon-ios"), "benutzer-quadrat")
           )}
           ${reihe(
+            en ? "Surface behind it" : "Fläche dahinter",
+            chip(en ? "On" : "An", !an("benutzer-icon-ohne-flaeche"), "benutzer-flaeche-an") +
+              chip(en ? "Off" : "Aus", an("benutzer-icon-ohne-flaeche"), "benutzer-flaeche-aus")
+          )}
+          ${reihe(
             en ? "Glass" : "Glas",
             chip(en ? "Off" : "Aus", !glasAn, "glas-aus") + chip(en ? "On" : "An", glasAn, "glas-an")
           )}
@@ -8032,8 +8120,16 @@ uix:
             en ? "Active entry" : "Aktiver Eintrag",
             chip(en ? "Standard" : "Standard", aktivEintrag === "standard", "aktiv-standard") +
               chip(en ? "Accent colour" : "Akzentfarbe", aktivEintrag === "akzent", "aktiv-akzent") +
+              chip(en ? "Gradient" : "Farbverlauf", aktivEintrag === "verlauf", "aktiv-verlauf") +
+              chip(en ? "Pressed in" : "Eingedrückt", aktivEintrag === "gedrueckt", "aktiv-gedrueckt") +
+              chip(en ? "Glass pill" : "Glaspille", aktivEintrag === "glaspille", "aktiv-glaspille") +
               chip(en ? "Drifting light" : "Wanderndes Licht", aktivEintrag === "licht", "aktiv-licht")
           )}
+          <p class="vorlage-desc" data-roh>${
+            en
+              ? "The gradient is the one from the glass area - it also fills the selected surfaces of the cards."
+              : "Der Farbverlauf ist der aus dem Glas-Bereich - er füllt auch das Gewählte der Karten."
+          }</p>
           <p class="vorlage-feld-titel" data-roh>${en ? "Colours" : "Farben"}</p>
           ${this.renderFieldList(HATG_SEITENLEISTE_FELDER, null, true)}
           ${this.renderGlasVorlagenteil(vorlagen, istAktiv, zeichne, alsListe, "seitenleiste", HATG_SEITENLEISTE_VORLAGEN)}
@@ -8057,13 +8153,22 @@ uix:
     else if (wahl === "benutzer-quadrat") setze("benutzer-icon-ios", true);
     else if (wahl === "glas-aus") ["seitenleiste-glas", "drawer-glas"].forEach((id) => setze(id, false));
     else if (wahl === "glas-an") ["seitenleiste-glas", "drawer-glas"].forEach((id) => setze(id, true));
-    else if (wahl === "aktiv-standard") ["seitenleiste-aktiv-liquid", "glow-aktiv-seitenleiste"].forEach((id) => setze(id, false));
-    else if (wahl === "aktiv-akzent") {
-      setze("glow-aktiv-seitenleiste", false);
-      setze("seitenleiste-aktiv-liquid", true);
-    } else if (wahl === "aktiv-licht") {
-      setze("seitenleiste-aktiv-liquid", false);
-      setze("glow-aktiv-seitenleiste", true);
+    else if (wahl === "benutzer-flaeche-an") setze("benutzer-icon-ohne-flaeche", false);
+    else if (wahl === "benutzer-flaeche-aus") setze("benutzer-icon-ohne-flaeche", true);
+    else if (wahl.startsWith("aktiv-")) {
+      // Die Vorlagen des aktiven Eintrags malen alle dieselbe Flaeche - es
+      // bleibt genau eine stehen.
+      const nur = {
+        "aktiv-akzent": "seitenleiste-aktiv-liquid",
+        "aktiv-verlauf": "seitenleiste-aktiv-liquid",
+        "aktiv-gedrueckt": "seitenleiste-eintrag-gedrueckt",
+        "aktiv-glaspille": "seitenleiste-eintrag-glaspille",
+        "aktiv-licht": "glow-aktiv-seitenleiste",
+      }[wahl];
+      ["seitenleiste-aktiv-liquid", "seitenleiste-eintrag-gedrueckt", "seitenleiste-eintrag-glaspille", "glow-aktiv-seitenleiste"].forEach((id) =>
+        setze(id, id === nur)
+      );
+      if (wahl === "aktiv-verlauf" && !this.akzentVerlaufStand()) this.setzeAkzentVerlauf(HATG_VERLAUF_STANDARD);
     }
     this.render();
   }
