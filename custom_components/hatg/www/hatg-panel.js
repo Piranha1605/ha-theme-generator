@@ -7532,7 +7532,31 @@ uix:
             }
             ${eigen ? `<button type="button" class="vorlage-edit" data-bearbeite-vorlage="${tpl.id}" title="Bearbeiten"><ha-icon icon="mdi:pencil-outline"></ha-icon></button>` : ""}
           </div>
-          ${offen && einstellbar ? `<div class="vorlage-zeile-felder">${tpl.titel ? this.renderVorlageTitel(tpl) : ""}${tpl.werte ? this.renderVorlageWerte(tpl) : ""}${felder.length ? this.renderFieldList(felder, null, true) : ""}</div>` : ""}
+          ${
+            offen && einstellbar
+              ? `<div class="vorlage-zeile-felder">
+                  ${
+                    tpl.titel || tpl.werte
+                      ? `<p class="vorlage-feld-titel" data-roh>${
+                          this._sprache === "en"
+                            ? "Values of this preset — they exist only here"
+                            : "Eigene Werte dieser Vorlage — sie gibt es nur hier"
+                        }</p>`
+                      : ""
+                  }
+                  ${tpl.titel ? this.renderVorlageTitel(tpl) : ""}${tpl.werte ? this.renderVorlageWerte(tpl) : ""}
+                  ${
+                    felder.length
+                      ? `<p class="vorlage-feld-titel" data-roh>${
+                          this._sprache === "en"
+                            ? "From the theme fields — shared with every preset that reads them"
+                            : "Aus den Theme-Feldern — geteilt mit jeder Vorlage, die sie liest"
+                        }</p>${this.renderFieldList(felder, null, true)}`
+                      : ""
+                  }
+                </div>`
+              : ""
+          }
         </div>`;
     };
     const kachel = (tpl, eigen) => {
@@ -9839,6 +9863,8 @@ uix:
         .startpaket-schalter { display: inline-flex; align-items: center; gap: 6px; width: auto; padding: 4px 10px 4px 6px; border-radius: 999px; font-size: 12px; font-weight: 600; }
         .startpaket-schalter ha-icon { --mdc-icon-size: 18px; }
         .startpaket-vorlagen { margin-top: 14px; }
+        .vorlage-feld-titel { margin: 10px 0 6px; font-size: 11.5px; font-weight: 700; letter-spacing: .02em; text-transform: uppercase; color: var(--hatg-muted); }
+        .vorlage-feld-titel:first-child { margin-top: 2px; }
         .ansicht-leiste { justify-content: flex-end; }
         @media (max-width: 720px) { .startpaket-titel { min-width: 0; flex-basis: 100%; padding-top: 0; } }
         .vorlagen-gruppe.ist-aelter > summary strong { color: var(--hatg-text-dim); }
