@@ -196,7 +196,7 @@ All 25 hang on the same **glass values** shown above the list. The sliders write
   <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-glaswerte.jpg" alt="The glass values above the preset list, with the live preview beside them" width="62%" />
 </p>
 
-**Gradient for active surfaces** fills Bubble cards that are on, sub-buttons with a background, slider fills, the selected items of HA-Karten cards and the active sidebar entry with a colour gradient – two colours, direction and text colour, the same for light and dark. Home Assistant's own buttons only take colours and keep the primary colour.
+**Gradient for active surfaces** fills Bubble cards that are on, sub-buttons with a background, slider fills, the selected items of Horizon-Cards and the active sidebar entry with a colour gradient – two colours, direction and text colour, the same for light and dark. Home Assistant's own buttons only take colours and keep the primary colour.
 
 ### What is possible beyond cards
 

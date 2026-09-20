@@ -247,7 +247,7 @@ const HATG_TEXTE = {
   "Einstellungsseiten im iOS-Stil: Icons als abgerundete Quadrate, kräftigere Überschriften, leisere Pfeile.": "Settings pages in iOS style: icons as rounded squares, bolder headings, quieter arrows.",
   "Glas: eigene Ebene unter der Karte": "Glass: its own layer beneath the card",
   "Glas: nur Weichzeichnung unter der Karte": "Glass: blur only beneath the card",
-  "Nur Weichzeichnung unter Karten, die ihre Fläche selbst malen, etwa HA-Karten oder Shelly-Karten. Nicht nötig, wenn „Glas: eigene Ebene unter der Karte“ aktiv ist.": "Blur only, beneath cards that paint their own surface, such as HA-Karten or Shelly cards. Not needed while the own-layer glass preset is active.",
+  "Nur Weichzeichnung unter Karten, die ihre Fläche selbst malen, etwa Horizon-Cards oder Shelly-Karten. Nicht nötig, wenn „Glas: eigene Ebene unter der Karte“ aktiv ist.": "Blur only, beneath cards that paint their own surface, such as Horizon-Cards or Shelly cards. Not needed while the own-layer glass preset is active.",
   "Glasfläche für alle HA-Karten aus Kartenfläche, Weichzeichnung, Rundung und Kartenschatten. Überschriften und reine Textkarten bleiben ohne Fläche.": "Glass surface for all HA cards from card surface, blur, radius and card shadow. Headings and text-only cards stay without a surface.",
   "Seitenleiste: aktiver Eintrag in der Akzentfarbe": "Sidebar: active entry in the accent colour",
   "Der aktive Eintrag der Seitenleiste deckend in der Akzentfarbe mit plastischer Kante.": "The active sidebar entry solid in the accent colour with a sculpted edge.",
@@ -1976,10 +1976,10 @@ function hatgVereinheitlicheVorlagenMarken(bag) {
 }
 
 // Verlauf fuer aktive Flaechen: eingeschaltete Bubble-Karten, Sub-Buttons mit
-// Hintergrund, Schieberfuellungen, das Gewaehlte der HA-Karten und der aktive
+// Hintergrund, Schieberfuellungen, das Gewaehlte der Horizon-Cards und der aktive
 // Eintrag der Seitenleiste. HA selbst faerbt seine Knoepfe nur ueber
 // Farbvariablen, die keinen Verlauf annehmen - die bleiben in der Primaerfarbe.
-// Die HA-Karten (ha-karten) lesen ihr Gewaehltes - gewaehlte Betriebsart,
+// Die Horizon-Cards (frueher ha-karten) lesen ihr Gewaehltes - gewaehlte Betriebsart,
 // eingeschalteter Knopf, Menue-Kapsel, Schieberfuellung - aus einer
 // gemeinsamen Kette: --karten-gewaehlt, -vorn, -schatten. Die Vorlage setzt
 // diese drei einmal, statt jede Karte beim Namen anzusprechen: Bis 09/2026
@@ -2664,7 +2664,7 @@ ha-select.bubble-dropdown-select {
   {
     id: "glas-weichzeichnung-karten",
     label: "Glas: nur Weichzeichnung unter der Karte",
-    desc: "Nur Weichzeichnung unter Karten, die ihre Fläche selbst malen, etwa HA-Karten oder Shelly-Karten. Nicht nötig, wenn „Glas: eigene Ebene unter der Karte“ aktiv ist.",
+    desc: "Nur Weichzeichnung unter Karten, die ihre Fläche selbst malen, etwa Horizon-Cards oder Shelly-Karten. Nicht nötig, wenn „Glas: eigene Ebene unter der Karte“ aktiv ist.",
     ziel: "uix-card",
     css: `/* Nur die Karte selbst, nicht ihr Wirt: Ein backdrop-filter auf dem Wirt
    macht ihn zum Bezugsrahmen fuer position: fixed. */
@@ -2673,15 +2673,15 @@ ha-card {
   backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
   -webkit-backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
   /* Die Weichzeichnung folgt der Rundung dieses Elements. Karten, deren
-     Flaeche tiefer liegt (HA-Karten), runden ihre leere ha-card sonst mit
+     Flaeche tiefer liegt (Horizon-Cards), runden ihre leere ha-card sonst mit
      16 px, die Flaeche darin mit 24 px - die Ecken lagen dann ausserhalb. */
   border-radius: var(--ha-card-border-radius, 12px) !important;
 }
-/* Die Menueleiste der HA-Karten ist eine Pille. Ihre Flaeche liest keinen
+/* Die Menueleiste der Horizon-Cards ist eine Pille. Ihre Flaeche liest keinen
    Kartenschatten und blieb neben den uebrigen Karten ohne Kontur - sie
    bekommt den des Themes, die Kapsel des aktiven Punkts die plastische
    Innenkante des Gewaehlten. Die kommt aus --karten-gewaehlt-schatten, der
-   gemeinsamen Kette der HA-Karten - sonst ueberstimmte diese Regel den
+   gemeinsamen Kette der Horizon-Cards - sonst ueberstimmte diese Regel den
    Verlauf fuer aktive Flaechen. */
 ha-card:has(.menue-leiste) {
   border-radius: 9999px !important;
@@ -3388,7 +3388,7 @@ ha-assist-chip {
      feiner Lichtkante - ein Sechstel des Kartenschattens -, kein Ring. */
   --ha-button-box-shadow: [[schatten]];
 }
-/* Bewusst nicht auf :host: Eigene Karten wie die HA-Karten faerben ihre
+/* Bewusst nicht auf :host: Eigene Karten wie die Horizon-Cards faerben ihre
    Mulden ueber --control-button-background-color. Vom App Drawer vererbt,
    wurden sie in der Markenfarbe blau. */
 ha-control-button,
@@ -7719,8 +7719,8 @@ uix:
             <strong>${en ? "Gradient for active surfaces" : "Verlauf für aktive Flächen"}</strong>
             <span>${
               en
-                ? "Fills Bubble cards that are on, sub-buttons with a background, slider fills, the selected items of HA-Karten cards and the active sidebar entry with a gradient. Home Assistant's own buttons only take colours and keep the primary colour. Applies to light and dark alike."
-                : "Füllt eingeschaltete Bubble-Karten, Sub-Buttons mit Hintergrund, Schieberfüllungen, das Gewählte der HA-Karten und den aktiven Eintrag der Seitenleiste mit einem Verlauf. Die Knöpfe von Home Assistant selbst nehmen nur Farben an und bleiben in der Primärfarbe. Gilt für Light und Dark gleich."
+                ? "Fills Bubble cards that are on, sub-buttons with a background, slider fills, the selected items of Horizon-Cards and the active sidebar entry with a gradient. Home Assistant's own buttons only take colours and keep the primary colour. Applies to light and dark alike."
+                : "Füllt eingeschaltete Bubble-Karten, Sub-Buttons mit Hintergrund, Schieberfüllungen, das Gewählte der Horizon-Cards und den aktiven Eintrag der Seitenleiste mit einem Verlauf. Die Knöpfe von Home Assistant selbst nehmen nur Farben an und bleiben in der Primärfarbe. Gilt für Light und Dark gleich."
             }</span>
           </div>
           <div class="glas-profile">

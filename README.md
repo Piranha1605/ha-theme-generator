@@ -194,7 +194,7 @@ Alle 25 hängen an denselben **Glaswerten**, die über der Liste stehen. Die Reg
   <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-glaswerte.jpg" alt="Die Glaswerte über der Vorlagenliste, daneben die Live-Vorschau" width="62%" />
 </p>
 
-**Verlauf für aktive Flächen** füllt eingeschaltete Bubble-Karten, Sub-Buttons mit Hintergrund, Schieberfüllungen, das Gewählte der HA-Karten und den aktiven Eintrag der Seitenleiste mit einem Farbverlauf – zwei Farben, Richtung und Schriftfarbe, für Light und Dark gleich. Knöpfe von Home Assistant selbst nehmen nur Farben an und bleiben in der Primärfarbe.
+**Verlauf für aktive Flächen** füllt eingeschaltete Bubble-Karten, Sub-Buttons mit Hintergrund, Schieberfüllungen, das Gewählte der Horizon-Cards und den aktiven Eintrag der Seitenleiste mit einem Farbverlauf – zwei Farben, Richtung und Schriftfarbe, für Light und Dark gleich. Knöpfe von Home Assistant selbst nehmen nur Farben an und bleiben in der Primärfarbe.
 
 ### Was außerhalb der Karten möglich ist
 
