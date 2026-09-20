@@ -7661,12 +7661,6 @@ uix:
                 : `Wirkt auf alle Glas-Vorlagen gleichzeitig, im gerade bearbeiteten ${this._state.editorMode === "dark" ? "Dark" : "Light"}-Modus.`
             }</span>
           </div>
-          <div class="glas-profile" data-roh>
-            <div class="mode-toggle-group inline" role="group">
-              <button type="button" class="${this.aktivesGlasProfil() === "richtlinie" ? "active" : ""}" data-glas-profil="richtlinie">${this._sprache === "en" ? "Apple guideline" : "Apple-Richtlinie"}</button>
-              <button type="button" class="${this.aktivesGlasProfil() === "ueberall" ? "active" : ""}" data-glas-profil="ueberall">${this._sprache === "en" ? "Glass everywhere" : "Glas überall"}</button>
-            </div>
-          </div>
           <div class="glas-regler-reihe">
             <div class="generator-control">
               <label data-roh>${this._sprache === "en" ? "Opacity" : "Deckkraft"} <span class="generator-value" data-glas-deckkraft-wert>${glas.deckkraft} %</span></label>
@@ -7772,7 +7766,12 @@ uix:
             .join("")}
         </div>
       </div>`;
-    const eigen = !this.glasVarianteErkennen("light") || !this.glasVarianteErkennen("dark");
+    const modus = this._state.editorMode === "dark" ? "dark" : "light";
+    const eigen = !this.glasVarianteErkennen(modus);
+    const profile = [
+      { id: "richtlinie", label: "Apple-Richtlinie", labelEn: "Apple guideline" },
+      { id: "ueberall", label: "Glas überall", labelEn: "Glass everywhere" },
+    ];
     return `
       <details class="vorlagen-kasten startpaket" data-vorlagen-kasten="startpaket" ${this.vorlagenKastenOffen("startpaket") ? "open" : ""}>
         <summary data-roh>
@@ -7780,21 +7779,26 @@ uix:
           <strong>${en ? "Glass" : "Glas"}</strong>
           <span>${
             en
-              ? "Pick the kind of glass, border and shadow - separately for light and dark. It writes the fields and switches on the package."
-              : "Art des Glases, Rahmen und Schatten wählen - für hell und dunkel getrennt. Setzt die Felder und schaltet das Paket ein."
+              ? "Kind of glass, border and shadow. The glass applies to the mode you are editing, border and shadow to both."
+              : "Art des Glases, Rahmen und Schatten. Das Glas gilt für den Modus, den du gerade bearbeitest, Rahmen und Schatten für beide."
           }</span>
           ${stand.aktiv === stand.gesamt ? `<small class="vorlage-badge">${en ? "active" : "aktiv"}</small>` : ""}
         </summary>
         <div class="vorlagen-kasten-inhalt">
-          ${reihe(en ? "Light mode" : "Heller Modus", HATG_GLAS_VARIANTEN.light, this.glasVarianteErkennen("light"), "data-glas-variante-light")}
-          ${reihe(en ? "Dark mode" : "Dunkler Modus", HATG_GLAS_VARIANTEN.dark, this.glasVarianteErkennen("dark"), "data-glas-variante-dark")}
+          ${reihe(en ? "Preset" : "Voreinstellung", profile, this.aktivesGlasProfil(), "data-glas-profil")}
+          ${reihe(
+            modus === "dark" ? (en ? "Glass (dark)" : "Glas (dunkel)") : en ? "Glass (light)" : "Glas (hell)",
+            HATG_GLAS_VARIANTEN[modus],
+            this.glasVarianteErkennen(modus),
+            modus === "dark" ? "data-glas-variante-dark" : "data-glas-variante-light"
+          )}
           ${reihe(en ? "Border" : "Rahmen", HATG_GLAS_RAHMEN, this.glasRahmenErkennen(), "data-glas-rahmen")}
           ${reihe(en ? "Shadow" : "Schatten", HATG_GLAS_SCHATTEN, this.glasSchattenErkennen(), "data-glas-schatten")}
           <p class="vorlage-desc" data-roh>${
             eigen
               ? en
-                ? "Your values do not match any variant - that is fine, the sliders under Settings keep them."
-                : "Deine Werte passen zu keiner Variante - das ist in Ordnung, die Regler unter Einstellungen behalten sie."
+                ? `Your values in the ${modus === "dark" ? "dark" : "light"} mode do not match any variant - that is fine, the sliders under Settings keep them.`
+                : `Deine Werte im ${modus === "dark" ? "dunklen" : "hellen"} Modus passen zu keiner Variante - das ist in Ordnung, die Regler unter Einstellungen behalten sie.`
               : en
                 ? "Fine tuning stays below: the sliders under Settings, every single preset under the groups."
                 : "Der Feinschliff bleibt darunter: die Regler unter Einstellungen, jede einzelne Vorlage in den Gruppen."
