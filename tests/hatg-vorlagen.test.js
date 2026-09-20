@@ -358,10 +358,17 @@ pruefe("Jede Vorlage liegt in einer angezeigten Gruppe der Vorlagenseite", () =>
   // sie muessen aber weiterhin irgendwo auftauchen.
   // Glas und Hintergrund stehen in ihrem eigenen Kasten oben, nicht in der
   // Gruppenliste - sie muessen aber weiterhin irgendwo auftauchen.
-  const imKasten = [...alles.matchAll(/renderGlasVorlagenteil\([^)]*"([a-z-]+)"\)/g)].map((m) => m[1]);
-  assert.ok(imKasten.includes("hintergrund"), "Hintergrund-Gruppe wird nirgends gezeichnet");
-  assert.ok(/renderGlasVorlagenteil\(vorlagen, istAktiv, zeichne, alsListe, gruppeId = "glas"\)/.test(alles), "Glas-Gruppe wird nirgends gezeichnet");
-  assert.deepEqual([...new Set([...reihenfolge, "glas", ...imKasten])].sort(), Array.from(kontext.gruppen, (g) => g.id).sort(), "nicht jede Gruppe wird angezeigt");
+  const gruppenIds = Array.from(kontext.gruppen, (g) => g.id);
+  const imKasten = [...alles.matchAll(/renderGlasVorlagenteil\([^)]*?"([a-z-]+)"/g)].map((m) => m[1]).filter((id) => gruppenIds.includes(id));
+  for (const id of ["glas", "hintergrund"]) assert.ok(imKasten.includes(id), `Gruppe ${id} wird nirgends gezeichnet`);
+  assert.deepEqual([...new Set([...reihenfolge, ...imKasten])].sort(), gruppenIds.sort(), "nicht jede Gruppe wird angezeigt");
+
+  // Die Vorlagen der Seitenleiste stehen quer ueber die Gruppen in ihrem
+  // eigenen Kasten und sind darum aus den Gruppenlisten genommen.
+  const seiten = JSON.parse(/const HATG_SEITENLEISTE_VORLAGEN = (\[[\s\S]*?\]);/.exec(alles)[1].replace(/,\s*\]/, "]").replace(/'/g, '"'));
+  const alleIds = new Set(vorlagen.map((v) => v.id));
+  for (const id of seiten) assert.ok(alleIds.has(id), `Seitenleisten-Kasten nennt eine unbekannte Vorlage: ${id}`);
+  assert.ok(/renderSeitenleisteKasten\(/.test(alles), "Seitenleisten-Kasten fehlt");
   const weitere = [];
   for (const v of vorlagen) {
     const paket = (/\bpaket:\s*"([^"]+)"/.exec(v.block) || [])[1];

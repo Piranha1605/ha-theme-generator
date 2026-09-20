@@ -2292,6 +2292,24 @@ const HATG_GLAS_VARIANTEN = {
     { id: "deckend", label: "Fast deckend", labelEn: "Almost solid", ton: "#1C1C1E", deckkraft: 82, blur: 6 },
   ],
 };
+// Alles, was die Seitenleiste betrifft, steht in einem Kasten - quer ueber die
+// Gruppen hinweg. Die Glas-Vorlagen darunter schaltet das Glas-Paket weiter mit.
+const HATG_SEITENLEISTE_VORLAGEN = [
+  "seitenleiste-titel",
+  "benutzer-icon-ios",
+  "seitenleiste-glas",
+  "seitenleiste-aktiv-liquid",
+  "glow-aktiv-seitenleiste",
+  "drawer-glas",
+];
+const HATG_SEITENLEISTE_FELDER = [
+  "sidebar-background-color",
+  "sidebar-text-color",
+  "sidebar-icon-color",
+  "sidebar-selected-background-color",
+  "sidebar-selected-text-color",
+  "sidebar-selected-icon-color",
+];
 const HATG_GLAS_RAHMEN = [
   { id: "keiner", label: "Kein Rahmen", labelEn: "No border", breite: "0px", farbe: { light: "rgba(0, 0, 0, 0)", dark: "rgba(0, 0, 0, 0)" } },
   { id: "kante", label: "Helle Kante", labelEn: "Light edge", breite: "1px", farbe: { light: "rgba(255, 255, 255, 0.55)", dark: "rgba(255, 255, 255, 0.14)" } },
@@ -2545,8 +2563,8 @@ const HATG_VORLAGEN_GRUPPEN = [
   },
   {
     id: "oberflaeche",
-    label: "Seitenleiste, Dialoge und Einstellungen",
-    labelEn: "Sidebar, dialogs and settings",
+    label: "Dialoge und Einstellungen",
+    labelEn: "Dialogs and settings",
     ids: ["seitenleiste-titel", "benutzer-icon-ios", "dialog-weich", "einstellungen-icons-gross"],
   },
   {
@@ -7737,6 +7755,7 @@ uix:
             : ""
         }
         ${!gruppe ? this.renderHintergrundKasten(werksVorlagen, istAktiv, zeichne, alsListe) : ""}
+        ${!gruppe ? this.renderSeitenleisteKasten(werksVorlagen, istAktiv, zeichne, alsListe) : ""}
         ${pfadHinweis}
         ${kollisionsHinweis}
         ${verwaistHinweis}
@@ -7834,9 +7853,11 @@ uix:
   // Die einzelnen Vorlagen einer Gruppe stehen im Kasten ihres Stils statt als
   // eigene Gruppe: Erst die Werte einstellen, dann - wenn noetig - einzelne
   // Flaechen abwaehlen.
-  renderGlasVorlagenteil(vorlagen, istAktiv, zeichne, alsListe, gruppeId = "glas") {
+  renderGlasVorlagenteil(vorlagen, istAktiv, zeichne, alsListe, gruppeId = "glas", ids = null) {
     const en = this._sprache === "en";
-    const liste = vorlagen.filter((t) => hatgVorlagenGruppeVon(t) === gruppeId);
+    const liste = ids
+      ? ids.map((id) => vorlagen.find((t) => t.id === id)).filter(Boolean)
+      : vorlagen.filter((t) => hatgVorlagenGruppeVon(t) === gruppeId && !HATG_SEITENLEISTE_VORLAGEN.includes(t.id));
     if (!liste.length) return "";
     const aktiv = liste.filter(istAktiv).length;
     const inhalt = liste.map((t) => zeichne(t, false)).join("");
@@ -7961,12 +7982,98 @@ uix:
     this.showToast(soll ? (en ? "Pop-ups with a background image." : "Pop-ups mit Hintergrundbild.") : en ? "Pop-ups without an image." : "Pop-ups ohne Bild.");
   }
 
+  // Seitenleiste: Titel, Benutzerbild, Glas, aktiver Eintrag und die Farben an
+  // einer Stelle. Die Vorlagen dahinter liegen in drei verschiedenen Gruppen.
+  renderSeitenleisteKasten(vorlagen, istAktiv, zeichne, alsListe) {
+    const en = this._sprache === "en";
+    const liste = HATG_SEITENLEISTE_VORLAGEN.map((id) => vorlagen.find((t) => t.id === id)).filter(Boolean);
+    if (!liste.length) return "";
+    const an = (id) => this.vorlageIrgendwoAktiv(id);
+    const aktiv = liste.filter((t) => an(t.id)).length;
+    const titelTpl = liste.find((t) => t.id === "seitenleiste-titel");
+    const reihe = (titel, inhalt) => `
+      <div class="startpaket-reihe" data-roh>
+        <span class="startpaket-titel">${hatgEscape(titel)}</span>
+        <div class="startpaket-chips" role="group">${inhalt}</div>
+      </div>`;
+    const chip = (text, ist, wahl) => `<button type="button" class="startpaket-chip ${ist ? "active" : ""}" data-seitenleiste="${wahl}">${hatgEscape(text)}</button>`;
+    const glasAn = an("seitenleiste-glas") || an("drawer-glas");
+    const aktivEintrag = an("glow-aktiv-seitenleiste") ? "licht" : an("seitenleiste-aktiv-liquid") ? "akzent" : "standard";
+    return `
+      <details class="vorlagen-kasten startpaket" data-vorlagen-kasten="seitenleiste-kasten" ${this.vorlagenKastenOffen("seitenleiste-kasten") ? "open" : ""}>
+        <summary data-roh>
+          <ha-icon icon="mdi:dock-left"></ha-icon>
+          <strong>${en ? "Sidebar" : "Seitenleiste"}</strong>
+          <span>${
+            en ? "Title, user picture, glass, active entry and the colours." : "Titel, Benutzerbild, Glas, aktiver Eintrag und die Farben."
+          }</span>
+          <button type="button" class="vorlage-schalter startpaket-schalter ${aktiv ? "is-active" : ""}" data-seitenleiste="alle"
+            title="${aktiv ? (en ? "Switch all off" : "Alle ausschalten") : en ? "Switch all on" : "Alle einschalten"}" aria-pressed="${aktiv ? "true" : "false"}">
+            <ha-icon icon="${aktiv === liste.length ? "mdi:check-circle" : aktiv ? "mdi:circle-slice-4" : "mdi:circle-outline"}"></ha-icon>
+            <span data-roh>${aktiv}/${liste.length}</span>
+          </button>
+        </summary>
+        <div class="vorlagen-kasten-inhalt">
+          ${reihe(
+            en ? "Title" : "Titel",
+            chip("Home Assistant", !an("seitenleiste-titel"), "titel-standard") + chip(en ? "Own text" : "Eigener Text", an("seitenleiste-titel"), "titel-eigen")
+          )}
+          ${an("seitenleiste-titel") && titelTpl ? this.renderVorlageTitel(titelTpl) : ""}
+          ${reihe(
+            en ? "User picture" : "Benutzerbild",
+            chip(en ? "Round" : "Rund", !an("benutzer-icon-ios"), "benutzer-rund") +
+              chip(en ? "Rounded square" : "Abgerundetes Quadrat", an("benutzer-icon-ios"), "benutzer-quadrat")
+          )}
+          ${reihe(
+            en ? "Glass" : "Glas",
+            chip(en ? "Off" : "Aus", !glasAn, "glas-aus") + chip(en ? "On" : "An", glasAn, "glas-an")
+          )}
+          ${reihe(
+            en ? "Active entry" : "Aktiver Eintrag",
+            chip(en ? "Standard" : "Standard", aktivEintrag === "standard", "aktiv-standard") +
+              chip(en ? "Accent colour" : "Akzentfarbe", aktivEintrag === "akzent", "aktiv-akzent") +
+              chip(en ? "Drifting light" : "Wanderndes Licht", aktivEintrag === "licht", "aktiv-licht")
+          )}
+          <p class="vorlage-feld-titel" data-roh>${en ? "Colours" : "Farben"}</p>
+          ${this.renderFieldList(HATG_SEITENLEISTE_FELDER, null, true)}
+          ${this.renderGlasVorlagenteil(vorlagen, istAktiv, zeichne, alsListe, "seitenleiste", HATG_SEITENLEISTE_VORLAGEN)}
+        </div>
+      </details>`;
+  }
+
+  // Eine Wahl in der Seitenleiste umsetzen. Die Vorlagen schliessen sich teils
+  // aus - Akzentfarbe und wanderndes Licht malen dieselbe Flaeche.
+  setzeSeitenleiste(wahl) {
+    const setze = (id, soll) => {
+      if (this.vorlageIrgendwoAktiv(id) !== soll) this.schalteVorlage(id, { still: true });
+    };
+    if (wahl === "alle") {
+      const einschalten = HATG_SEITENLEISTE_VORLAGEN.filter((id) => this.vorlageIrgendwoAktiv(id)).length < HATG_SEITENLEISTE_VORLAGEN.length;
+      // Akzentfarbe und wanderndes Licht nicht beide: beim Einschalten gewinnt die Akzentfarbe.
+      HATG_SEITENLEISTE_VORLAGEN.forEach((id) => setze(id, einschalten && id !== "glow-aktiv-seitenleiste"));
+    } else if (wahl === "titel-standard") setze("seitenleiste-titel", false);
+    else if (wahl === "titel-eigen") setze("seitenleiste-titel", true);
+    else if (wahl === "benutzer-rund") setze("benutzer-icon-ios", false);
+    else if (wahl === "benutzer-quadrat") setze("benutzer-icon-ios", true);
+    else if (wahl === "glas-aus") ["seitenleiste-glas", "drawer-glas"].forEach((id) => setze(id, false));
+    else if (wahl === "glas-an") ["seitenleiste-glas", "drawer-glas"].forEach((id) => setze(id, true));
+    else if (wahl === "aktiv-standard") ["seitenleiste-aktiv-liquid", "glow-aktiv-seitenleiste"].forEach((id) => setze(id, false));
+    else if (wahl === "aktiv-akzent") {
+      setze("glow-aktiv-seitenleiste", false);
+      setze("seitenleiste-aktiv-liquid", true);
+    } else if (wahl === "aktiv-licht") {
+      setze("seitenleiste-aktiv-liquid", false);
+      setze("glow-aktiv-seitenleiste", true);
+    }
+    this.render();
+  }
+
   renderVorlagenGruppen(vorlagen, istAktiv, zeichne, alsListe) {
     const en = this._sprache === "en";
     // Angezeigt wird in dieser Reihenfolge; die aelteren stehen zuletzt.
     const reihenfolge = ["oberflaeche", "licht", "weitere", "aelter"];
     return reihenfolge.map((id) => HATG_VORLAGEN_GRUPPEN.find((x) => x.id === id)).map((g) => {
-      const liste = vorlagen.filter((t) => hatgVorlagenGruppeVon(t) === g.id);
+      const liste = vorlagen.filter((t) => hatgVorlagenGruppeVon(t) === g.id && !HATG_SEITENLEISTE_VORLAGEN.includes(t.id));
       if (!liste.length) return "";
       const aktiv = liste.filter(istAktiv).length;
       const inhalt = liste.map((t) => zeichne(t, false)).join("");
@@ -10624,6 +10731,14 @@ uix:
       el.addEventListener("click", () => {
         this._state.vorlagenAnsicht = el.dataset.vorlagenAnsicht;
         this.render();
+      });
+    });
+    this.shadowRoot.querySelectorAll("[data-seitenleiste]").forEach((el) => {
+      el.addEventListener("click", (ereignis) => {
+        // Der Schalter im Kopf sitzt im summary - sonst klappt der Kasten mit.
+        ereignis.preventDefault();
+        ereignis.stopPropagation();
+        this.setzeSeitenleiste(el.dataset.seitenleiste);
       });
     });
     this.shadowRoot.querySelectorAll("[data-gruppen-schalter]").forEach((el) => {
