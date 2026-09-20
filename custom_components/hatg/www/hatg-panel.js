@@ -43,6 +43,8 @@ const HATG_TEXTE = {
   "Kartentransparenz": "Card transparency",
   "Hintergrund": "Background",
   "Pop-up-Hintergrund": "Pop-up background",
+  "Seitenleiste: aktiver Eintrag mit plastischer Kante": "Sidebar: active entry with a sculpted edge",
+  "Legt eine Innenkante auf den aktiven Eintrag - dunkel oben links, hell unten rechts. Die Farbe bleibt, wie sie ist.": "Puts an inner edge on the active entry - dark at the top left, light at the bottom right. The colour stays as it is.",
   "Seitenleiste: Abstände der Einträge": "Sidebar: spacing of the entries",
   "Setzt Abstand und Innenabstand der Liste; damit stehen die Einträge enger oder luftiger.": "Sets the gap and padding of the list, so the entries sit tighter or airier.",
   "Seitenleiste: nur Icons": "Sidebar: icons only",
@@ -264,7 +266,7 @@ const HATG_TEXTE = {
   "Nur Weichzeichnung unter Karten, die ihre Fläche selbst malen, etwa Horizon-Cards oder Shelly-Karten. Nicht nötig, wenn „Glas: eigene Ebene unter der Karte“ aktiv ist.": "Blur only, beneath cards that paint their own surface, such as Horizon-Cards or Shelly cards. Not needed while the own-layer glass preset is active.",
   "Glasfläche für alle HA-Karten aus Kartenfläche, Weichzeichnung, Rundung und Kartenschatten. Überschriften und reine Textkarten bleiben ohne Fläche.": "Glass surface for all HA cards from card surface, blur, radius and card shadow. Headings and text-only cards stay without a surface.",
   "Seitenleiste: aktiver Eintrag in der Akzentfarbe": "Sidebar: active entry in the accent colour",
-  "Der aktive Eintrag der Seitenleiste deckend in der Akzentfarbe mit plastischer Kante.": "The active sidebar entry solid in the accent colour with a sculpted edge.",
+  "Der aktive Eintrag der Seitenleiste deckend in der Akzentfarbe.": "The active sidebar entry solid in the accent colour.",
   "Bedienelemente in Glas: Karten": "Glass controls: cards",
   "Bedienelemente in Glas: Kopfleiste und Rahmen": "Glass controls: top bar and frame",
   "Bedienelemente in Glas: Dialoge": "Glass controls: dialogs",
@@ -2314,6 +2316,7 @@ const HATG_SEITENLEISTE_VORLAGEN = [
   "benutzer-icon-ohne-flaeche",
   "seitenleiste-eintrag-gedrueckt",
   "seitenleiste-eintrag-glaspille",
+  "seitenleiste-eintrag-kante",
   "seitenleiste-glas",
   "seitenleiste-aktiv-liquid",
   "glow-aktiv-seitenleiste",
@@ -2592,6 +2595,7 @@ const HATG_VORLAGEN_GRUPPEN = [
       "benutzer-icon-ohne-flaeche",
       "seitenleiste-eintrag-gedrueckt",
       "seitenleiste-eintrag-glaspille",
+      "seitenleiste-eintrag-kante",
       "seitenleiste-dichte",
       "seitenleiste-nur-icons",
       "seitenleiste-ohne-scrollbalken",
@@ -3674,13 +3678,31 @@ ha-list-item-button.selected::before {
     css: `ha-list-item-button.selected::before {
   border-radius: [[rundung]] !important;
   opacity: 1 !important;
-  background-color: color-mix(in srgb, var(--sidebar-text-color, var(--primary-text-color)) [[staerke]], transparent) !important;
-  background-image: none !important;
+  /* Faerbt nicht selbst - die Farbe kommt aus der Farbwahl. Die Pille traegt
+     nur Form, Weichzeichnung und Kante. */
+  background-color: color-mix(in srgb, var(--sidebar-text-color, var(--primary-text-color)) [[staerke]], transparent);
   /* Die Weichzeichnung liegt auf dem Pseudo-Element, nicht auf dem Eintrag -
      ein Filter am Element selbst waere Bezugsrahmen fuer position: fixed. */
   backdrop-filter: blur([[weichzeichnung]]);
   -webkit-backdrop-filter: blur([[weichzeichnung]]);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, #ffffff 30%, transparent) !important;
+}`,
+  },
+  {
+    id: "seitenleiste-eintrag-kante",
+    label: "Seitenleiste: aktiver Eintrag mit plastischer Kante",
+    desc: "Legt eine Innenkante auf den aktiven Eintrag - dunkel oben links, hell unten rechts. Die Farbe bleibt, wie sie ist.",
+    werte: [
+      { id: "kante-tiefe", label: "Dunkle Kante (Anteil Akzentfarbe)", labelEn: "Dark edge (share of accent colour)", standard: "62%" },
+      { id: "kante-hell", label: "Helle Kante (Anteil Akzentfarbe)", labelEn: "Light edge (share of accent colour)", standard: "74%" },
+    ],
+    ziel: "uix-sidebar",
+    css: `/* Nur Kante, keine Flaeche: Die Farbe kommt aus der Farbwahl darueber.
+   Kein Schlagschatten - die Liste der Seitenleiste schneidet ihn ab. */
+ha-list-item-button.selected::before {
+  box-shadow:
+    inset 3px 3px 7px color-mix(in srgb, var(--accent-color, var(--primary-color)) [[kante-tiefe]], #000000),
+    inset -2px -2px 6px color-mix(in srgb, var(--accent-color, var(--primary-color)) [[kante-hell]], #ffffff) !important;
 }`,
   },
   {
@@ -3776,12 +3798,8 @@ ha-list-item-button.selected::before {
     id: "seitenleiste-aktiv-liquid",
     paket: "glas",
     label: "Seitenleiste: aktiver Eintrag in der Akzentfarbe",
-    desc: "Der aktive Eintrag der Seitenleiste deckend in der Akzentfarbe mit plastischer Kante.",
-    werte: [
-      { id: "kante-tiefe", label: "Dunkle Kante (Anteil Akzentfarbe)", labelEn: "Dark edge (share of accent colour)", standard: "62%" },
-      { id: "kante-hell", label: "Helle Kante (Anteil Akzentfarbe)", labelEn: "Light edge (share of accent colour)", standard: "74%" },
-      { id: "dauer", label: "Dauer des Übergangs", labelEn: "Transition duration", standard: "160ms" },
-    ],
+    desc: "Der aktive Eintrag der Seitenleiste deckend in der Akzentfarbe.",
+    werte: [{ id: "dauer", label: "Dauer des Übergangs", labelEn: "Transition duration", standard: "160ms" }],
     ziel: "uix-sidebar",
     css: `ha-list-item-button.selected::before {
   border-radius: var(--ha-card-border-radius, 14px) !important;
@@ -3795,9 +3813,6 @@ ha-list-item-button.selected::before {
      laufenden Instanz nur ein dunkles Rechteck hinter der Pille. */
   background-color: var(--accent-color, var(--primary-color)) !important;
   background-image: none !important;
-  box-shadow:
-    inset 3px 3px 7px color-mix(in srgb, var(--accent-color, var(--primary-color)) [[kante-tiefe]], #000000),
-    inset -2px -2px 6px color-mix(in srgb, var(--accent-color, var(--primary-color)) [[kante-hell]], #ffffff) !important;
 }
 /* Schrift und Symbol auf der Akzentflaeche in der Textfarbe fuer Akzentflaechen. */
 ha-list-item-button.selected {
@@ -8148,17 +8163,17 @@ uix:
     const chip = (text, ist, wahl) => `<button type="button" class="startpaket-chip ${ist ? "active" : ""}" data-seitenleiste="${wahl}">${hatgEscape(text)}</button>`;
     const glasAn = an("seitenleiste-glas") || an("drawer-glas");
     const verlaufAn = !!this.akzentVerlaufStand();
-    const aktivEintrag = an("glow-aktiv-seitenleiste")
-      ? "licht"
-      : an("seitenleiste-eintrag-glaspille")
-        ? "glaspille"
-        : an("seitenleiste-eintrag-gedrueckt")
-          ? "gedrueckt"
-          : an("seitenleiste-aktiv-liquid")
-            ? verlaufAn
-              ? "verlauf"
-              : "akzent"
-            : "standard";
+    // Farbe, Form und Animation sind drei Entscheidungen: die Vorlagen dahinter
+    // setzen getrennte Eigenschaften und lassen sich kombinieren.
+    const farbe = an("seitenleiste-aktiv-liquid") ? (verlaufAn ? "verlauf" : "akzent") : "standard";
+    const form = an("seitenleiste-eintrag-glaspille")
+      ? "glaspille"
+      : an("seitenleiste-eintrag-gedrueckt")
+        ? "gedrueckt"
+        : an("seitenleiste-eintrag-kante")
+          ? "kante"
+          : "standard";
+    const licht = an("glow-aktiv-seitenleiste");
     return `
       <details class="vorlagen-kasten startpaket" data-vorlagen-kasten="seitenleiste-kasten" ${this.vorlagenKastenOffen("seitenleiste-kasten") ? "open" : ""}>
         <summary data-roh>
@@ -8193,19 +8208,28 @@ uix:
             en ? "Glass" : "Glas",
             chip(en ? "Off" : "Aus", !glasAn, "glas-aus") + chip(en ? "On" : "An", glasAn, "glas-an")
           )}
+          <p class="vorlage-feld-titel" data-roh>${en ? "Active entry" : "Aktiver Eintrag"}</p>
           ${reihe(
-            en ? "Active entry" : "Aktiver Eintrag",
-            chip(en ? "Standard" : "Standard", aktivEintrag === "standard", "aktiv-standard") +
-              chip(en ? "Accent colour" : "Akzentfarbe", aktivEintrag === "akzent", "aktiv-akzent") +
-              chip(en ? "Gradient" : "Farbverlauf", aktivEintrag === "verlauf", "aktiv-verlauf") +
-              chip(en ? "Pressed in" : "Eingedrückt", aktivEintrag === "gedrueckt", "aktiv-gedrueckt") +
-              chip(en ? "Glass pill" : "Glaspille", aktivEintrag === "glaspille", "aktiv-glaspille") +
-              chip(en ? "Drifting light" : "Wanderndes Licht", aktivEintrag === "licht", "aktiv-licht")
+            en ? "Colour" : "Farbe",
+            chip(en ? "Standard" : "Standard", farbe === "standard", "farbe-standard") +
+              chip(en ? "Accent colour" : "Akzentfarbe", farbe === "akzent", "farbe-akzent") +
+              chip(en ? "Gradient" : "Farbverlauf", farbe === "verlauf", "farbe-verlauf")
+          )}
+          ${reihe(
+            en ? "Shape" : "Form",
+            chip(en ? "Standard" : "Standard", form === "standard", "form-standard") +
+              chip(en ? "Sculpted edge" : "Plastische Kante", form === "kante", "form-kante") +
+              chip(en ? "Pressed in" : "Eingedrückt", form === "gedrueckt", "form-gedrueckt") +
+              chip(en ? "Glass pill" : "Glaspille", form === "glaspille", "form-glaspille")
+          )}
+          ${reihe(
+            en ? "Animation" : "Animation",
+            chip(en ? "Off" : "Aus", !licht, "licht-aus") + chip(en ? "Drifting light" : "Wanderndes Licht", licht, "licht-an")
           )}
           <p class="vorlage-desc" data-roh>${
             en
-              ? "The gradient is the one from the glass area - it also fills the selected surfaces of the cards."
-              : "Der Farbverlauf ist der aus dem Glas-Bereich - er füllt auch das Gewählte der Karten."
+              ? "The gradient is the one from the glass area - it also fills the selected surfaces of the cards. Colour, shape and animation combine."
+              : "Der Farbverlauf ist der aus dem Glas-Bereich - er füllt auch das Gewählte der Karten. Farbe, Form und Animation lassen sich kombinieren."
           }</p>
           ${reihe(
             en ? "Labels" : "Beschriftung",
@@ -8270,21 +8294,19 @@ uix:
       Object.entries(masse).forEach(([id, wert]) => this.setzeVorlageWert("seitenleiste-dichte", id, wert));
     } else if (wahl === "benutzer-flaeche-an") setze("benutzer-icon-ohne-flaeche", false);
     else if (wahl === "benutzer-flaeche-aus") setze("benutzer-icon-ohne-flaeche", true);
-    else if (wahl.startsWith("aktiv-")) {
-      // Die Vorlagen des aktiven Eintrags malen alle dieselbe Flaeche - es
-      // bleibt genau eine stehen.
+    else if (wahl.startsWith("farbe-")) {
+      setze("seitenleiste-aktiv-liquid", wahl !== "farbe-standard");
+      if (wahl === "farbe-verlauf" && !this.akzentVerlaufStand()) this.setzeAkzentVerlauf(HATG_VERLAUF_STANDARD);
+    } else if (wahl.startsWith("form-")) {
+      // Die drei Formen malen dieselbe Kante - es bleibt genau eine stehen.
       const nur = {
-        "aktiv-akzent": "seitenleiste-aktiv-liquid",
-        "aktiv-verlauf": "seitenleiste-aktiv-liquid",
-        "aktiv-gedrueckt": "seitenleiste-eintrag-gedrueckt",
-        "aktiv-glaspille": "seitenleiste-eintrag-glaspille",
-        "aktiv-licht": "glow-aktiv-seitenleiste",
+        "form-kante": "seitenleiste-eintrag-kante",
+        "form-gedrueckt": "seitenleiste-eintrag-gedrueckt",
+        "form-glaspille": "seitenleiste-eintrag-glaspille",
       }[wahl];
-      ["seitenleiste-aktiv-liquid", "seitenleiste-eintrag-gedrueckt", "seitenleiste-eintrag-glaspille", "glow-aktiv-seitenleiste"].forEach((id) =>
-        setze(id, id === nur)
-      );
-      if (wahl === "aktiv-verlauf" && !this.akzentVerlaufStand()) this.setzeAkzentVerlauf(HATG_VERLAUF_STANDARD);
-    }
+      ["seitenleiste-eintrag-kante", "seitenleiste-eintrag-gedrueckt", "seitenleiste-eintrag-glaspille"].forEach((id) => setze(id, id === nur));
+    } else if (wahl === "licht-aus") setze("glow-aktiv-seitenleiste", false);
+    else if (wahl === "licht-an") setze("glow-aktiv-seitenleiste", true);
     this.render();
   }
 

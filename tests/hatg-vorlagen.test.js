@@ -180,10 +180,14 @@ pruefe("glas-bubble: Flaechen mit Rahmen und Schatten der HA-Karten, ohne Glanz,
 pruefe("Aktiver Seitenleisten-Eintrag ohne Schlagschatten", () => {
   // ha-list-nav hat overflow: hidden auto und schneidet einen Aussenschatten
   // ab - an einer laufenden Instanz blieb ein dunkles Rechteck hinter der Pille.
-  const c = ohneKommentare(css(vorlagen.find((x) => x.id === "seitenleiste-aktiv-liquid").block));
-  const regel = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)].find((m) => m[1].trim() === "ha-list-item-button.selected::before");
-  assert.ok(regel, "Regel fuer den aktiven Eintrag fehlt");
-  const schatten = (regel[2].match(/box-shadow:([^;]*);/) || [])[1] || "";
+  // Geprueft wird jede Sidebar-Vorlage, die den aktiven Eintrag mit einem
+  // Schatten belegt - die Form steckt seit 09/2026 in eigenen Vorlagen.
+  const regeln = vorlagen
+    .filter((v) => (feld(v.block, "ziel") || "") === "uix-sidebar")
+    .flatMap((v) => [...ohneKommentare(css(v.block) || "").matchAll(/([^{}]+)\{([^{}]*)\}/g)])
+    .filter((m) => m[1].trim().startsWith("ha-list-item-button.selected::before") && /box-shadow:/.test(m[2]));
+  assert.ok(regeln.length, "keine Vorlage belegt den aktiven Eintrag mit einem Schatten");
+  const schatten = regeln.map((m) => (m[2].match(/box-shadow:([^;]*);/) || [])[1] || "").join(",");
   assert.ok(!/--hatg-glas-schatten/.test(schatten), "Schlagschatten steht wieder im box-shadow");
   // An Kommas nur ausserhalb von Klammern trennen - var(--x, rgba(...)) ist verschachtelt.
   const teile = [];
