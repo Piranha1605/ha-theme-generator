@@ -3892,8 +3892,6 @@ ha-adaptive-dialog {
     -webkit-backdrop-filter: [[weichzeichnung]];
   }`,
   },
-,
-,
   {
     id: "einstellungen-hintergrund-frei",
     label: "Einstellungsseiten für das Hintergrundbild öffnen",
