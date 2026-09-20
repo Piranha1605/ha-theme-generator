@@ -43,6 +43,14 @@ const HATG_TEXTE = {
   "Kartentransparenz": "Card transparency",
   "Hintergrund": "Background",
   "Pop-up-Hintergrund": "Pop-up background",
+  "Seitenleiste: Abstände der Einträge": "Sidebar: spacing of the entries",
+  "Setzt Abstand und Innenabstand der Liste; damit stehen die Einträge enger oder luftiger.": "Sets the gap and padding of the list, so the entries sit tighter or airier.",
+  "Seitenleiste: nur Icons": "Sidebar: icons only",
+  "Blendet die Beschriftung der Einträge aus und hält die Leiste schmal.": "Hides the labels of the entries and keeps the bar narrow.",
+  "Seitenleiste: Scrollbalken ausblenden": "Sidebar: hide the scrollbar",
+  "Versteckt den Balken der Liste; gescrollt wird weiter.": "Hides the list's scrollbar; scrolling still works.",
+  "Seitenleiste: Trennlinien ausblenden": "Sidebar: hide the dividers",
+  "Nimmt die Linien zwischen den Bereichen der Leiste weg.": "Removes the lines between the sections of the bar.",
   "Benutzerbild ohne Fläche": "User picture without a surface",
   "Nimmt die farbige Fläche hinter den Initialen weg; ein hinterlegtes Bild bleibt.": "Removes the coloured surface behind the initials; a picture stays.",
   "Seitenleiste: aktiver Eintrag eingedrückt": "Sidebar: active entry pressed in",
@@ -2310,6 +2318,10 @@ const HATG_SEITENLEISTE_VORLAGEN = [
   "seitenleiste-aktiv-liquid",
   "glow-aktiv-seitenleiste",
   "drawer-glas",
+  "seitenleiste-dichte",
+  "seitenleiste-nur-icons",
+  "seitenleiste-ohne-scrollbalken",
+  "seitenleiste-ohne-trennlinie",
 ];
 const HATG_SEITENLEISTE_FELDER = [
   "sidebar-background-color",
@@ -2580,6 +2592,10 @@ const HATG_VORLAGEN_GRUPPEN = [
       "benutzer-icon-ohne-flaeche",
       "seitenleiste-eintrag-gedrueckt",
       "seitenleiste-eintrag-glaspille",
+      "seitenleiste-dichte",
+      "seitenleiste-nur-icons",
+      "seitenleiste-ohne-scrollbalken",
+      "seitenleiste-ohne-trennlinie",
       "dialog-weich",
       "einstellungen-icons-gross",
     ],
@@ -3665,6 +3681,67 @@ ha-list-item-button.selected::before {
   backdrop-filter: blur([[weichzeichnung]]);
   -webkit-backdrop-filter: blur([[weichzeichnung]]);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, #ffffff 30%, transparent) !important;
+}`,
+  },
+  {
+    id: "seitenleiste-dichte",
+    label: "Seitenleiste: Abstände der Einträge",
+    desc: "Setzt Abstand und Innenabstand der Liste; damit stehen die Einträge enger oder luftiger.",
+    werte: [
+      { id: "abstand", label: "Abstand zwischen Einträgen", labelEn: "Gap between entries", standard: "6px" },
+      { id: "innen", label: "Innenabstand der Liste", labelEn: "List padding", standard: "8px" },
+      { id: "hoehe", label: "Mindesthöhe eines Eintrags", labelEn: "Minimum entry height", standard: "48px" },
+    ],
+    ziel: "uix-sidebar",
+    css: `/* ha-list-nav liest --ha-list-gap und --ha-list-padding, ha-list-item-button
+   seine Hoehe aus --ha-row-item-min-height. An elementStyles geprueft. */
+ha-list-nav,
+:host {
+  --ha-list-gap: [[abstand]];
+  --ha-list-padding: [[innen]];
+  --ha-row-item-min-height: [[hoehe]];
+}`,
+  },
+  {
+    id: "seitenleiste-nur-icons",
+    label: "Seitenleiste: nur Icons",
+    desc: "Blendet die Beschriftung der Einträge aus und hält die Leiste schmal.",
+    ziel: "uix-sidebar",
+    css: `/* Die Beschriftung liegt als Slot-Inhalt im Licht-DOM des Eintrags, dort
+   kommt eine Regel aus uix-sidebar hin. Die Breite setzt Home Assistant ueber
+   --ha-sidebar-expanded-width. */
+:host {
+  --ha-sidebar-expanded-width: var(--ha-sidebar-width, 56px);
+  --ha-sidebar-expanded-item-width: var(--ha-sidebar-width, 56px);
+}
+ha-list-item-button span[slot="headline"],
+ha-list-item-button span[slot="supporting-text"] {
+  display: none !important;
+}`,
+  },
+  {
+    id: "seitenleiste-ohne-scrollbalken",
+    label: "Seitenleiste: Scrollbalken ausblenden",
+    desc: "Versteckt den Balken der Liste; gescrollt wird weiter.",
+    ziel: "uix-sidebar",
+    css: `.ha-scrollbar {
+  scrollbar-width: none !important;
+}
+.ha-scrollbar::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+}`,
+  },
+  {
+    id: "seitenleiste-ohne-trennlinie",
+    label: "Seitenleiste: Trennlinien ausblenden",
+    desc: "Nimmt die Linien zwischen den Bereichen der Leiste weg.",
+    ziel: "uix-sidebar",
+    css: `.divider,
+hr,
+li.divider {
+  display: none !important;
+  border: 0 !important;
 }`,
   },
   {
@@ -8130,11 +8207,37 @@ uix:
               ? "The gradient is the one from the glass area - it also fills the selected surfaces of the cards."
               : "Der Farbverlauf ist der aus dem Glas-Bereich - er füllt auch das Gewählte der Karten."
           }</p>
+          ${reihe(
+            en ? "Labels" : "Beschriftung",
+            chip(en ? "Text and icon" : "Text und Icon", !an("seitenleiste-nur-icons"), "text-an") +
+              chip(en ? "Icons only" : "Nur Icons", an("seitenleiste-nur-icons"), "text-aus")
+          )}
+          ${reihe(
+            en ? "Spacing" : "Abstände",
+            chip(en ? "Standard" : "Standard", !an("seitenleiste-dichte"), "dichte-standard") +
+              chip(en ? "Compact" : "Kompakt", an("seitenleiste-dichte") && this.seitenleisteDichte() === "kompakt", "dichte-kompakt") +
+              chip(en ? "Airy" : "Luftig", an("seitenleiste-dichte") && this.seitenleisteDichte() === "luftig", "dichte-luftig")
+          )}
+          ${reihe(
+            en ? "Extras" : "Kleinkram",
+            chip(en ? "Hide scrollbar" : "Scrollbalken aus", an("seitenleiste-ohne-scrollbalken"), "scrollbalken") +
+              chip(en ? "Hide dividers" : "Trennlinien aus", an("seitenleiste-ohne-trennlinie"), "trennlinie")
+          )}
           <p class="vorlage-feld-titel" data-roh>${en ? "Colours" : "Farben"}</p>
           ${this.renderFieldList(HATG_SEITENLEISTE_FELDER, null, true)}
           ${this.renderGlasVorlagenteil(vorlagen, istAktiv, zeichne, alsListe, "seitenleiste", HATG_SEITENLEISTE_VORLAGEN)}
         </div>
       </details>`;
+  }
+
+  // Kompakt oder luftig steckt in den Werten der Vorlage, nicht in zwei
+  // Vorlagen - so bleibt der Feinschliff in der Zeile moeglich.
+  seitenleisteDichte() {
+    const tpl = HATG_VORLAGEN.find((t) => t.id === "seitenleiste-dichte");
+    if (!tpl) return "standard";
+    const block = hatgLeseVorlagenBlock(this.currentValues()[hatgVorlagenZiel(tpl)] || "", tpl.id);
+    const werte = hatgVorlageWerteLesen(tpl, block);
+    return parseInt(werte.hoehe || "48", 10) <= 40 ? "kompakt" : "luftig";
   }
 
   // Eine Wahl in der Seitenleiste umsetzen. Die Vorlagen schliessen sich teils
@@ -8153,7 +8256,19 @@ uix:
     else if (wahl === "benutzer-quadrat") setze("benutzer-icon-ios", true);
     else if (wahl === "glas-aus") ["seitenleiste-glas", "drawer-glas"].forEach((id) => setze(id, false));
     else if (wahl === "glas-an") ["seitenleiste-glas", "drawer-glas"].forEach((id) => setze(id, true));
-    else if (wahl === "benutzer-flaeche-an") setze("benutzer-icon-ohne-flaeche", false);
+    else if (wahl === "text-an") setze("seitenleiste-nur-icons", false);
+    else if (wahl === "text-aus") setze("seitenleiste-nur-icons", true);
+    else if (wahl === "scrollbalken") setze("seitenleiste-ohne-scrollbalken", !this.vorlageIrgendwoAktiv("seitenleiste-ohne-scrollbalken"));
+    else if (wahl === "trennlinie") setze("seitenleiste-ohne-trennlinie", !this.vorlageIrgendwoAktiv("seitenleiste-ohne-trennlinie"));
+    else if (wahl === "dichte-standard") setze("seitenleiste-dichte", false);
+    else if (wahl === "dichte-kompakt" || wahl === "dichte-luftig") {
+      setze("seitenleiste-dichte", true);
+      const masse =
+        wahl === "dichte-kompakt"
+          ? { abstand: "2px", innen: "4px", hoehe: "38px" }
+          : { abstand: "10px", innen: "12px", hoehe: "56px" };
+      Object.entries(masse).forEach(([id, wert]) => this.setzeVorlageWert("seitenleiste-dichte", id, wert));
+    } else if (wahl === "benutzer-flaeche-an") setze("benutzer-icon-ohne-flaeche", false);
     else if (wahl === "benutzer-flaeche-aus") setze("benutzer-icon-ohne-flaeche", true);
     else if (wahl.startsWith("aktiv-")) {
       // Die Vorlagen des aktiven Eintrags malen alle dieselbe Flaeche - es
