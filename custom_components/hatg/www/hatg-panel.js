@@ -44,7 +44,7 @@ const HATG_TEXTE = {
   "Hintergrund": "Background",
   "Pop-up-Hintergrund": "Pop-up background",
   "Einstellungsseiten in Glas": "Settings pages in glass",
-  "Listen und Tabellen auf den Einstellungsseiten nehmen die Kartenfläche statt deckendem Weiß.": "Lists and tables on the settings pages take the card surface instead of solid white.",
+  "Die Listen auf der Detailseite einer Integration nehmen die Kartenfläche statt deckendem Weiß.": "The lists on an integration's detail page take the card surface instead of solid white.",
   "Seitenleiste: Zähler mit Farbverlauf": "Sidebar: counters with a gradient",
   "Die kleinen Zähler neben Einstellungen und Benachrichtigungen bekommen einen Verlauf statt einer Farbe.": "The small counters next to Settings and Notifications get a gradient instead of a colour.",
   "Seitenleiste: aktiver Eintrag mit plastischer Kante": "Sidebar: active entry with a sculpted edge",
@@ -3872,7 +3872,7 @@ ha-adaptive-dialog {
     id: "einstellungen-glas",
     paket: "glas",
     label: "Einstellungsseiten in Glas",
-    desc: "Listen und Tabellen auf den Einstellungsseiten nehmen die Kartenfläche statt deckendem Weiß.",
+    desc: "Die Listen auf der Detailseite einer Integration nehmen die Kartenfläche statt deckendem Weiß.",
     werte: [
       { id: "weichzeichnung", label: "Weichzeichnung", labelEn: "Blur", standard: "var(--ha-card-backdrop-filter, none)" },
     ],
@@ -3882,30 +3882,17 @@ ha-adaptive-dialog {
 # deckend weiss, waehrend alles andere glaesern war (2026-09-20 an der
 # ESPHome-Seite gemessen). Die Variable global zu setzen verbietet sich: Home
 # Assistant faerbt damit auch Auswahlfelder und Menues.
-# Ein Pfad darf nicht mit $$ beginnen - UIX 8.2.0 wendet dann fuer die ganze
-# Sitzung keine einzige Vorlage mehr an, auch nicht in anderen Stilzielen. In
-# der Mitte ist $$ in Ordnung und spart die Zwischenschritte.
-"ha-config-integration-page $$ ha-md-list $": |
-  :host {
+# Der Pfad steht bewusst ausgeschrieben: Ein Pfad, der mit $$ beginnt, legt
+# UIX 8.2.0 fuer die ganze Sitzung stumm, und auch $$ in der Mitte hat hier
+# nicht getragen. Geprueft an einer laufenden Instanz.
+"ha-config-integration-page $ ha-config-entry-row $": |
+  ha-md-list {
     background: var(--ha-card-background, var(--card-background-color)) !important;
     backdrop-filter: [[weichzeichnung]];
     -webkit-backdrop-filter: [[weichzeichnung]];
-  }
-"ha-config-devices $$ ha-data-table $": |
-  .mdc-data-table,
-  .mdc-data-table__table,
-  .mdc-data-table__header-row,
-  .mdc-data-table__row {
-    background: transparent !important;
-  }
-"ha-config-entities $$ ha-data-table $": |
-  .mdc-data-table,
-  .mdc-data-table__table,
-  .mdc-data-table__header-row,
-  .mdc-data-table__row {
-    background: transparent !important;
   }`,
   },
+,
 ,
   {
     id: "einstellungen-hintergrund-frei",
