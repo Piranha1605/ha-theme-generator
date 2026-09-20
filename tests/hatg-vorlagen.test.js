@@ -354,7 +354,10 @@ pruefe("Jede Vorlage liegt in einer angezeigten Gruppe der Vorlagenseite", () =>
   const kontext = {};
   require("node:vm").runInNewContext(`const HATG_GLAS_KOLLISIONEN = ${kollisionen};\n${alles.slice(start, ende)}\nthis.gruppen = HATG_VORLAGEN_GRUPPEN; this.von = hatgVorlagenGruppeVon;`, kontext);
   const reihenfolge = JSON.parse(/const reihenfolge = (\[[^\]]*\]);/.exec(alles)[1].replace(/'/g, '"'));
-  assert.deepEqual([...reihenfolge].sort(), Array.from(kontext.gruppen, (g) => g.id).sort(), "nicht jede Gruppe wird angezeigt");
+  // Die Glas-Vorlagen stehen im Glas-Kasten oben, nicht in der Gruppenliste -
+  // sie muessen aber weiterhin irgendwo auftauchen.
+  assert.ok(/renderGlasVorlagenteil\(/.test(alles) && /hatgVorlagenGruppeVon\(t\) === "glas"/.test(alles), "Glas-Gruppe wird nirgends gezeichnet");
+  assert.deepEqual([...reihenfolge, "glas"].sort(), Array.from(kontext.gruppen, (g) => g.id).sort(), "nicht jede Gruppe wird angezeigt");
   const weitere = [];
   for (const v of vorlagen) {
     const paket = (/\bpaket:\s*"([^"]+)"/.exec(v.block) || [])[1];

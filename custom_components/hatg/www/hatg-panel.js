@@ -7594,16 +7594,8 @@ uix:
     const stand = this.paketStand("glas");
     const paketLeiste = stand.gesamt
       ? `
-        <div class="paket-leiste" data-roh>
-          <div class="paket-text">
-            <strong>${this._sprache === "en" ? "Glass package" : "Glas-Paket"}</strong>
-            <span>${
-              this._sprache === "en"
-                ? `${stand.aktiv} of ${stand.gesamt} presets active — every surface of the system in one go, all sharing the values from the Glass look group.`
-                : `${stand.aktiv} von ${stand.gesamt} Vorlagen aktiv — jede Fläche des Systems auf einmal, alle mit den Werten aus dem Bereich Glaslook.`
-            }</span>
-          </div>
-          <div class="mode-toggle-group inline" role="group" data-roh style="margin-right:8px;">
+        <div class="paket-leiste ansicht-leiste" data-roh>
+          <div class="mode-toggle-group inline" role="group" data-roh>
             <button type="button" class="${(this._state.vorlagenAnsicht || "liste") === "liste" ? "active" : ""}" data-vorlagen-ansicht="liste" title="${this._sprache === "en" ? "List" : "Liste"}"><ha-icon icon="mdi:format-list-bulleted"></ha-icon></button>
             <button type="button" class="${this._state.vorlagenAnsicht === "kacheln" ? "active" : ""}" data-vorlagen-ansicht="kacheln" title="${this._sprache === "en" ? "Tiles" : "Kacheln"}"><ha-icon icon="mdi:view-grid-outline"></ha-icon></button>
           </div>
@@ -7714,7 +7706,7 @@ uix:
     return `
       <section class="editor-section">
         <div class="section-heading">${kopf}</div>
-        ${!gruppe ? this.renderStartpaket(glasRegler) : ""}
+        ${!gruppe ? this.renderStartpaket(glasRegler, this.renderGlasVorlagenteil(werksVorlagen, istAktiv, zeichne, alsListe)) : ""}
         ${paketLeiste}
         ${pfadHinweis}
         ${kollisionsHinweis}
@@ -7746,7 +7738,7 @@ uix:
   // Der Einstieg in die Vorlagenseite: ein Stil, ein paar Grundentscheidungen.
   // Was hier gesetzt wird, steht danach in den Feldern - die Liste darunter
   // zeigt, was daraus geworden ist.
-  renderStartpaket(glasRegler = "") {
+  renderStartpaket(glasRegler = "", vorlagenteil = "") {
     const en = this._sprache === "en";
     const stand = this.paketStand("glas");
     if (!stand.gesamt) return "";
@@ -7795,6 +7787,7 @@ uix:
           ${reihe(en ? "Border" : "Rahmen", HATG_GLAS_RAHMEN, this.glasRahmenErkennen(), "data-glas-rahmen")}
           ${reihe(en ? "Shadow" : "Schatten", HATG_GLAS_SCHATTEN, this.glasSchattenErkennen(), "data-glas-schatten")}
           ${glasRegler}
+          ${vorlagenteil}
           <p class="vorlage-desc" data-roh>${
             eigen
               ? en
@@ -7821,10 +7814,30 @@ uix:
         </details>`;
   }
 
+  // Die einzelnen Glas-Vorlagen stehen im Glas-Kasten statt als eigene Gruppe:
+  // Erst die Werte einstellen, dann - wenn noetig - einzelne Flaechen abwaehlen.
+  renderGlasVorlagenteil(vorlagen, istAktiv, zeichne, alsListe) {
+    const en = this._sprache === "en";
+    const liste = vorlagen.filter((t) => hatgVorlagenGruppeVon(t) === "glas");
+    if (!liste.length) return "";
+    const aktiv = liste.filter(istAktiv).length;
+    const inhalt = liste.map((t) => zeichne(t, false)).join("");
+    return `
+      <details class="vorlagen-kasten vorlagen-gruppe startpaket-vorlagen" data-vorlagen-kasten="glas" ${this.vorlagenKastenOffen("glas") ? "open" : ""}>
+        <summary data-roh>
+          <strong>${en ? "Adjust single presets" : "Einzelne Vorlagen anpassen"}</strong>
+          <span class="vorlagen-gruppe-stand ${aktiv ? "hat-aktive" : ""}">${en ? `${aktiv} of ${liste.length} active` : `${aktiv} von ${liste.length} aktiv`}</span>
+        </summary>
+        <div class="vorlagen-kasten-inhalt">
+          ${alsListe ? `<div class="vorlage-liste">${inhalt}</div>` : `<div class="plugin-grid vorlage-grid">${inhalt}</div>`}
+        </div>
+      </details>`;
+  }
+
   renderVorlagenGruppen(vorlagen, istAktiv, zeichne, alsListe) {
     const en = this._sprache === "en";
     // Angezeigt wird in dieser Reihenfolge; die aelteren stehen zuletzt.
-    const reihenfolge = ["glas", "hintergrund", "oberflaeche", "licht", "weitere", "aelter"];
+    const reihenfolge = ["hintergrund", "oberflaeche", "licht", "weitere", "aelter"];
     return reihenfolge.map((id) => HATG_VORLAGEN_GRUPPEN.find((x) => x.id === id)).map((g) => {
       const liste = vorlagen.filter((t) => hatgVorlagenGruppeVon(t) === g.id);
       if (!liste.length) return "";
@@ -9825,6 +9838,8 @@ uix:
         .startpaket .vorlage-desc { margin: 12px 0 0; }
         .startpaket-schalter { display: inline-flex; align-items: center; gap: 6px; width: auto; padding: 4px 10px 4px 6px; border-radius: 999px; font-size: 12px; font-weight: 600; }
         .startpaket-schalter ha-icon { --mdc-icon-size: 18px; }
+        .startpaket-vorlagen { margin-top: 14px; }
+        .ansicht-leiste { justify-content: flex-end; }
         @media (max-width: 720px) { .startpaket-titel { min-width: 0; flex-basis: 100%; padding-top: 0; } }
         .vorlagen-gruppe.ist-aelter > summary strong { color: var(--hatg-text-dim); }
         .vorlagen-gruppe-hinweis { margin: 0 4px 10px; font-size: 12px; line-height: 1.5; color: var(--hatg-text-dim); }
