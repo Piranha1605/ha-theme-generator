@@ -7612,15 +7612,13 @@ uix:
           <h1>UIX-Vorlagen</h1>
           <p>Fertige UIX-Bausteine, die per Klick global im Theme aktiviert werden (landen markiert im jeweiligen Stilziel, für Light und Dark gleichzeitig) - kein Kopieren/Einfügen nötig. In der Seitenleiste stehen sie zusätzlich nach Stilziel getrennt. Mehrere Vorlagen lassen sich kombinieren; bei überlappenden Eigenschaften gewinnt die zuletzt aktivierte.</p>`;
     const stand = this.paketStand("glas");
-    const paketLeiste = stand.gesamt
-      ? `
-        <div class="paket-leiste ansicht-leiste" data-roh>
-          <div class="mode-toggle-group inline" role="group" data-roh>
-            <button type="button" class="${(this._state.vorlagenAnsicht || "liste") === "liste" ? "active" : ""}" data-vorlagen-ansicht="liste" title="${this._sprache === "en" ? "List" : "Liste"}"><ha-icon icon="mdi:format-list-bulleted"></ha-icon></button>
-            <button type="button" class="${this._state.vorlagenAnsicht === "kacheln" ? "active" : ""}" data-vorlagen-ansicht="kacheln" title="${this._sprache === "en" ? "Tiles" : "Kacheln"}"><ha-icon icon="mdi:view-grid-outline"></ha-icon></button>
-          </div>
-        </div>`
-      : "";
+    // Der Wechsel zwischen Liste und Kacheln steht oben neben der Ueberschrift;
+    // eine eigene Leiste dafuer war nach dem Umbau nur noch ein leerer Kasten.
+    const ansichtSchalter = `
+        <div class="mode-toggle-group inline vorlagen-ansicht" role="group" data-roh>
+          <button type="button" class="${(this._state.vorlagenAnsicht || "liste") === "liste" ? "active" : ""}" data-vorlagen-ansicht="liste" title="${this._sprache === "en" ? "List" : "Liste"}"><ha-icon icon="mdi:format-list-bulleted"></ha-icon></button>
+          <button type="button" class="${this._state.vorlagenAnsicht === "kacheln" ? "active" : ""}" data-vorlagen-ansicht="kacheln" title="${this._sprache === "en" ? "Tiles" : "Kacheln"}"><ha-icon icon="mdi:view-grid-outline"></ha-icon></button>
+        </div>`;
     const deckend = stand.aktiv ? this.deckendeFlaechenfarben() : [];
     const farbHinweis = deckend.length
       ? `
@@ -7725,7 +7723,10 @@ uix:
     const leer = !cards && !eigeneKacheln;
     return `
       <section class="editor-section">
-        <div class="section-heading">${kopf}</div>
+        <div class="section-heading vorlagen-kopf">
+          <div class="vorlagen-kopf-text">${kopf}</div>
+          ${ansichtSchalter}
+        </div>
         ${
           !gruppe
             ? this.renderStartpaket(
@@ -7735,7 +7736,6 @@ uix:
               )
             : ""
         }
-        ${paketLeiste}
         ${pfadHinweis}
         ${kollisionsHinweis}
         ${verwaistHinweis}
@@ -9857,7 +9857,9 @@ uix:
         .startpaket-vorlagen { margin-top: 14px; }
         .vorlage-feld-titel { margin: 10px 0 6px; font-size: 11.5px; font-weight: 700; letter-spacing: .02em; text-transform: uppercase; color: var(--hatg-muted); }
         .vorlage-feld-titel:first-child { margin-top: 2px; }
-        .ansicht-leiste { justify-content: flex-end; }
+        .vorlagen-kopf { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+        .vorlagen-kopf-text { flex: 1 1 auto; min-width: 0; }
+        .vorlagen-ansicht { flex: 0 0 auto; margin-top: 4px; }
         @media (max-width: 720px) { .startpaket-titel { min-width: 0; flex-basis: 100%; padding-top: 0; } }
         .vorlagen-gruppe.ist-aelter > summary strong { color: var(--hatg-text-dim); }
         .vorlagen-gruppe-hinweis { margin: 0 4px 10px; font-size: 12px; line-height: 1.5; color: var(--hatg-text-dim); }
