@@ -7943,11 +7943,8 @@ uix:
         </div>
         ${
           !gruppe
-            ? this.renderStartpaket(
-                glasRegler,
-                this.renderGlasVorlagenteil(werksVorlagen, istAktiv, zeichne, alsListe),
-                stand.gesamt ? this.renderAkzentVerlauf() : ""
-              )
+            ? this.renderGrundeinstellungen() +
+              this.renderStartpaket(glasRegler, this.renderGlasVorlagenteil(werksVorlagen, istAktiv, zeichne, alsListe))
             : ""
         }
         ${!gruppe ? this.renderHintergrundKasten(werksVorlagen, istAktiv, zeichne, alsListe) : ""}
@@ -7978,10 +7975,32 @@ uix:
     return (this._state.offeneVorlagenKaesten || []).includes(id);
   }
 
+  // Ganz oben, vor den Stilen: was fuer alles gilt. Den Anfang macht der
+  // Verlauf fuer aktive Flaechen - er faerbt das Gewaehlte der Karten, die
+  // eingeschalteten Bubble-Karten und den aktiven Eintrag der Seitenleiste.
+  renderGrundeinstellungen() {
+    const en = this._sprache === "en";
+    const inhalt = this.renderAkzentVerlauf();
+    if (!inhalt) return "";
+    return `
+      <details class="vorlagen-kasten startpaket" data-vorlagen-kasten="grund" ${this.vorlagenKastenOffen("grund") ? "open" : ""}>
+        <summary data-roh>
+          <ha-icon icon="mdi:tune-variant"></ha-icon>
+          <strong>${en ? "Basics" : "Grundeinstellungen"}</strong>
+          <span>${
+            en
+              ? "What applies everywhere, regardless of style."
+              : "Was überall gilt, unabhängig vom Stil."
+          }</span>
+        </summary>
+        <div class="vorlagen-kasten-inhalt">${inhalt}</div>
+      </details>`;
+  }
+
   // Der Einstieg in die Vorlagenseite: ein Stil, ein paar Grundentscheidungen.
   // Was hier gesetzt wird, steht danach in den Feldern - die Liste darunter
   // zeigt, was daraus geworden ist.
-  renderStartpaket(glasRegler = "", vorlagenteil = "", verlauf = "") {
+  renderStartpaket(glasRegler = "", vorlagenteil = "") {
     const en = this._sprache === "en";
     const stand = this.paketStand("glas");
     if (!stand.gesamt) return "";
@@ -8031,7 +8050,6 @@ uix:
           ${reihe(en ? "Shadow" : "Schatten", HATG_GLAS_SCHATTEN, this.glasSchattenErkennen(), "data-glas-schatten")}
           <div class="startpaket-trenner" data-roh></div>
           ${glasRegler}
-          ${verlauf}
           <div class="startpaket-trenner" data-roh></div>
           ${vorlagenteil}
           <p class="vorlage-desc" data-roh>${
