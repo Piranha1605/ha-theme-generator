@@ -2272,6 +2272,37 @@ const HATG_VORLAGEN_ZIEL_ICONS = {
 };
 // Vorlagen koennen zu einem Paket gehoeren und gemeinsam geschaltet werden.
 const HATG_PAKETE = { glas: { label: "Glas-Paket", labelEn: "Glass package" } };
+// Startpaket Glas: ein paar Grundentscheidungen statt 25 einzelner Vorlagen.
+// Hell und Dunkel stehen getrennt - Home Assistant schaltet zwischen beiden um,
+// und ein Glas, das im Hellen stimmt, ist im Dunklen entweder unsichtbar oder
+// eine Milchscheibe. Ton "akzent" nimmt die Akzentfarbe des jeweiligen Modus.
+const HATG_GLAS_VARIANTEN = {
+  light: [
+    { id: "klar", label: "Klar", labelEn: "Clear", ton: "#FFFFFF", deckkraft: 30, blur: 14 },
+    { id: "weich", label: "Weich", labelEn: "Soft", ton: "#FFFFFF", deckkraft: 50, blur: 18 },
+    { id: "milchig", label: "Milchig", labelEn: "Frosted", ton: "#FFFFFF", deckkraft: 68, blur: 26 },
+    { id: "getoent", label: "Getönt", labelEn: "Tinted", ton: "akzent", deckkraft: 26, blur: 20 },
+    { id: "deckend", label: "Fast deckend", labelEn: "Almost solid", ton: "#FFFFFF", deckkraft: 85, blur: 6 },
+  ],
+  dark: [
+    { id: "klar", label: "Klar", labelEn: "Clear", ton: "#FFFFFF", deckkraft: 10, blur: 18 },
+    { id: "rauch", label: "Rauchglas", labelEn: "Smoked", ton: "#000000", deckkraft: 32, blur: 20 },
+    { id: "nacht", label: "Nachtglas", labelEn: "Night glass", ton: "#1C1C1E", deckkraft: 55, blur: 24 },
+    { id: "getoent", label: "Getönt", labelEn: "Tinted", ton: "akzent", deckkraft: 22, blur: 20 },
+    { id: "deckend", label: "Fast deckend", labelEn: "Almost solid", ton: "#1C1C1E", deckkraft: 82, blur: 6 },
+  ],
+};
+const HATG_GLAS_RAHMEN = [
+  { id: "keiner", label: "Kein Rahmen", labelEn: "No border", breite: "0px", farbe: { light: "rgba(0, 0, 0, 0)", dark: "rgba(0, 0, 0, 0)" } },
+  { id: "kante", label: "Helle Kante", labelEn: "Light edge", breite: "1px", farbe: { light: "rgba(255, 255, 255, 0.55)", dark: "rgba(255, 255, 255, 0.14)" } },
+  { id: "linie", label: "Feine Linie", labelEn: "Fine line", breite: "1px", farbe: { light: "rgba(0, 0, 0, 0.12)", dark: "rgba(0, 0, 0, 0.35)" } },
+  { id: "akzent", label: "Akzentfarbe", labelEn: "Accent colour", breite: "1px", farbe: "akzent" },
+];
+const HATG_GLAS_SCHATTEN = [
+  { id: "keiner", label: "Kein Schatten", labelEn: "No shadow", wert: { light: "none", dark: "none" } },
+  { id: "weich", label: "Weich", labelEn: "Soft", wert: { light: "0 10px 28px rgba(60, 60, 67, 0.14)", dark: "0 10px 28px rgba(0, 0, 0, 0.35)" } },
+  { id: "tief", label: "Tief", labelEn: "Deep", wert: { light: "0 18px 40px rgba(60, 60, 67, 0.22)", dark: "0 18px 44px rgba(0, 0, 0, 0.5)" } },
+];
 // Diese Felder faerben Flaechen, die kein UIX-Stilziel zuverlaessig erreicht -
 // die Kopfleiste eines Dashboards etwa holt ihre Farbe immer aus dem Theme.
 // Steht dort ein deckender Wert, ist jede Glas-Vorlage wirkungslos.
@@ -6678,6 +6709,83 @@ class HATGPanel extends HTMLElement {
     const hell = this.glasReglerStand("light");
     return hell.deckkraft >= 70 ? "richtlinie" : "ueberall";
   }
+  // ---- Startpaket Glas ------------------------------------------------
+  glasTon(ton, mode) {
+    if (ton !== "akzent") return ton;
+    const wert = String((this._state.values[mode] || {})["accent-color"] || "").trim();
+    return /^#[0-9A-Fa-f]{6}$/.test(wert) ? wert.toUpperCase() : mode === "dark" ? "#1C1C1E" : "#FFFFFF";
+  }
+  // Welche Variante steht gerade im Theme? Verglichen wird mit Spielraum: Wer
+  // hinterher am Regler dreht, soll nicht gleich "eigene Werte" lesen.
+  glasVarianteErkennen(mode) {
+    const stand = this.glasReglerStand(mode);
+    const treffer = HATG_GLAS_VARIANTEN[mode].find(
+      (v) =>
+        this.glasTon(v.ton, mode).toUpperCase() === String(stand.ton || "").toUpperCase() &&
+        Math.abs(stand.deckkraft - v.deckkraft) <= 5 &&
+        Math.abs(stand.blur - v.blur) <= 4
+    );
+    return treffer ? treffer.id : null;
+  }
+  glasRahmenErkennen() {
+    const lese = (mode, key) => String((this._state.values[mode] || {})[key] || "").trim().toLowerCase();
+    return (
+      (HATG_GLAS_RAHMEN.find((r) => {
+        if (r.farbe === "akzent") return lese("light", "ha-card-border-width") === r.breite && lese("light", "ha-card-border-color").startsWith("rgba(");
+        return ["light", "dark"].every((m) => lese(m, "ha-card-border-width") === r.breite && lese(m, "ha-card-border-color") === r.farbe[m].toLowerCase());
+      }) || {}).id || null
+    );
+  }
+  glasSchattenErkennen() {
+    const lese = (mode) => String((this._state.values[mode] || {})["ha-card-box-shadow"] || "").trim().toLowerCase();
+    return (HATG_GLAS_SCHATTEN.find((s) => ["light", "dark"].every((m) => lese(m) === s.wert[m].toLowerCase())) || {}).id || null;
+  }
+  // Das Paket setzt die Vorlagen, bevor es die Werte schreibt: Beim Einschalten
+  // setzt das Glas-Paket die Felder selbst auf seinen Standard - danach wuerde
+  // es die gerade gewaehlte Variante wieder ueberschreiben.
+  glasPaketSicherstellen() {
+    const stand = this.paketStand("glas");
+    if (stand.gesamt && stand.aktiv < stand.gesamt) this.schaltePaket("glas");
+  }
+  setzeGlasVariante(mode, id) {
+    const v = HATG_GLAS_VARIANTEN[mode].find((x) => x.id === id);
+    if (!v) return;
+    this.glasPaketSicherstellen();
+    this.setzeGlasWerte({ mode, ton: this.glasTon(v.ton, mode), deckkraft: v.deckkraft, blur: v.blur });
+    this.render();
+    const en = this._sprache === "en";
+    const name = en ? v.labelEn : v.label;
+    const wo = mode === "dark" ? (en ? "dark mode" : "dunklen Modus") : (en ? "light mode" : "hellen Modus");
+    this.showToast(en ? `Glass for the ${wo}: ${name}.` : `Glas für den ${wo}: ${name}.`);
+  }
+  setzeGlasRahmen(id) {
+    const r = HATG_GLAS_RAHMEN.find((x) => x.id === id);
+    if (!r) return;
+    const vorher = this._state.editorMode;
+    ["light", "dark"].forEach((mode) => {
+      this._state.editorMode = mode;
+      this.commitField("ha-card-border-width", r.breite);
+      this.commitField(
+        "ha-card-border-color",
+        r.farbe === "akzent" ? hatgComposeRgba(this.glasTon("akzent", mode), 0.55) : r.farbe[mode]
+      );
+    });
+    this._state.editorMode = vorher;
+    this.render();
+    this.showToast(this._sprache === "en" ? `Border: ${r.labelEn}.` : `Rahmen: ${r.label}.`);
+  }
+  setzeGlasSchatten(id) {
+    const s = HATG_GLAS_SCHATTEN.find((x) => x.id === id);
+    if (!s) return;
+    const vorher = this._state.editorMode;
+    ["light", "dark"].forEach((mode) => {
+      this._state.editorMode = mode;
+      this.commitField("ha-card-box-shadow", s.wert[mode]);
+    });
+    this._state.editorMode = vorher;
+    this.render();
+    this.showToast(this._sprache === "en" ? `Shadow: ${s.labelEn}.` : `Schatten: ${s.label}.`);
+  }
   setzeGlasProfil(name) {
     const profil = this.glasProfile()[name];
     if (!profil) return;
@@ -7617,6 +7725,7 @@ uix:
     return `
       <section class="editor-section">
         <div class="section-heading">${kopf}</div>
+        ${!gruppe ? this.renderStartpaket() : ""}
         ${paketLeiste}
         ${pfadHinweis}
         ${kollisionsHinweis}
@@ -7643,6 +7752,55 @@ uix:
   // wieder zuklappt.
   vorlagenKastenOffen(id) {
     return (this._state.offeneVorlagenKaesten || []).includes(id);
+  }
+
+  // Der Einstieg in die Vorlagenseite: ein Stil, ein paar Grundentscheidungen.
+  // Was hier gesetzt wird, steht danach in den Feldern - die Liste darunter
+  // zeigt, was daraus geworden ist.
+  renderStartpaket() {
+    const en = this._sprache === "en";
+    const stand = this.paketStand("glas");
+    if (!stand.gesamt) return "";
+    const reihe = (titel, eintraege, aktiv, attribut, extra = "") => `
+      <div class="startpaket-reihe" data-roh>
+        <span class="startpaket-titel">${hatgEscape(titel)}</span>
+        <div class="mode-toggle-group inline" role="group">
+          ${eintraege
+            .map(
+              (e) => `<button type="button" class="${aktiv === e.id ? "active" : ""}" ${attribut}="${e.id}" ${extra}>${hatgEscape(en ? e.labelEn : e.label)}</button>`
+            )
+            .join("")}
+        </div>
+      </div>`;
+    const eigen = !this.glasVarianteErkennen("light") || !this.glasVarianteErkennen("dark");
+    return `
+      <details class="vorlagen-kasten startpaket" data-vorlagen-kasten="startpaket" ${this.vorlagenKastenOffen("startpaket") ? "open" : ""}>
+        <summary data-roh>
+          <ha-icon icon="mdi:package-variant-closed"></ha-icon>
+          <strong>${en ? "Glass" : "Glas"}</strong>
+          <span>${
+            en
+              ? "Pick the kind of glass, border and shadow - separately for light and dark. It writes the fields and switches on the package."
+              : "Art des Glases, Rahmen und Schatten wählen - für hell und dunkel getrennt. Setzt die Felder und schaltet das Paket ein."
+          }</span>
+          ${stand.aktiv === stand.gesamt ? `<small class="vorlage-badge">${en ? "active" : "aktiv"}</small>` : ""}
+        </summary>
+        <div class="vorlagen-kasten-inhalt">
+          ${reihe(en ? "Light mode" : "Heller Modus", HATG_GLAS_VARIANTEN.light, this.glasVarianteErkennen("light"), "data-glas-variante-light")}
+          ${reihe(en ? "Dark mode" : "Dunkler Modus", HATG_GLAS_VARIANTEN.dark, this.glasVarianteErkennen("dark"), "data-glas-variante-dark")}
+          ${reihe(en ? "Border" : "Rahmen", HATG_GLAS_RAHMEN, this.glasRahmenErkennen(), "data-glas-rahmen")}
+          ${reihe(en ? "Shadow" : "Schatten", HATG_GLAS_SCHATTEN, this.glasSchattenErkennen(), "data-glas-schatten")}
+          <p class="vorlage-desc" data-roh>${
+            eigen
+              ? en
+                ? "Your values do not match any variant - that is fine, the sliders under Settings keep them."
+                : "Deine Werte passen zu keiner Variante - das ist in Ordnung, die Regler unter Einstellungen behalten sie."
+              : en
+                ? "Fine tuning stays below: the sliders under Settings, every single preset under the groups."
+                : "Der Feinschliff bleibt darunter: die Regler unter Einstellungen, jede einzelne Vorlage in den Gruppen."
+          }</p>
+        </div>
+      </details>`;
   }
 
   renderVorlagenEinstellungen(inhalt) {
@@ -9652,6 +9810,10 @@ uix:
         .vorlagen-gruppe-stand.hat-aktive { color: #1fae63 !important; }
         .vorlagen-kasten-inhalt { padding: 0 12px 12px; }
         .vorlagen-kasten-inhalt .glas-regler { margin-bottom: 10px; }
+        .startpaket-reihe { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 8px 0; }
+        .startpaket-titel { min-width: 120px; font-size: 13px; font-weight: 600; color: var(--hatg-text-dim); }
+        .startpaket .mode-toggle-group.inline button { padding: 6px 12px; font-size: 12.5px; font-weight: 600; }
+        .startpaket .vorlage-desc { margin: 10px 0 0; }
         .vorlagen-gruppe.ist-aelter > summary strong { color: var(--hatg-text-dim); }
         .vorlagen-gruppe-hinweis { margin: 0 4px 10px; font-size: 12px; line-height: 1.5; color: var(--hatg-text-dim); }
         .vorlage-eigene-kopf { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 26px 0 10px; }
@@ -10305,6 +10467,18 @@ uix:
         this._state.vorlagenAnsicht = el.dataset.vorlagenAnsicht;
         this.render();
       });
+    });
+    this.shadowRoot.querySelectorAll("[data-glas-variante-light]").forEach((el) => {
+      el.addEventListener("click", () => this.setzeGlasVariante("light", el.dataset.glasVarianteLight));
+    });
+    this.shadowRoot.querySelectorAll("[data-glas-variante-dark]").forEach((el) => {
+      el.addEventListener("click", () => this.setzeGlasVariante("dark", el.dataset.glasVarianteDark));
+    });
+    this.shadowRoot.querySelectorAll("[data-glas-rahmen]").forEach((el) => {
+      el.addEventListener("click", () => this.setzeGlasRahmen(el.dataset.glasRahmen));
+    });
+    this.shadowRoot.querySelectorAll("[data-glas-schatten]").forEach((el) => {
+      el.addEventListener("click", () => this.setzeGlasSchatten(el.dataset.glasSchatten));
     });
     this.shadowRoot.querySelectorAll("[data-vorlage-wert]").forEach((el) => {
       el.addEventListener("change", () => {
