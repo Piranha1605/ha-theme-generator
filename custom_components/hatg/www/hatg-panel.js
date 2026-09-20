@@ -43,6 +43,8 @@ const HATG_TEXTE = {
   "Kartentransparenz": "Card transparency",
   "Hintergrund": "Background",
   "Pop-up-Hintergrund": "Pop-up background",
+  "Seitenleiste: Zähler mit Farbverlauf": "Sidebar: counters with a gradient",
+  "Die kleinen Zähler neben Einstellungen und Benachrichtigungen bekommen einen Verlauf statt einer Farbe.": "The small counters next to Settings and Notifications get a gradient instead of a colour.",
   "Seitenleiste: aktiver Eintrag mit plastischer Kante": "Sidebar: active entry with a sculpted edge",
   "Legt eine Innenkante auf den aktiven Eintrag - dunkel oben links, hell unten rechts. Die Farbe bleibt, wie sie ist.": "Puts an inner edge on the active entry - dark at the top left, light at the bottom right. The colour stays as it is.",
   "Seitenleiste: Abstände der Einträge": "Sidebar: spacing of the entries",
@@ -2317,6 +2319,7 @@ const HATG_SEITENLEISTE_VORLAGEN = [
   "seitenleiste-eintrag-gedrueckt",
   "seitenleiste-eintrag-glaspille",
   "seitenleiste-eintrag-kante",
+  "seitenleiste-badges-verlauf",
   "seitenleiste-glas",
   "seitenleiste-aktiv-liquid",
   "glow-aktiv-seitenleiste",
@@ -2596,6 +2599,7 @@ const HATG_VORLAGEN_GRUPPEN = [
       "seitenleiste-eintrag-gedrueckt",
       "seitenleiste-eintrag-glaspille",
       "seitenleiste-eintrag-kante",
+      "seitenleiste-badges-verlauf",
       "seitenleiste-dichte",
       "seitenleiste-nur-icons",
       "seitenleiste-ohne-scrollbalken",
@@ -3708,6 +3712,24 @@ ha-list-item-button.selected::before {
   box-shadow:
     inset 3px 3px 7px color-mix(in srgb, var(--accent-color, var(--primary-color)) [[kante-tiefe]], #000000),
     inset -2px -2px 6px color-mix(in srgb, var(--accent-color, var(--primary-color)) [[kante-hell]], #ffffff) !important;
+}`,
+  },
+  {
+    id: "seitenleiste-badges-verlauf",
+    label: "Seitenleiste: Zähler mit Farbverlauf",
+    desc: "Die kleinen Zähler neben Einstellungen und Benachrichtigungen bekommen einen Verlauf statt einer Farbe.",
+    werte: [
+      { id: "winkel", label: "Richtung", labelEn: "Direction", standard: "135deg" },
+      { id: "von", label: "Erste Farbe", labelEn: "First colour", standard: "var(--accent-color)" },
+      { id: "bis", label: "Zweite Farbe", labelEn: "Second colour", standard: "var(--primary-color)" },
+    ],
+    ziel: "uix-sidebar",
+    css: `/* .badge liegt im Shadow Root von ha-sidebar und faerbt sich aus
+   --accent-color (an elementStyles geprueft). Liegt der Verlauf fuer aktive
+   Flaechen an, nimmt der Zaehler ihn mit - sonst den eigenen. */
+.badge {
+  background: var(--karten-gewaehlt, linear-gradient([[winkel]], [[von]], [[bis]])) !important;
+  color: var(--karten-gewaehlt-vorn, var(--text-accent-color, var(--text-primary-color))) !important;
 }`,
   },
   {
@@ -8237,6 +8259,11 @@ uix:
               : "Der Farbverlauf ist der aus dem Glas-Bereich - er füllt auch das Gewählte der Karten. Farbe, Form und Animation lassen sich kombinieren."
           }</p>
           ${reihe(
+            en ? "Counters" : "Zähler",
+            chip(en ? "Accent colour" : "Akzentfarbe", !an("seitenleiste-badges-verlauf"), "badge-standard") +
+              chip(en ? "Gradient" : "Farbverlauf", an("seitenleiste-badges-verlauf"), "badge-verlauf")
+          )}
+          ${reihe(
             en ? "Labels" : "Beschriftung",
             chip(en ? "Text and icon" : "Text und Icon", !an("seitenleiste-nur-icons"), "text-an") +
               chip(en ? "Icons only" : "Nur Icons", an("seitenleiste-nur-icons"), "text-aus")
@@ -8285,6 +8312,8 @@ uix:
     else if (wahl === "benutzer-quadrat") setze("benutzer-icon-ios", true);
     else if (wahl === "glas-aus") ["seitenleiste-glas", "drawer-glas"].forEach((id) => setze(id, false));
     else if (wahl === "glas-an") ["seitenleiste-glas", "drawer-glas"].forEach((id) => setze(id, true));
+    else if (wahl === "badge-standard") setze("seitenleiste-badges-verlauf", false);
+    else if (wahl === "badge-verlauf") setze("seitenleiste-badges-verlauf", true);
     else if (wahl === "text-an") setze("seitenleiste-nur-icons", false);
     else if (wahl === "text-aus") setze("seitenleiste-nur-icons", true);
     else if (wahl === "scrollbalken") setze("seitenleiste-ohne-scrollbalken", !this.vorlageIrgendwoAktiv("seitenleiste-ohne-scrollbalken"));
