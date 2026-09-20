@@ -7569,12 +7569,25 @@ uix:
   // Die Vorlagenseite gliedert sich nach Stilzielen. Untermenues entstehen nur
   // fuer Ziele, zu denen es tatsaechlich Vorlagen gibt - sonst stuenden dort
   // zwei Dutzend leere Eintraege.
+  // Vorlagen, die oben in einem Kasten stehen - Glas, Hintergrund,
+  // Seitenleiste, Kopfleiste. Ein Stilziel, dessen Vorlagen alle dort liegen,
+  // braucht keinen eigenen Eintrag mehr in der Seitenleiste.
+  vorlageImKasten(tpl) {
+    return (
+      hatgVorlagenPaket(tpl) === "glas" ||
+      HATG_SEITENLEISTE_VORLAGEN.includes(tpl.id) ||
+      HATG_KOPFLEISTE_VORLAGEN.includes(tpl.id) ||
+      hatgVorlagenGruppeVon(tpl) === "hintergrund"
+    );
+  }
   vorlagenNavGruppen() {
     const sprache = this._sprache === "en" ? "en" : "de";
     const zaehler = new Map();
+    const offen = new Map();
     this.alleVorlagen().forEach((tpl) => {
       const ziel = hatgVorlagenZiel(tpl);
       zaehler.set(ziel, (zaehler.get(ziel) || 0) + 1);
+      if (!this.vorlageImKasten(tpl)) offen.set(ziel, (offen.get(ziel) || 0) + 1);
     });
     const gruppen = [];
     HATG_STILZIELE.forEach((z) => {
@@ -7584,6 +7597,8 @@ uix:
       ].forEach(({ suffix, zusatz }) => {
         const ziel = `uix-${z.id}${suffix}`;
         if (!zaehler.has(ziel)) return;
+        // Steht alles zu diesem Ziel schon in einem Kasten, faellt der Eintrag weg.
+        if (!offen.has(ziel)) return;
         gruppen.push({
           id: `uix-vorlagen__${z.id}${suffix}`,
           label: hatgStilzielLabel(z, sprache) + zusatz,
