@@ -334,16 +334,6 @@ const HATG_TEXTE = {
   "Hintergrundbild im Info-Dialog, am Desktop wie auf Tablet und Handy. Dasselbe Bild wie bei den Bubble-Pop-ups.": "Background image in the more-info dialog, on desktop as well as tablet and phone. The same image as in the Bubble pop-ups.",
   "Wirkt auf": "Applies to",
   "Das CSS landet beim Aktivieren markiert im gewählten Stilziel - genau wie die mitgelieferten Vorlagen, für Light und Dark gleichzeitig.": "When activated, the CSS is written and marked into the chosen style target - just like the built-in presets, for light and dark at the same time.",
-  "Kartenfarben: Sanfter Verlauf": "Card colours: soft gradient",
-  "Dezenter Verlauf von der Kartenfarbe zu leichtem Schwarz über HA- und Bubble-Karten.": "Subtle gradient from the card colour to a light black over HA and Bubble cards.",
-  "Glow / Leucht-Schatten": "Glow / light shadow",
-  "Weicher Leuchtschatten in der Akzentfarbe um HA- und Bubble-Karten, an Sub-Buttons schwächer.": "Soft glow in the accent colour around HA and Bubble cards, weaker on sub-buttons.",
-  "Rahmen: Akzentfarbe mit Leuchtkante": "Border: accent colour with glowing edge",
-  "Dünner Rahmen in der Akzentfarbe mit innerer Leuchtkante, bei Bubble Card als innerer Ring.": "Thin frame in the accent colour with a glowing inner edge, drawn as an inner ring on Bubble Card.",
-  "Glas-Effekt (Blur)": "Glass effect (blur)",
-  "Einfaches Milchglas mit hellem Rand für HA- und Bubble-Karten, unabhängig vom Glas-Paket.": "Simple frosted glass with a light border for HA and Bubble cards, independent of the glass package.",
-  "Relief: Weiche Tiefenwirkung": "Relief: soft depth",
-  "Weicher Schatten mit feiner Glanzkante oben, Karten wirken leicht erhaben.": "Soft shadow with a fine highlight at the top; cards look slightly raised.",
   "Slider-Enden abrunden": "Round the slider ends",
   "Rundet die Füllung von Helligkeits-, Lautstärke-, Cover- und Klima-Slidern an beiden Enden ab, statt einer geraden Kante beim aktuellen Wert.": "Rounds the fill of brightness, volume, cover and climate sliders at both ends instead of a straight edge at the current value.",
   "Slider-Farbverlauf (hell → dunkel)": "Slider gradient (light → dark)",
@@ -2432,10 +2422,6 @@ function hatgFelderNennen(felder, rest) {
   if (felder.length <= 4) return felder.join(", ");
   return `${felder.slice(0, 3).join(", ")} +${felder.length - 3} ${rest}`;
 }
-// Diese Vorlagen setzen dieselben Eigenschaften wie das Glas-Paket, aber mit
-// festen Werten. Liegen sie im selben Feld hinter einer Glas-Vorlage, gewinnen
-// sie - und die Regler bewegen nichts mehr.
-const HATG_GLAS_KOLLISIONEN = ["glas-effekt", "relief-tiefe", "kartenfarben-verlauf", "rahmen-akzent", "glow-schatten"];
 function hatgVorlagenPaket(tpl) {
   const paket = tpl && tpl.paket;
   return paket && HATG_PAKETE[paket] ? paket : null;
@@ -2624,14 +2610,6 @@ const HATG_VORLAGEN_GRUPPEN = [
     labelEn: "Glow",
     ids: ["glow-aktiv-karten", "glow-aktiv-seitenleiste"],
   },
-  {
-    id: "aelter",
-    label: "Ältere Einzeleffekte",
-    labelEn: "Older single effects",
-    hinweis: "Vor dem Glas-Paket entstanden; setzen dieselben Eigenschaften mit festen Werten und vertragen sich nicht mit ihm.",
-    hinweisEn: "Made before the glass package; they set the same properties with fixed values and do not go together with it.",
-    passt: (t) => HATG_GLAS_KOLLISIONEN.includes(t.id),
-  },
   // Alles, was sonst nirgends hingehoert - zuletzt, damit keine Vorlage verloren geht.
   { id: "weitere", label: "Weitere Effekte", labelEn: "Further effects", passt: () => true },
 ];
@@ -2640,61 +2618,6 @@ function hatgVorlagenGruppeVon(tpl) {
 }
 
 const HATG_VORLAGEN = [
-  {
-    id: "kartenfarben-verlauf",
-    label: "Kartenfarben: Sanfter Verlauf",
-    desc: "Dezenter Verlauf von der Kartenfarbe zu leichtem Schwarz über HA- und Bubble-Karten.",
-    werte: [
-      { id: "winkel", label: "Richtung", labelEn: "Direction", standard: "160deg" },
-      { id: "dunkel", label: "Dunkles Ende", labelEn: "Dark end", standard: "rgba(0, 0, 0, 0.12)" },
-    ],
-    css: ":host(ha-card),\nha-card {\n  background-image: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%) !important;\n  --bubble-card-background-color: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%);\n  --bubble-main-buttons-background-color: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%);\n  --bubble-button-background-color: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%);\n  --bubble-sub-button-background-color: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%);\n  --bubble-climate-background-color: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%);\n  --bubble-climate-main-background-color: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%);\n  --bubble-climate-button-background-color: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%);\n  --bubble-cover-background-color: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%);\n  --bubble-cover-main-background-color: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%);\n  --bubble-media-player-background-color: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%);\n  --bubble-media-player-main-background-color: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%);\n  --bubble-select-background-color: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%);\n  --bubble-select-main-background-color: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%);\n  --bubble-horizontal-buttons-stack-background-color: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%);\n  --bubble-calendar-main-background-color: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%);\n}\n.bubble-container,\n.bubble-button-card-container {\n  background-image: linear-gradient([[winkel]], var(--card-background-color, var(--ha-card-background)) 0%, [[dunkel]] 100%) !important;\n  -webkit-mask-image: -webkit-radial-gradient(white, black);\n}\n:host(hui-heading-card) ha-card,\n:host(mushroom-chips-card) ha-card,\n:host(mushroom-chip) ha-card,\n:host(:has(.chip-container)),\nha-card:has(.chip-container),\n:host(.type-heading) ha-card,\n:host(.type-heading),\nha-card.type-heading,\n:host(:has(.bubble-sub-button)),\nha-card:has(.bubble-sub-button),\n:host(:has(.bubble-separator)),\nha-card:has(.bubble-separator),\n:host(:has(.bubble-container)),\nha-card:has(.bubble-container) {\n  border: none !important;\n  box-shadow: none !important;\n  background: none !important;\n  background-image: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n}",
-  },
-  {
-    id: "glow-schatten",
-    label: "Glow / Leucht-Schatten",
-    desc: "Weicher Leuchtschatten in der Akzentfarbe um HA- und Bubble-Karten, an Sub-Buttons schwächer.",
-    werte: [
-      { id: "glow", label: "Leuchtschatten (Versatz, Weite, Ausdehnung)", labelEn: "Glow (offset, blur, spread)", standard: "0 0 18px 2px" },
-      { id: "glow-staerke", label: "Stärke", labelEn: "Strength", standard: "28%" },
-      { id: "glow-klein", label: "Leuchtschatten Sub-Buttons", labelEn: "Sub-button glow", standard: "0 0 10px 1px" },
-      { id: "glow-klein-staerke", label: "Stärke Sub-Buttons", labelEn: "Sub-button strength", standard: "30%" },
-    ],
-    css: ":host(ha-card),\nha-card {\n  box-shadow: [[glow]] color-mix(in srgb, var(--accent-color) [[glow-staerke]], transparent) !important;\n  --bubble-box-shadow: [[glow]] color-mix(in srgb, var(--accent-color) [[glow-staerke]], transparent);\n  --bubble-button-box-shadow: [[glow]] color-mix(in srgb, var(--accent-color) [[glow-staerke]], transparent);\n  --bubble-sub-button-box-shadow: [[glow-klein]] color-mix(in srgb, var(--accent-color) [[glow-klein-staerke]], transparent);\n  --bubble-footer-box-shadow: [[glow]] color-mix(in srgb, var(--accent-color) [[glow-staerke]], transparent);\n  --bubble-climate-box-shadow: [[glow]] color-mix(in srgb, var(--accent-color) [[glow-staerke]], transparent);\n  --bubble-cover-box-shadow: [[glow]] color-mix(in srgb, var(--accent-color) [[glow-staerke]], transparent);\n  --bubble-media-player-box-shadow: [[glow]] color-mix(in srgb, var(--accent-color) [[glow-staerke]], transparent);\n  --bubble-select-box-shadow: [[glow]] color-mix(in srgb, var(--accent-color) [[glow-staerke]], transparent);\n  --bubble-horizontal-buttons-stack-box-shadow: [[glow]] color-mix(in srgb, var(--accent-color) [[glow-staerke]], transparent);\n}\n.bubble-container {\n  box-shadow: [[glow]] color-mix(in srgb, var(--accent-color) [[glow-staerke]], transparent) !important;\n}\n.bubble-sub-button {\n  box-shadow: [[glow-klein]] color-mix(in srgb, var(--accent-color) [[glow-klein-staerke]], transparent) !important;\n}\n:host(hui-heading-card) ha-card,\n:host(mushroom-chips-card) ha-card,\n:host(mushroom-chip) ha-card,\n:host(:has(.chip-container)),\nha-card:has(.chip-container),\n:host(.type-heading) ha-card,\n:host(.type-heading),\nha-card.type-heading,\n:host(:has(.bubble-sub-button)),\nha-card:has(.bubble-sub-button),\n:host(:has(.bubble-separator)),\nha-card:has(.bubble-separator),\n:host(:has(.bubble-container)),\nha-card:has(.bubble-container) {\n  border: none !important;\n  box-shadow: none !important;\n  background: none !important;\n  background-image: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n}",
-  },
-  {
-    id: "rahmen-akzent",
-    label: "Rahmen: Akzentfarbe mit Leuchtkante",
-    desc: "Dünner Rahmen in der Akzentfarbe mit innerer Leuchtkante, bei Bubble Card als innerer Ring.",
-    werte: [
-      { id: "breite", label: "Rahmenbreite", labelEn: "Border width", standard: "1px" },
-      { id: "staerke", label: "Anteil Akzentfarbe", labelEn: "Share of accent colour", standard: "55%" },
-    ],
-    css: ":host(ha-card),\nha-card {\n  border: [[breite]] solid color-mix(in srgb, var(--accent-color) [[staerke]], transparent) !important;\n  box-shadow: inset 0 0 0 [[breite]] color-mix(in srgb, var(--accent-color) [[staerke]], transparent) !important;\n  --bubble-border: [[breite]] solid color-mix(in srgb, var(--accent-color) [[staerke]], transparent);\n  --bubble-border-color: color-mix(in srgb, var(--accent-color) [[staerke]], transparent);\n  --bubble-box-shadow: inset 0 0 0 [[breite]] color-mix(in srgb, var(--accent-color) [[staerke]], transparent);\n  --bubble-button-box-shadow: inset 0 0 0 [[breite]] color-mix(in srgb, var(--accent-color) [[staerke]], transparent);\n  --bubble-sub-button-box-shadow: inset 0 0 0 [[breite]] color-mix(in srgb, var(--accent-color) [[staerke]], transparent);\n  --bubble-footer-box-shadow: inset 0 0 0 [[breite]] color-mix(in srgb, var(--accent-color) [[staerke]], transparent);\n  --bubble-climate-box-shadow: inset 0 0 0 [[breite]] color-mix(in srgb, var(--accent-color) [[staerke]], transparent);\n  --bubble-cover-box-shadow: inset 0 0 0 [[breite]] color-mix(in srgb, var(--accent-color) [[staerke]], transparent);\n  --bubble-media-player-box-shadow: inset 0 0 0 [[breite]] color-mix(in srgb, var(--accent-color) [[staerke]], transparent);\n  --bubble-select-box-shadow: inset 0 0 0 [[breite]] color-mix(in srgb, var(--accent-color) [[staerke]], transparent);\n  --bubble-horizontal-buttons-stack-box-shadow: inset 0 0 0 [[breite]] color-mix(in srgb, var(--accent-color) [[staerke]], transparent);\n}\n.bubble-container,\n.bubble-sub-button {\n  border: [[breite]] solid color-mix(in srgb, var(--accent-color) [[staerke]], transparent) !important;\n}\n:host(hui-heading-card) ha-card,\n:host(mushroom-chips-card) ha-card,\n:host(mushroom-chip) ha-card,\n:host(:has(.chip-container)),\nha-card:has(.chip-container),\n:host(.type-heading) ha-card,\n:host(.type-heading),\nha-card.type-heading,\n:host(:has(.bubble-sub-button)),\nha-card:has(.bubble-sub-button),\n:host(:has(.bubble-separator)),\nha-card:has(.bubble-separator),\n:host(:has(.bubble-container)),\nha-card:has(.bubble-container) {\n  border: none !important;\n  box-shadow: none !important;\n  background: none !important;\n  background-image: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n}",
-  },
-  {
-    id: "glas-effekt",
-    label: "Glas-Effekt (Blur)",
-    desc: "Einfaches Milchglas mit hellem Rand für HA- und Bubble-Karten, unabhängig vom Glas-Paket.",
-    werte: [
-      { id: "flaeche", label: "Fläche", labelEn: "Surface", standard: "rgba(255, 255, 255, 0.10)" },
-      { id: "filter", label: "Filter", labelEn: "Filter", standard: "blur(16px) saturate(160%)" },
-      { id: "rand", label: "Randfarbe", labelEn: "Border colour", standard: "rgba(255, 255, 255, 0.25)" },
-    ],
-    css: ":host(ha-card),\nha-card {\n  background: [[flaeche]] !important;\n  backdrop-filter: [[filter]];\n  -webkit-backdrop-filter: [[filter]];\n  border: 1px solid [[rand]] !important;\n  --bubble-card-background-color: [[flaeche]];\n  --bubble-main-buttons-background-color: [[flaeche]];\n  --bubble-button-background-color: [[flaeche]];\n  --bubble-sub-button-background-color: [[flaeche]];\n  --bubble-climate-background-color: [[flaeche]];\n  --bubble-climate-main-background-color: [[flaeche]];\n  --bubble-climate-button-background-color: [[flaeche]];\n  --bubble-cover-background-color: [[flaeche]];\n  --bubble-cover-main-background-color: [[flaeche]];\n  --bubble-media-player-background-color: [[flaeche]];\n  --bubble-media-player-main-background-color: [[flaeche]];\n  --bubble-select-background-color: [[flaeche]];\n  --bubble-select-main-background-color: [[flaeche]];\n  --bubble-horizontal-buttons-stack-background-color: [[flaeche]];\n  --bubble-calendar-main-background-color: [[flaeche]];\n}\n.bubble-container {\n  background: [[flaeche]] !important;\n  backdrop-filter: [[filter]];\n  -webkit-backdrop-filter: [[filter]];\n  -webkit-mask-image: -webkit-radial-gradient(white, black);\n}\n:host(.type-custom-bubble-card) {\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n}\n:host(hui-heading-card) ha-card,\n:host(mushroom-chips-card) ha-card,\n:host(mushroom-chip) ha-card,\n:host(:has(.chip-container)),\nha-card:has(.chip-container),\n:host(.type-heading) ha-card,\n:host(.type-heading),\nha-card.type-heading,\n:host(:has(.bubble-sub-button)),\nha-card:has(.bubble-sub-button),\n:host(:has(.bubble-separator)),\nha-card:has(.bubble-separator),\n:host(:has(.bubble-container)),\nha-card:has(.bubble-container) {\n  border: none !important;\n  box-shadow: none !important;\n  background: none !important;\n  background-image: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n}",
-  },
-  {
-    id: "relief-tiefe",
-    label: "Relief: Weiche Tiefenwirkung",
-    desc: "Weicher Schatten mit feiner Glanzkante oben, Karten wirken leicht erhaben.",
-    werte: [
-      { id: "schatten", label: "Schatten", labelEn: "Shadow", standard: "0 6px 14px -4px rgba(0, 0, 0, 0.35)" },
-      { id: "glanz", label: "Glanzkante", labelEn: "Highlight edge", standard: "rgba(255, 255, 255, 0.06)" },
-      { id: "schatten-klein", label: "Schatten Sub-Buttons", labelEn: "Sub-button shadow", standard: "0 3px 8px -2px rgba(0, 0, 0, 0.3)" },
-      { id: "glanz-klein", label: "Glanzkante Sub-Buttons", labelEn: "Sub-button highlight edge", standard: "rgba(255, 255, 255, 0.08)" },
-    ],
-    css: ":host(ha-card),\nha-card {\n  box-shadow: [[schatten]], inset 0 1px 0 [[glanz]] !important;\n  --bubble-box-shadow: [[schatten]], inset 0 1px 0 [[glanz]];\n  --bubble-button-box-shadow: [[schatten]], inset 0 1px 0 [[glanz]];\n  --bubble-sub-button-box-shadow: [[schatten-klein]], inset 0 1px 0 [[glanz-klein]];\n  --bubble-footer-box-shadow: [[schatten]], inset 0 1px 0 [[glanz]];\n  --bubble-climate-box-shadow: [[schatten]], inset 0 1px 0 [[glanz]];\n  --bubble-cover-box-shadow: [[schatten]], inset 0 1px 0 [[glanz]];\n  --bubble-media-player-box-shadow: [[schatten]], inset 0 1px 0 [[glanz]];\n  --bubble-select-box-shadow: [[schatten]], inset 0 1px 0 [[glanz]];\n  --bubble-horizontal-buttons-stack-box-shadow: [[schatten]], inset 0 1px 0 [[glanz]];\n}\n.bubble-container {\n  box-shadow: [[schatten]], inset 0 1px 0 [[glanz]] !important;\n}\n.bubble-sub-button {\n  box-shadow: [[schatten-klein]], inset 0 1px 0 [[glanz-klein]] !important;\n}\n:host(hui-heading-card) ha-card,\n:host(mushroom-chips-card) ha-card,\n:host(mushroom-chip) ha-card,\n:host(:has(.chip-container)),\nha-card:has(.chip-container),\n:host(.type-heading) ha-card,\n:host(.type-heading),\nha-card.type-heading,\n:host(:has(.bubble-sub-button)),\nha-card:has(.bubble-sub-button),\n:host(:has(.bubble-separator)),\nha-card:has(.bubble-separator),\n:host(:has(.bubble-container)),\nha-card:has(.bubble-container) {\n  border: none !important;\n  box-shadow: none !important;\n  background: none !important;\n  background-image: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n}",
-  },
   {
     id: "glas-ebene",
     paket: "glas",
@@ -7226,24 +7149,6 @@ class HATGPanel extends HTMLElement {
   }
 
   // Aktive Vorlagen, die dem Glas-Paket ins Gehege kommen.
-  kollidierendeVorlagen() {
-    const werte = this.currentValues();
-    return this.alleVorlagen().filter(
-      (tpl) =>
-        HATG_GLAS_KOLLISIONEN.includes(tpl.id) &&
-        hatgVorlagenBlockActive(String(werte[hatgVorlagenZiel(tpl)] || ""), tpl.id)
-    );
-  }
-  entferneKollisionen() {
-    const treffer = this.kollidierendeVorlagen();
-    treffer.forEach((tpl) => this.schalteVorlage(tpl.id, { still: true }));
-    this.render();
-    this.showToast(
-      treffer.length
-        ? `${treffer.length} ältere Vorlage${treffer.length === 1 ? "" : "n"} entfernt. Die Karten folgen jetzt den Glaswerten.`
-        : "Keine älteren Vorlagen aktiv."
-    );
-  }
 
   paketStand(name) {
     const vorlagen = this.alleVorlagen().filter((t) => hatgVorlagenPaket(t) === name);
@@ -7921,21 +7826,6 @@ uix:
           </div>
         </div>`
       : "";
-    const kollisionen = stand.aktiv ? this.kollidierendeVorlagen() : [];
-    const kollisionsHinweis = kollisionen.length
-      ? `
-        <div class="vorlage-veraltet-bar">
-          <ha-icon icon="mdi:layers-triple-outline"></ha-icon>
-          <span data-roh>${
-            this._sprache === "en"
-              ? `${kollisionen.map((t) => t.label).join(", ")} set the same properties with fixed values and sit after the glass presets in the same field — the later rule wins, so the sliders no longer move these surfaces.`
-              : `${kollisionen.map((t) => t.label).join(", ")} setzen dieselben Eigenschaften mit festen Werten und stehen im selben Feld hinter den Glas-Vorlagen — die spätere Regel gewinnt, deshalb bewegen die Regler diese Flächen nicht mehr.`
-          }</span>
-          <button type="button" class="vorlage-veraltet-button" data-kollisionen-entfernen>
-            <ha-icon icon="mdi:close-circle-outline"></ha-icon><span>${this._sprache === "en" ? "Remove older" : "Ältere entfernen"}</span>
-          </button>
-        </div>`
-      : "";
     const pfadDoppelt = this.pfadKollisionen();
     const pfadHinweis = pfadDoppelt.length
       ? `
@@ -7967,7 +7857,6 @@ uix:
         ${!gruppe ? this.renderSeitenleisteKasten(werksVorlagen, istAktiv, zeichne, alsListe) : ""}
         ${!gruppe ? this.renderKopfleisteKasten(werksVorlagen, istAktiv, zeichne, alsListe) : ""}
         ${pfadHinweis}
-        ${kollisionsHinweis}
         ${verwaistHinweis}
         ${farbHinweis}
         ${duennHinweis}
@@ -8493,8 +8382,8 @@ uix:
 
   renderVorlagenGruppen(vorlagen, istAktiv, zeichne, alsListe) {
     const en = this._sprache === "en";
-    // Angezeigt wird in dieser Reihenfolge; die aelteren stehen zuletzt.
-    const reihenfolge = ["oberflaeche", "licht", "weitere", "aelter"];
+    // Angezeigt wird in dieser Reihenfolge.
+    const reihenfolge = ["oberflaeche", "licht", "weitere"];
     return reihenfolge.map((id) => HATG_VORLAGEN_GRUPPEN.find((x) => x.id === id)).map((g) => {
       const liste = vorlagen.filter(
         (t) => hatgVorlagenGruppeVon(t) === g.id && !HATG_SEITENLEISTE_VORLAGEN.includes(t.id) && !HATG_KOPFLEISTE_VORLAGEN.includes(t.id)
@@ -8504,7 +8393,7 @@ uix:
       const inhalt = liste.map((t) => zeichne(t, false)).join("");
       const hinweis = g.hinweis ? `<p class="vorlagen-gruppe-hinweis" data-roh>${en ? g.hinweisEn : g.hinweis}</p>` : "";
       return `
-        <details class="vorlagen-kasten vorlagen-gruppe ${g.id === "aelter" ? "ist-aelter" : ""}" data-vorlagen-kasten="${g.id}" ${this.vorlagenKastenOffen(g.id) ? "open" : ""}>
+        <details class="vorlagen-kasten vorlagen-gruppe" data-vorlagen-kasten="${g.id}" ${this.vorlagenKastenOffen(g.id) ? "open" : ""}>
           <summary data-roh>
             <strong>${en ? g.labelEn : g.label}</strong>
             <span class="vorlagen-gruppe-stand ${aktiv ? "hat-aktive" : ""}">${en ? `${aktiv} of ${liste.length} active` : `${aktiv} von ${liste.length} aktiv`}</span>
@@ -10505,7 +10394,6 @@ uix:
         .vorlagen-kopf-text { flex: 1 1 auto; min-width: 0; }
         .vorlagen-ansicht { flex: 0 0 auto; margin-top: 4px; }
         @media (max-width: 720px) { .startpaket-titel { min-width: 0; flex-basis: 100%; padding-top: 0; } }
-        .vorlagen-gruppe.ist-aelter > summary strong { color: var(--hatg-text-dim); }
         .vorlagen-gruppe-hinweis { margin: 0 4px 10px; font-size: 12px; line-height: 1.5; color: var(--hatg-text-dim); }
         .vorlage-eigene-kopf { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 26px 0 10px; }
         .vorlage-eigene-kopf h2 { margin: 0; font-size: 15px; font-weight: 650; color: var(--hatg-text); }
@@ -11143,7 +11031,6 @@ uix:
     }
     this.shadowRoot.querySelector("[data-flaechenfarben-glas]")?.addEventListener("click", () => this.glasFelderSetzen());
     this.shadowRoot.querySelector("[data-grundfarben-deckend]")?.addEventListener("click", () => this.grundfarbenDeckendSetzen());
-    this.shadowRoot.querySelector("[data-kollisionen-entfernen]")?.addEventListener("click", () => this.entferneKollisionen());
     this.shadowRoot.querySelectorAll("[data-vorlagen-kasten]").forEach((el) => {
       el.addEventListener("toggle", () => {
         const id = el.dataset.vorlagenKasten;

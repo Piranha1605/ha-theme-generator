@@ -352,11 +352,10 @@ pruefe("Jeder dataset-Zugriff hat ein passendes data-Attribut", () => {
 
 pruefe("Jede Vorlage liegt in einer angezeigten Gruppe der Vorlagenseite", () => {
   const alles = fs.readFileSync(PANEL, "utf8");
-  const kollisionen = /const HATG_GLAS_KOLLISIONEN = (\[[^\]]*\]);/.exec(alles)[1];
   const start = alles.indexOf("const HATG_VORLAGEN_GRUPPEN");
   const ende = alles.indexOf("const HATG_VORLAGEN = [");
   const kontext = {};
-  require("node:vm").runInNewContext(`const HATG_GLAS_KOLLISIONEN = ${kollisionen};\n${alles.slice(start, ende)}\nthis.gruppen = HATG_VORLAGEN_GRUPPEN; this.von = hatgVorlagenGruppeVon;`, kontext);
+  require("node:vm").runInNewContext(`${alles.slice(start, ende)}\nthis.gruppen = HATG_VORLAGEN_GRUPPEN; this.von = hatgVorlagenGruppeVon;`, kontext);
   const reihenfolge = JSON.parse(/const reihenfolge = (\[[^\]]*\]);/.exec(alles)[1].replace(/'/g, '"'));
   // Die Glas-Vorlagen stehen im Glas-Kasten oben, nicht in der Gruppenliste -
   // sie muessen aber weiterhin irgendwo auftauchen.
