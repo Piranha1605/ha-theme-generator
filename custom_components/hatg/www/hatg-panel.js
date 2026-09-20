@@ -10430,8 +10430,14 @@ uix:
         .vorlagen-kasten > summary::-webkit-details-marker { display: none; }
         .vorlagen-kasten > summary::after { content: ""; margin-left: auto; width: 8px; height: 8px; border-right: 2px solid var(--hatg-text-dim); border-bottom: 2px solid var(--hatg-text-dim); transform: rotate(45deg); transition: transform .15s ease; }
         .vorlagen-kasten[open] > summary::after { transform: rotate(225deg); }
-        .vorlagen-kasten > summary strong { font-weight: 650; }
+        .vorlagen-kasten > summary strong { flex: 0 0 auto; font-weight: 650; }
         .vorlagen-kasten > summary span { font-size: 12px; color: var(--hatg-text-dim); }
+        /* Die Beschreibung nimmt den freien Platz, damit Zaehler und Pfeil in
+           allen Kaesten an derselben Stelle stehen - sonst wandern sie mit der
+           Textlaenge. Der Zaehler im Knopf ist ein span, aber kein Kind des
+           summary und wird davon nicht getroffen. */
+        .vorlagen-kasten > summary > span { flex: 1 1 auto; min-width: 0; }
+        .vorlagen-gruppe-stand { text-align: right; }
         .vorlagen-kasten > summary ha-icon { --mdc-icon-size: 18px; color: var(--hatg-text-dim); }
         .vorlagen-gruppe-stand.hat-aktive { color: #1fae63 !important; }
         .vorlagen-kasten-inhalt { padding: 0 12px 12px; }
@@ -10450,10 +10456,14 @@ uix:
         .startpaket-vorlagen { margin-top: 14px; }
         .vorlage-feld-titel { margin: 10px 0 6px; font-size: 11.5px; font-weight: 700; letter-spacing: .02em; text-transform: uppercase; color: var(--hatg-muted); }
         .vorlage-feld-titel:first-child { margin-top: 2px; }
-        .vorlagen-kopf { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
-        .vorlagen-kopf-text { flex: 1 1 auto; min-width: 0; }
+        /* Werkzeuge und Text teilen sich eine Zeile, solange beide Platz haben.
+           Neben der Live-Vorschau bleiben nur rund 740 px - dort blieben fuer
+           den Text sonst 340 px und der Absatz brach nach vier Woertern um.
+           Unter 380 px Textbreite rutschen die Werkzeuge in eine eigene Zeile. */
+        .vorlagen-kopf { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+        .vorlagen-kopf-text { flex: 1 1 380px; min-width: 0; }
         .vorlagen-ansicht { flex: 0 0 auto; margin-top: 4px; }
-        .vorlagen-kopf-werkzeuge { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; margin-top: 4px; flex-wrap: wrap; justify-content: flex-end; }
+        .vorlagen-kopf-werkzeuge { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; margin-top: 4px; margin-left: auto; flex-wrap: wrap; justify-content: flex-end; }
         .vorlagen-zielwahl { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--hatg-text-dim); }
         .vorlagen-zielwahl select { padding: 6px 8px; max-width: 230px; }
         @media (max-width: 720px) { .startpaket-titel { min-width: 0; flex-basis: 100%; padding-top: 0; } }
