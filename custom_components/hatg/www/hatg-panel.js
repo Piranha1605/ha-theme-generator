@@ -7569,12 +7569,14 @@ uix:
   // Die Vorlagenseite gliedert sich nach Stilzielen. Untermenues entstehen nur
   // fuer Ziele, zu denen es tatsaechlich Vorlagen gibt - sonst stuenden dort
   // zwei Dutzend leere Eintraege.
-  // Vorlagen, die oben in einem Kasten stehen - Glas, Hintergrund,
+  // Vorlagen, die oben in einem Bereichskasten stehen - Hintergrund,
   // Seitenleiste, Kopfleiste. Ein Stilziel, dessen Vorlagen alle dort liegen,
-  // braucht keinen eigenen Eintrag mehr in der Seitenleiste.
+  // braucht keinen eigenen Eintrag mehr in der Seitenleiste. Das Glas-Paket
+  // zaehlt bewusst nicht dazu: Es fuehrt seine Vorlagen zwar auch im Kasten,
+  // aber dort quer ueber alle Flaechen - wer zu Kalender, Badges oder Toast
+  // will, sucht sie weiterhin an ihrem Stilziel.
   vorlageImKasten(tpl) {
     return (
-      hatgVorlagenPaket(tpl) === "glas" ||
       HATG_SEITENLEISTE_VORLAGEN.includes(tpl.id) ||
       HATG_KOPFLEISTE_VORLAGEN.includes(tpl.id) ||
       hatgVorlagenGruppeVon(tpl) === "hintergrund"
