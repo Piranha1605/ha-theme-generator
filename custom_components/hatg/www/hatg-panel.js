@@ -43,6 +43,8 @@ const HATG_TEXTE = {
   "Kartentransparenz": "Card transparency",
   "Hintergrund": "Background",
   "Pop-up-Hintergrund": "Pop-up background",
+  "Einstellungsseiten in Glas": "Settings pages in glass",
+  "Die Listen auf den Einstellungsseiten nehmen die Kartenfläche statt deckendem Weiß.": "The lists on the settings pages take the card surface instead of solid white.",
   "Seitenleiste: Zähler mit Farbverlauf": "Sidebar: counters with a gradient",
   "Die kleinen Zähler neben Einstellungen und Benachrichtigungen bekommen einen Verlauf statt einer Farbe.": "The small counters next to Settings and Notifications get a gradient instead of a colour.",
   "Seitenleiste: aktiver Eintrag mit plastischer Kante": "Sidebar: active entry with a sculpted edge",
@@ -3864,6 +3866,26 @@ ha-adaptive-dialog {
   background: var(--lovelace-background, transparent) !important;
   background-attachment: scroll !important;
   will-change: transform;
+}`,
+  },
+  {
+    id: "einstellungen-glas",
+    paket: "glas",
+    label: "Einstellungsseiten in Glas",
+    desc: "Die Listen auf den Einstellungsseiten nehmen die Kartenfläche statt deckendem Weiß.",
+    ziel: "uix-drawer",
+    css: `/* Die Listen der Einstellungsseiten (ha-md-list) lesen nicht
+   --ha-card-background, sondern --card-background-color - deshalb blieben sie
+   deckend weiss, waehrend alles andere glaesern war (am 2026-09-20 an der
+   ESPHome-Seite gemessen).
+   Die Variable wird nur auf ha-panel-config gesetzt, nicht global: Home
+   Assistant faerbt damit auch Auswahlfelder, Menues und Dropdowns, und die
+   haengen an der Wurzel, nicht im Panel. Halbdurchsichtig waeren sie
+   unlesbar. Eine Weichzeichnung geht hier nicht mit - die braeuchte eine
+   Regel am Element selbst, und ha-panel-config hat keinen Shadow Root. */
+ha-panel-config {
+  --card-background-color: var(--ha-card-background);
+  --ha-color-surface-default: var(--ha-card-background);
 }`,
   },
   {
