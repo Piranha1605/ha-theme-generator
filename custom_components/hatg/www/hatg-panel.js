@@ -62,7 +62,7 @@ const HATG_TEXTE = {
   "Seitenleiste: aktiver Eintrag als Glaspille": "Sidebar: active entry as a glass pill",
   "Der aktive Eintrag als durchscheinende Pille mit heller Kante.": "The active entry as a translucent pill with a light edge.",
   "Aktive Karten: Hintergrund-Glow": "Active cards: back glow",
-  "Eingeschaltete Karten bekommen einen weichen, langsam wandernden Lichtschein dahinter, in der Zustandsfarbe und der Akzentfarbe. Auf gläsernen Karten scheint er durch, dann die Deckkraft klein halten.": "Cards that are on get a soft, slowly drifting glow behind them, in the state colour and the accent colour. On glass cards it shines through, so keep the opacity low.",
+  "Eingeschaltete Karten bekommen einen Lichtkranz außen herum, in der Zustandsfarbe und einer zweiten Farbe. Die Fläche der Karte bleibt unberührt.": "Cards that are on get a ring of light around them, in the state colour and a second colour. The card surface itself stays untouched.",
   "Seitenleiste: aktiver Eintrag mit wanderndem Licht": "Sidebar: active entry with drifting light",
   "Die Fläche des aktiven Eintrags wandert langsam zwischen Akzent- und Primärfarbe. Ein Schein nach außen geht hier nicht: die Liste schneidet ihn ab.": "The surface of the active entry drifts slowly between the accent and the primary colour. A glow beyond the entry is not possible here: the list clips it.",
   "1 Rest einer gelöschten eigenen Vorlage entfernt. Jetzt speichern und Themes neu laden.": "1 leftover of a deleted custom preset removed. Now save and reload themes.",
@@ -3483,24 +3483,24 @@ ha-control-slider {
   {
     id: "glow-aktiv-karten",
     label: "Aktive Karten: Hintergrund-Glow",
-    desc: "Eingeschaltete Karten bekommen einen weichen, langsam wandernden Lichtschein dahinter, in der Zustandsfarbe und der Akzentfarbe. Auf gläsernen Karten scheint er durch, dann die Deckkraft klein halten.",
+    desc: "Eingeschaltete Karten bekommen einen Lichtkranz außen herum, in der Zustandsfarbe und einer zweiten Farbe. Die Fläche der Karte bleibt unberührt.",
     werte: [
+      { id: "weite", label: "Weite des Scheins", labelEn: "Glow reach", standard: "22px" },
+      { id: "spreizung", label: "Dicke des Scheins", labelEn: "Glow thickness", standard: "1px" },
+      { id: "staerke", label: "Stärke", labelEn: "Strength", standard: "45%" },
       { id: "farbe-b", label: "Zweite Farbe", labelEn: "Second colour", standard: "var(--accent-color)" },
-      { id: "ueberstand", label: "Überstand über die Karte", labelEn: "Bleed beyond the card", standard: "10px" },
-      { id: "weichzeichnung", label: "Weichzeichnung", labelEn: "Blur", standard: "18px" },
-      // Zurueckhaltend, weil gläserne Karten halbdurchsichtig sind: Der Schein
-      // liegt dahinter und scheint sonst durch die Karte, die Schrift
-      // verliert dann ihren Kontrast. An einer laufenden Instanz gemessen.
-      { id: "deckkraft", label: "Deckkraft", labelEn: "Opacity", standard: "0.5" },
       { id: "dauer", label: "Dauer eines Durchlaufs", labelEn: "Duration of one pass", standard: "8s" },
     ],
     ziel: "uix-card",
-    css: `/* Der Schein liegt als ::after hinter der Karte, nicht auf ihr: Die
-   Weichzeichnung sitzt damit auf dem Pseudo-Element und macht die Karte
-   nicht zum Bezugsrahmen fuer position: fixed - Bubble-Pop-ups und
-   Auswahllisten bleiben heil. Home Assistant markiert eingeschaltete
-   Kacheln selbst mit ha-card.active, Bubble faerbt die Flaeche per
-   inline opacity: 1. */
+    css: `/* Der Schein liegt als ::after genau auf der Karte und leuchtet nur ueber
+   ihren Rand hinaus: Ein aeusserer box-shadow wird innerhalb des Elements
+   abgeschnitten, deshalb bleibt die Flaeche der Karte unberuehrt. Frueher lag
+   hier eine weichgezeichnete Flaeche hinter der Karte - auf glaesernen Karten
+   schien sie durch, und die ganze Karte war eingefaerbt.
+   Der Schatten sitzt auf dem Pseudo-Element, nicht auf der Karte: Die
+   Glas-Vorlagen setzen ha-card box-shadow mit !important, und eine Animation
+   verliert gegen !important. Home Assistant markiert eingeschaltete Kacheln
+   selbst mit ha-card.active, Bubble faerbt die Flaeche per inline opacity. */
 ha-card.active,
 ha-card:has(.bubble-background[style*="opacity: 1"]) {
   position: relative;
@@ -3509,25 +3509,20 @@ ha-card.active::after,
 ha-card:has(.bubble-background[style*="opacity: 1"])::after {
   content: "";
   position: absolute;
-  inset: calc([[ueberstand]] * -1);
+  inset: 0;
   z-index: -1;
   border-radius: inherit;
   pointer-events: none;
-  filter: blur([[weichzeichnung]]);
-  opacity: [[deckkraft]];
-  background: linear-gradient(
-    270deg,
-    var(--tile-icon-color, var(--bubble-accent-color, var(--state-active-color, var(--accent-color)))),
-    [[farbe-b]],
-    var(--tile-icon-color, var(--bubble-accent-color, var(--state-active-color, var(--accent-color))))
-  );
-  background-size: 300% 300%;
+  box-shadow: 0 0 [[weite]] [[spreizung]] color-mix(in srgb, var(--tile-icon-color, var(--bubble-accent-color, var(--state-active-color, var(--accent-color)))) [[staerke]], transparent);
   animation: hatg-glow-lauf [[dauer]] ease infinite;
 }
 @keyframes hatg-glow-lauf {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0%, 100% {
+    box-shadow: 0 0 [[weite]] [[spreizung]] color-mix(in srgb, var(--tile-icon-color, var(--bubble-accent-color, var(--state-active-color, var(--accent-color)))) [[staerke]], transparent);
+  }
+  50% {
+    box-shadow: 0 0 [[weite]] [[spreizung]] color-mix(in srgb, [[farbe-b]] [[staerke]], transparent);
+  }
 }
 /* Wer im System weniger Bewegung eingestellt hat, bekommt den Schein ruhig. */
 @media (prefers-reduced-motion: reduce) {
