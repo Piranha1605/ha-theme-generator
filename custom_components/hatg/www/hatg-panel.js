@@ -53,8 +53,8 @@ const HATG_TEXTE = {
   "Versteckt den Balken der Liste; gescrollt wird weiter.": "Hides the list's scrollbar; scrolling still works.",
   "Seitenleiste: Trennlinien ausblenden": "Sidebar: hide the dividers",
   "Nimmt die Linien zwischen den Bereichen der Leiste weg.": "Removes the lines between the sections of the bar.",
-  "Benutzerbild ohne Fläche": "User picture without a surface",
-  "Nimmt die farbige Fläche hinter den Initialen weg; ein hinterlegtes Bild bleibt.": "Removes the coloured surface behind the initials; a picture stays.",
+  "Benutzerbild ohne Fläche und Rand": "User picture without surface or border",
+  "Nimmt Fläche, Kante und Schatten hinter den Initialen weg; ein hinterlegtes Bild bleibt.": "Removes the surface, edge and shadow behind the initials; a picture stays.",
   "Seitenleiste: aktiver Eintrag eingedrückt": "Sidebar: active entry pressed in",
   "Der aktive Eintrag sieht aus wie in die Leiste gedrückt, in der Farbe der Leiste mit Innenschatten.": "The active entry looks pressed into the bar, in the bar's colour with an inner shadow.",
   "Seitenleiste: aktiver Eintrag als Glaspille": "Sidebar: active entry as a glass pill",
@@ -3634,14 +3634,19 @@ ha-list-item-button.selected::before {
   },
   {
     id: "benutzer-icon-ohne-flaeche",
-    label: "Benutzerbild ohne Fläche",
-    desc: "Nimmt die farbige Fläche hinter den Initialen weg; ein hinterlegtes Bild bleibt.",
+    label: "Benutzerbild ohne Fläche und Rand",
+    desc: "Nimmt Fläche, Kante und Schatten hinter den Initialen weg; ein hinterlegtes Bild bleibt.",
     ziel: "uix-sidebar",
     css: `/* Die Initialen liegen im Shadow Root von ha-user-badge, eine Regel kommt
    dort nicht hin. Die Flaeche kommt aus --light-primary-color - die Variable
-   geht durch. Am 2026-09-20 an elementStyles von ha-user-badge geprueft. */
+   geht durch. Am 2026-09-20 an elementStyles von ha-user-badge geprueft.
+   Kante und Schatten setzt die iOS-Vorlage am Element selbst, deshalb hier
+   mit !important - so ist die Reihenfolge der Vorlagen egal. */
 ha-user-badge {
   --light-primary-color: transparent;
+  background: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }`,
   },
   {
@@ -8200,7 +8205,7 @@ uix:
               chip(en ? "Rounded square" : "Abgerundetes Quadrat", an("benutzer-icon-ios"), "benutzer-quadrat")
           )}
           ${reihe(
-            en ? "Surface behind it" : "Fläche dahinter",
+            en ? "Surface and edge" : "Fläche und Rand",
             chip(en ? "On" : "An", !an("benutzer-icon-ohne-flaeche"), "benutzer-flaeche-an") +
               chip(en ? "Off" : "Aus", an("benutzer-icon-ohne-flaeche"), "benutzer-flaeche-aus")
           )}
