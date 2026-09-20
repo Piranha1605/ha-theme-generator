@@ -2586,6 +2586,7 @@ const HATG_VORLAGEN_GRUPPEN = [
   },
   {
     id: "oberflaeche",
+    icon: "mdi:card-text-outline",
     label: "Dialoge und Einstellungen",
     labelEn: "Dialogs and settings",
     ids: [
@@ -2606,12 +2607,13 @@ const HATG_VORLAGEN_GRUPPEN = [
   },
   {
     id: "licht",
+    icon: "mdi:lightbulb-on-outline",
     label: "Leuchten",
     labelEn: "Glow",
     ids: ["glow-aktiv-karten", "glow-aktiv-seitenleiste"],
   },
   // Alles, was sonst nirgends hingehoert - zuletzt, damit keine Vorlage verloren geht.
-  { id: "weitere", label: "Weitere Effekte", labelEn: "Further effects", passt: () => true },
+  { id: "weitere", icon: "mdi:shape-outline", label: "Weitere Effekte", labelEn: "Further effects", passt: () => true },
 ];
 function hatgVorlagenGruppeVon(tpl) {
   return HATG_VORLAGEN_GRUPPEN.find((g) => (g.ids ? g.ids.includes(tpl.id) : g.passt(tpl))).id;
@@ -5469,7 +5471,10 @@ class HATGPanel extends HTMLElement {
           eintraege.push(renderItem(s));
           return;
         }
-        const gruppen = this.vorlagenNavGruppen();
+        // Die Stilziele stehen nicht mehr in der Seitenleiste, sondern als
+        // Auswahlfeld auf der Seite selbst - sonst haengen dort zwei Dutzend
+        // Eintraege, die dasselbe zeigen wie die Seite darunter.
+        const gruppen = [];
         const pseudo = { ...s, groups: [{ id: s.id }, ...gruppen] };
         eintraege.push(renderGroupHeading(pseudo));
         if (this.navGroupExpanded(pseudo)) {
@@ -7761,6 +7766,22 @@ uix:
     const stand = this.paketStand("glas");
     // Der Wechsel zwischen Liste und Kacheln steht oben neben der Ueberschrift;
     // eine eigene Leiste dafuer war nach dem Umbau nur noch ein leerer Kasten.
+    const zielAuswahl = (() => {
+      const ziele = this.vorlagenNavGruppen();
+      if (!ziele.length) return "";
+      const aktiv = gruppe && gruppe.ziel ? `uix-vorlagen__${String(gruppe.ziel).replace(/^uix-/, "")}` : "uix-vorlagen";
+      const en = this._sprache === "en";
+      return `
+        <label class="vorlagen-zielwahl" data-roh>
+          <span>${en ? "Style target" : "Stilziel"}</span>
+          <select class="text-input" data-stilziel-wahl>
+            <option value="uix-vorlagen" ${aktiv === "uix-vorlagen" ? "selected" : ""}>${en ? "all" : "alle"}</option>
+            ${ziele
+              .map((z) => `<option value="${z.id}" ${aktiv === z.id ? "selected" : ""}>${hatgEscape(z.label)} (${z.anzahl})</option>`)
+              .join("")}
+          </select>
+        </label>`;
+    })();
     const ansichtSchalter = `
         <div class="mode-toggle-group inline vorlagen-ansicht" role="group" data-roh>
           <button type="button" class="${(this._state.vorlagenAnsicht || "liste") === "liste" ? "active" : ""}" data-vorlagen-ansicht="liste" title="${this._sprache === "en" ? "List" : "Liste"}"><ha-icon icon="mdi:format-list-bulleted"></ha-icon></button>
@@ -7857,7 +7878,7 @@ uix:
       <section class="editor-section">
         <div class="section-heading vorlagen-kopf">
           <div class="vorlagen-kopf-text">${kopf}</div>
-          ${ansichtSchalter}
+          <div class="vorlagen-kopf-werkzeuge" data-roh>${zielAuswahl}${ansichtSchalter}</div>
         </div>
         ${
           !gruppe
@@ -8407,6 +8428,7 @@ uix:
       return `
         <details class="vorlagen-kasten vorlagen-gruppe" data-vorlagen-kasten="${g.id}" ${this.vorlagenKastenOffen(g.id) ? "open" : ""}>
           <summary data-roh>
+            ${g.icon ? `<ha-icon icon="${g.icon}"></ha-icon>` : ""}
             <strong>${en ? g.labelEn : g.label}</strong>
             <span class="vorlagen-gruppe-stand ${aktiv ? "hat-aktive" : ""}">${en ? `${aktiv} of ${liste.length} active` : `${aktiv} von ${liste.length} aktiv`}</span>
           </summary>
@@ -10405,6 +10427,9 @@ uix:
         .vorlagen-kopf { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
         .vorlagen-kopf-text { flex: 1 1 auto; min-width: 0; }
         .vorlagen-ansicht { flex: 0 0 auto; margin-top: 4px; }
+        .vorlagen-kopf-werkzeuge { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; margin-top: 4px; flex-wrap: wrap; justify-content: flex-end; }
+        .vorlagen-zielwahl { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--hatg-text-dim); }
+        .vorlagen-zielwahl select { padding: 6px 8px; max-width: 230px; }
         @media (max-width: 720px) { .startpaket-titel { min-width: 0; flex-basis: 100%; padding-top: 0; } }
         .vorlagen-gruppe-hinweis { margin: 0 4px 10px; font-size: 12px; line-height: 1.5; color: var(--hatg-text-dim); }
         .vorlage-eigene-kopf { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 26px 0 10px; }
@@ -11050,6 +11075,13 @@ uix:
         if (el.open) offen.add(id);
         else offen.delete(id);
         this._state.offeneVorlagenKaesten = [...offen];
+      });
+    });
+    this.shadowRoot.querySelectorAll("[data-stilziel-wahl]").forEach((el) => {
+      el.addEventListener("change", () => {
+        this._activeSection = el.value;
+        this.resetSectionUiState();
+        this.render();
       });
     });
     this.shadowRoot.querySelectorAll("[data-vorlagen-ansicht]").forEach((el) => {
