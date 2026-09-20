@@ -8024,8 +8024,10 @@ uix:
           )}
           ${reihe(en ? "Border" : "Rahmen", HATG_GLAS_RAHMEN, this.glasRahmenErkennen(), "data-glas-rahmen")}
           ${reihe(en ? "Shadow" : "Schatten", HATG_GLAS_SCHATTEN, this.glasSchattenErkennen(), "data-glas-schatten")}
+          <div class="startpaket-trenner" data-roh></div>
           ${glasRegler}
           ${verlauf}
+          <div class="startpaket-trenner" data-roh></div>
           ${vorlagenteil}
           <p class="vorlage-desc" data-roh>${
             eigen
@@ -8139,9 +8141,11 @@ uix:
             chip(en ? "Without image" : "Ohne Bild", !popups, 'data-hintergrund-popups="aus"') +
               chip(en ? "With image" : "Mit Bild", popups, 'data-hintergrund-popups="an"')
           )}
+          <div class="startpaket-trenner" data-roh></div>
           ${this.renderBackgroundOpacitySlider()}
           ${this.renderPopupHintergrund()}
           ${this.renderHintergrundBewegung()}
+          <div class="startpaket-trenner" data-roh></div>
           ${this.renderGlasVorlagenteil(vorlagen, istAktiv, zeichne, alsListe, "hintergrund")}
         </div>
       </details>`;
@@ -8221,6 +8225,7 @@ uix:
             chip("Home Assistant", !an("seitenleiste-titel"), "titel-standard") + chip(en ? "Own text" : "Eigener Text", an("seitenleiste-titel"), "titel-eigen")
           )}
           ${an("seitenleiste-titel") && titelTpl ? this.renderVorlageTitel(titelTpl) : ""}
+          <div class="startpaket-trenner" data-roh></div>
           ${reihe(
             en ? "User picture" : "Benutzerbild",
             chip(en ? "Round" : "Rund", !an("benutzer-icon-ios"), "benutzer-rund") +
@@ -8231,10 +8236,12 @@ uix:
             chip(en ? "On" : "An", !an("benutzer-icon-ohne-flaeche"), "benutzer-flaeche-an") +
               chip(en ? "Off" : "Aus", an("benutzer-icon-ohne-flaeche"), "benutzer-flaeche-aus")
           )}
+          <div class="startpaket-trenner" data-roh></div>
           ${reihe(
             en ? "Glass" : "Glas",
             chip(en ? "Off" : "Aus", !glasAn, "glas-aus") + chip(en ? "On" : "An", glasAn, "glas-an")
           )}
+          <div class="startpaket-trenner" data-roh></div>
           <p class="vorlage-feld-titel" data-roh>${en ? "Active entry" : "Aktiver Eintrag"}</p>
           ${reihe(
             en ? "Colour" : "Farbe",
@@ -8258,6 +8265,7 @@ uix:
               ? "The gradient is the one from the glass area - it also fills the selected surfaces of the cards. Colour, shape and animation combine."
               : "Der Farbverlauf ist der aus dem Glas-Bereich - er füllt auch das Gewählte der Karten. Farbe, Form und Animation lassen sich kombinieren."
           }</p>
+          <div class="startpaket-trenner" data-roh></div>
           ${reihe(
             en ? "Counters" : "Zähler",
             chip(en ? "Accent colour" : "Akzentfarbe", !an("seitenleiste-badges-verlauf"), "badge-standard") +
@@ -8275,12 +8283,14 @@ uix:
               chip(en ? "Airy" : "Luftig", an("seitenleiste-dichte") && this.seitenleisteDichte() === "luftig", "dichte-luftig")
           )}
           ${reihe(
-            en ? "Extras" : "Kleinkram",
+            en ? "Other" : "Sonstiges",
             chip(en ? "Hide scrollbar" : "Scrollbalken aus", an("seitenleiste-ohne-scrollbalken"), "scrollbalken") +
               chip(en ? "Hide dividers" : "Trennlinien aus", an("seitenleiste-ohne-trennlinie"), "trennlinie")
           )}
+          <div class="startpaket-trenner" data-roh></div>
           <p class="vorlage-feld-titel" data-roh>${en ? "Colours" : "Farben"}</p>
           ${this.renderFieldList(HATG_SEITENLEISTE_FELDER, null, true)}
+          <div class="startpaket-trenner" data-roh></div>
           ${this.renderGlasVorlagenteil(vorlagen, istAktiv, zeichne, alsListe, "seitenleiste", HATG_SEITENLEISTE_VORLAGEN)}
         </div>
       </details>`;
@@ -10345,6 +10355,7 @@ uix:
           color: var(--hatg-text); font-size: 12.5px; font-weight: 600; line-height: 1.2; white-space: nowrap; cursor: pointer; }
         .startpaket-chip:hover { border-color: rgba(31, 158, 82, .45); }
         .startpaket-chip.active { color: #fff; border-color: transparent; background: linear-gradient(135deg, rgba(31,158,82,.85), rgba(31,158,82,.5)); }
+        .startpaket-trenner { height: 1px; margin: 16px 0 12px; background: var(--hatg-border); }
         .startpaket .vorlage-desc { margin: 12px 0 0; }
         .startpaket-schalter { display: inline-flex; align-items: center; gap: 6px; width: auto; padding: 4px 10px 4px 6px; border-radius: 999px; font-size: 12px; font-weight: 600; }
         .startpaket-schalter ha-icon { --mdc-icon-size: 18px; }
