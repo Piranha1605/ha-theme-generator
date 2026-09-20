@@ -3721,15 +3721,20 @@ ha-list-item-button.selected::before {
     werte: [
       { id: "winkel", label: "Richtung", labelEn: "Direction", standard: "135deg" },
       { id: "von", label: "Erste Farbe", labelEn: "First colour", standard: "var(--accent-color)" },
-      { id: "bis", label: "Zweite Farbe", labelEn: "Second colour", standard: "var(--primary-color)" },
+      // Nicht die Primaerfarbe als zweite: In vielen Themes ist sie dieselbe
+      // wie der Akzent, und der Verlauf saehe aus wie eine Flaeche.
+      { id: "bis", label: "Zweite Farbe", labelEn: "Second colour", standard: "color-mix(in srgb, var(--accent-color) 45%, #FFFFFF)" },
     ],
     ziel: "uix-sidebar",
     css: `/* .badge liegt im Shadow Root von ha-sidebar und faerbt sich aus
    --accent-color (an elementStyles geprueft). Liegt der Verlauf fuer aktive
-   Flaechen an, nimmt der Zaehler ihn mit - sonst den eigenen. */
+   Flaechen an, nimmt der Zaehler ihn mit: In uix-sidebar heisst er
+   --verlauf-akzent, die Schriftfarbe --verlauf-vorn. Die Kette
+   --karten-gewaehlt steht nur in uix-card und kommt hier nicht an. */
 .badge {
-  background: var(--karten-gewaehlt, linear-gradient([[winkel]], [[von]], [[bis]])) !important;
-  color: var(--karten-gewaehlt-vorn, var(--text-accent-color, var(--text-primary-color))) !important;
+  background-color: transparent !important;
+  background-image: var(--verlauf-akzent, linear-gradient([[winkel]], [[von]], [[bis]])) !important;
+  color: var(--verlauf-vorn, var(--text-accent-color, var(--text-primary-color))) !important;
 }`,
   },
   {
