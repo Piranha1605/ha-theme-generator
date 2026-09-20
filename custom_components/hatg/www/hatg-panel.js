@@ -7764,10 +7764,10 @@ uix:
     const reihe = (titel, eintraege, aktiv, attribut, extra = "") => `
       <div class="startpaket-reihe" data-roh>
         <span class="startpaket-titel">${hatgEscape(titel)}</span>
-        <div class="mode-toggle-group inline" role="group">
+        <div class="startpaket-chips" role="group">
           ${eintraege
             .map(
-              (e) => `<button type="button" class="${aktiv === e.id ? "active" : ""}" ${attribut}="${e.id}" ${extra}>${hatgEscape(en ? e.labelEn : e.label)}</button>`
+              (e) => `<button type="button" class="startpaket-chip ${aktiv === e.id ? "active" : ""}" ${attribut}="${e.id}" ${extra}>${hatgEscape(en ? e.labelEn : e.label)}</button>`
             )
             .join("")}
         </div>
@@ -9810,10 +9810,15 @@ uix:
         .vorlagen-gruppe-stand.hat-aktive { color: #1fae63 !important; }
         .vorlagen-kasten-inhalt { padding: 0 12px 12px; }
         .vorlagen-kasten-inhalt .glas-regler { margin-bottom: 10px; }
-        .startpaket-reihe { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 8px 0; }
-        .startpaket-titel { min-width: 120px; font-size: 13px; font-weight: 600; color: var(--hatg-text-dim); }
-        .startpaket .mode-toggle-group.inline button { padding: 6px 12px; font-size: 12.5px; font-weight: 600; }
-        .startpaket .vorlage-desc { margin: 10px 0 0; }
+        .startpaket-reihe { display: flex; align-items: flex-start; gap: 14px; flex-wrap: wrap; margin: 10px 0; }
+        .startpaket-titel { flex: 0 0 auto; min-width: 118px; padding-top: 7px; font-size: 13px; font-weight: 600; color: var(--hatg-text-dim); }
+        .startpaket-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+        .startpaket-chip { padding: 7px 14px; border: 1px solid var(--hatg-border); border-radius: 999px; background: rgba(127, 140, 160, .08);
+          color: var(--hatg-text); font-size: 12.5px; font-weight: 600; line-height: 1.2; white-space: nowrap; cursor: pointer; }
+        .startpaket-chip:hover { border-color: rgba(31, 158, 82, .45); }
+        .startpaket-chip.active { color: #fff; border-color: transparent; background: linear-gradient(135deg, rgba(31,158,82,.85), rgba(31,158,82,.5)); }
+        .startpaket .vorlage-desc { margin: 12px 0 0; }
+        @media (max-width: 720px) { .startpaket-titel { min-width: 0; flex-basis: 100%; padding-top: 0; } }
         .vorlagen-gruppe.ist-aelter > summary strong { color: var(--hatg-text-dim); }
         .vorlagen-gruppe-hinweis { margin: 0 4px 10px; font-size: 12px; line-height: 1.5; color: var(--hatg-text-dim); }
         .vorlage-eigene-kopf { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 26px 0 10px; }
