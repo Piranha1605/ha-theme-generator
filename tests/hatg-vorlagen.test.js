@@ -519,5 +519,53 @@ pruefe("Info-Dialog mit Hintergrundbild: Pfade mit fuehrendem $", () => {
   }
 });
 
+pruefe("Verlauf fuer ausgeschaltete Flaechen: mischt aus der Kartenfarbe", () => {
+  const vm = require("node:vm");
+  const ctx = {
+    console, window: {}, document: { createElement: () => ({}), addEventListener() {}, querySelector: () => null },
+    customElements: { define() {}, get() {} }, HTMLElement: class {},
+    localStorage: { getItem() {}, setItem() {} }, navigator: {}, setTimeout, clearTimeout,
+  };
+  vm.createContext(ctx);
+  vm.runInContext(
+    quelle.slice(0, quelle.indexOf("\nclass ")) +
+      ";this.css=hatgVerlaufAusCss;this.lese=hatgLeseVerlaufAus;this.an=hatgHaengeVorlagenBlockAn;" +
+      "this.weg=hatgEntferneVorlagenBlock;this.norm=hatgVerlaufAusNormal;this.ZIELE=HATG_VERLAUF_AUS_ZIELE;",
+    ctx
+  );
+  const werte = { winkel: 200, staerke: 14 };
+
+  // Basis muss card-background-color sein: ha-card-background ist bei ha-card
+  // die Kurzform background und kann ein Bild oder einen Verlauf tragen -
+  // color-mix braucht eine Farbe und fiele sonst ersatzlos aus.
+  for (const ziel of ctx.ZIELE) {
+    const css = ctx.css(ziel, werte);
+    assert.match(css, /color-mix\(in srgb, #FFFFFF 14%, var\(--card-background-color/);
+    assert.ok(!/color-mix\([^)]*--ha-card-background/.test(css), `${ziel}: color-mix darf nicht auf ha-card-background zeigen`);
+    assert.match(css, /linear-gradient\(200deg/);
+  }
+
+  // Die eingeschalteten Flaechen gehoeren dem aktiven Verlauf - der Aus-Verlauf
+  // darf sie nicht anfassen.
+  const karte = ctx.css("uix-card", werte);
+  assert.match(karte, /ha-card:not\(:has\(\.bubble-background\[style\*="opacity: 1"\]\)\)/);
+  assert.match(karte, /\.bubble-sub-button:not\(\.background-on\)/);
+  assert.ok(!/\.bubble-sub-button\.background-on[^:]/.test(karte), "background-on gehoert dem aktiven Verlauf");
+  const seite = ctx.css("uix-sidebar", werte);
+  assert.match(seite, /ha-list-item-button:not\(\.selected\)::before/);
+
+  // Schreiben, lesen, entfernen - ohne Rest im Feld.
+  const vorher = "ha-card { color: red; }";
+  const mit = ctx.an(vorher, "verlauf-inaktiv", karte);
+  // Der vm hat eigene Prototypen - erst in ein hiesiges Objekt kopieren.
+  assert.deepEqual({ ...ctx.lese(mit) }, { winkel: 200, staerke: 14 });
+  assert.equal(ctx.weg(mit, "verlauf-inaktiv").trim(), vorher);
+  assert.equal(ctx.lese(vorher), null);
+
+  // Grenzen: Winkel dreht, Staerke wird gekappt.
+  assert.deepEqual({ ...ctx.norm({ winkel: 400, staerke: 99 }) }, { winkel: 40, staerke: 40 });
+  assert.deepEqual({ ...ctx.norm({ winkel: -20, staerke: -5 }) }, { winkel: 340, staerke: 0 });
+});
+
 console.log(fehler === 0 ? "\nAlle Tests bestanden." : `\n${fehler} Test(s) fehlgeschlagen.`);
 process.exit(fehler === 0 ? 0 : 1);

@@ -2068,6 +2068,94 @@ ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-main-icon-container
   ${kante}
 }`;
 }
+// Das Gegenstueck: ein Verlauf fuer alles, was aus ist. Die Farben kommen
+// nicht aus zwei Feldern, sondern per color-mix aus der Kartenfarbe - eine
+// Stufe heller, eine dunkler. Damit folgt er dem Theme und passt in hell und
+// dunkel, obwohl eine UIX-Zeile fuer beide Modi zugleich gilt.
+const HATG_VERLAUF_AUS_ID = "verlauf-inaktiv";
+const HATG_VERLAUF_AUS_ZIELE = ["uix-card", "uix-sidebar"];
+const HATG_VERLAUF_AUS_STANDARD = { winkel: 135, staerke: 8 };
+function hatgVerlaufAusNormal(p) {
+  const w = Math.round(Number(p && p.winkel));
+  const s = Math.round(Number(p && p.staerke));
+  return {
+    winkel: isFinite(w) ? ((w % 360) + 360) % 360 : HATG_VERLAUF_AUS_STANDARD.winkel,
+    staerke: isFinite(s) ? Math.min(40, Math.max(0, s)) : HATG_VERLAUF_AUS_STANDARD.staerke,
+  };
+}
+// Basis ist card-background-color, nicht ha-card-background: letzteres ist bei
+// ha-card die Kurzform background und darf deshalb ein Bild oder einen Verlauf
+// tragen. color-mix braucht eine Farbe und fiele damit ersatzlos aus.
+const HATG_VERLAUF_AUS_BASIS = "var(--card-background-color, #1F1F1F)";
+function hatgVerlaufAusFarben(p) {
+  return {
+    hell: `color-mix(in srgb, #FFFFFF ${p.staerke}%, ${HATG_VERLAUF_AUS_BASIS})`,
+    dunkel: `color-mix(in srgb, #000000 ${p.staerke}%, ${HATG_VERLAUF_AUS_BASIS})`,
+  };
+}
+function hatgVerlaufAusCss(ziel, werte) {
+  const p = hatgVerlaufAusNormal(werte);
+  const f = hatgVerlaufAusFarben(p);
+  const kopf = `:host {
+  --verlauf-inaktiv: linear-gradient(${p.winkel}deg, ${f.hell} 0%, ${f.dunkel} 100%);
+}`;
+  if (ziel === "uix-sidebar") {
+    return `${kopf}
+/* Die Pille der nicht gewaehlten Eintraege. Home Assistant haelt sie ueber
+   opacity unsichtbar, sie muss hier also erst sichtbar gemacht werden. */
+ha-list-item-button:not(.selected)::before {
+  background-color: transparent !important;
+  background-image: var(--verlauf-inaktiv) !important;
+  opacity: 1 !important;
+}`;
+  }
+  return `${kopf}
+/* Bubble Card haengt den Zustand an das inline gesetzte opacity von
+   .bubble-background - alles ohne "opacity: 1" ist aus. Karten ohne dieses
+   Element, also die von Home Assistant selbst, zaehlen ebenfalls als aus. */
+ha-card:not(:has(.bubble-background[style*="opacity: 1"])) {
+  background-color: transparent !important;
+  background-image: var(--verlauf-inaktiv) !important;
+}
+/* Wo UIX die ha-card selbst patcht statt des Karten-Elements, ist sie der Wirt
+   und der Selektor oben trifft nichts. Dort liegt nie eine Bubble-Karte, der
+   Zustand entfaellt also. Je Karte greift genau einer der beiden Faelle. */
+:host(ha-card) {
+  background-color: transparent !important;
+  background-image: var(--verlauf-inaktiv) !important;
+}
+.bubble-sub-button:not(.background-on) {
+  background-color: transparent !important;
+  background-image: var(--verlauf-inaktiv) !important;
+}`;
+}
+function hatgLeseVerlaufAus(text) {
+  const block = hatgLeseVorlagenBlock(text, HATG_VERLAUF_AUS_ID);
+  if (block === null) return null;
+  const w = /linear-gradient\(\s*(-?\d+(?:\.\d+)?)deg/i.exec(block);
+  const s = /#FFFFFF\s+(\d+(?:\.\d+)?)%/i.exec(block);
+  return hatgVerlaufAusNormal({ winkel: w ? w[1] : NaN, staerke: s ? s[1] : NaN });
+}
+function hatgMigriereVerlaufAus(bag) {
+  let geaendert = 0;
+  if (!bag) return geaendert;
+  ["light", "dark"].forEach((m) => {
+    const b = bag[m];
+    if (!b) return;
+    const werte = hatgLeseVerlaufAus(b["uix-card"]) || hatgLeseVerlaufAus(b["uix-sidebar"]);
+    if (!werte) return;
+    HATG_VERLAUF_AUS_ZIELE.forEach((k) => {
+      const alt = String(b[k] ?? "");
+      const neu = hatgHaengeVorlagenBlockAn(alt, HATG_VERLAUF_AUS_ID, hatgVerlaufAusCss(k, werte));
+      if (neu !== alt) {
+        b[k] = neu;
+        if (m === "light") geaendert++;
+      }
+    });
+  });
+  return geaendert;
+}
+
 // Werte aus einem Block lesen; null, wenn kein Block da ist. Liest auch die
 // erste, von Hand gesetzte Fassung (Verlauf als fester Wert).
 function hatgLeseVerlauf(text) {
@@ -5319,6 +5407,7 @@ class HATGPanel extends HTMLElement {
         hatgVereinheitlicheVorlagenMarken({ light: saved.values.light, dark: saved.values.dark, extra: saved.extraValues });
         hatgMigriereHintergrundBewegung({ light: saved.values.light, dark: saved.values.dark, extra: saved.extraValues });
         hatgMigriereAkzentVerlauf({ light: saved.values.light, dark: saved.values.dark });
+        hatgMigriereVerlaufAus({ light: saved.values.light, dark: saved.values.dark });
         hatgLoeseEigeneFelderAuf({ light: saved.values.light, dark: saved.values.dark, extra: saved.extraValues });
         this._state.values.light = { ...this._state.values.light, ...(saved.values.light || {}) };
         this._state.values.dark = { ...this._state.values.dark, ...(saved.values.dark || {}) };
@@ -7968,6 +8057,9 @@ uix:
               : "Der Verlauf gilt für hell und dunkel gleich - UIX-Zeilen kennen keine Modi."
           }</p>
           <div class="startpaket-trenner" data-roh></div>
+          <p class="vorlage-feld-titel" data-roh>${en ? "Gradient for surfaces that are off" : "Verlauf für ausgeschaltete Flächen"}</p>
+          ${this.renderVerlaufAus()}
+          <div class="startpaket-trenner" data-roh></div>
           <p class="vorlage-feld-titel" data-roh>${
             en
               ? `Card radius - ${modus === "dark" ? "dark" : "light"} mode`
@@ -8535,6 +8627,82 @@ uix:
               <input type="range" min="0" max="359" step="1" value="${p.winkel}" data-verlauf-winkel />
             </div>
             <div class="verlauf-vorschau" data-verlauf-vorschau style="background: linear-gradient(${p.winkel}deg, ${p.von}, ${p.bis}); color: ${p.vorn};">${en ? "Active" : "Aktiv"}</div>
+          </div>`
+              : ""
+          }
+        </div>`;
+  }
+
+  verlaufAusStand() {
+    const v = this.currentValues();
+    return hatgLeseVerlaufAus(v["uix-card"] || "") || hatgLeseVerlaufAus(v["uix-sidebar"] || "");
+  }
+
+  // Schreibt den Aus-Verlauf in beide Ziele und beide Modi oder nimmt ihn heraus.
+  setzeVerlaufAus(werte) {
+    const currentMode = this._state.editorMode;
+    ["light", "dark"].forEach((mode) => {
+      this._state.editorMode = mode;
+      HATG_VERLAUF_AUS_ZIELE.forEach((ziel) => {
+        const text = String(this.currentValues()[ziel] || "");
+        const neu = werte
+          ? hatgHaengeVorlagenBlockAn(text, HATG_VERLAUF_AUS_ID, hatgVerlaufAusCss(ziel, werte))
+          : hatgEntferneVorlagenBlock(text, HATG_VERLAUF_AUS_ID);
+        if (neu !== text) this.commitField(ziel, neu);
+      });
+    });
+    this._state.editorMode = currentMode;
+    this.applyPreviewTheme();
+  }
+
+  // Fuer die Vorschau im Panel: color-mix steht hier ohne --card-background-color
+  // da, also die echte Kartenfarbe des Themes einsetzen.
+  verlaufAusVorschauCss(p) {
+    const basis = hatgVerlaufHex(this.currentValues()["card-background-color"], "#1F1F1F");
+    // Auf einer dunklen Kartenfarbe waere die Schrift des Panels unlesbar.
+    const r = parseInt(basis.slice(1, 3), 16);
+    const g = parseInt(basis.slice(3, 5), 16);
+    const b = parseInt(basis.slice(5, 7), 16);
+    const vorn = 0.299 * r + 0.587 * g + 0.114 * b > 150 ? "#111418" : "#F2F4F7";
+    return `background: linear-gradient(${p.winkel}deg, color-mix(in srgb, #FFFFFF ${p.staerke}%, ${basis}) 0%, color-mix(in srgb, #000000 ${p.staerke}%, ${basis}) 100%); color: ${vorn};`;
+  }
+
+  renderVerlaufAus() {
+    const en = this._sprache === "en";
+    const stand = this.verlaufAusStand();
+    const p = stand || HATG_VERLAUF_AUS_STANDARD;
+    const regler = (attr, label, wert, max, einheit) => `
+            <div class="generator-control">
+              <label>${label}
+                <span class="generator-zahl">
+                  <input type="number" min="0" max="${max}" step="1" value="${wert}" ${attr}-zahl aria-label="${hatgEscape(label)}" />${einheit}
+                </span>
+              </label>
+              <input type="range" min="0" max="${max}" step="1" value="${wert}" ${attr} />
+            </div>`;
+    return `
+        <div class="glas-regler" data-roh>
+          <div class="glas-regler-kopf">
+            <strong>${en ? "Gradient for surfaces that are off" : "Verlauf für ausgeschaltete Flächen"}</strong>
+            <span>${
+              en
+                ? "Fills cards that are off, sub-buttons without a background and the sidebar entries that are not selected. The two tones are mixed from the card colour, one step lighter and one darker, so the gradient follows the theme in light and dark alike."
+                : "Füllt ausgeschaltete Karten, Sub-Buttons ohne Hintergrund und die nicht gewählten Einträge der Seitenleiste. Die beiden Töne mischt HATG aus der Kartenfarbe - eine Stufe heller, eine dunkler. So folgt der Verlauf dem Theme und passt in hell und dunkel."
+            }</span>
+          </div>
+          <div class="glas-profile">
+            <div class="mode-toggle-group inline" role="group">
+              <button type="button" class="${stand ? "" : "active"}" data-verlauf-aus="aus">${en ? "Off" : "Aus"}</button>
+              <button type="button" class="${stand ? "active" : ""}" data-verlauf-aus="an">${en ? "On" : "An"}</button>
+            </div>
+          </div>
+          ${
+            stand
+              ? `
+          <div class="glas-regler-reihe verlauf-reihe">
+            ${regler("data-verlauf-aus-staerke", en ? "Strength" : "Stärke", p.staerke, 40, "%")}
+            ${regler("data-verlauf-aus-winkel", en ? "Direction" : "Richtung", p.winkel, 359, "°")}
+            <div class="verlauf-vorschau" data-verlauf-aus-vorschau style="${this.verlaufAusVorschauCss(p)}">${en ? "Off" : "Aus"}</div>
           </div>`
               : ""
           }
@@ -11034,6 +11202,45 @@ uix:
           this.render();
         });
       });
+
+    this.shadowRoot.querySelectorAll("[data-verlauf-aus]").forEach((el) => {
+      el.addEventListener("click", () => {
+        const an = el.dataset.verlaufAus === "an";
+        const stand = this.verlaufAusStand();
+        if (!!stand === an) return;
+        this.setzeVerlaufAus(an ? stand || HATG_VERLAUF_AUS_STANDARD : null);
+        this.render();
+      });
+    });
+    const verlaufAusWerte = () => {
+      const q = (sel) => this.shadowRoot.querySelector(sel);
+      const paar = (name) => {
+        const zahl = q(`[data-verlauf-aus-${name}-zahl]`);
+        const getippt = zahl ? String(zahl.value).trim() : "";
+        return getippt !== "" ? getippt : q(`[data-verlauf-aus-${name}]`)?.value;
+      };
+      return { winkel: paar("winkel"), staerke: paar("staerke") };
+    };
+    const verlaufAusVorschau = (quelle) => {
+      const p = hatgVerlaufAusNormal(verlaufAusWerte());
+      const v = this.shadowRoot.querySelector("[data-verlauf-aus-vorschau]");
+      if (v) v.setAttribute("style", this.verlaufAusVorschauCss(p));
+      ["winkel", "staerke"].forEach((name) => {
+        const zahl = this.shadowRoot.querySelector(`[data-verlauf-aus-${name}-zahl]`);
+        const regler = this.shadowRoot.querySelector(`[data-verlauf-aus-${name}]`);
+        if (zahl && zahl !== quelle) zahl.value = p[name];
+        if (regler && regler !== quelle) regler.value = p[name];
+      });
+    };
+    this.shadowRoot
+      .querySelectorAll("[data-verlauf-aus-winkel], [data-verlauf-aus-winkel-zahl], [data-verlauf-aus-staerke], [data-verlauf-aus-staerke-zahl]")
+      .forEach((el) => {
+        el.addEventListener("input", () => verlaufAusVorschau(el));
+        el.addEventListener("change", () => {
+          this.setzeVerlaufAus(verlaufAusWerte());
+          this.render();
+        });
+      });
     this.shadowRoot.querySelectorAll("[data-popup-bg]").forEach((el) => {
       el.addEventListener("click", () => {
         if (el.dataset.popupBg === "bild") {
@@ -12398,6 +12605,7 @@ uix:
     const marken = hatgVereinheitlicheVorlagenMarken(parsed);
     hatgMigriereHintergrundBewegung(parsed);
     hatgMigriereAkzentVerlauf(parsed);
+    hatgMigriereVerlaufAus(parsed);
     const eigeneFelder = hatgLoeseEigeneFelderAuf(parsed);
     if (eigeneFelder.entfernt && parsed.unknownCount) {
       parsed.unknownCount = Math.max(0, parsed.unknownCount - eigeneFelder.entfernt);
@@ -12595,6 +12803,7 @@ uix:
         hatgVereinheitlicheVorlagenMarken({ light: loaded.values.light, dark: loaded.values.dark, extra: loaded.extraValues });
         hatgMigriereHintergrundBewegung({ light: loaded.values.light, dark: loaded.values.dark, extra: loaded.extraValues });
         hatgMigriereAkzentVerlauf({ light: loaded.values.light, dark: loaded.values.dark });
+        hatgMigriereVerlaufAus({ light: loaded.values.light, dark: loaded.values.dark });
         hatgLoeseEigeneFelderAuf({ light: loaded.values.light, dark: loaded.values.dark, extra: loaded.extraValues });
       }
       this._state.values.light = { ...hatgDeepClone(HATG_MANIFEST.light), ...(loaded.values?.light || {}) };
