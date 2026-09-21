@@ -8526,8 +8526,13 @@ uix:
               </div>
             </div>
             <div class="generator-control">
-              <label>${en ? "Direction" : "Richtung"} <span class="generator-value" data-verlauf-winkel-wert>${p.winkel}°</span></label>
-              <input type="range" min="0" max="345" step="15" value="${p.winkel}" data-verlauf-winkel />
+              <label>${en ? "Direction" : "Richtung"}
+                <span class="generator-zahl">
+                  <input type="number" min="0" max="359" step="1" value="${p.winkel}" data-verlauf-winkel-zahl
+                    aria-label="${en ? "Direction in degrees" : "Richtung in Grad"}" />°
+                </span>
+              </label>
+              <input type="range" min="0" max="359" step="1" value="${p.winkel}" data-verlauf-winkel />
             </div>
             <div class="verlauf-vorschau" data-verlauf-vorschau style="background: linear-gradient(${p.winkel}deg, ${p.von}, ${p.bis}); color: ${p.vorn};">${en ? "Active" : "Aktiv"}</div>
           </div>`
@@ -10361,6 +10366,13 @@ uix:
         @media (min-width: 620px) { .generator-control-row { grid-template-columns: 1fr 1fr; } }
         .generator-control label { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 8px; font-size: 12.5px; color: var(--hatg-text-dim); font-weight: 600; }
         .generator-control .generator-value { color: var(--hatg-blue); font-weight: 700; }
+        .generator-control .generator-zahl { display: inline-flex; align-items: baseline; align-self: center; gap: 1px; color: var(--hatg-blue); font-weight: 700; }
+        .generator-control .generator-zahl input { width: 46px; height: 22px; padding: 0 2px 0 4px; border: 1px solid var(--hatg-border); border-radius: 6px; background: var(--hatg-field); color: inherit; font: inherit; text-align: right; }
+        /* Die Pfeilchen des Zahlenfeldes fressen die halbe Breite und sind
+           neben dem Schieber ueberfluessig. */
+        .generator-control .generator-zahl input::-webkit-outer-spin-button,
+        .generator-control .generator-zahl input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .generator-control .generator-zahl input { -moz-appearance: textfield; appearance: textfield; }
         .generator-control input[type="range"] {
           width: 100%; height: 20px; -webkit-appearance: none; appearance: none; background: transparent; cursor: pointer;
         }
@@ -10987,30 +10999,41 @@ uix:
     });
     const verlaufWerte = () => {
       const q = (sel) => this.shadowRoot.querySelector(sel);
+      const zahl = q("[data-verlauf-winkel-zahl]");
+      const regler = q("[data-verlauf-winkel]");
+      // Das Zahlenfeld fuehrt - waehrend des Tippens kann es leer sein, dann
+      // gilt der Schieber. hatgVerlaufNormal dreht alles auf 0 bis 359.
+      const getippt = zahl ? String(zahl.value).trim() : "";
       return {
         von: q("[data-verlauf-von]")?.value,
         bis: q("[data-verlauf-bis]")?.value,
         vorn: q("[data-verlauf-vorn]")?.value,
-        winkel: q("[data-verlauf-winkel]")?.value,
+        winkel: getippt !== "" ? getippt : regler?.value,
       };
     };
-    const verlaufVorschau = () => {
+    const verlaufVorschau = (quelle) => {
       const p = hatgVerlaufNormal(verlaufWerte());
       const v = this.shadowRoot.querySelector("[data-verlauf-vorschau]");
       if (v) {
         v.style.background = `linear-gradient(${p.winkel}deg, ${p.von}, ${p.bis})`;
         v.style.color = p.vorn;
       }
-      const w = this.shadowRoot.querySelector("[data-verlauf-winkel-wert]");
-      if (w) w.textContent = `${p.winkel}°`;
+      // Das jeweils andere Bedienelement nachziehen, nie das gerade benutzte -
+      // sonst springt beim Tippen die Schreibmarke ans Feldende.
+      const zahl = this.shadowRoot.querySelector("[data-verlauf-winkel-zahl]");
+      const regler = this.shadowRoot.querySelector("[data-verlauf-winkel]");
+      if (zahl && zahl !== quelle) zahl.value = p.winkel;
+      if (regler && regler !== quelle) regler.value = p.winkel;
     };
-    this.shadowRoot.querySelectorAll("[data-verlauf-von], [data-verlauf-bis], [data-verlauf-vorn], [data-verlauf-winkel]").forEach((el) => {
-      el.addEventListener("input", verlaufVorschau);
-      el.addEventListener("change", () => {
-        this.setzeAkzentVerlauf(verlaufWerte());
-        this.render();
+    this.shadowRoot
+      .querySelectorAll("[data-verlauf-von], [data-verlauf-bis], [data-verlauf-vorn], [data-verlauf-winkel], [data-verlauf-winkel-zahl]")
+      .forEach((el) => {
+        el.addEventListener("input", () => verlaufVorschau(el));
+        el.addEventListener("change", () => {
+          this.setzeAkzentVerlauf(verlaufWerte());
+          this.render();
+        });
       });
-    });
     this.shadowRoot.querySelectorAll("[data-popup-bg]").forEach((el) => {
       el.addEventListener("click", () => {
         if (el.dataset.popupBg === "bild") {
