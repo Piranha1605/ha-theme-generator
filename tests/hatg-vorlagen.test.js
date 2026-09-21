@@ -519,7 +519,7 @@ pruefe("Info-Dialog mit Hintergrundbild: Pfade mit fuehrendem $", () => {
   }
 });
 
-pruefe("Verlauf fuer ausgeschaltete Flaechen: mischt aus der Kartenfarbe", () => {
+pruefe("Verlauf fuer ausgeschaltete Flaechen: eigene Farben, Aus-Zustand getroffen", () => {
   const vm = require("node:vm");
   const ctx = {
     console, window: {}, document: { createElement: () => ({}), addEventListener() {}, querySelector: () => null },
@@ -533,38 +533,37 @@ pruefe("Verlauf fuer ausgeschaltete Flaechen: mischt aus der Kartenfarbe", () =>
       "this.weg=hatgEntferneVorlagenBlock;this.norm=hatgVerlaufAusNormal;this.ZIELE=HATG_VERLAUF_AUS_ZIELE;",
     ctx
   );
-  const werte = { winkel: 200, staerke: 14 };
+  const werte = { von: "#112233", bis: "#445566", vorn: "#FFEEDD", winkel: 200 };
 
-  // Basis muss card-background-color sein: ha-card-background ist bei ha-card
-  // die Kurzform background und kann ein Bild oder einen Verlauf tragen -
-  // color-mix braucht eine Farbe und fiele sonst ersatzlos aus.
   for (const ziel of ctx.ZIELE) {
     const css = ctx.css(ziel, werte);
-    assert.match(css, /color-mix\(in srgb, #FFFFFF 14%, var\(--card-background-color/);
-    assert.ok(!/color-mix\([^)]*--ha-card-background/.test(css), `${ziel}: color-mix darf nicht auf ha-card-background zeigen`);
-    assert.match(css, /linear-gradient\(200deg/);
+    assert.match(css, /--verlauf-inaktiv:\s*linear-gradient\(200deg, #112233 0%, #445566 100%\)/);
+    assert.match(css, /--verlauf-inaktiv-vorn:\s*#FFEEDD/);
+    // Die eingeschalteten Flaechen gehoeren dem aktiven Verlauf.
+    assert.ok(!/--verlauf-akzent/.test(css), `${ziel}: darf den aktiven Verlauf nicht anfassen`);
   }
 
-  // Die eingeschalteten Flaechen gehoeren dem aktiven Verlauf - der Aus-Verlauf
-  // darf sie nicht anfassen.
   const karte = ctx.css("uix-card", werte);
   assert.match(karte, /ha-card:not\(:has\(\.bubble-background\[style\*="opacity: 1"\]\)\)/);
   assert.match(karte, /\.bubble-sub-button:not\(\.background-on\)/);
   assert.ok(!/\.bubble-sub-button\.background-on[^:]/.test(karte), "background-on gehoert dem aktiven Verlauf");
   const seite = ctx.css("uix-sidebar", werte);
   assert.match(seite, /ha-list-item-button:not\(\.selected\)::before/);
+  assert.ok(!/ha-list-item-button\.selected/.test(seite), "der gewaehlte Eintrag gehoert dem aktiven Verlauf");
 
   // Schreiben, lesen, entfernen - ohne Rest im Feld.
   const vorher = "ha-card { color: red; }";
   const mit = ctx.an(vorher, "verlauf-inaktiv", karte);
   // Der vm hat eigene Prototypen - erst in ein hiesiges Objekt kopieren.
-  assert.deepEqual({ ...ctx.lese(mit) }, { winkel: 200, staerke: 14 });
+  assert.deepEqual({ ...ctx.lese(mit) }, { von: "#112233", bis: "#445566", vorn: "#FFEEDD", winkel: 200 });
   assert.equal(ctx.weg(mit, "verlauf-inaktiv").trim(), vorher);
   assert.equal(ctx.lese(vorher), null);
 
-  // Grenzen: Winkel dreht, Staerke wird gekappt.
-  assert.deepEqual({ ...ctx.norm({ winkel: 400, staerke: 99 }) }, { winkel: 40, staerke: 40 });
-  assert.deepEqual({ ...ctx.norm({ winkel: -20, staerke: -5 }) }, { winkel: 340, staerke: 0 });
+  // Der Aus-Verlauf darf den aktiven Block nicht mitlesen und umgekehrt.
+  const beide = ctx.an(mit, "verlauf-akzent", "\n:host { --verlauf-akzent: linear-gradient(10deg, #AAAAAA 0%, #BBBBBB 100%); }\n");
+  assert.deepEqual({ ...ctx.lese(beide) }, { von: "#112233", bis: "#445566", vorn: "#FFEEDD", winkel: 200 });
+
+  assert.deepEqual({ ...ctx.norm({ ...werte, winkel: 560 }) }, { ...werte, winkel: 200 });
 });
 
 console.log(fehler === 0 ? "\nAlle Tests bestanden." : `\n${fehler} Test(s) fehlgeschlagen.`);

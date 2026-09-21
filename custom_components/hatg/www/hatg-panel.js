@@ -2074,30 +2074,21 @@ ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-main-icon-container
 // dunkel, obwohl eine UIX-Zeile fuer beide Modi zugleich gilt.
 const HATG_VERLAUF_AUS_ID = "verlauf-inaktiv";
 const HATG_VERLAUF_AUS_ZIELE = ["uix-card", "uix-sidebar"];
-const HATG_VERLAUF_AUS_STANDARD = { winkel: 135, staerke: 8 };
+const HATG_VERLAUF_AUS_STANDARD = { von: "#4A5560", bis: "#242A31", winkel: 135, vorn: "#E8EDF3" };
 function hatgVerlaufAusNormal(p) {
   const w = Math.round(Number(p && p.winkel));
-  const s = Math.round(Number(p && p.staerke));
   return {
+    von: hatgVerlaufHex(p && p.von, HATG_VERLAUF_AUS_STANDARD.von),
+    bis: hatgVerlaufHex(p && p.bis, HATG_VERLAUF_AUS_STANDARD.bis),
     winkel: isFinite(w) ? ((w % 360) + 360) % 360 : HATG_VERLAUF_AUS_STANDARD.winkel,
-    staerke: isFinite(s) ? Math.min(40, Math.max(0, s)) : HATG_VERLAUF_AUS_STANDARD.staerke,
-  };
-}
-// Basis ist card-background-color, nicht ha-card-background: letzteres ist bei
-// ha-card die Kurzform background und darf deshalb ein Bild oder einen Verlauf
-// tragen. color-mix braucht eine Farbe und fiele damit ersatzlos aus.
-const HATG_VERLAUF_AUS_BASIS = "var(--card-background-color, #1F1F1F)";
-function hatgVerlaufAusFarben(p) {
-  return {
-    hell: `color-mix(in srgb, #FFFFFF ${p.staerke}%, ${HATG_VERLAUF_AUS_BASIS})`,
-    dunkel: `color-mix(in srgb, #000000 ${p.staerke}%, ${HATG_VERLAUF_AUS_BASIS})`,
+    vorn: hatgVerlaufHex(p && p.vorn, HATG_VERLAUF_AUS_STANDARD.vorn),
   };
 }
 function hatgVerlaufAusCss(ziel, werte) {
   const p = hatgVerlaufAusNormal(werte);
-  const f = hatgVerlaufAusFarben(p);
   const kopf = `:host {
-  --verlauf-inaktiv: linear-gradient(${p.winkel}deg, ${f.hell} 0%, ${f.dunkel} 100%);
+  --verlauf-inaktiv: linear-gradient(${p.winkel}deg, ${p.von} 0%, ${p.bis} 100%);
+  --verlauf-inaktiv-vorn: ${p.vorn};
 }`;
   if (ziel === "uix-sidebar") {
     return `${kopf}
@@ -2107,15 +2098,26 @@ ha-list-item-button:not(.selected)::before {
   background-color: transparent !important;
   background-image: var(--verlauf-inaktiv) !important;
   opacity: 1 !important;
+}
+ha-list-item-button:not(.selected) {
+  --sidebar-text-color: var(--verlauf-inaktiv-vorn);
+  --sidebar-icon-color: var(--verlauf-inaktiv-vorn);
+  color: var(--verlauf-inaktiv-vorn) !important;
 }`;
   }
+  const aus = `ha-card:not(:has(.bubble-background[style*="opacity: 1"]))`;
   return `${kopf}
 /* Bubble Card haengt den Zustand an das inline gesetzte opacity von
    .bubble-background - alles ohne "opacity: 1" ist aus. Karten ohne dieses
    Element, also die von Home Assistant selbst, zaehlen ebenfalls als aus. */
-ha-card:not(:has(.bubble-background[style*="opacity: 1"])) {
+${aus} {
   background-color: transparent !important;
   background-image: var(--verlauf-inaktiv) !important;
+}
+${aus} .bubble-name,
+${aus} .bubble-state,
+${aus} .bubble-main-icon {
+  color: var(--verlauf-inaktiv-vorn) !important;
 }
 /* Wo UIX die ha-card selbst patcht statt des Karten-Elements, ist sie der Wirt
    und der Selektor oben trifft nichts. Dort liegt nie eine Bubble-Karte, der
@@ -2127,14 +2129,15 @@ ha-card:not(:has(.bubble-background[style*="opacity: 1"])) {
 .bubble-sub-button:not(.background-on) {
   background-color: transparent !important;
   background-image: var(--verlauf-inaktiv) !important;
+  color: var(--verlauf-inaktiv-vorn) !important;
 }`;
 }
 function hatgLeseVerlaufAus(text) {
   const block = hatgLeseVorlagenBlock(text, HATG_VERLAUF_AUS_ID);
   if (block === null) return null;
-  const w = /linear-gradient\(\s*(-?\d+(?:\.\d+)?)deg/i.exec(block);
-  const s = /#FFFFFF\s+(\d+(?:\.\d+)?)%/i.exec(block);
-  return hatgVerlaufAusNormal({ winkel: w ? w[1] : NaN, staerke: s ? s[1] : NaN });
+  const g = /--verlauf-inaktiv:\s*linear-gradient\(\s*(-?\d+(?:\.\d+)?)deg\s*,\s*(#[0-9a-f]{6})[^,]*,\s*(#[0-9a-f]{6})/i.exec(block);
+  const v = /--verlauf-inaktiv-vorn:\s*(#[0-9a-f]{6})/i.exec(block);
+  return hatgVerlaufAusNormal({ winkel: g ? g[1] : NaN, von: g && g[2], bis: g && g[3], vorn: v && v[1] });
 }
 function hatgMigriereVerlaufAus(bag) {
   let geaendert = 0;
@@ -8580,15 +8583,25 @@ uix:
     this.applyPreviewTheme();
   }
 
+  // Farbtupfer plus Hex-Feld. Ein input type=color laesst sich nicht tippen -
+  // fuer einen Wert aus der Palette waere das Geklicke im Farbwaehler.
+  verlaufFarbfeld(attr, wert, hell, dunkel, en) {
+    const v = hatgEscape(String(wert || "").toUpperCase());
+    const name = en ? hell : dunkel;
+    return `
+                <label class="glas-ton" title="${name}">
+                  <input type="color" value="${v}" ${attr} />
+                  <input type="text" class="hex-feld" value="${v}" ${attr}-hex spellcheck="false"
+                    maxlength="7" autocapitalize="off" autocomplete="off" aria-label="${name} Hex" />
+                  <span>${name}</span>
+                </label>`;
+  }
+
   renderAkzentVerlauf() {
     const en = this._sprache === "en";
     const stand = this.akzentVerlaufStand();
     const p = stand || HATG_VERLAUF_STANDARD;
-    const farbe = (attr, wert, hell, dunkel) => `
-                <label class="glas-ton" title="${en ? hell : dunkel}">
-                  <input type="color" value="${hatgEscape(wert)}" ${attr} />
-                  <span>${en ? hell : dunkel}</span>
-                </label>`;
+    const farbe = (attr, wert, hell, dunkel) => this.verlaufFarbfeld(attr, wert, hell, dunkel, en);
     return `
         <div class="glas-regler" data-roh>
           <div class="glas-regler-kopf">
@@ -8634,18 +8647,23 @@ uix:
   }
 
   verlaufAusStand() {
-    const v = this.currentValues();
-    return hatgLeseVerlaufAus(v["uix-card"] || "") || hatgLeseVerlaufAus(v["uix-sidebar"] || "");
+    return hatgLeseVerlaufAus(this.currentValues()["uix-card"] || "");
   }
 
-  // Schreibt den Aus-Verlauf in beide Ziele und beide Modi oder nimmt ihn heraus.
-  setzeVerlaufAus(werte) {
+  // Die Seitenleiste hat einen eigenen Schalter: dort sind die nicht gewaehlten
+  // Eintraege normalerweise unsichtbar, ein Verlauf darauf ist Geschmackssache.
+  verlaufAusSeitenleisteAn() {
+    return hatgLeseVerlaufAus(this.currentValues()["uix-sidebar"] || "") !== null;
+  }
+
+  setzeVerlaufAus(werte, seitenleiste) {
     const currentMode = this._state.editorMode;
     ["light", "dark"].forEach((mode) => {
       this._state.editorMode = mode;
       HATG_VERLAUF_AUS_ZIELE.forEach((ziel) => {
+        const an = werte && (ziel !== "uix-sidebar" || seitenleiste);
         const text = String(this.currentValues()[ziel] || "");
-        const neu = werte
+        const neu = an
           ? hatgHaengeVorlagenBlockAn(text, HATG_VERLAUF_AUS_ID, hatgVerlaufAusCss(ziel, werte))
           : hatgEntferneVorlagenBlock(text, HATG_VERLAUF_AUS_ID);
         if (neu !== text) this.commitField(ziel, neu);
@@ -8655,39 +8673,19 @@ uix:
     this.applyPreviewTheme();
   }
 
-  // Fuer die Vorschau im Panel: color-mix steht hier ohne --card-background-color
-  // da, also die echte Kartenfarbe des Themes einsetzen.
-  verlaufAusVorschauCss(p) {
-    const basis = hatgVerlaufHex(this.currentValues()["card-background-color"], "#1F1F1F");
-    // Auf einer dunklen Kartenfarbe waere die Schrift des Panels unlesbar.
-    const r = parseInt(basis.slice(1, 3), 16);
-    const g = parseInt(basis.slice(3, 5), 16);
-    const b = parseInt(basis.slice(5, 7), 16);
-    const vorn = 0.299 * r + 0.587 * g + 0.114 * b > 150 ? "#111418" : "#F2F4F7";
-    return `background: linear-gradient(${p.winkel}deg, color-mix(in srgb, #FFFFFF ${p.staerke}%, ${basis}) 0%, color-mix(in srgb, #000000 ${p.staerke}%, ${basis}) 100%); color: ${vorn};`;
-  }
-
   renderVerlaufAus() {
     const en = this._sprache === "en";
     const stand = this.verlaufAusStand();
+    const seite = this.verlaufAusSeitenleisteAn();
     const p = stand || HATG_VERLAUF_AUS_STANDARD;
-    const regler = (attr, label, wert, max, einheit) => `
-            <div class="generator-control">
-              <label>${label}
-                <span class="generator-zahl">
-                  <input type="number" min="0" max="${max}" step="1" value="${wert}" ${attr}-zahl aria-label="${hatgEscape(label)}" />${einheit}
-                </span>
-              </label>
-              <input type="range" min="0" max="${max}" step="1" value="${wert}" ${attr} />
-            </div>`;
     return `
         <div class="glas-regler" data-roh>
           <div class="glas-regler-kopf">
             <strong>${en ? "Gradient for surfaces that are off" : "Verlauf für ausgeschaltete Flächen"}</strong>
             <span>${
               en
-                ? "Fills cards that are off, sub-buttons without a background and the sidebar entries that are not selected. The two tones are mixed from the card colour, one step lighter and one darker, so the gradient follows the theme in light and dark alike."
-                : "Füllt ausgeschaltete Karten, Sub-Buttons ohne Hintergrund und die nicht gewählten Einträge der Seitenleiste. Die beiden Töne mischt HATG aus der Kartenfarbe - eine Stufe heller, eine dunkler. So folgt der Verlauf dem Theme und passt in hell und dunkel."
+                ? "Fills cards that are off and sub-buttons without a background. Same controls as above, with its own colours. Applies to light and dark alike."
+                : "Füllt ausgeschaltete Karten und Sub-Buttons ohne Hintergrund. Dieselben Regler wie oben, mit eigenen Farben. Gilt für Light und Dark gleich."
             }</span>
           </div>
           <div class="glas-profile">
@@ -8695,14 +8693,39 @@ uix:
               <button type="button" class="${stand ? "" : "active"}" data-verlauf-aus="aus">${en ? "Off" : "Aus"}</button>
               <button type="button" class="${stand ? "active" : ""}" data-verlauf-aus="an">${en ? "On" : "An"}</button>
             </div>
+            ${
+              stand
+                ? `
+            <span class="glas-profil-titel">${en ? "Sidebar" : "Seitenleiste"}</span>
+            <div class="mode-toggle-group inline" role="group">
+              <button type="button" class="${seite ? "" : "active"}" data-verlauf-aus-seite="aus">${en ? "Off" : "Aus"}</button>
+              <button type="button" class="${seite ? "active" : ""}" data-verlauf-aus-seite="an">${en ? "On" : "An"}</button>
+            </div>`
+                : ""
+            }
           </div>
           ${
             stand
               ? `
           <div class="glas-regler-reihe verlauf-reihe">
-            ${regler("data-verlauf-aus-staerke", en ? "Strength" : "Stärke", p.staerke, 40, "%")}
-            ${regler("data-verlauf-aus-winkel", en ? "Direction" : "Richtung", p.winkel, 359, "°")}
-            <div class="verlauf-vorschau" data-verlauf-aus-vorschau style="${this.verlaufAusVorschauCss(p)}">${en ? "Off" : "Aus"}</div>
+            <div class="generator-control glas-regler-farbe">
+              <label>${en ? "Colours" : "Farben"}</label>
+              <div class="glas-toene">
+                ${this.verlaufFarbfeld("data-verlauf-aus-von", p.von, "Start", "Anfang", en)}
+                ${this.verlaufFarbfeld("data-verlauf-aus-bis", p.bis, "End", "Ende", en)}
+                ${this.verlaufFarbfeld("data-verlauf-aus-vorn", p.vorn, "Text", "Schrift", en)}
+              </div>
+            </div>
+            <div class="generator-control">
+              <label>${en ? "Direction" : "Richtung"}
+                <span class="generator-zahl">
+                  <input type="number" min="0" max="359" step="1" value="${p.winkel}" data-verlauf-aus-winkel-zahl
+                    aria-label="${en ? "Direction in degrees" : "Richtung in Grad"}" />°
+                </span>
+              </label>
+              <input type="range" min="0" max="359" step="1" value="${p.winkel}" data-verlauf-aus-winkel />
+            </div>
+            <div class="verlauf-vorschau" data-verlauf-aus-vorschau style="background: linear-gradient(${p.winkel}deg, ${p.von}, ${p.bis}); color: ${p.vorn};">${en ? "Off" : "Aus"}</div>
           </div>`
               : ""
           }
@@ -10444,6 +10467,8 @@ uix:
         .glas-toene { display: flex; gap: 10px; }
         .glas-ton { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; }
         .glas-ton span { font-size: 10px; letter-spacing: .03em; color: var(--hatg-muted); }
+        .glas-ton .hex-feld { width: 64px; height: 20px; margin-top: 1px; padding: 0 3px; border: 1px solid var(--hatg-border); border-radius: 5px; background: var(--hatg-field); color: var(--hatg-text); font-size: 10.5px; font-variant-numeric: tabular-nums; text-align: center; text-transform: uppercase; }
+        .glas-profil-titel { font-size: 12px; font-weight: 600; color: var(--hatg-text-dim); }
         .glas-regler-farbe input[type="color"] { width: 46px; height: 30px; padding: 0; border: 1px solid var(--hatg-border); border-radius: 8px; background: transparent; cursor: pointer; }
         @media (max-width: 700px) { .glas-regler-reihe { grid-template-columns: 1fr; } }
         .paket-leiste { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; padding: 14px 16px; border: 1px solid var(--hatg-border); border-radius: 12px; background: var(--hatg-field); }
@@ -11208,39 +11233,79 @@ uix:
         const an = el.dataset.verlaufAus === "an";
         const stand = this.verlaufAusStand();
         if (!!stand === an) return;
-        this.setzeVerlaufAus(an ? stand || HATG_VERLAUF_AUS_STANDARD : null);
+        this.setzeVerlaufAus(an ? stand || HATG_VERLAUF_AUS_STANDARD : null, this.verlaufAusSeitenleisteAn());
+        this.render();
+      });
+    });
+    this.shadowRoot.querySelectorAll("[data-verlauf-aus-seite]").forEach((el) => {
+      el.addEventListener("click", () => {
+        const an = el.dataset.verlaufAusSeite === "an";
+        if (this.verlaufAusSeitenleisteAn() === an) return;
+        const stand = this.verlaufAusStand();
+        if (!stand) return;
+        this.setzeVerlaufAus(stand, an);
         this.render();
       });
     });
     const verlaufAusWerte = () => {
       const q = (sel) => this.shadowRoot.querySelector(sel);
-      const paar = (name) => {
-        const zahl = q(`[data-verlauf-aus-${name}-zahl]`);
-        const getippt = zahl ? String(zahl.value).trim() : "";
-        return getippt !== "" ? getippt : q(`[data-verlauf-aus-${name}]`)?.value;
+      const zahl = q("[data-verlauf-aus-winkel-zahl]");
+      const getippt = zahl ? String(zahl.value).trim() : "";
+      return {
+        von: q("[data-verlauf-aus-von]")?.value,
+        bis: q("[data-verlauf-aus-bis]")?.value,
+        vorn: q("[data-verlauf-aus-vorn]")?.value,
+        winkel: getippt !== "" ? getippt : q("[data-verlauf-aus-winkel]")?.value,
       };
-      return { winkel: paar("winkel"), staerke: paar("staerke") };
     };
     const verlaufAusVorschau = (quelle) => {
       const p = hatgVerlaufAusNormal(verlaufAusWerte());
       const v = this.shadowRoot.querySelector("[data-verlauf-aus-vorschau]");
-      if (v) v.setAttribute("style", this.verlaufAusVorschauCss(p));
-      ["winkel", "staerke"].forEach((name) => {
-        const zahl = this.shadowRoot.querySelector(`[data-verlauf-aus-${name}-zahl]`);
-        const regler = this.shadowRoot.querySelector(`[data-verlauf-aus-${name}]`);
-        if (zahl && zahl !== quelle) zahl.value = p[name];
-        if (regler && regler !== quelle) regler.value = p[name];
-      });
+      if (v) {
+        v.style.background = `linear-gradient(${p.winkel}deg, ${p.von}, ${p.bis})`;
+        v.style.color = p.vorn;
+      }
+      const zahl = this.shadowRoot.querySelector("[data-verlauf-aus-winkel-zahl]");
+      const regler = this.shadowRoot.querySelector("[data-verlauf-aus-winkel]");
+      if (zahl && zahl !== quelle) zahl.value = p.winkel;
+      if (regler && regler !== quelle) regler.value = p.winkel;
     };
     this.shadowRoot
-      .querySelectorAll("[data-verlauf-aus-winkel], [data-verlauf-aus-winkel-zahl], [data-verlauf-aus-staerke], [data-verlauf-aus-staerke-zahl]")
+      .querySelectorAll("[data-verlauf-aus-von], [data-verlauf-aus-bis], [data-verlauf-aus-vorn], [data-verlauf-aus-winkel], [data-verlauf-aus-winkel-zahl]")
       .forEach((el) => {
         el.addEventListener("input", () => verlaufAusVorschau(el));
         el.addEventListener("change", () => {
-          this.setzeVerlaufAus(verlaufAusWerte());
+          this.setzeVerlaufAus(verlaufAusWerte(), this.verlaufAusSeitenleisteAn());
           this.render();
         });
       });
+
+    // Hex-Felder neben den Farbtupfern schreiben in das Farbfeld daneben und
+    // loesen dessen Ereignisse aus - so gibt es nur einen Weg, der gepflegt
+    // werden muss. Umgekehrt zieht das Farbfeld sein Hex-Feld nach.
+    this.shadowRoot.querySelectorAll(".glas-ton input.hex-feld").forEach((el) => {
+      const farbe = el.parentElement?.querySelector('input[type="color"]');
+      if (!farbe) return;
+      const uebernehmen = (art) => {
+        const v = String(el.value).trim();
+        if (!/^#[0-9a-f]{6}$/i.test(v)) {
+          if (art === "change") el.value = String(farbe.value).toUpperCase();
+          return;
+        }
+        farbe.value = v;
+        farbe.dispatchEvent(new Event(art));
+      };
+      el.addEventListener("input", () => uebernehmen("input"));
+      el.addEventListener("change", () => uebernehmen("change"));
+    });
+    this.shadowRoot.querySelectorAll('.glas-ton input[type="color"]').forEach((el) => {
+      const hex = el.parentElement?.querySelector("input.hex-feld");
+      if (!hex) return;
+      el.addEventListener("input", () => {
+        const v = String(el.value).toUpperCase();
+        if (hex.value.toUpperCase() !== v) hex.value = v;
+      });
+    });
     this.shadowRoot.querySelectorAll("[data-popup-bg]").forEach((el) => {
       el.addEventListener("click", () => {
         if (el.dataset.popupBg === "bild") {
