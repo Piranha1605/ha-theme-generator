@@ -1998,17 +1998,74 @@ function hatgVereinheitlicheVorlagenMarken(bag) {
 const HATG_VERLAUF_ID = "verlauf-akzent";
 const HATG_VERLAUF_ZIELE = ["uix-card", "uix-sidebar"];
 const HATG_VERLAUF_STANDARD = { von: "#4FE3C8", bis: "#38A8FF", winkel: 135, vorn: "#0A2230" };
-function hatgVerlaufHex(wert, ersatz) {
-  const m = /^#?([0-9a-f]{6})$/i.exec(String(wert || "").trim());
-  return m ? `#${m[1].toUpperCase()}` : ersatz;
+// Farben in den Verlaeufen duerfen alles sein, was CSS als Farbe versteht:
+// Hex, rgb/rgba, hsl, lab, oklch, color(), color-mix() und var(). Ein
+// input type=color kann nur deckendes Hex - Werte mit Alphaanteil wie
+// "color(srgb 0.04 0.52 1 / 0.18)" gehen deshalb nur ueber das Textfeld.
+const HATG_VERLAUF_FARBE_RE =
+  /^(#[0-9a-f]{3,8}|(rgba?|hsla?|hwb|lab|lch|oklab|oklch|color|color-mix)\([^;]*\)|var\(\s*--[a-z0-9-][^;]*\))$/i;
+function hatgVerlaufFarbe(wert, ersatz) {
+  // Ein abschliessendes Semikolon wuerde die naechste Deklaration abschneiden.
+  const v = String(wert ?? "").trim().replace(/;+\s*$/, "").trim();
+  if (!v) return ersatz;
+  const hex = /^#?([0-9a-f]{6})$/i.exec(v);
+  if (hex) return `#${hex[1].toUpperCase()}`;
+  if (HATG_VERLAUF_FARBE_RE.test(v)) return v;
+  if (HATG_NAMED_COLORS.has(v.toLowerCase())) return v;
+  return ersatz;
+}
+// Den Wert einer Custom Property aus einem Block holen. Ein einfaches
+// [^;]+ reicht nicht: color-mix() und color() duerfen Kommas und Klammern
+// enthalten, ein Semikolon aber nur ausserhalb der Klammern.
+function hatgVerlaufEigenschaft(block, name) {
+  const re = new RegExp(`--${name}\\s*:`, "i");
+  const m = re.exec(String(block || ""));
+  if (!m) return null;
+  let tiefe = 0;
+  let i = m.index + m[0].length;
+  const start = i;
+  for (; i < block.length; i += 1) {
+    const c = block[i];
+    if (c === "(") tiefe += 1;
+    else if (c === ")") tiefe -= 1;
+    else if ((c === ";" || c === "\n") && tiefe <= 0) break;
+  }
+  return block.slice(start, i).trim() || null;
+}
+// linear-gradient(<winkel>deg, <von> 0%, <bis> 100%) in seine Teile zerlegen.
+function hatgVerlaufZerlegen(wert) {
+  const m = /^linear-gradient\(([\s\S]+)\)$/i.exec(String(wert || "").trim());
+  if (!m) return null;
+  // Eigenes Zerlegen statt hatgSplitTopLevelCommas: das steht weiter unten bei
+  // den Feldpruefungen, und die Tests schneiden jeweils nur einen Teil der
+  // Datei heraus. Zehn Zeilen doppelt sind billiger als eine Verflechtung.
+  const teile = [];
+  let tiefe = 0;
+  let start = 0;
+  const roh = m[1];
+  for (let i = 0; i < roh.length; i += 1) {
+    const c = roh[i];
+    if (c === "(") tiefe += 1;
+    else if (c === ")") tiefe -= 1;
+    else if (c === "," && tiefe === 0) {
+      teile.push(roh.slice(start, i));
+      start = i + 1;
+    }
+  }
+  teile.push(roh.slice(start));
+  for (let i = 0; i < teile.length; i += 1) teile[i] = teile[i].trim();
+  if (teile.length < 3) return null;
+  const w = /^(-?\d+(?:\.\d+)?)deg$/i.exec(teile[0]);
+  const ohneHalt = (t) => t.replace(/\s+-?\d+(?:\.\d+)?%$/, "").trim();
+  return { winkel: w ? w[1] : NaN, von: ohneHalt(teile[1]), bis: ohneHalt(teile[2]) };
 }
 function hatgVerlaufNormal(p) {
   const w = Math.round(Number(p && p.winkel));
   return {
-    von: hatgVerlaufHex(p && p.von, HATG_VERLAUF_STANDARD.von),
-    bis: hatgVerlaufHex(p && p.bis, HATG_VERLAUF_STANDARD.bis),
+    von: hatgVerlaufFarbe(p && p.von, HATG_VERLAUF_STANDARD.von),
+    bis: hatgVerlaufFarbe(p && p.bis, HATG_VERLAUF_STANDARD.bis),
     winkel: isFinite(w) ? ((w % 360) + 360) % 360 : HATG_VERLAUF_STANDARD.winkel,
-    vorn: hatgVerlaufHex(p && p.vorn, HATG_VERLAUF_STANDARD.vorn),
+    vorn: hatgVerlaufFarbe(p && p.vorn, HATG_VERLAUF_STANDARD.vorn),
   };
 }
 function hatgVerlaufCss(ziel, werte) {
@@ -2078,10 +2135,10 @@ const HATG_VERLAUF_AUS_STANDARD = { von: "#4A5560", bis: "#242A31", winkel: 135,
 function hatgVerlaufAusNormal(p) {
   const w = Math.round(Number(p && p.winkel));
   return {
-    von: hatgVerlaufHex(p && p.von, HATG_VERLAUF_AUS_STANDARD.von),
-    bis: hatgVerlaufHex(p && p.bis, HATG_VERLAUF_AUS_STANDARD.bis),
+    von: hatgVerlaufFarbe(p && p.von, HATG_VERLAUF_AUS_STANDARD.von),
+    bis: hatgVerlaufFarbe(p && p.bis, HATG_VERLAUF_AUS_STANDARD.bis),
     winkel: isFinite(w) ? ((w % 360) + 360) % 360 : HATG_VERLAUF_AUS_STANDARD.winkel,
-    vorn: hatgVerlaufHex(p && p.vorn, HATG_VERLAUF_AUS_STANDARD.vorn),
+    vorn: hatgVerlaufFarbe(p && p.vorn, HATG_VERLAUF_AUS_STANDARD.vorn),
   };
 }
 function hatgVerlaufAusCss(ziel, werte) {
@@ -2135,9 +2192,9 @@ ${aus} .bubble-main-icon {
 function hatgLeseVerlaufAus(text) {
   const block = hatgLeseVorlagenBlock(text, HATG_VERLAUF_AUS_ID);
   if (block === null) return null;
-  const g = /--verlauf-inaktiv:\s*linear-gradient\(\s*(-?\d+(?:\.\d+)?)deg\s*,\s*(#[0-9a-f]{6})[^,]*,\s*(#[0-9a-f]{6})/i.exec(block);
-  const v = /--verlauf-inaktiv-vorn:\s*(#[0-9a-f]{6})/i.exec(block);
-  return hatgVerlaufAusNormal({ winkel: g ? g[1] : NaN, von: g && g[2], bis: g && g[3], vorn: v && v[1] });
+  const g = hatgVerlaufZerlegen(hatgVerlaufEigenschaft(block, "verlauf-inaktiv"));
+  const v = hatgVerlaufEigenschaft(block, "verlauf-inaktiv-vorn");
+  return hatgVerlaufAusNormal({ winkel: g ? g.winkel : NaN, von: g && g.von, bis: g && g.bis, vorn: v });
 }
 function hatgMigriereVerlaufAus(bag) {
   let geaendert = 0;
@@ -2164,9 +2221,9 @@ function hatgMigriereVerlaufAus(bag) {
 function hatgLeseVerlauf(text) {
   const block = hatgLeseVorlagenBlock(text, HATG_VERLAUF_ID);
   if (block === null) return null;
-  const g = /linear-gradient\(\s*(-?\d+(?:\.\d+)?)deg\s*,\s*(#[0-9a-f]{6})[^,]*,\s*(#[0-9a-f]{6})/i.exec(block);
-  const v = /--verlauf-vorn:\s*(#[0-9a-f]{6})/i.exec(block) || /--sidebar-selected-text-color:\s*(#[0-9a-f]{6})/i.exec(block);
-  return hatgVerlaufNormal({ winkel: g ? g[1] : NaN, von: g && g[2], bis: g && g[3], vorn: v && v[1] });
+  const g = hatgVerlaufZerlegen(hatgVerlaufEigenschaft(block, "verlauf-akzent"));
+  const v = hatgVerlaufEigenschaft(block, "verlauf-vorn") || hatgVerlaufEigenschaft(block, "sidebar-selected-text-color");
+  return hatgVerlaufNormal({ winkel: g ? g.winkel : NaN, von: g && g.von, bis: g && g.bis, vorn: v });
 }
 // Beim Laden: vorhandene Verlaufsbloecke auf den aktuellen Stand bringen, in
 // beiden Zielen. Die Werte kommen aus uix-card, sonst aus der Seitenleiste.
@@ -8594,16 +8651,20 @@ uix:
     this.applyPreviewTheme();
   }
 
-  // Farbtupfer plus Hex-Feld. Ein input type=color laesst sich nicht tippen -
-  // fuer einen Wert aus der Palette waere das Geklicke im Farbwaehler.
+  // Farbtupfer plus Textfeld. Das Textfeld fuehrt: ein input type=color kennt
+  // nur deckendes Hex, Werte mit Alphaanteil wie "rgba(10, 132, 255, .18)"
+  // oder "color(srgb 0.04 0.52 1 / 0.18)" gehen nur ueber Text. Der Tupfer
+  // bleibt fuer die schnelle Wahl und schreibt sein Hex ins Textfeld.
   verlaufFarbfeld(attr, wert, hell, dunkel, en) {
-    const v = hatgEscape(String(wert || "").toUpperCase());
+    const roh = String(wert ?? "");
+    const istHex = /^#[0-9a-f]{6}$/i.test(roh.trim());
     const name = en ? hell : dunkel;
     return `
-                <label class="glas-ton" title="${name}">
-                  <input type="color" value="${v}" ${attr} />
-                  <input type="text" class="hex-feld" value="${v}" ${attr}-hex spellcheck="false"
-                    maxlength="7" autocapitalize="off" autocomplete="off" aria-label="${name} Hex" />
+                <label class="glas-ton ${istHex ? "" : "frei"}" title="${name}">
+                  <input type="color" value="${istHex ? hatgEscape(roh.toUpperCase()) : "#808080"}" ${attr}
+                    ${istHex ? "" : `title="${en ? "The text field holds a value this picker cannot show" : "Im Textfeld steht ein Wert, den der Waehler nicht zeigen kann"}"`} />
+                  <input type="text" class="farb-feld" value="${hatgEscape(roh)}" ${attr}-wert spellcheck="false"
+                    autocapitalize="off" autocomplete="off" aria-label="${name}" />
                   <span>${name}</span>
                 </label>`;
   }
@@ -10475,10 +10536,13 @@ uix:
         .verlauf-vorschau { display: grid; place-items: center; min-width: 96px; height: 34px; padding: 0 14px; border-radius: 11px; font-size: 12px; font-weight: 650; }
         .glas-regler-reihe { display: grid; grid-template-columns: 1fr 1fr auto; gap: 18px; align-items: end; }
         .glas-profile { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; margin-bottom: 12px; }
-        .glas-toene { display: flex; gap: 10px; }
+        .glas-toene { display: flex; flex-wrap: wrap; gap: 10px; }
         .glas-ton { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; }
         .glas-ton span { font-size: 10px; letter-spacing: .03em; color: var(--hatg-muted); }
-        .glas-ton .hex-feld { width: 64px; height: 20px; margin-top: 1px; padding: 0 3px; border: 1px solid var(--hatg-border); border-radius: 5px; background: var(--hatg-field); color: var(--hatg-text); font-size: 10.5px; font-variant-numeric: tabular-nums; text-align: center; text-transform: uppercase; }
+        .glas-ton .farb-feld { width: 132px; height: 20px; margin-top: 1px; padding: 0 4px; border: 1px solid var(--hatg-border); border-radius: 5px; background: var(--hatg-field); color: var(--hatg-text); font-size: 10.5px; font-variant-numeric: tabular-nums; text-align: center; }
+        /* Steht dort ein Wert, den der Tupfer nicht zeigen kann, bekommt er
+           einen gestrichelten Rand - sonst sieht man Grau und glaubt es. */
+        .glas-ton.frei input[type="color"] { border-style: dashed; opacity: .6; }
         .glas-profil-titel { font-size: 12px; font-weight: 600; color: var(--hatg-text-dim); }
         .glas-regler-farbe input[type="color"] { width: 46px; height: 30px; padding: 0; border: 1px solid var(--hatg-border); border-radius: 8px; background: transparent; cursor: pointer; }
         @media (max-width: 700px) { .glas-regler-reihe { grid-template-columns: 1fr; } }
@@ -11201,40 +11265,58 @@ uix:
         this.render();
       });
     });
-    const verlaufWerte = () => {
-      const q = (sel) => this.shadowRoot.querySelector(sel);
-      const zahl = q("[data-verlauf-winkel-zahl]");
-      const regler = q("[data-verlauf-winkel]");
-      // Das Zahlenfeld fuehrt - waehrend des Tippens kann es leer sein, dann
-      // gilt der Schieber. hatgVerlaufNormal dreht alles auf 0 bis 359.
-      const getippt = zahl ? String(zahl.value).trim() : "";
-      return {
-        von: q("[data-verlauf-von]")?.value,
-        bis: q("[data-verlauf-bis]")?.value,
-        vorn: q("[data-verlauf-vorn]")?.value,
-        winkel: getippt !== "" ? getippt : regler?.value,
-      };
+    // Wer gerade angefasst wird, gibt den Wert vor. Ohne das gewann immer das
+    // Zahlenfeld, und der Schieber sprang beim Loslassen auf den alten Wert
+    // zurueck - er liess sich gar nicht bewegen.
+    const gefuehrt = (quelle, reglerSel, feldSel) => {
+      const regler = this.shadowRoot.querySelector(reglerSel);
+      const feld = this.shadowRoot.querySelector(feldSel);
+      if (quelle && quelle === regler) return regler.value;
+      const getippt = feld ? String(feld.value).trim() : "";
+      return getippt !== "" ? getippt : regler?.value;
+    };
+    const verlaufWerte = (quelle) => ({
+      von: gefuehrt(quelle, "[data-verlauf-von]", "[data-verlauf-von-wert]"),
+      bis: gefuehrt(quelle, "[data-verlauf-bis]", "[data-verlauf-bis-wert]"),
+      vorn: gefuehrt(quelle, "[data-verlauf-vorn]", "[data-verlauf-vorn-wert]"),
+      winkel: gefuehrt(quelle, "[data-verlauf-winkel]", "[data-verlauf-winkel-zahl]"),
+    });
+    // Das jeweils andere Bedienelement nachziehen, nie das gerade benutzte -
+    // sonst springt beim Tippen die Schreibmarke ans Feldende.
+    const nachziehen = (quelle, reglerSel, feldSel, wert) => {
+      const regler = this.shadowRoot.querySelector(reglerSel);
+      const feld = this.shadowRoot.querySelector(feldSel);
+      if (feld && feld !== quelle) feld.value = wert;
+      if (!regler || regler === quelle) return;
+      // Der Farbwaehler kann nur deckendes Hex - bei allem anderen bleibt er
+      // stehen, sonst schriebe er einen falschen Wert zurueck.
+      if (regler.type === "color") {
+        if (/^#[0-9a-f]{6}$/i.test(String(wert))) regler.value = wert;
+      } else {
+        regler.value = wert;
+      }
     };
     const verlaufVorschau = (quelle) => {
-      const p = hatgVerlaufNormal(verlaufWerte());
+      const p = hatgVerlaufNormal(verlaufWerte(quelle));
       const v = this.shadowRoot.querySelector("[data-verlauf-vorschau]");
       if (v) {
         v.style.background = `linear-gradient(${p.winkel}deg, ${p.von}, ${p.bis})`;
         v.style.color = p.vorn;
       }
-      // Das jeweils andere Bedienelement nachziehen, nie das gerade benutzte -
-      // sonst springt beim Tippen die Schreibmarke ans Feldende.
-      const zahl = this.shadowRoot.querySelector("[data-verlauf-winkel-zahl]");
-      const regler = this.shadowRoot.querySelector("[data-verlauf-winkel]");
-      if (zahl && zahl !== quelle) zahl.value = p.winkel;
-      if (regler && regler !== quelle) regler.value = p.winkel;
+      nachziehen(quelle, "[data-verlauf-winkel]", "[data-verlauf-winkel-zahl]", p.winkel);
+      nachziehen(quelle, "[data-verlauf-von]", "[data-verlauf-von-wert]", p.von);
+      nachziehen(quelle, "[data-verlauf-bis]", "[data-verlauf-bis-wert]", p.bis);
+      nachziehen(quelle, "[data-verlauf-vorn]", "[data-verlauf-vorn-wert]", p.vorn);
     };
     this.shadowRoot
-      .querySelectorAll("[data-verlauf-von], [data-verlauf-bis], [data-verlauf-vorn], [data-verlauf-winkel], [data-verlauf-winkel-zahl]")
+      .querySelectorAll(
+        "[data-verlauf-von], [data-verlauf-bis], [data-verlauf-vorn], [data-verlauf-winkel], [data-verlauf-winkel-zahl], " +
+          "[data-verlauf-von-wert], [data-verlauf-bis-wert], [data-verlauf-vorn-wert]"
+      )
       .forEach((el) => {
         el.addEventListener("input", () => verlaufVorschau(el));
         el.addEventListener("change", () => {
-          this.setzeAkzentVerlauf(verlaufWerte());
+          this.setzeAkzentVerlauf(verlaufWerte(el));
           this.render();
         });
       });
@@ -11258,65 +11340,37 @@ uix:
         this.render();
       });
     });
-    const verlaufAusWerte = () => {
-      const q = (sel) => this.shadowRoot.querySelector(sel);
-      const zahl = q("[data-verlauf-aus-winkel-zahl]");
-      const getippt = zahl ? String(zahl.value).trim() : "";
-      return {
-        von: q("[data-verlauf-aus-von]")?.value,
-        bis: q("[data-verlauf-aus-bis]")?.value,
-        vorn: q("[data-verlauf-aus-vorn]")?.value,
-        winkel: getippt !== "" ? getippt : q("[data-verlauf-aus-winkel]")?.value,
-      };
-    };
+    const verlaufAusWerte = (quelle) => ({
+      von: gefuehrt(quelle, "[data-verlauf-aus-von]", "[data-verlauf-aus-von-wert]"),
+      bis: gefuehrt(quelle, "[data-verlauf-aus-bis]", "[data-verlauf-aus-bis-wert]"),
+      vorn: gefuehrt(quelle, "[data-verlauf-aus-vorn]", "[data-verlauf-aus-vorn-wert]"),
+      winkel: gefuehrt(quelle, "[data-verlauf-aus-winkel]", "[data-verlauf-aus-winkel-zahl]"),
+    });
     const verlaufAusVorschau = (quelle) => {
-      const p = hatgVerlaufAusNormal(verlaufAusWerte());
+      const p = hatgVerlaufAusNormal(verlaufAusWerte(quelle));
       const v = this.shadowRoot.querySelector("[data-verlauf-aus-vorschau]");
       if (v) {
         v.style.background = `linear-gradient(${p.winkel}deg, ${p.von}, ${p.bis})`;
         v.style.color = p.vorn;
       }
-      const zahl = this.shadowRoot.querySelector("[data-verlauf-aus-winkel-zahl]");
-      const regler = this.shadowRoot.querySelector("[data-verlauf-aus-winkel]");
-      if (zahl && zahl !== quelle) zahl.value = p.winkel;
-      if (regler && regler !== quelle) regler.value = p.winkel;
+      nachziehen(quelle, "[data-verlauf-aus-winkel]", "[data-verlauf-aus-winkel-zahl]", p.winkel);
+      nachziehen(quelle, "[data-verlauf-aus-von]", "[data-verlauf-aus-von-wert]", p.von);
+      nachziehen(quelle, "[data-verlauf-aus-bis]", "[data-verlauf-aus-bis-wert]", p.bis);
+      nachziehen(quelle, "[data-verlauf-aus-vorn]", "[data-verlauf-aus-vorn-wert]", p.vorn);
     };
     this.shadowRoot
-      .querySelectorAll("[data-verlauf-aus-von], [data-verlauf-aus-bis], [data-verlauf-aus-vorn], [data-verlauf-aus-winkel], [data-verlauf-aus-winkel-zahl]")
+      .querySelectorAll(
+        "[data-verlauf-aus-von], [data-verlauf-aus-bis], [data-verlauf-aus-vorn], [data-verlauf-aus-winkel], [data-verlauf-aus-winkel-zahl], " +
+          "[data-verlauf-aus-von-wert], [data-verlauf-aus-bis-wert], [data-verlauf-aus-vorn-wert]"
+      )
       .forEach((el) => {
         el.addEventListener("input", () => verlaufAusVorschau(el));
         el.addEventListener("change", () => {
-          this.setzeVerlaufAus(verlaufAusWerte(), this.verlaufAusSeitenleisteAn());
+          this.setzeVerlaufAus(verlaufAusWerte(el), this.verlaufAusSeitenleisteAn());
           this.render();
         });
       });
 
-    // Hex-Felder neben den Farbtupfern schreiben in das Farbfeld daneben und
-    // loesen dessen Ereignisse aus - so gibt es nur einen Weg, der gepflegt
-    // werden muss. Umgekehrt zieht das Farbfeld sein Hex-Feld nach.
-    this.shadowRoot.querySelectorAll(".glas-ton input.hex-feld").forEach((el) => {
-      const farbe = el.parentElement?.querySelector('input[type="color"]');
-      if (!farbe) return;
-      const uebernehmen = (art) => {
-        const v = String(el.value).trim();
-        if (!/^#[0-9a-f]{6}$/i.test(v)) {
-          if (art === "change") el.value = String(farbe.value).toUpperCase();
-          return;
-        }
-        farbe.value = v;
-        farbe.dispatchEvent(new Event(art));
-      };
-      el.addEventListener("input", () => uebernehmen("input"));
-      el.addEventListener("change", () => uebernehmen("change"));
-    });
-    this.shadowRoot.querySelectorAll('.glas-ton input[type="color"]').forEach((el) => {
-      const hex = el.parentElement?.querySelector("input.hex-feld");
-      if (!hex) return;
-      el.addEventListener("input", () => {
-        const v = String(el.value).toUpperCase();
-        if (hex.value.toUpperCase() !== v) hex.value = v;
-      });
-    });
     this.shadowRoot.querySelectorAll("[data-popup-bg]").forEach((el) => {
       el.addEventListener("click", () => {
         if (el.dataset.popupBg === "bild") {

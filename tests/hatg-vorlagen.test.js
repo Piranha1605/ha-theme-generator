@@ -519,6 +519,57 @@ pruefe("Info-Dialog mit Hintergrundbild: Pfade mit fuehrendem $", () => {
   }
 });
 
+pruefe("Verlaufsfarben duerfen jeder CSS-Farbwert sein, auch mit Alpha", () => {
+  const vm = require("node:vm");
+  const ctx = {
+    console, window: {}, document: { createElement: () => ({}), addEventListener() {}, querySelector: () => null },
+    customElements: { define() {}, get() {} }, HTMLElement: class {},
+    localStorage: { getItem() {}, setItem() {} }, navigator: {}, setTimeout, clearTimeout,
+  };
+  vm.createContext(ctx);
+  vm.runInContext(
+    quelle.slice(0, quelle.indexOf("\nclass ")) +
+      ";this.css=hatgVerlaufCss;this.lese=hatgLeseVerlauf;this.ausCss=hatgVerlaufAusCss;this.ausLese=hatgLeseVerlaufAus;" +
+      "this.an=hatgHaengeVorlagenBlockAn;this.norm=hatgVerlaufNormal;",
+    ctx
+  );
+
+  // Genau der Wert, den Home Assistant fuer den Himmel der Widget-Karte
+  // ausrechnet - ein input type=color kann den Alphaanteil nicht darstellen,
+  // ueber das Textfeld muss er durchkommen.
+  const werte = {
+    von: "color(srgb 0.0392157 0.517647 1 / 0.18)",
+    bis: "color(srgb 0.921569 0.921569 0.960784 / 0.108)",
+    vorn: "rgba(235, 235, 245, 0.6)",
+    winkel: 170,
+  };
+  const feld = ctx.an("", "verlauf-akzent", ctx.css("uix-card", werte));
+  assert.deepEqual({ ...ctx.lese(feld) }, werte);
+
+  // Auch beim Aus-Verlauf, und dort auch var() und color-mix() - beide
+  // enthalten Kommas und Klammern, an denen ein naives Zerlegen scheitert.
+  const ausWerte = {
+    von: "var(--info-color)",
+    bis: "color-mix(in srgb, var(--secondary-text-color) 26%, transparent)",
+    vorn: "#EBEBF5",
+    winkel: 170,
+  };
+  const ausFeld = ctx.an("", "verlauf-inaktiv", ctx.ausCss("uix-card", ausWerte));
+  assert.deepEqual({ ...ctx.ausLese(ausFeld) }, ausWerte);
+
+  // Beide Bloecke nebeneinander duerfen sich nicht gegenseitig lesen.
+  const zusammen = ctx.an(feld, "verlauf-inaktiv", ctx.ausCss("uix-card", ausWerte));
+  assert.deepEqual({ ...ctx.lese(zusammen) }, werte);
+  assert.deepEqual({ ...ctx.ausLese(zusammen) }, ausWerte);
+
+  // Unsinn faellt auf den Standard zurueck statt kaputtes CSS zu schreiben.
+  const standard = { ...ctx.norm({ von: "blau", bis: "#zzz", vorn: "", winkel: "x" }) };
+  assert.equal(standard.von, "#4FE3C8");
+  assert.equal(standard.winkel, 135);
+  // Ein angehaengtes Semikolon wuerde die naechste Deklaration abschneiden.
+  assert.equal({ ...ctx.norm({ ...werte, vorn: "#112233;" }) }.vorn, "#112233");
+});
+
 pruefe("Verlauf fuer ausgeschaltete Flaechen: eigene Farben, Aus-Zustand getroffen", () => {
   const vm = require("node:vm");
   const ctx = {
