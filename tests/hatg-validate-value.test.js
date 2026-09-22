@@ -87,6 +87,28 @@ pruefe("bubble-event-background-image mit Gradienten und Hex-Farbe ist gueltig",
   assert.equal(hatgValidateValue("hex", MEHRSCHICHTIG, "bubble-event-background-image"), "ok");
 });
 
+// ha-card faerbt seine Flaeche mit der Kurzform background, nicht mit
+// background-color - dort kommt ein Bild oder eine zweite Ebene also an.
+pruefe("ha-card-background nimmt Bild, Verlauf und Ebenen an", () => {
+  assert.equal(hatgValidateValue("hex", "url(/local/textur.jpg) center/cover", "ha-card-background"), "ok");
+  assert.equal(hatgValidateValue("hex", MEHRSCHICHTIG, "ha-card-background"), "ok");
+  assert.equal(
+    hatgValidateValue(
+      "hex",
+      "linear-gradient(170deg, color-mix(in srgb, var(--info-color) 30%, transparent) 0%, color-mix(in srgb, var(--secondary-text-color) 26%, transparent) 100%), var(--card-background-color)",
+      "ha-card-background"
+    ),
+    "ok"
+  );
+  assert.equal(hatgValidateValue("hex", "quatsch", "ha-card-background"), "invalid");
+});
+
+// Die Dialogflaeche faerbt Home Assistant nur ueber background-color - ein Bild
+// braucht dort eine eigene Regel und gehoert deshalb nicht ins Feld.
+pruefe("ha-dialog-surface-background bleibt eine Farbe", () => {
+  assert.equal(hatgValidateValue("hex", "url(/local/textur.jpg)", "ha-dialog-surface-background"), "invalid");
+});
+
 // Keys ausserhalb von HATG_CSS_BACKGROUND_KEYS erwarten weiterhin eine Farbe.
 pruefe("primary-color nimmt keinen mehrschichtigen Hintergrund an", () => {
   assert.equal(hatgValidateValue("hex", MEHRSCHICHTIG, "primary-color"), "invalid");

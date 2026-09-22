@@ -5166,7 +5166,18 @@ function hatgIsGradient(value) {
   return HATG_GRADIENT_RE.test(String(value ?? "").trim());
 }
 
-const HATG_CSS_BACKGROUND_KEYS = new Set(["lovelace-background", "popup-custom-wallpaper", "bubble-event-background-image"]);
+// Felder, in denen die CSS-Kurzform background erlaubt ist - also auch Bilder
+// und mehrere Ebenen. ha-card-background gehoert dazu: ha-card faerbt seine
+// Flaeche mit "background: var(--ha-card-background, ...)", nicht mit
+// background-color (in ha-card.ts nachgesehen). Ein Verlauf oder ein Bild
+// kommt dort also an. Bei den Dialogen ist das anders, deshalb steht
+// ha-dialog-surface-background nicht hier.
+const HATG_CSS_BACKGROUND_KEYS = new Set([
+  "lovelace-background",
+  "popup-custom-wallpaper",
+  "bubble-event-background-image",
+  "ha-card-background",
+]);
 
 function hatgSplitTopLevelCommas(value) {
   const text = String(value ?? "");
