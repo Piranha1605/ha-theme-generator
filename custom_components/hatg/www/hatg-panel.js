@@ -8235,7 +8235,7 @@ uix:
       <details class="vorlagen-kasten vorlagen-gruppe startpaket-vorlagen" data-vorlagen-kasten="${gruppeId}-teil" ${this.vorlagenKastenOffen(gruppeId + "-teil") ? "open" : ""}>
         <summary data-roh>
           <strong>${en ? "Adjust single presets" : "Einzelne Vorlagen anpassen"}</strong>
-          <span class="vorlagen-gruppe-stand ${aktiv ? "hat-aktive" : ""}">${en ? `${aktiv} of ${liste.length} active` : `${aktiv} von ${liste.length} aktiv`}</span>
+          ${this.vorlagenZaehlerKnopf(aktiv, liste.length, "data-vorlagen-schalter", liste.map((t) => t.id).join(","), en)}
         </summary>
         <div class="vorlagen-kasten-inhalt">
           ${alsListe ? `<div class="vorlage-liste">${inhalt}</div>` : `<div class="plugin-grid vorlage-grid">${inhalt}</div>`}
@@ -8270,6 +8270,44 @@ uix:
           : `${liste.length} Vorlagen entfernt.`
     );
   }
+  // Wie schalteGruppe, aber fuer eine ausdruecklich uebergebene Liste. Die
+  // unteren Kaesten zeigen nicht ihre ganze Gruppe: was schon in Seitenleiste
+  // oder Kopfleiste steht, ist dort herausgefiltert. Ein Schalter auf die
+  // Gruppen-Id wuerde also mehr umlegen, als im Kasten zu sehen ist.
+  schalteVorlagenListe(ids) {
+    const liste = ids.filter(Boolean);
+    if (!liste.length) return;
+    const einschalten = !liste.some((id) => this.vorlageIrgendwoAktiv(id));
+    liste.forEach((id) => {
+      if (this.vorlageIrgendwoAktiv(id) !== einschalten) this.schalteVorlage(id, { still: true });
+    });
+    this.render();
+    const en = this._sprache === "en";
+    this.showToast(
+      einschalten
+        ? en
+          ? `${liste.length} presets activated. Now save and reload themes.`
+          : `${liste.length} Vorlagen aktiviert. Jetzt speichern und Themes neu laden.`
+        : en
+          ? `${liste.length} presets removed.`
+          : `${liste.length} Vorlagen entfernt.`
+    );
+  }
+
+  // Der Zaehler als Knopf - dieselbe Anzeige wie in den Bereichskaesten oben,
+  // damit die Seite von oben bis unten gleich aussieht.
+  vorlagenZaehlerKnopf(aktiv, gesamt, attr, wert, en) {
+    const symbol = aktiv === gesamt ? "mdi:check-circle" : aktiv ? "mdi:circle-slice-4" : "mdi:circle-outline";
+    const titel = aktiv
+      ? en ? "Switch all off" : "Alle ausschalten"
+      : en ? "Switch all on" : "Alle einschalten";
+    return `<button type="button" class="vorlage-schalter startpaket-schalter ${aktiv ? "is-active" : ""}"
+            ${attr}="${hatgEscape(wert)}" title="${titel}" aria-pressed="${aktiv ? "true" : "false"}">
+            <ha-icon icon="${symbol}"></ha-icon>
+            <span data-roh>${aktiv}/${gesamt}</span>
+          </button>`;
+  }
+
   // Hintergrund: dieselbe Reihenfolge wie beim Glas - erst die Entscheidungen,
   // dann die Bewegung, zuletzt die einzelnen Vorlagen.
   renderHintergrundKasten(vorlagen, istAktiv, zeichne, alsListe) {
@@ -8619,7 +8657,7 @@ uix:
           <summary data-roh>
             ${g.icon ? `<ha-icon icon="${g.icon}"></ha-icon>` : ""}
             <strong>${en ? g.labelEn : g.label}</strong>
-            <span class="vorlagen-gruppe-stand ${aktiv ? "hat-aktive" : ""}">${en ? `${aktiv} of ${liste.length} active` : `${aktiv} von ${liste.length} aktiv`}</span>
+            ${this.vorlagenZaehlerKnopf(aktiv, liste.length, "data-vorlagen-schalter", liste.map((t) => t.id).join(","), en)}
           </summary>
           <div class="vorlagen-kasten-inhalt">
             ${hinweis}
@@ -10717,9 +10755,7 @@ uix:
            Textlaenge. Der Zaehler im Knopf ist ein span, aber kein Kind des
            summary und wird davon nicht getroffen. */
         .vorlagen-kasten > summary > span { flex: 1 1 auto; min-width: 0; }
-        .vorlagen-gruppe-stand { text-align: right; }
         .vorlagen-kasten > summary ha-icon { --mdc-icon-size: 18px; color: var(--hatg-text-dim); }
-        .vorlagen-gruppe-stand.hat-aktive { color: #1fae63 !important; }
         .vorlagen-kasten-inhalt { padding: 0 12px 12px; }
         .vorlagen-kasten-inhalt .glas-regler { margin-bottom: 10px; }
         .startpaket-reihe { display: flex; align-items: flex-start; gap: 14px; flex-wrap: wrap; margin: 10px 0; }
@@ -11499,6 +11535,13 @@ uix:
         ereignis.preventDefault();
         ereignis.stopPropagation();
         this.setzeSeitenleiste(el.dataset.seitenleiste);
+      });
+    });
+    this.shadowRoot.querySelectorAll("[data-vorlagen-schalter]").forEach((el) => {
+      el.addEventListener("click", (ereignis) => {
+        ereignis.preventDefault();
+        ereignis.stopPropagation();
+        this.schalteVorlagenListe(String(el.dataset.vorlagenSchalter || "").split(","));
       });
     });
     this.shadowRoot.querySelectorAll("[data-gruppen-schalter]").forEach((el) => {
