@@ -5325,6 +5325,40 @@ function hatgValidateValue(format, value, key) {
   if (format === "rgb_triplet" && !HATG_RGB_TRIPLET_RE.test(v)) return "invalid";
   return "ok";
 }
+// Felder vom Typ RGB-Triplet tragen nur drei Zahlen: Mushroom setzt sie selbst
+// in rgb() bzw. rgba() ein. Ein Hex oder ein rgba() ergibt dort ungueltiges CSS
+// ("rgba(#34C759, 0.2)"), der Browser verwirft die Zeile, und die Farbe faellt
+// auf Mushrooms Standard zurueck. Beides laesst sich eindeutig umrechnen; der
+// Alphawert entfaellt, die Deckkraft steckt schon in Mushrooms eigener Regel.
+// Am 2026-09-23 in einem importierten iOS-Theme an acht Feldern aufgetreten.
+function hatgRgbTripletAusFarbe(wert) {
+  const v = String(wert ?? "").trim();
+  if (!v || HATG_RGB_TRIPLET_RE.test(v)) return null;
+  if (HATG_HEX_RE.test(v)) {
+    const dreifach = hatgHexToRgbTriple(v);
+    return HATG_RGB_TRIPLET_RE.test(dreifach) ? dreifach : null;
+  }
+  // Auch rgb() mit drei Werten, nicht nur rgba() mit vieren - hatgParseRgba
+  // wuerde bei rgb() stillschweigend Schwarz liefern.
+  const m = /^rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*(?:,\s*[\d.]+\s*)?\)$/i.exec(v);
+  if (!m) return null;
+  return m
+    .slice(1, 4)
+    .map((n) => Math.max(0, Math.min(255, Math.round(parseFloat(n)))))
+    .join(", ");
+}
+function hatgNormalizeRgbTriplet(values) {
+  const formats = hatgGetKeyFormats();
+  const geaendert = [];
+  Object.keys(values).forEach((key) => {
+    if (formats[key] !== "rgb_triplet") return;
+    const neu = hatgRgbTripletAusFarbe(values[key]);
+    if (neu === null) return;
+    values[key] = neu;
+    geaendert.push(key);
+  });
+  return geaendert;
+}
 function hatgNormalizeRgbaLegacyHex(values) {
   const formats = hatgGetKeyFormats();
   Object.keys(values).forEach((key) => {
@@ -5484,6 +5518,8 @@ class HATGPanel extends HTMLElement {
         this._state.values.dark = { ...this._state.values.dark, ...(saved.values.dark || {}) };
         hatgNormalizeRgbaLegacyHex(this._state.values.light);
         hatgNormalizeRgbaLegacyHex(this._state.values.dark);
+        hatgNormalizeRgbTriplet(this._state.values.light);
+        hatgNormalizeRgbTriplet(this._state.values.dark);
       }
       if (saved.source) {
         this._state.source.light = { ...this._state.source.light, ...(saved.source.light || {}) };
@@ -12795,6 +12831,9 @@ uix:
     });
     hatgNormalizeRgbaLegacyHex(this._state.values.light);
     hatgNormalizeRgbaLegacyHex(this._state.values.dark);
+    const tripletHell = hatgNormalizeRgbTriplet(this._state.values.light);
+    const tripletDunkel = hatgNormalizeRgbTriplet(this._state.values.dark);
+    const tripletAnzahl = tripletHell.length + tripletDunkel.length;
     this._state.extraValues.light = parsed.extra ? { ...parsed.extra.light } : {};
     this._state.extraValues.dark = parsed.extra ? { ...parsed.extra.dark } : {};
     if (parsed.name) this._state.themeName = parsed.name;
@@ -12809,6 +12848,10 @@ uix:
     if (migrierteStilziele)
       parts.push(
         `${migrierteStilziele} card-mod-Feld${migrierteStilziele === 1 ? "" : "er"} auf UIX umgestellt`
+      );
+    if (tripletAnzahl)
+      parts.push(
+        `${tripletAnzahl} RGB-Hilfswert${tripletAnzahl === 1 ? "" : "e"} auf drei Zahlen umgerechnet`
       );
     const aufgefrischt = this.frischeVorlagenAuf({ silent: true });
     // Aufgefrischte Vorlagen verweisen nicht mehr auf eigene Felder des alten Themes.
@@ -12986,6 +13029,8 @@ uix:
       this._state.extraValues = { light: { ...(loaded.extraValues?.light || {}) }, dark: { ...(loaded.extraValues?.dark || {}) } };
       hatgNormalizeRgbaLegacyHex(this._state.values.light);
       hatgNormalizeRgbaLegacyHex(this._state.values.dark);
+      hatgNormalizeRgbTriplet(this._state.values.light);
+      hatgNormalizeRgbTriplet(this._state.values.dark);
       this.syncStilzielThemeName();
       this._activeSection = "overview";
       this.render();

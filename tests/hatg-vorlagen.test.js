@@ -519,6 +519,51 @@ pruefe("Info-Dialog mit Hintergrundbild: Pfade mit fuehrendem $", () => {
   }
 });
 
+pruefe("RGB-Hilfswerte werden beim Import auf drei Zahlen gebracht", () => {
+  const vm = require("node:vm");
+  const ctx = {
+    console: { log() {}, warn() {}, error() {} }, window: {},
+    document: { createElement: () => ({}), addEventListener() {}, querySelector: () => null },
+    customElements: { define() {}, get() {} }, HTMLElement: class {},
+    localStorage: { getItem() {}, setItem() {} }, navigator: {}, setTimeout, clearTimeout,
+  };
+  vm.createContext(ctx);
+  vm.runInContext(
+    quelle.slice(0, quelle.indexOf("\nclass ")) +
+      ";this.f=hatgRgbTripletAusFarbe;this.n=hatgNormalizeRgbTriplet;this.fmt=hatgGetKeyFormats;",
+    ctx
+  );
+
+  // Mushroom setzt diese Werte selbst in rgb()/rgba() ein - ein Hex ergaebe
+  // dort "rgba(#34C759, 0.2)" und damit ungueltiges CSS.
+  assert.equal(ctx.f("#34C759"), "52, 199, 89");
+  assert.equal(ctx.f("#FF9F0A"), "255, 159, 10");
+  assert.equal(ctx.f("#abc"), "170, 187, 204");
+  // Der Alphawert entfaellt: die Deckkraft steckt schon in Mushrooms Regel.
+  assert.equal(ctx.f("rgba(120, 120, 128, 0.2)"), "120, 120, 128");
+  // rgb() mit drei Werten muss auch gehen - hatgParseRgba liefert dort still Schwarz.
+  assert.equal(ctx.f("rgb(1,2,3)"), "1, 2, 3");
+  // Was schon passt oder sich nicht eindeutig umrechnen laesst, bleibt stehen.
+  for (const unveraendert of ["120, 120, 128", "var(--x)", "quatsch", ""]) {
+    assert.equal(ctx.f(unveraendert), null, `haette ${JSON.stringify(unveraendert)} nicht anfassen duerfen`);
+  }
+
+  // Nur Felder vom Typ rgb_triplet, nichts anderes.
+  const werte = {
+    "mush-rgb-success": "#34C759",
+    "mush-rgb-state-switch": "rgba(120, 120, 128, 0.2)",
+    "primary-color": "#34C759",
+    "rgb-primary-color": "1, 2, 3",
+  };
+  const geaendert = [...ctx.n(werte)];
+  assert.deepEqual(geaendert.sort(), ["mush-rgb-state-switch", "mush-rgb-success"]);
+  assert.equal(werte["mush-rgb-success"], "52, 199, 89");
+  assert.equal(werte["mush-rgb-state-switch"], "120, 120, 128");
+  assert.equal(werte["primary-color"], "#34C759", "eine Farbe bleibt eine Farbe");
+  assert.equal(werte["rgb-primary-color"], "1, 2, 3");
+  assert.equal(ctx.fmt()["mush-rgb-success"], "rgb_triplet");
+});
+
 pruefe("Verlaufsfarben duerfen jeder CSS-Farbwert sein, auch mit Alpha", () => {
   const vm = require("node:vm");
   const ctx = {
