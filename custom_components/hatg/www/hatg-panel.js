@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.3.2b1";
+const HATG_VERSION = "1.3.2b2";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
