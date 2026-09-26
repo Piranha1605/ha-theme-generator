@@ -519,6 +519,32 @@ pruefe("Info-Dialog mit Hintergrundbild: Pfade mit fuehrendem $", () => {
   }
 });
 
+pruefe("Kein Pfad enthaelt $$ und der Schalter geht ueber ::part", () => {
+  // Am 2026-09-26 mit UIX 8.3.1 an einer laufenden Instanz gemessen: ein
+  // einziger Pfad mit $$ legte JEDES -yaml-Feld still - alle Karten-Knoten
+  // leer, kein Knoten in ha-button oder ha-switch, kein more-info-Knoten.
+  // js-yaml las die Karten dabei fehlerfrei, die Konsole meldete nichts.
+  for (const v of mitCss) {
+    const ziel = feld(v.block, "ziel") || "";
+    if (!/-yaml$/.test(ziel)) continue;
+    for (const zeile of String(css(v.block) || "").split("\n")) {
+      const m = /^\s*"?([^"\n:]+)"?:\s*\|\s*$/.exec(zeile);
+      if (!m) continue;
+      assert.ok(!m[1].includes("$$"), `${v.id}: Pfad mit $$ -> ${m[1]}`);
+    }
+  }
+
+  // ha-switch spiegelt "checked" nicht als Attribut - [checked] trifft nie.
+  // Web Awesome meldet den Zustand als Custom State, und das Element gibt
+  // control und thumb als CSS-Teile nach aussen. Beides nachgemessen.
+  const schalter = vorlage("schalter-verlauf");
+  assert.equal(feld(schalter.block, "ziel"), "uix-card", "kein -yaml noetig, ::part reicht durch");
+  assert.match(schalter.css, /ha-switch:state\(checked\)::part\(control\)/);
+  assert.match(schalter.css, /ha-switch:state\(checked\)::part\(thumb\)/);
+  assert.ok(!/ha-switch\[checked\]/.test(schalter.css), "das Attribut wird nicht gespiegelt");
+  assert.ok(!/\bha-switch \$/.test(schalter.css), "kein Pfad - der trifft nichts, sobald der Schalter tiefer liegt");
+});
+
 pruefe("RGB-Hilfswerte werden beim Import auf drei Zahlen gebracht", () => {
   const vm = require("node:vm");
   const ctx = {

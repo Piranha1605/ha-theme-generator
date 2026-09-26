@@ -2717,8 +2717,16 @@ const HATG_EINSTELLUNGEN_ZEILEN = `  :host {
     height: [[pfeil-groesse]];
     opacity: [[pfeil-deckkraft]];
   }`;
+// Kein $$ in den Pfaden. Am 2026-09-26 an einer laufenden Instanz mit
+// UIX 8.3.1 gemessen: solange "ha-config-dashboard $$ ha-config-navigation-list $"
+// im Theme stand, kam KEIN einziges -yaml-Feld an - alle 17 Karten-Knoten
+// leer, kein Knoten in ha-button oder ha-switch, kein more-info-Knoten, obwohl
+// js-yaml jede Karte fehlerfrei las und die Konsole nichts meldete. Nach dem
+// Entfernen dieses einen Pfades fuellten sich die Karten-Knoten sofort.
+// Der Pfad fuer die Uebersichtsseite der Einstellungen fehlt damit; die beiden
+// anderen Seiten bleiben. Lieber eine Seite ohne Vorlage als alle Stilziele
+// mit -yaml still.
 const HATG_EINSTELLUNGEN_PFADE = [
-  "ha-config-dashboard $$ ha-config-navigation-list $",
   "ha-config-system-navigation $ ha-config-navigation-list $",
   "ha-config-connectivity $ ha-config-navigation $ ha-config-navigation-list $",
 ];
@@ -4152,23 +4160,27 @@ ha-adaptive-dialog {
     werte: [
       { id: "knopf", label: "Knopffarbe", labelEn: "Knob colour", standard: "var(--verlauf-vorn, #FFFFFF)" },
     ],
-    ziel: "uix-card-yaml",
-    // ha-switch ist seit der Web-Awesome-Umstellung ein eigenes Element mit
-    // eigenem Shadow Root: aussen sind nur die Farbvariablen erreichbar, und
-    // die nehmen keinen Verlauf. Deshalb der Weg ueber den Pfad - drinnen ist
-    // die Flaeche "label.checked .switch" und der Knopf ".thumb" darin, beides
-    // in ha-switch.ts nachgesehen.
-    css: `ha-switch $: |
-  /* background-image liegt ueber background-color: ist kein Verlauf gesetzt,
-     faellt var() auf none zurueck und die eingestellte Farbe bleibt stehen.
-     Die Vorlage laesst sich also auch ohne den Verlauf einschalten. */
-  label.checked .switch {
-    background-image: var(--verlauf-akzent, none);
-  }
-  label.checked .switch .thumb {
-    background-color: [[knopf]];
-    border-color: [[knopf]];
-  }`,
+    ziel: "uix-card",
+    // ha-switch ist ein Web-Awesome-Element mit eigenem Shadow Root. Eine
+    // Farbvariable nimmt keinen Verlauf, und ein Pfad "ha-switch $" trifft
+    // nichts, sobald der Schalter tiefer als eine Ebene unter der Karte liegt -
+    // am 2026-09-26 an einer laufenden Instanz gemessen: in eigenen Karten
+    // haengt er unter button > div > div > ha-card, kein Pfad kam an.
+    // Das Element gibt aber CSS-Teile nach aussen: base, control, thumb.
+    // Ueber ::part() greift die Regel durch die Shadow-Grenze, unabhaengig
+    // davon, wie tief der Schalter sitzt - und ganz ohne -yaml-Feld.
+    // Der Zustand haengt NICHT am Attribut: ha-switch spiegelt "checked" nicht,
+    // "ha-switch[checked]" trifft nie. Web Awesome meldet ihn als Custom State,
+    // deshalb :state(checked). Beides nachgemessen.
+    css: `ha-switch:state(checked)::part(control) {
+  /* background-image liegt ueber background-color: ohne Verlauf faellt var()
+     auf none zurueck und die eingestellte Farbe bleibt stehen. */
+  background-image: var(--verlauf-akzent, none);
+}
+ha-switch:state(checked)::part(thumb) {
+  background-color: [[knopf]];
+  border-color: [[knopf]];
+}`,
   },
 ];
 // Vorlagen mit einstellbaren Werten: css traegt die Standardwerte samt Marken,
