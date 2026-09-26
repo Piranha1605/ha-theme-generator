@@ -5,6 +5,9 @@ const HATG_SPRACHE_SPEICHER = "hatg-sprache";
 const HATG_UEBERSETZUNG_TABU = new Set(["STYLE", "SCRIPT", "TEXTAREA", "INPUT", "PRE"]);
 
 const HATG_TEXTE = {
+  "Schalter mit Verlauf": "Switches with gradient",
+  "Eingeschaltete Schalter nehmen den Verlauf für aktive Flächen, der Knopf die dazu passende Schriftfarbe.":
+    "Switches that are on take the gradient for active surfaces, the knob takes the matching text colour.",
   en: {
   "Speichern": "Save",
   "Öffnen": "Open",
@@ -4141,6 +4144,31 @@ ha-adaptive-dialog {
     ],
     ziel: "uix-config-yaml",
     css: HATG_EINSTELLUNGEN_CSS,
+  },
+  {
+    id: "schalter-verlauf",
+    label: "Schalter mit Verlauf",
+    desc: "Eingeschaltete Schalter nehmen den Verlauf für aktive Flächen, der Knopf die dazu passende Schriftfarbe.",
+    werte: [
+      { id: "knopf", label: "Knopffarbe", labelEn: "Knob colour", standard: "var(--verlauf-vorn, #FFFFFF)" },
+    ],
+    ziel: "uix-card-yaml",
+    // ha-switch ist seit der Web-Awesome-Umstellung ein eigenes Element mit
+    // eigenem Shadow Root: aussen sind nur die Farbvariablen erreichbar, und
+    // die nehmen keinen Verlauf. Deshalb der Weg ueber den Pfad - drinnen ist
+    // die Flaeche "label.checked .switch" und der Knopf ".thumb" darin, beides
+    // in ha-switch.ts nachgesehen.
+    css: `ha-switch $: |
+  /* background-image liegt ueber background-color: ist kein Verlauf gesetzt,
+     faellt var() auf none zurueck und die eingestellte Farbe bleibt stehen.
+     Die Vorlage laesst sich also auch ohne den Verlauf einschalten. */
+  label.checked .switch {
+    background-image: var(--verlauf-akzent, none);
+  }
+  label.checked .switch .thumb {
+    background-color: [[knopf]];
+    border-color: [[knopf]];
+  }`,
   },
 ];
 // Vorlagen mit einstellbaren Werten: css traegt die Standardwerte samt Marken,
