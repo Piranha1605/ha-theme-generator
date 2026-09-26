@@ -5,6 +5,9 @@ const HATG_SPRACHE_SPEICHER = "hatg-sprache";
 const HATG_UEBERSETZUNG_TABU = new Set(["STYLE", "SCRIPT", "TEXTAREA", "INPUT", "PRE"]);
 
 const HATG_TEXTE = {
+  "Schalter mit Verlauf: Entitätenzeilen": "Switches with gradient: entity rows",
+  "Dasselbe für die Zeilen der Entitätenkarte. Die braucht einen eigenen Weg, weil der Schalter dort tiefer liegt.":
+    "The same for the rows of the entities card. Those need their own route, because the switch sits deeper there.",
   "Schalter mit Verlauf": "Switches with gradient",
   "Eingeschaltete Schalter nehmen den Verlauf für aktive Flächen, der Knopf die dazu passende Schriftfarbe.":
     "Switches that are on take the gradient for active surfaces, the knob takes the matching text colour.",
@@ -2773,6 +2776,13 @@ const HATG_VORLAGEN_GRUPPEN = [
     labelEn: "Glow",
     ids: ["glow-aktiv-karten", "glow-aktiv-seitenleiste"],
   },
+  {
+    id: "schalter",
+    icon: "mdi:toggle-switch-outline",
+    label: "Schalter",
+    labelEn: "Switches",
+    ids: ["schalter-verlauf", "schalter-verlauf-zeilen"],
+  },
   // Alles, was sonst nirgends hingehoert - zuletzt, damit keine Vorlage verloren geht.
   { id: "weitere", icon: "mdi:shape-outline", label: "Weitere Effekte", labelEn: "Further effects", passt: () => true },
 ];
@@ -4181,6 +4191,33 @@ ha-switch:state(checked)::part(thumb) {
   background-color: [[knopf]];
   border-color: [[knopf]];
 }`,
+  },
+  {
+    id: "schalter-verlauf-zeilen",
+    label: "Schalter mit Verlauf: Entitätenzeilen",
+    desc: "Dasselbe für die Zeilen der Entitätenkarte. Die braucht einen eigenen Weg, weil der Schalter dort tiefer liegt.",
+    werte: [
+      { id: "knopf", label: "Knopffarbe", labelEn: "Knob colour", standard: "var(--verlauf-vorn, #FFFFFF)" },
+    ],
+    ziel: "uix-row-yaml",
+    // In der Entitaetenkarte liegt der Schalter vier Shadow-Grenzen unter der
+    // Karte: ha-switch < ha-entity-toggle < hui-generic-entity-row <
+    // hui-toggle-entity-row < ha-card < hui-entities-card. ::part reicht nur
+    // durch EINE Grenze, aus uix-card kommt dort also nichts an.
+    // uix-row haengt seinen Knoten in hui-toggle-entity-row - von dort sind es
+    // noch zwei Schritte. Genau dafuer sind Pfade da.
+    // Am 2026-09-26 an einer laufenden Instanz nachgesehen: im Shadow Root der
+    // Zeile liegen uix-node und hui-generic-entity-row, darin ha-entity-toggle,
+    // darin ha-switch. Die Regel selbst ist dort gemessen - sie greift, und
+    // --verlauf-akzent erbt bis zum Schalter durch.
+    css: `hui-generic-entity-row $ ha-entity-toggle $: |
+  ha-switch:state(checked)::part(control) {
+    background-image: var(--verlauf-akzent, none);
+  }
+  ha-switch:state(checked)::part(thumb) {
+    background-color: [[knopf]];
+    border-color: [[knopf]];
+  }`,
   },
 ];
 // Vorlagen mit einstellbaren Werten: css traegt die Standardwerte samt Marken,
@@ -8719,7 +8756,7 @@ uix:
   renderVorlagenGruppen(vorlagen, istAktiv, zeichne, alsListe) {
     const en = this._sprache === "en";
     // Angezeigt wird in dieser Reihenfolge.
-    const reihenfolge = ["oberflaeche", "licht", "weitere"];
+    const reihenfolge = ["oberflaeche", "schalter", "licht", "weitere"];
     return reihenfolge.map((id) => HATG_VORLAGEN_GRUPPEN.find((x) => x.id === id)).map((g) => {
       const liste = vorlagen.filter(
         (t) => hatgVorlagenGruppeVon(t) === g.id && !HATG_SEITENLEISTE_VORLAGEN.includes(t.id) && !HATG_KOPFLEISTE_VORLAGEN.includes(t.id)
