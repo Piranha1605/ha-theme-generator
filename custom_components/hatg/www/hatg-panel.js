@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.3.2b9";
+const HATG_VERSION = "1.3.2b10";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -9756,7 +9756,15 @@ uix:
     const format = this.ausgabeFormat();
     // Stilziele stehen auf Theme-Ebene, nicht unter modes.light/dark.
     // Aus Freitext und Import koennen noch alte card-mod-Namen kommen; die bleiben flach.
-    const istFlach = (key) => hatgIstStilzielKey(key) || /^card-mod-/.test(key);
+    // Stilziele stehen auf Theme-Ebene. Welche Typen UIX kennt, haengt an der
+    // Installation: Mit der Option "Style custom panels" bedient UIX auch eigene
+    // Panels und bildet den Typ aus deren Wurzelelement - uix-hacs-frontend-yaml,
+    // uix-knx-frontend-yaml. Eine feste Liste kann das nicht abdecken, jedes
+    // uix-Feld gehoert deshalb nach oben. Bis 1.3.2b9 landeten unbekannte
+    // uix-Felder als "Zusatzwerte" doppelt unter modes.light und modes.dark -
+    // dort liest UIX sie nie, die Vorlage fiel stumm aus. Am 2026-09-27 an der
+    // Theme Awesome-Metal-Shadows-UIX eines Nutzers nachgestellt.
+    const istFlach = (key) => hatgIstStilzielKey(key) || /^(uix|card-mod)-/.test(key);
     const flatZiele = {};
     const uebersprungen = [];
     const noteFlat = (key, value) => {

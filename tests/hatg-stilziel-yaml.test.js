@@ -163,5 +163,25 @@ pruefe("Doppelte Pfade werden zu einem zusammengefasst", () => {
   assert.equal(hatgYamlPfadeZusammenfuehren(KARTE), KARTE, "ohne Dubletten unveraendert");
 });
 
+pruefe("Unbekannte uix-Felder bleiben auf Theme-Ebene", () => {
+  // Welche Stilziel-Typen UIX kennt, haengt an der Installation: Mit der Option
+  // "Style custom panels" bedient UIX auch eigene Panels und bildet den Typ aus
+  // deren Wurzelelement (uix-hacs-frontend-yaml, uix-knx-frontend-yaml). Eine
+  // feste Liste kann das nicht abdecken. Bis 1.3.2b9 landeten solche Felder als
+  // "Zusatzwerte" doppelt unter modes.light und modes.dark - dort liest UIX sie
+  // nie. Am 2026-09-27 an der Theme eines Nutzers nachgestellt.
+  const quelle = fs.readFileSync(PANEL, "utf8");
+  const m = /const istFlach = \(key\) => ([^;]+);/.exec(quelle);
+  assert.ok(m, "istFlach nicht gefunden");
+  const istFlach = new Function("key", "hatgIstStilzielKey", `return ${m[1]};`);
+  const kenntNicht = () => false;
+  for (const k of ["uix-hacs-frontend-yaml", "uix-knx-frontend-yaml", "uix-irgendein-panel", "card-mod-card"]) {
+    assert.ok(istFlach(k, kenntNicht), `${k} muesste auf Theme-Ebene stehen`);
+  }
+  for (const k of ["primary-color", "ha-card-background", "bubble-icon-color"]) {
+    assert.ok(!istFlach(k, kenntNicht), `${k} gehoert unter modes, nicht nach oben`);
+  }
+});
+
 console.log(fehler === 0 ? "\nAlle Tests bestanden." : `\n${fehler} Test(s) fehlgeschlagen.`);
 process.exit(fehler === 0 ? 0 : 1);
