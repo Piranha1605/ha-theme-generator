@@ -610,6 +610,22 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     await hass.async_add_executor_job(_ensure_wallpaper_dir)
 
+    # Der Cache-Buster haengt am Inhalt, nicht nur an der Versionsnummer.
+    # Home Assistant liefert /hatg_static mit max-age=2678400 aus: Wer die
+    # Panel-Datei innerhalb derselben Version austauscht - beim Entwickeln die
+    # Regel, nicht die Ausnahme -, bekommt im Browser 31 Tage lang den alten
+    # Stand, obwohl die Kopfzeile die neue Version zeigt. Am 2026-09-27
+    # genau so passiert. Faellt das Lesen aus, bleibt es bei der Version.
+    def _modul_url() -> str:
+        datei = www_path / "hatg-panel.js"
+        try:
+            kurz = hashlib.md5(datei.read_bytes()).hexdigest()[:8]
+        except OSError:
+            return FRONTEND_MODULE
+        return f"{FRONTEND_MODULE}.{kurz}"
+
+    module_url = await hass.async_add_executor_job(_modul_url)
+
     await hass.http.async_register_static_paths(
         [
             StaticPathConfig(
@@ -631,7 +647,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         sidebar_title=PANEL_TITLE,
         sidebar_icon=PANEL_ICON,
         frontend_url_path=PANEL_URL,
-        module_url=FRONTEND_MODULE,
+        module_url=module_url,
         require_admin=True,
     )
 

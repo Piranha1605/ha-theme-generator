@@ -11,7 +11,7 @@ custom_components/hatg/
 ├── __init__.py           Einstiegspunkt der Integration
 ├── config_flow.py        Einrichtung über die Oberfläche
 ├── const.py              Konstanten
-├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b5
+├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b6
 ├── translations/         de.json und en.json
 ├── brand/                Icons für den HACS-Store
 └── www/
@@ -26,6 +26,8 @@ Es ist eine Home-Assistant-Custom-Component in Python, deren Oberfläche in eine
 Abhängigkeiten laut Manifest: `frontend`, `http`, `panel_custom`, `websocket_api`. Keine externen Python-Pakete.
 
 Die Versionsnummer steht an vier Stellen und muss überall gleich sein: `manifest.json`, `VERSION` und der Cache-Buster in `FRONTEND_MODULE` in `const.py`, sowie `HATG_VERSION` ganz oben in `hatg-panel.js`.
+
+**Der Cache-Buster hängt seit 1.3.2b6 zusätzlich am Inhalt.** `__init__.py` rechnet beim Start eine kurze Prüfsumme über `hatg-panel.js` und hängt sie an: `?v=1.3.2b6.fdc3d27d`. Grund: Home Assistant liefert `/hatg_static` mit `max-age=2678400` aus. Wer die Panel-Datei innerhalb derselben Version austauscht — beim Entwickeln die Regel, nicht die Ausnahme —, bekommt im Browser 31 Tage lang den alten Stand, während die Kopfzeile schon die neue Version zeigt. Am 2026-09-27 genau so passiert: drei verschiedene Builds gingen unter `?v=1.3.2b5` raus, im Browser blieb der erste. Beim Entwickeln reicht jetzt ein Neustart des Kerns, kein hartes Neuladen mehr.
 
 ## Funktionsumfang
 
