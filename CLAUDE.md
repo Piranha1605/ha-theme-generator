@@ -11,7 +11,7 @@ custom_components/hatg/
 ├── __init__.py           Einstiegspunkt der Integration
 ├── config_flow.py        Einrichtung über die Oberfläche
 ├── const.py              Konstanten
-├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b4
+├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b5
 ├── translations/         de.json und en.json
 ├── brand/                Icons für den HACS-Store
 └── www/
@@ -90,6 +90,14 @@ Seit v1.2.0 schreibt HATG `uix-*`-Felder statt `card-mod-*`. card-mod lädt seit
 - `--uix-view-background` gehört zu `ha-panel-lovelace` bzw. `hui-root`, nicht zum Drawer.
 - Ein `uix-sidebar-yaml`-Block lässt UIX 8.1.0 beim Laden mit `TypeError … toLowerCase` aussteigen. Danach wendet UIX für den Rest der Sitzung überhaupt keine Vorlage mehr an. Das Benutzer-Icon kommt deshalb ohne Pfad aus.
 - UIX stylt nur, was nach ihm entsteht. Ein hartes Neuladen direkt auf einer `/config`-Seite lässt die schon vorhandenen Elemente unberührt.
+
+## Meldungen
+
+**Der Import-Bericht steht seit 1.3.2b5 in einem Fenster in der Mitte** statt als Toast unten, mit einer Zeile je Befund und einem Knopf zum Schließen. Derselbe Text landet als Kommentarblock im Kopf der Theme-Datei (`# Letzter Import am …`), damit er sich Wochen später bei der Fehlersuche noch nachlesen lässt. Ein **eigenes Theme-Feld wäre dafür der falsche Ort**: HATG schreibt nur Felder, die Home Assistant, Bubble oder Mushroom selbst lesen, und der Import löst unbekannte Felder ohnehin wieder auf. Zeilenumbrüche in einer Berichtszeile werden vorher plattgemacht, sonst zerbricht der Kommentar die Datei.
+
+`.modal-box` braucht eine eigene `color`. Ohne sie erbt der Kasten die Schriftfarbe des Wirts — im hellen Erscheinungsbild stand die Überschrift weiß auf weiß.
+
+Die beiden Balken auf der Vorlagenseite, die deckende Flächenfarben beziehungsweise eine zu durchsichtige `card-background-color` bemängelten und per Knopf umschreiben wollten, sind am 2026-09-27 auf Ansage entfernt worden — sie griffen nicht verlässlich. Die vier übrigen Balken bleiben: Ausgabeformat card-mod, verwaiste eigene Blöcke, veraltete Vorlagen und doppelte Pfade.
 
 ## Workflows
 

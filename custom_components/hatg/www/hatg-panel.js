@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.3.2b4";
+const HATG_VERSION = "1.3.2b5";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -5716,6 +5716,10 @@ class HATGPanel extends HTMLElement {
       saveDialog: null,
       saving: false,
       importDialog: null,
+      // Der Bericht des letzten Imports. Steht als Fenster in der Mitte und
+      // spaeter als Kommentar im Kopf der Theme-Datei - wer Wochen danach
+      // einem Fehler nachgeht, sieht dort, was der Import angefasst hat.
+      importBericht: null,
       validation: null,
       selectMode: false,
       selectedKeys: [],
@@ -5795,6 +5799,9 @@ class HATGPanel extends HTMLElement {
       if (saved.editorMode) this._state.editorMode = saved.editorMode;
       if (saved.activeSection) this._activeSection = hatgAktualisierteSektionsId(saved.activeSection);
       if (saved.ausgabeFormat) this._state.ausgabeFormat = saved.ausgabeFormat;
+      // Der Bericht wird beim Laden nicht wieder aufgeklappt - er gehoert dann
+      // nur noch in den Kopf der Theme-Datei, bis der naechste Import ihn ersetzt.
+      if (saved.importBericht) this._state.importBericht = { ...saved.importBericht, offen: false };
       if (saved.values) {
         hatgMigriereStilzielKeys(saved.values.light);
         hatgMigriereStilzielKeys(saved.values.dark);
@@ -5848,6 +5855,7 @@ class HATGPanel extends HTMLElement {
           values: this._state.values,
           source: this._state.source,
           extraValues: this._state.extraValues,
+          importBericht: this._state.importBericht,
         })
       );
     } catch (error) {
@@ -7061,6 +7069,34 @@ class HATGPanel extends HTMLElement {
       </section>`;
   }
 
+  // Der Bericht des letzten Imports als Fenster in der Mitte. Eine Zeile je
+  // Befund statt eines langen Satzes - und er bleibt stehen, bis man ihn
+  // schliesst.
+  renderImportBerichtDialog() {
+    const b = this._state.importBericht;
+    if (!b || !b.offen) return "";
+    const en = this._sprache === "en";
+    const zeilen = (b.zeilen || []).map((z) => `<li>${hatgEscape(z)}</li>`).join("");
+    const titel = en ? "Theme imported" : "Theme importiert";
+    const unter = b.theme
+      ? (en ? `Theme <code>${hatgEscape(b.theme)}</code>, ${hatgEscape(b.zeit)}` : `Theme <code>${hatgEscape(b.theme)}</code>, ${hatgEscape(b.zeit)}`)
+      : hatgEscape(b.zeit);
+    const fuss = en
+      ? "This report also goes into the header of the theme file as a comment, so it can still be read later."
+      : "Dieser Bericht steht auch als Kommentar im Kopf der Theme-Datei - dort lässt er sich später noch nachlesen.";
+    return `
+      <div class="modal-scrim" data-import-bericht-close></div>
+      <div class="modal-box modal-box-wide" role="dialog" aria-modal="true">
+        <h3><ha-icon icon="mdi:import"></ha-icon>${hatgEscape(titel)}</h3>
+        <p>${unter}</p>
+        <ul class="import-bericht-liste">${zeilen}</ul>
+        <p class="import-bericht-fuss">${hatgEscape(fuss)}</p>
+        <div class="modal-actions">
+          <button type="button" class="modal-btn primary" data-import-bericht-close>${en ? "Close" : "Schließen"}</button>
+        </div>
+      </div>`;
+  }
+
   renderPluginInfoDialog() {
     const id = this._state.pluginInfoOpenId;
     if (!id) return "";
@@ -7511,59 +7547,6 @@ class HATGPanel extends HTMLElement {
     this.commitField("ha-dialog-surface-backdrop-filter", "none");
     this._state.editorMode = vorher;
     this.applyPreviewTheme?.();
-  }
-
-  // Ist eine dieser Flaechenfarben noch deckend?
-  deckendeFlaechenfarben() {
-    const treffer = [];
-    [...HATG_GLAS_GRUNDFELDER.map((key) => ({ key })), ...HATG_GLAS_FLAECHENFELDER].forEach(({ key }) => {
-      const deckend = ["light", "dark"].some((mode) => {
-        const wert = String(this._state.values[mode][key] || "").trim();
-        if (!wert || wert.startsWith("var(")) return false;
-        const rgba = /^rgba\(\s*[\d.]+\s*,\s*[\d.]+\s*,\s*[\d.]+\s*,\s*([\d.]+)\s*\)$/.exec(wert);
-        if (rgba) return Number(rgba[1]) > 0.85;
-        return /^#([0-9A-Fa-f]{6}|[0-9A-Fa-f]{3})$/.test(wert);
-      });
-      if (deckend) treffer.push(key);
-    });
-    return treffer;
-  }
-  // card-background-color faerbt auch Auswahlfelder, Menues und Dialoge. Steht sie
-  // halbtransparent - etwa durch den Generator "Kartentransparenz" -, liest man
-  // durch geoeffnete Listen hindurch. Mit aktivem Glas-Paket wird sie nicht gebraucht.
-  zuDurchsichtigeGrundfarben() {
-    const treffer = [];
-    ["card-background-color"].forEach((key) => {
-      const duenn = ["light", "dark"].some((mode) => {
-        const wert = String(this._state.values[mode][key] || "").trim();
-        const rgba = /^rgba\(\s*[\d.]+\s*,\s*[\d.]+\s*,\s*[\d.]+\s*,\s*([\d.]+)\s*\)$/.exec(wert);
-        return rgba ? Number(rgba[1]) < 0.9 : false;
-      });
-      if (duenn) treffer.push(key);
-    });
-    return treffer;
-  }
-  grundfarbenDeckendSetzen() {
-    const currentMode = this._state.editorMode;
-    let anzahl = 0;
-    ["light", "dark"].forEach((mode) => {
-      this._state.editorMode = mode;
-      this.zuDurchsichtigeGrundfarben().forEach((key) => {
-        const wert = String(this._state.values[mode][key] || "").trim();
-        const rgba = /^rgba\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*[\d.]+\s*\)$/.exec(wert);
-        if (!rgba) return;
-        // rgb(...) kennt die Pruefung nicht - deckend heisst hier Alpha 1.
-        this.commitField(key, `rgba(${rgba[1]}, ${rgba[2]}, ${rgba[3]}, 1)`);
-        if (mode === "light") anzahl++;
-      });
-    });
-    this._state.editorMode = currentMode;
-    this.render();
-    this.showToast(
-      anzahl
-        ? `${anzahl} Grundfarbe${anzahl === 1 ? "" : "n"} auf deckend gesetzt. Auswahlfelder und Menüs sind wieder lesbar.`
-        : "Die Grundfarben sind bereits deckend."
-    );
   }
 
   // Schreibt den Glaslook in die HA-Felder beider Modi: die Grundfelder aus den
@@ -8300,36 +8283,6 @@ uix:
           <button type="button" class="${(this._state.vorlagenAnsicht || "liste") === "liste" ? "active" : ""}" data-vorlagen-ansicht="liste" title="${this._sprache === "en" ? "List" : "Liste"}"><ha-icon icon="mdi:format-list-bulleted"></ha-icon></button>
           <button type="button" class="${this._state.vorlagenAnsicht === "kacheln" ? "active" : ""}" data-vorlagen-ansicht="kacheln" title="${this._sprache === "en" ? "Tiles" : "Kacheln"}"><ha-icon icon="mdi:view-grid-outline"></ha-icon></button>
         </div>`;
-    const deckend = stand.aktiv ? this.deckendeFlaechenfarben() : [];
-    const farbHinweis = deckend.length
-      ? `
-        <div class="vorlage-veraltet-bar" data-roh>
-          <ha-icon icon="mdi:palette-outline"></ha-icon>
-          <span>${
-            this._sprache === "en"
-              ? `${deckend.length} surface colours are still opaque (${hatgFelderNennen(deckend, "more")}). Glass cannot show through them - a dashboard's top bar, the control buttons inside the cards and the surfaces of Bubble Card always take their colour from the theme.`
-              : `${deckend.length} Flächenfarben sind noch deckend (${hatgFelderNennen(deckend, "weitere")}). Dahinter kann kein Glas durchscheinen - die Kopfleiste eines Dashboards, die Bedienknöpfe in den Karten und die Flächen von Bubble Card holen ihre Farbe immer aus dem Theme.`
-          }</span>
-          <button type="button" class="vorlage-veraltet-button" data-flaechenfarben-glas>
-            <ha-icon icon="mdi:auto-fix"></ha-icon><span>${this._sprache === "en" ? "Set to glass" : "Auf Glas setzen"}</span>
-          </button>
-        </div>`
-      : "";
-    const duenn = stand.aktiv ? this.zuDurchsichtigeGrundfarben() : [];
-    const duennHinweis = duenn.length
-      ? `
-        <div class="vorlage-veraltet-bar" data-roh>
-          <ha-icon icon="mdi:eye-off-outline"></ha-icon>
-          <span>${
-            this._sprache === "en"
-              ? `${duenn.join(", ")} is semi-transparent. Home Assistant uses that colour for dropdowns, menus and dialogs too - there you end up reading through the open list. With the glass package active it is not needed; the cards get their glass from the presets.`
-              : `${duenn.join(", ")} ist halbtransparent. Home Assistant färbt damit auch Auswahlfelder, Menüs und Dialoge - dort liest man dann durch die geöffnete Liste hindurch. Mit aktivem Glas-Paket wird der Wert nicht gebraucht, die Karten bekommen ihr Glas aus den Vorlagen.`
-          }</span>
-          <button type="button" class="vorlage-veraltet-button" data-grundfarben-deckend>
-            <ha-icon icon="mdi:eye-outline"></ha-icon><span>${this._sprache === "en" ? "Set opaque" : "Deckend setzen"}</span>
-          </button>
-        </div>`
-      : "";
     const glas = this.glasReglerStand();
     const glasHell = this.glasReglerStand("light");
     const glasDunkel = this.glasReglerStand("dark");
@@ -8404,8 +8357,6 @@ uix:
         ${!gruppe ? this.renderKopfleisteKasten(werksVorlagen, istAktiv, zeichne, alsListe) : ""}
         ${pfadHinweis}
         ${verwaistHinweis}
-        ${farbHinweis}
-        ${duennHinweis}
         ${hinweis}
         ${
           !gruppe
@@ -9887,12 +9838,26 @@ uix:
     const radius = light["ha-card-border-radius"] || "?";
     const now = new Date();
     const dateStr = now.toISOString().slice(0, 10);
-    return [
+    const zeilen = [
       `# Erstellt mit HATG v${HATG_VERSION}`,
       `# Theme: ${this._state.themeName || "Unbenannt"} – Grundfarbe ${primary}, Akzent ${accent}, Karten-Radius ${radius}`,
       `# Generiert am ${dateStr}`,
-      "",
-    ].join("\n") + "\n";
+    ];
+    // Der Bericht des letzten Imports als Kommentar. Home Assistant liest
+    // Kommentare nicht; ein eigenes Theme-Feld waere der falsche Ort, weil
+    // HATG nur Felder schreibt, die HA, Bubble oder Mushroom selbst lesen -
+    // und der Import loest unbekannte Felder ohnehin wieder auf.
+    const bericht = this._state.importBericht;
+    if (bericht && Array.isArray(bericht.zeilen) && bericht.zeilen.length) {
+      zeilen.push("#");
+      zeilen.push(`# Letzter Import am ${bericht.zeit}${bericht.theme ? ` (${bericht.theme})` : ""}:`);
+      bericht.zeilen.forEach((z) => {
+        // Ein Zeilenumbruch im Bericht wuerde den Kommentar sprengen.
+        zeilen.push(`#   - ${String(z).replace(/\s+/g, " ").trim()}`);
+      });
+    }
+    zeilen.push("");
+    return zeilen.join("\n") + "\n";
   }
 
   renderMainSection() {
@@ -10847,8 +10812,12 @@ uix:
         .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
         .modal-scrim { position: fixed; inset: 0; z-index: 40; background: rgba(4, 8, 16, .55); }
-        .modal-box { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 41; width: min(360px, calc(100vw - 40px)); padding: 22px; border: 1px solid var(--hatg-border); border-radius: 16px; background: var(--hatg-bg-1); box-shadow: 0 24px 60px rgba(0,0,0,.45); }
+        /* Schriftfarbe gehoert dazu: Ohne sie erbt der Kasten die Farbe des Wirts - im hellen Erscheinungsbild stand die Ueberschrift weiss auf weiss. */
+        .modal-box { color: var(--hatg-text); position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 41; width: min(360px, calc(100vw - 40px)); padding: 22px; border: 1px solid var(--hatg-border); border-radius: 16px; background: var(--hatg-bg-1); box-shadow: 0 24px 60px rgba(0,0,0,.45); }
         .modal-box-wide { width: min(560px, calc(100vw - 40px)); max-height: min(640px, calc(100vh - 60px)); overflow: auto; }
+        .import-bericht-liste { list-style: none; margin: 0 0 14px; padding: 0; display: grid; gap: 6px; max-height: 340px; overflow: auto; }
+        .import-bericht-liste li { font-size: 12.5px; color: var(--hatg-text); line-height: 1.45; padding: 8px 12px; border-radius: 9px; background: var(--hatg-field); border: 1px solid var(--hatg-border); }
+        .import-bericht-fuss { font-size: 11.5px; }
         .validation-list { list-style: none; margin: 0 0 16px; padding: 0; display: grid; gap: 6px; max-height: 320px; overflow: auto; }
         .validation-list li { font-size: 12px; color: var(--hatg-text-dim); padding: 6px 10px; border-radius: 8px; background: rgba(255,147,0,.08); }
         .validation-list code { font-family: ui-monospace, monospace; color: #ffb15c; }
@@ -11244,6 +11213,7 @@ uix:
       ${this.renderImportDialog()}
       ${this.renderBasePresetDialog()}
       ${this.renderValidationDialog()}
+      ${this.renderImportBerichtDialog()}
       ${this.renderPluginInfoDialog()}
       ${this.renderWallpaperDialog()}
       ${this.renderVorlagenDialog()}
@@ -11825,8 +11795,6 @@ uix:
       glasTonHell?.addEventListener("change", () => tonSetzen("light", glasTonHell));
       glasTonDunkel?.addEventListener("change", () => tonSetzen("dark", glasTonDunkel));
     }
-    this.shadowRoot.querySelector("[data-flaechenfarben-glas]")?.addEventListener("click", () => this.glasFelderSetzen());
-    this.shadowRoot.querySelector("[data-grundfarben-deckend]")?.addEventListener("click", () => this.grundfarbenDeckendSetzen());
     this.shadowRoot.querySelectorAll("[data-vorlagen-kasten]").forEach((el) => {
       el.addEventListener("toggle", () => {
         const id = el.dataset.vorlagenKasten;
@@ -12434,6 +12402,13 @@ uix:
     this.shadowRoot.querySelectorAll("[data-plugin-info-open]").forEach((el) => {
       el.addEventListener("click", () => {
         this._state.pluginInfoOpenId = el.getAttribute("data-plugin-info-open");
+        this.render();
+      });
+    });
+    this.shadowRoot.querySelectorAll("[data-import-bericht-close]").forEach((el) => {
+      el.addEventListener("click", () => {
+        if (this._state.importBericht) this._state.importBericht.offen = false;
+        this.autoSaveState();
         this.render();
       });
     });
@@ -13133,16 +13108,27 @@ uix:
     this._activeSection = "overview";
     this.render();
     const totalKnown = Object.keys(HATG_MANIFEST.light).length;
+    // Der Bericht steht im Fenster und im Kopf der Theme-Datei - er gehoert
+    // deshalb in beide Sprachen, wie alles, was nach aussen geht.
+    const en = this._sprache === "en";
     const parts = parsed.flatSingleMode
-      ? [`Flaches Theme ohne light:/dark:-Aufteilung erkannt`, `${lightKeys.length}/${totalKnown} Felder auf Light UND Dark übernommen`]
-      : [`${lightKeys.length}/${totalKnown} Light-Felder`, `${darkKeys.length}/${totalKnown} Dark-Felder importiert`];
+      ? en
+        ? ["Flat theme without a light:/dark: split detected", `${lightKeys.length}/${totalKnown} fields applied to light AND dark`]
+        : ["Flaches Theme ohne light:/dark:-Aufteilung erkannt", `${lightKeys.length}/${totalKnown} Felder auf Light UND Dark übernommen`]
+      : en
+        ? [`${lightKeys.length}/${totalKnown} light fields`, `${darkKeys.length}/${totalKnown} dark fields imported`]
+        : [`${lightKeys.length}/${totalKnown} Light-Felder`, `${darkKeys.length}/${totalKnown} Dark-Felder importiert`];
     if (migrierteStilziele)
       parts.push(
-        `${migrierteStilziele} card-mod-Feld${migrierteStilziele === 1 ? "" : "er"} auf UIX umgestellt`
+        en
+          ? `${migrierteStilziele} card-mod field${migrierteStilziele === 1 ? "" : "s"} moved to UIX`
+          : `${migrierteStilziele} card-mod-Feld${migrierteStilziele === 1 ? "" : "er"} auf UIX umgestellt`
       );
     if (tripletAnzahl)
       parts.push(
-        `${tripletAnzahl} RGB-Hilfswert${tripletAnzahl === 1 ? "" : "e"} auf drei Zahlen umgerechnet`
+        en
+          ? `${tripletAnzahl} RGB helper value${tripletAnzahl === 1 ? "" : "s"} converted to three numbers`
+          : `${tripletAnzahl} RGB-Hilfswert${tripletAnzahl === 1 ? "" : "e"} auf drei Zahlen umgerechnet`
       );
     const aufgefrischt = this.frischeVorlagenAuf({ silent: true });
     // Aufgefrischte Vorlagen verweisen nicht mehr auf eigene Felder des alten Themes.
@@ -13152,33 +13138,83 @@ uix:
     );
     const entferntGesamt = eigeneFelder.entfernt + verwaist.entfernt;
     if (entferntGesamt)
-      parts.push(`${entferntGesamt} eigene Hilfsfeld${entferntGesamt === 1 ? "" : "er"} aufgelöst und entfernt`);
+      parts.push(
+        en
+          ? `${entferntGesamt} custom helper field${entferntGesamt === 1 ? "" : "s"} resolved and removed`
+          : entferntGesamt === 1
+            ? "1 eigenes Hilfsfeld aufgelöst und entfernt"
+            : `${entferntGesamt} eigene Hilfsfelder aufgelöst und entfernt`
+      );
     const unbekannt = new Set([...Object.keys(this._state.extraValues.light), ...Object.keys(this._state.extraValues.dark)]).size;
-    if (unbekannt) parts.push(`${unbekannt} unbekannte Felder aufbewahrt (werden beim Export wieder angehängt)`);
+    if (unbekannt)
+      parts.push(
+        en
+          ? `${unbekannt} unknown field${unbekannt === 1 ? "" : "s"} kept (appended again on export)`
+          : unbekannt === 1
+            ? "1 unbekanntes Feld aufbewahrt (wird beim Export wieder angehängt)"
+            : `${unbekannt} unbekannte Felder aufbewahrt (werden beim Export wieder angehängt)`
+      );
     if (verwaist.offen.length)
       parts.push(
-        `${verwaist.offen.length} Feld${verwaist.offen.length === 1 ? " verweist" : "er verweisen"} weiter auf eigene Werte (${hatgFelderNennen(verwaist.offen, "weitere")})`
+        en
+          ? `${verwaist.offen.length} field${verwaist.offen.length === 1 ? " still refers" : "s still refer"} to custom values (${hatgFelderNennen(verwaist.offen, "more")})`
+          : `${verwaist.offen.length} Feld${verwaist.offen.length === 1 ? " verweist" : "er verweisen"} weiter auf eigene Werte (${hatgFelderNennen(verwaist.offen, "weitere")})`
       );
     if (altlasten.verschoben)
       parts.push(
-        altlasten.verschoben === 1
-          ? "1 -yaml-Feld enthielt reines CSS und wurde ins einfache Feld übernommen"
-          : `${altlasten.verschoben} -yaml-Felder enthielten reines CSS und wurden ins einfache Feld übernommen`
+        en
+          ? altlasten.verschoben === 1
+            ? "1 -yaml field held plain CSS and was moved into the simple field"
+            : `${altlasten.verschoben} -yaml fields held plain CSS and were moved into the simple fields`
+          : altlasten.verschoben === 1
+            ? "1 -yaml-Feld enthielt reines CSS und wurde ins einfache Feld übernommen"
+            : `${altlasten.verschoben} -yaml-Felder enthielten reines CSS und wurden ins einfache Feld übernommen`
       );
     if (altlasten.selbstverweise)
       parts.push(
-        altlasten.selbstverweise === 1
-          ? "1 Variable, die sich selbst las, entfernt"
-          : `${altlasten.selbstverweise} Variablen, die sich selbst lasen, entfernt`
+        en
+          ? altlasten.selbstverweise === 1
+            ? "1 variable that read itself removed"
+            : `${altlasten.selbstverweise} variables that read themselves removed`
+          : altlasten.selbstverweise === 1
+            ? "1 Variable, die sich selbst las, entfernt"
+            : `${altlasten.selbstverweise} Variablen, die sich selbst lasen, entfernt`
       );
     if (altlasten.dialogFilter)
-      parts.push("Weichzeichnung der Dialogfläche zurückgenommen, sonst bleiben Auswahllisten in Dialogen leer");
+      parts.push(
+        en
+          ? "Blur on the dialog surface taken back, otherwise dropdown lists in dialogs stay empty"
+          : "Weichzeichnung der Dialogfläche zurückgenommen, sonst bleiben Auswahllisten in Dialogen leer"
+      );
     if (marken.umbenannt)
-      parts.push(`${marken.umbenannt} Vorlage${marken.umbenannt === 1 ? "" : "n"} mit fremder Marke als HATG-Vorlage erkannt`);
+      parts.push(
+        en
+          ? `${marken.umbenannt} preset${marken.umbenannt === 1 ? "" : "s"} with a foreign marker recognised as a HATG preset`
+          : `${marken.umbenannt} Vorlage${marken.umbenannt === 1 ? "" : "n"} mit fremder Marke als HATG-Vorlage erkannt`
+      );
     if (marken.doppelt)
-      parts.push(marken.doppelt === 1 ? "1 doppelter Vorlagenblock entfernt" : `${marken.doppelt} doppelte Vorlagenblöcke entfernt`);
-    if (aufgefrischt) parts.push(`${aufgefrischt} UIX-Vorlage${aufgefrischt === 1 ? "" : "n"} auf den aktuellen Stand gebracht`);
-    this.showToast(parts.join(", ") + ".");
+      parts.push(
+        en
+          ? marken.doppelt === 1 ? "1 duplicate preset block removed" : `${marken.doppelt} duplicate preset blocks removed`
+          : marken.doppelt === 1 ? "1 doppelter Vorlagenblock entfernt" : `${marken.doppelt} doppelte Vorlagenblöcke entfernt`
+      );
+    if (aufgefrischt)
+      parts.push(
+        en
+          ? `${aufgefrischt} UIX preset${aufgefrischt === 1 ? "" : "s"} brought up to date`
+          : `${aufgefrischt} UIX-Vorlage${aufgefrischt === 1 ? "" : "n"} auf den aktuellen Stand gebracht`
+      );
+    // Der Bericht lief frueher als Toast unten durch und war weg, bevor man
+    // ihn gelesen hatte. Jetzt steht er als Fenster in der Mitte und will
+    // bestaetigt werden; derselbe Text landet im Kopf der Theme-Datei.
+    this._state.importBericht = {
+      zeilen: parts.slice(),
+      theme: this._state.themeName || "",
+      zeit: new Date().toISOString().slice(0, 16).replace("T", " "),
+      offen: true,
+    };
+    this.autoSaveState();
+    this.render();
   }
 
   runImport() {
