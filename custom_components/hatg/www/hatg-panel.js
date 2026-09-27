@@ -13062,6 +13062,26 @@ uix:
   migriereImportierteStilziele(parsed) {
     // Theme-globale Felder liegen in beiden Modi - gezaehlt wird das Feld, nicht der Modus.
     const migriert = new Set();
+    // Umbenannte Stilziele zuerst: uix-states-history-charts hiess bis 1.3.2b3
+    // faelschlich im Plural. hatgMigriereStilzielKeys faengt das beim Entwurf
+    // ab, der Importweg lief bis 1.3.2b8 daran vorbei - das tote Feld landete
+    // als "unbekannt" in extra und wurde beim Export brav wieder angehaengt.
+    ["light", "dark"].forEach((mode) => {
+      [parsed[mode], parsed.extra ? parsed.extra[mode] : null].forEach((bag) => {
+        if (!bag) return;
+        Object.keys(bag).forEach((alt) => {
+          const neuerName = HATG_STILZIEL_UMBENANNT[alt];
+          if (!neuerName) return;
+          const wert = String(bag[alt] ?? "").trim();
+          delete bag[alt];
+          if (!wert) return;
+          const vorhanden = String(parsed[mode][neuerName] ?? "").trim();
+          if (vorhanden && vorhanden.includes(wert)) return;
+          parsed[mode][neuerName] = vorhanden ? `${vorhanden}\n${wert}` : wert;
+          migriert.add(neuerName);
+        });
+      });
+    });
     ["light", "dark"].forEach((mode) => {
       [parsed[mode], parsed.extra ? parsed.extra[mode] : null].forEach((bag) => {
         if (!bag) return;
