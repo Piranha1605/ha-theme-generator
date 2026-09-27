@@ -11,7 +11,7 @@ custom_components/hatg/
 ├── __init__.py           Einstiegspunkt der Integration
 ├── config_flow.py        Einrichtung über die Oberfläche
 ├── const.py              Konstanten
-├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b7
+├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b8
 ├── translations/         de.json und en.json
 ├── brand/                Icons für den HACS-Store
 └── www/
@@ -33,7 +33,7 @@ Die Versionsnummer steht an vier Stellen und muss überall gleich sein: `manifes
 
 - **Startseite** — Grundfarben, Basis-Einstellungen, Zustände, Hintergründe
 - **Thematische Bereiche** — HA-Grundgerüst, Bubble Card mit Unterseiten, Mushroom, Button Card (nur ihre eigenen Variablen für Klick-Effekt, Ladeanzeige, Tooltip; gegen button-card v7.0.1 `src/styles.ts` geprüft)
-- **Alle Felder** — Volltext- und Filtersuche über sämtliche 618 verifizierten Variablen
+- **Alle Felder** — Volltext- und Filtersuche über sämtliche 676 verifizierten Variablen
 - **Verlauf für aktive Flächen** — im Glas-Bereich: zwei Farben, Richtung, Schriftfarbe; Block `verlauf-akzent` in `uix-card` und `uix-sidebar`. Horizon-Cards (frueher HA-Karten) lesen ihn seit Sammlung v2.6.1 über die gemeinsame Kette `--karten-gewaehlt`, `-vorn`, `-schatten` (Kurzform `background`), die Kante kommt aus `neumorph-tiefe`/`neumorph-hell`; HA-eigene Knöpfe nehmen keinen Verlauf an (nur Farbvariablen)
 - **Code-Editor** — textbasierte Bearbeitung mit Syntax-Highlighting
 - **Vorlagen** — vorgefertigte CSS-Effekte, eine Unterseite je Stilziel; feste Werte sind über `werte: [...]` einstellbar (im CSS `[[id]]`, im Theme zwischen `/*HATG:WERT:id*/…/*HATG:WERT*/`, nur im Vorlagenblock, keine Theme-Felder, bleiben beim Auffrischen)
@@ -98,6 +98,8 @@ Seit v1.2.0 schreibt HATG `uix-*`-Felder statt `card-mod-*`. card-mod lädt seit
 Seit Home Assistant 2026 definiert das Frontend eine eigene Farbebene auf `html` (`--ha-color-*`) und spiegelt sie für Web Awesome (`--wa-color-*`). Knöpfe, Chips und Links auf den Einstellungsseiten lesen daraus und **nicht** mehr aus `--primary-color`.
 
 Am 2026-09-27 an der Geräteseite nachgemessen: „Zu Dashboard hinzufügen", „Hinzufügen zu …" und der Bereichs-Chip standen in `#37c8fd`, während `--primary-color` auf `rgba(192, 192, 192, 0.5)` stand. Die Farbe kam aus `--ha-color-on-primary-normal`, das HA an `--wa-color-brand-on-normal` weiterreicht. `--ha-color-text-link` und `--ha-color-primary-50/60` gehören zur selben Ebene, treffen aber andere Stellen.
+
+**Die Farbebene hat zwei Etagen.** Am 2026-09-27 aus dem Frontend-Stylesheet gelesen: 58 feste Palettenfarben (`ha-color-black`, `-white`, und je elf Stufen `05`…`95` für `primary`, `neutral`, `red`, `green`, `orange`) und 151 `var()`-Verweise darauf — die semantische Ebene (`text-*`, `fill-*`, `on-*`, `border-*`) und die komplette Web-Awesome-Brücke (`wa-color-*`). Die **Palette ist in beiden Modi dieselbe**; was zwischen Hell und Dunkel wechselt, ist die semantische Ebene, die auf andere Stufen zeigt. Seit 1.3.2b8 sind die 58 Palettenfarben Felder — damit hängt jeder Blauton an einer Stelle. Die 151 Verweise sind **nicht** aufgenommen: Ihre Vorgaben sind je Modus verschieden, und das ließe sich nur mit einem Moduswechsel an einer laufenden Instanz auslesen.
 
 Seit 1.3.2b7 sind vier dieser Marken Felder: `ha-color-on-primary-loud`, `-normal`, `-quiet` und `ha-color-text-link`. Die drei letzten hängen in `HATG_DERIVE_RULES` an **`accent-color`** (nicht an `primary-color` — dessen Liste ist kurz und endet bei `md-sys-color-primary`); `loud` bleibt bewusst draußen, das ist die Schrift *auf* der Akzentfläche und muss hell bleiben.
 
