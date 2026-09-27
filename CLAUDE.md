@@ -11,7 +11,7 @@ custom_components/hatg/
 ├── __init__.py           Einstiegspunkt der Integration
 ├── config_flow.py        Einrichtung über die Oberfläche
 ├── const.py              Konstanten
-├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b6
+├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b7
 ├── translations/         de.json und en.json
 ├── brand/                Icons für den HACS-Store
 └── www/
@@ -33,7 +33,7 @@ Die Versionsnummer steht an vier Stellen und muss überall gleich sein: `manifes
 
 - **Startseite** — Grundfarben, Basis-Einstellungen, Zustände, Hintergründe
 - **Thematische Bereiche** — HA-Grundgerüst, Bubble Card mit Unterseiten, Mushroom, Button Card (nur ihre eigenen Variablen für Klick-Effekt, Ladeanzeige, Tooltip; gegen button-card v7.0.1 `src/styles.ts` geprüft)
-- **Alle Felder** — Volltext- und Filtersuche über sämtliche 608 verifizierten Variablen
+- **Alle Felder** — Volltext- und Filtersuche über sämtliche 618 verifizierten Variablen
 - **Verlauf für aktive Flächen** — im Glas-Bereich: zwei Farben, Richtung, Schriftfarbe; Block `verlauf-akzent` in `uix-card` und `uix-sidebar`. Horizon-Cards (frueher HA-Karten) lesen ihn seit Sammlung v2.6.1 über die gemeinsame Kette `--karten-gewaehlt`, `-vorn`, `-schatten` (Kurzform `background`), die Kante kommt aus `neumorph-tiefe`/`neumorph-hell`; HA-eigene Knöpfe nehmen keinen Verlauf an (nur Farbvariablen)
 - **Code-Editor** — textbasierte Bearbeitung mit Syntax-Highlighting
 - **Vorlagen** — vorgefertigte CSS-Effekte, eine Unterseite je Stilziel; feste Werte sind über `werte: [...]` einstellbar (im CSS `[[id]]`, im Theme zwischen `/*HATG:WERT:id*/…/*HATG:WERT*/`, nur im Vorlagenblock, keine Theme-Felder, bleiben beim Auffrischen)
@@ -93,6 +93,16 @@ Seit v1.2.0 schreibt HATG `uix-*`-Felder statt `card-mod-*`. card-mod lädt seit
 - Ein `uix-sidebar-yaml`-Block lässt UIX 8.1.0 beim Laden mit `TypeError … toLowerCase` aussteigen. Danach wendet UIX für den Rest der Sitzung überhaupt keine Vorlage mehr an. Das Benutzer-Icon kommt deshalb ohne Pfad aus.
 - UIX stylt nur, was nach ihm entsteht. Ein hartes Neuladen direkt auf einer `/config`-Seite lässt die schon vorhandenen Elemente unberührt.
 
+## HA 2026: Knöpfe und Links hängen nicht mehr an `primary-color`
+
+Seit Home Assistant 2026 definiert das Frontend eine eigene Farbebene auf `html` (`--ha-color-*`) und spiegelt sie für Web Awesome (`--wa-color-*`). Knöpfe, Chips und Links auf den Einstellungsseiten lesen daraus und **nicht** mehr aus `--primary-color`.
+
+Am 2026-09-27 an der Geräteseite nachgemessen: „Zu Dashboard hinzufügen", „Hinzufügen zu …" und der Bereichs-Chip standen in `#37c8fd`, während `--primary-color` auf `rgba(192, 192, 192, 0.5)` stand. Die Farbe kam aus `--ha-color-on-primary-normal`, das HA an `--wa-color-brand-on-normal` weiterreicht. `--ha-color-text-link` und `--ha-color-primary-50/60` gehören zur selben Ebene, treffen aber andere Stellen.
+
+Seit 1.3.2b7 sind vier dieser Marken Felder: `ha-color-on-primary-loud`, `-normal`, `-quiet` und `ha-color-text-link`. Die drei letzten hängen in `HATG_DERIVE_RULES` an **`accent-color`** (nicht an `primary-color` — dessen Liste ist kurz und endet bei `md-sys-color-primary`); `loud` bleibt bewusst draußen, das ist die Schrift *auf* der Akzentfläche und muss hell bleiben.
+
+**Der Schalter auf Einstellungsseiten** bekommt von UIX nichts ab: Dort entstehen nur `config`-, `drawer`- und `sidebar`-Knoten, kein `row`-Knoten. Seine Farbe kommt aus `--ha-switch-checked-background-color` (Rückfall über `--ha-color-fill-primary-normal-resting` bis `--primary-color`) — ein Feld, das HATG schon kennt und das mit dem Akzent mitzieht. Ein Verlauf ist dort nicht möglich: Der Weg dorthin führt über vier Pfadschritte, und Zwischenschritte nehmen nur den ersten Treffer, also nur die erste Zeile.
+
 ## Meldungen
 
 **Der Import-Bericht steht seit 1.3.2b5 in einem Fenster in der Mitte** statt als Toast unten, mit einer Zeile je Befund und einem Knopf zum Schließen. Derselbe Text landet als Kommentarblock im Kopf der Theme-Datei (`# Letzter Import am …`), damit er sich Wochen später bei der Fehlersuche noch nachlesen lässt. Ein **eigenes Theme-Feld wäre dafür der falsche Ort**: HATG schreibt nur Felder, die Home Assistant, Bubble oder Mushroom selbst lesen, und der Import löst unbekannte Felder ohnehin wieder auf. Zeilenumbrüche in einer Berichtszeile werden vorher plattgemacht, sonst zerbricht der Kommentar die Datei.
@@ -111,7 +121,7 @@ Dependabot ist für dieses Repository aktiviert.
 
 ## Zielgruppe
 
-Fortgeschrittene. Wer rund 570 Theme-Variablen anfasst, kennt sein System, nutzt vermutlich schon Bubble Card oder Mushroom und will bis ins Detail gestalten. Das unterscheidet HATG von HA-OS, das sich an Einsteiger richtet.
+Fortgeschrittene. Wer rund 620 Theme-Variablen anfasst, kennt sein System, nutzt vermutlich schon Bubble Card oder Mushroom und will bis ins Detail gestalten. Das unterscheidet HATG von HA-OS, das sich an Einsteiger richtet.
 
 ## Schreibstil
 
