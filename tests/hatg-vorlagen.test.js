@@ -167,8 +167,11 @@ pruefe("glas-bubble: Flaechen mit Rahmen und Schatten der HA-Karten, ohne Glanz,
   const flaeche = regeln.find((m) => m[1].split(",").map((s) => s.trim()).includes(".bubble-button-container"));
   // Die Rundung kommt aus dem Kartenfeld, damit Bubble-Karten so rund sind wie
   // HA-Karten und die Karten der Sammlung (2026-09-20).
+  // background-image traegt den Verlauf fuer ruhende Flaechen und faellt ohne
+  // gesetzten Verlauf auf none zurueck. Stuende hier fest "none", kaeme der
+  // Verlauf bei Bubble-Karten nie an - am 2026-09-27 nachgemessen.
   assert.ok(
-    flaeche && /background-image:\s*none/.test(flaeche[2]) && /border-radius:\s*var\(--ha-card-border-radius/.test(flaeche[2]),
+    flaeche && /background-image:\s*var\(--verlauf-inaktiv,\s*none\)/.test(flaeche[2]) && /border-radius:\s*var\(--ha-card-border-radius/.test(flaeche[2]),
     "Flaeche nicht im Knopfstil"
   );
   assert.ok(/border:\s*var\(--ha-card-border-width[^;]*var\(--ha-card-border-color/.test(flaeche[2]), "Rahmen kommt nicht aus den HA-Kartenfeldern");
@@ -543,6 +546,60 @@ pruefe("Kein Pfad enthaelt $$ und der Schalter geht ueber ::part", () => {
   assert.match(schalter.css, /ha-switch:state\(checked\)::part\(thumb\)/);
   assert.ok(!/ha-switch\[checked\]/.test(schalter.css), "das Attribut wird nicht gespiegelt");
   assert.ok(!/\bha-switch \$/.test(schalter.css), "kein Pfad - der trifft nichts, sobald der Schalter tiefer liegt");
+});
+
+// UI eXtension liest das Theme-Feld uix-<typ> mit genau seinem eigenen
+// Typnamen. Ein Ziel unter abweichendem Namen wird von nichts gelesen und
+// faellt stumm aus - keine Konsolenmeldung, kein YAML-Fehler.
+// Die Liste stammt aus uix.js 8.3.1 (Registrierungen und das Set der
+// Einzelziele), am 2026-09-27 gelesen und an einer laufenden Instanz belegt.
+const UIX_TYPEN = new Set([
+  "app", "assist-chip", "badge", "calendar", "card", "config", "dialog", "drawer",
+  "element", "entity-marker", "glance", "grid-section", "heading-badge", "history",
+  "more-info", "panel-custom", "persistent-notification-item", "profile", "root",
+  "row", "section-background", "sidebar", "state-history-charts", "toast", "todo",
+  "top-app-bar-fixed", "view", "view-background",
+]);
+
+pruefe("Jedes Stilziel traegt einen Typnamen, den UI eXtension kennt", () => {
+  const ziele = ausschnitt("const HATG_STILZIELE = [", "\n];");
+  const ids = [...ziele.matchAll(/\{\s*id:\s*"([a-z-]+)"/g)].map((m) => m[1]);
+  assert.ok(ids.length >= 25, `nur ${ids.length} Stilziele gefunden`);
+  const fremd = ids.filter((id) => !UIX_TYPEN.has(id));
+  assert.deepEqual(fremd, [], "Stilziel ohne Gegenstueck in UI eXtension");
+  // Der Plural war der Fehler: bis 1.3.2b3 hiess das Ziel states-history-charts.
+  assert.ok(ids.includes("state-history-charts"), "Verlaufs-Diagramme fehlen");
+  assert.ok(!ids.includes("states-history-charts"), "der alte Plural ist wieder da");
+});
+
+pruefe("Schalter-Vorlagen decken alle drei Stellen ab, ohne einen Schritt zu viel", () => {
+  // Am 2026-09-27 an einer laufenden Instanz gemessen: der Schalter sitzt an
+  // drei verschiedenen Stellen, und jede braucht ihren eigenen Weg.
+  // In einem Pfadschritt muss der ERSTE Teil des Selektors direktes Kind der
+  // aktuellen Wurzel sein, der Rest darf Nachfahre sein. ha-entity-toggle ist
+  // ein Licht-DOM-Kind von hui-generic-entity-row und liegt nicht in dessen
+  // Shadow Root - mit "$" davor steigt der Pfad einmal zu viel ab und trifft
+  // nichts.
+  const zeilen = vorlage("schalter-verlauf-zeilen");
+  assert.equal(feld(zeilen.block, "ziel"), "uix-row-yaml");
+  assert.match(zeilen.css, /^hui-generic-entity-row ha-entity-toggle \$:/m);
+  assert.ok(
+    !/hui-generic-entity-row \$ ha-entity-toggle/.test(zeilen.css),
+    "ha-entity-toggle liegt im Licht-DOM, nicht im Shadow Root der Zeile"
+  );
+
+  const kopf = vorlage("schalter-verlauf-kopf");
+  assert.equal(feld(kopf.block, "ziel"), "uix-card-yaml");
+  assert.match(kopf.css, /^ha-card hui-entities-toggle \$:/m);
+  assert.ok(
+    !/^hui-entities-toggle \$:/m.test(kopf.css),
+    "hui-entities-toggle ist kein direktes Kind der Kartenwurzel"
+  );
+
+  for (const v of [zeilen, kopf]) {
+    assert.match(v.css, /ha-switch:state\(checked\)::part\(control\)/);
+    assert.ok(!/ha-switch\[checked\]/.test(v.css), `${v.id}: das Attribut wird nicht gespiegelt`);
+  }
 });
 
 pruefe("RGB-Hilfswerte werden beim Import auf drei Zahlen gebracht", () => {

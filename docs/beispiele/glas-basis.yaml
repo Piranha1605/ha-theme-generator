@@ -351,7 +351,7 @@ glas_basis:
       box-shadow: var(--ha-card-box-shadow) !important;
     }
     /* HATG:UIX:glas-verlauf:END */
-  uix-states-history-charts: |
+  uix-state-history-charts: |
     /* HATG:UIX:glas-verlaufsdiagramme:START */
     ha-card {
       background-color: rgba(255, 255, 255, 0.5) !important;
