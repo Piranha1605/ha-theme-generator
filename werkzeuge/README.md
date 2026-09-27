@@ -1,0 +1,71 @@
+# Werkzeuge
+
+Drei Prüfwerkzeuge gegen Fehler, die sonst stumm bleiben. Alle Funde, auf denen sie beruhen, sind an einer laufenden Instanz nachgemessen und in `CLAUDE.md` festgehalten.
+
+Kein `npm install` nötig — die Werkzeuge brauchen nur node.
+
+---
+
+## `durchlauf-pruefen.js` — läuft in der CI
+
+```bash
+node werkzeuge/durchlauf-pruefen.js docs/beispiele/*.yaml
+HATG_AUSFUEHRLICH=1 node werkzeuge/durchlauf-pruefen.js mein-theme.yaml
+```
+
+Schickt ein Theme durch HATGs Import und Export und meldet, was dabei verloren geht:
+
+- ein **Stilziel**, das nicht mehr auftaucht
+- ein **Vorlagenblock**, der verschwindet
+- ein **`uix-`Feld unter `modes`** statt auf Theme-Ebene — UI eXtension liest Stilziele nur oben, darunter fällt die Vorlage stumm aus
+
+Der letzte Punkt ist der Grund für dieses Werkzeug: Bis 1.3.2b9 schrieb HATG unbekannte `uix-`Felder doppelt unter `modes.light` und `modes.dark`. Betroffen war jede Theme mit eigenen Stilzielen, gemerkt hat es ein Nutzer nach Wochen.
+
+Läuft als `tests/hatg-durchlauf.test.js` bei jedem Push mit.
+
+## `theme-pruefen.js` — vor dem Weitergeben
+
+```bash
+node werkzeuge/theme-pruefen.js mein-theme.yaml
+```
+
+Liest eine Theme-Datei, ohne sie zu verändern, und sucht:
+
+| Befund | Folge |
+|---|---|
+| Pfad mit `$$` | legt **jedes** `-yaml`-Feld still, im ganzen Theme |
+| doppelter Pfad | UIX verwirft die ganze Karte |
+| einfaches Feld neben `-yaml`-Feld | das einfache CSS kommt nie an |
+| offene Klammer | alles danach fällt aus |
+| doppelter Vorlagenblock | die vorderen Blöcke verlieren |
+| fremde Vorlagenmarke | HATG erkennt nur `HATG:` |
+| ungültige Werte, unbekannte Felder | wie HATGs Import sie sieht |
+
+Ein Stilziel, dessen Typ nicht in UIX' fester Liste steht, ist **kein** Fehler: Mit der UIX-Option *Style custom panels* heißt ein Ziel nach dem Wurzelelement des Panels (`uix-hacs-frontend-yaml`). Das Werkzeug meldet es als Hinweis.
+
+## `live-messung.js` — nach einem HA- oder UIX-Update
+
+Läuft **nicht** in node. Inhalt kopieren, in die Browser-Konsole eines offenen Home Assistant einfügen, Enter.
+
+Zeigt je Stilziel, wie viele `uix-node`-Elemente entstanden sind, wie viele davon CSS tragen, an welchen Wirtselementen sie hängen und welche Vorlagen ankommen.
+
+Zwei Fallen, die das Werkzeug abfängt beziehungsweise meldet:
+
+- **Die Seite muss gezeichnet sein.** In einem Hintergrund-Tab baut ein Sections-Dashboard nicht auf, dann sind *alle* Knoten leer. Das Werkzeug warnt, wenn `drawer`, `sidebar` und `root` leer sind.
+- **Karten füllen sich erst beim Scrollen.** Vor der Messung einmal durch die Ansicht scrollen, sonst hält man funktionierende Karten-Vorlagen für tot.
+
+## `kopflos.js`
+
+Gemeinsamer Unterbau: baut das Panel mit einem schmalen DOM-Ersatz in node, damit Import und Export ohne Browser prüfbar sind. Wird von den beiden node-Werkzeugen benutzt, nicht direkt aufgerufen.
+
+---
+
+## Wann was
+
+| Anlass | Werkzeug |
+|---|---|
+| vor jedem Release | `durchlauf-pruefen.js` (läuft in der CI mit) |
+| fremde Theme bekommen | `theme-pruefen.js`, dann `durchlauf-pruefen.js` |
+| neues Home Assistant | `live-messung.js`, dazu prüfen, welche HA-Variablen dazugekommen sind |
+| neues UI eXtension | `live-messung.js`, dazu die Typliste in `tests/hatg-vorlagen.test.js` gegen die neue `uix.js` |
+| Vorlage wirkt nicht | `live-messung.js` — zeigt, ob der Knoten leer ist oder gar nicht entsteht |

@@ -19,6 +19,7 @@ custom_components/hatg/
     └── plugins/          Vorschaubilder der Vorlagen
 .github/workflows/        ci, hacs, hassfest, validate
 docs/screenshots/         Bildmaterial für die README
+werkzeuge/                Prüfwerkzeuge, siehe werkzeuge/README.md
 ```
 
 Es ist eine Home-Assistant-Custom-Component in Python, deren Oberfläche in einer einzelnen JavaScript-Datei steckt. `hatg-panel.js` ist die Datei, an der die meiste Arbeit anfällt.
@@ -114,6 +115,17 @@ Seit 1.3.2b7 sind vier dieser Marken Felder: `ha-color-on-primary-loud`, `-norma
 `.modal-box` braucht eine eigene `color`. Ohne sie erbt der Kasten die Schriftfarbe des Wirts — im hellen Erscheinungsbild stand die Überschrift weiß auf weiß.
 
 Die beiden Balken auf der Vorlagenseite, die deckende Flächenfarben beziehungsweise eine zu durchsichtige `card-background-color` bemängelten und per Knopf umschreiben wollten, sind am 2026-09-27 auf Ansage entfernt worden — sie griffen nicht verlässlich. Die vier übrigen Balken bleiben: Ausgabeformat card-mod, verwaiste eigene Blöcke, veraltete Vorlagen und doppelte Pfade.
+
+## Prüfwerkzeuge
+
+`werkzeuge/` enthält drei Werkzeuge gegen die stummen Fehler. Kein `npm install` nötig.
+
+- **`kopflos.js`** baut das Panel mit einem schmalen DOM-Ersatz in node. Damit ist der Durchlauf Import → Export ohne Browser prüfbar — die Klasse lässt sich instanziieren, wenn `render`, `showToast` und `autoSaveState` auf leere Funktionen gesetzt werden.
+- **`durchlauf-pruefen.js`** schickt Themes durch Import und Export und meldet verlorene Stilziele, verlorene Vorlagenblöcke und `uix-`Felder, die unter `modes` rutschen. Läuft als `tests/hatg-durchlauf.test.js` in der CI mit — der Test schlägt nachweislich fehl, wenn man den `istFlach`-Fix zurückdreht.
+- **`theme-pruefen.js`** liest eine fremde Theme read-only: `$$`, doppelte Pfade, einfaches Feld neben `-yaml`, offene Klammern, doppelte Blöcke, fremde Marken, ungültige Werte.
+- **`live-messung.js`** läuft in der Browser-Konsole und zeigt je Stilziel, wie viele `uix-node` entstanden sind und wie viele CSS tragen. Warnt, wenn `drawer`/`sidebar`/`root` leer sind — dann ist die Seite nicht gezeichnet und die Messung taugt nichts.
+
+**Was die Werkzeuge nicht abfangen:** Ob HA oder UIX eine Variable oder einen Typnamen umbenannt haben, sieht nur eine Messung an einer laufenden Instanz. Nach jedem HA- oder UIX-Update gehört deshalb ein Lauf mit `live-messung.js` dazu, und die Typliste in `tests/hatg-vorlagen.test.js` gegen die neue `uix.js`.
 
 ## Workflows
 
