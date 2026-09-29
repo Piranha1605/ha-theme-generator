@@ -69,11 +69,16 @@ for f in docs/beispiele/*.yaml; do
     fehl "Durchlauf $(basename "$f")"
     node werkzeuge/durchlauf-pruefen.js "$f" 2>&1 | head -8 | sed 's/^/         /'
   fi
-  if node werkzeuge/theme-pruefen.js "$f" 2>&1 | grep -q '  FEHLER:'; then
-    fehl "Theme-Pruefung $(basename "$f")"
-    node werkzeuge/theme-pruefen.js "$f" 2>&1 | sed -n '/FEHLER:/,/Warnung:\|Befund:/p' | head -8 | sed 's/^/         /'
-  else
+  # Auf den Rueckgabewert schauen, nicht auf den Text: Erst hiess es hier
+  # grep -q 'FEHLER:', und weil theme-pruefen.js seine Meldung anders
+  # einrueckt als erwartet, lief dieses Tor gruen, waehrend die CI mit
+  # demselben Befund rot war. Ein Tor, das den Fehlschlag nicht sieht, ist
+  # kein Tor.
+  if ausgabe=$(node werkzeuge/theme-pruefen.js "$f" 2>&1); then
     ok "Theme-Pruefung $(basename "$f")"
+  else
+    fehl "Theme-Pruefung $(basename "$f")"
+    printf '%s\n' "$ausgabe" | sed -n '/FEHLER:/,/Warnung:\|Befund:/p' | head -8 | sed 's/^/         /'
   fi
 done
 

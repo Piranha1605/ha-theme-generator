@@ -27,13 +27,32 @@ const UIX_TYPEN = new Set([
 
 // Pfadschluessel eines -yaml-Feldes. Ohne YAML-Bibliothek: In der Ausgabe von
 // HATG steht jeder Pfad auf eigener Zeile und endet mit ": |".
+// Ein Pfadschluessel sieht anders aus als eine CSS-Deklaration, und der
+// Unterschied ist wichtiger, als er klingt: Eine mehrzeilige CSS-Deklaration
+// ("box-shadow:" mit dem Wert in den Zeilen darunter) endet genauso nach dem
+// Doppelpunkt wie ein Pfadschluessel. Am 2026-09-29 hat dieses Werkzeug deshalb
+// in docs/beispiele/glas-basis.yaml drei "doppelte Pfade box-shadow" gemeldet
+// und die Theme faelschlich als kaputt bezeichnet - sie hat zwei Pfade, nicht
+// sechs.
+//
+// Unterschieden wird am Schluessel selbst: Jeder echte UIX-Pfad ist entweder
+// genau "." (das einfache CSS in derselben Karte) oder enthaelt ein
+// Leerzeichen, ein $, >, #, [ oder ein Komma. An allen Vorlagen und den
+// Beispiel-Themes nachgezaehlt: kein einziger Pfad besteht aus einem einzelnen
+// Wort. Ein solcher Pfad wuerde hier uebersehen - das ist Absicht. Ein
+// uebersehener Pfad kostet eine Meldung, ein Fehlalarm blockiert jedes Release.
+function istPfadSchluessel(k) {
+  if (k === ".") return true;
+  if (/^--/.test(k)) return false;
+  return /[ $>,#[]/.test(k);
+}
 function pfadSchluessel(block) {
   const raus = [];
   for (const zeile of String(block).split("\n")) {
     const m = /^\s{2,6}"?([^"\n:]+?)"?:\s*\|?\s*$/.exec(zeile);
     if (!m) continue;
     const k = m[1].trim();
-    if (!k || k.startsWith("#")) continue;
+    if (!k || k.startsWith("#") || !istPfadSchluessel(k)) continue;
     raus.push(k);
   }
   return raus;
@@ -130,8 +149,14 @@ function pruefe(datei) {
   return { fehler, warnung, info };
 }
 
+module.exports = { pruefe, pfadSchluessel, istPfadSchluessel };
+
 const dateien = process.argv.slice(2);
-if (!dateien.length) { console.error("Aufruf: node werkzeuge/theme-pruefen.js <datei.yaml>"); process.exit(2); }
+if (!dateien.length) {
+  if (require.main !== module) return;
+  console.error("Aufruf: node werkzeuge/theme-pruefen.js <datei.yaml>");
+  process.exit(2);
+}
 let schlecht = 0;
 for (const d of dateien) {
   console.log("\n=== " + path.basename(d) + " ===");
