@@ -39,9 +39,12 @@ Liest eine Theme-Datei, ohne sie zu verändern, und sucht:
 | offene Klammer | alles danach fällt aus |
 | doppelter Vorlagenblock | die vorderen Blöcke verlieren |
 | fremde Vorlagenmarke | HATG erkennt nur `HATG:` |
+| unspeicherbare Vorlagen-Kennung | steht sie auch in `uix-vorlagen.json`, scheitert dort **jedes** Speichern einer Vorlage |
 | ungültige Werte, unbekannte Felder | wie HATGs Import sie sieht |
 
 Ein Stilziel, dessen Typ nicht in UIX' fester Liste steht, ist **kein** Fehler: Mit der UIX-Option *Style custom panels* heißt ein Ziel nach dem Wurzelelement des Panels (`uix-hacs-frontend-yaml`). Das Werkzeug meldet es als Hinweis.
+
+Die Kennungen werden absichtlich weit gefasst gelesen (`[^:\s]+` statt `[a-z0-9-]+`). Mit der engen Regex war das Werkzeug für den einen Fall blind, auf den es hier ankommt: eine Kennung mit Umlaut. Am 2026-09-27 hat es genau deshalb in einer fremden Theme zwei solche Kennungen überlesen.
 
 ## `live-messung.js` — nach einem HA- oder UIX-Update
 

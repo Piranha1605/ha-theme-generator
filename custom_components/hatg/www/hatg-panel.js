@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.3.2b10";
+const HATG_VERSION = "1.3.2b11";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -2002,6 +2002,66 @@ function hatgLeseVorlagenBlock(text, id) {
   ).exec(String(text || ""));
   return m ? m[1].trim() : null;
 }
+// Ein Stilziel-Feld im weiten Sinn: die bekannten Ziele und jedes weitere
+// uix-Feld. Eigene Panels heissen nach ihrem Wurzelelement
+// (uix-knx-frontend-yaml) und stehen in keiner festen Liste - wer nur die
+// bekannten Ziele durchgeht, laesst gerade die Felder aus, in denen von Hand
+// geschriebene Vorlagen liegen.
+function hatgIstStilzielFeld(key) {
+  return hatgIstStilzielKey(key) || /^(?:uix|card-mod)-[a-z0-9-]+$/.test(String(key || ""));
+}
+
+// Die Kennung einer eigenen Vorlage steht in den Markern im Theme
+// (/* HATG:UIX:<kennung>:START */) und muss deshalb bei ASCII bleiben: Die
+// Marken-Regex kennt nur [a-z0-9-], und der Server nimmt beim Schreiben nur
+// [A-Za-z0-9_-] bis 64 Zeichen an. Beim Lesen prueft er nichts. Eine von Hand
+// in uix-vorlagen.json eingetragene Kennung mit Umlaut kommt also herein, laesst
+// sich aber nie zurueckschreiben - und weil ein einziger schlechter Eintrag den
+// ganzen Stapel kippt, war danach ueberhaupt keine Vorlage mehr speicherbar,
+// auch keine neue. Am 2026-09-29 an einer laufenden Instanz nachgestellt.
+const HATG_VORLAGEN_ID_RE = /^[A-Za-z0-9_-]{1,64}$/;
+function hatgVorlagenIdGueltig(id) {
+  return HATG_VORLAGEN_ID_RE.test(String(id ?? ""));
+}
+function hatgVorlagenIdSlug(name) {
+  return (
+    String(name || "")
+      .toLowerCase()
+      .replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss")
+      .normalize("NFKD")
+      .replace(/[̀-ͯ]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 48)
+      .replace(/-+$/g, "") || "vorlage"
+  );
+}
+// Eine Vorlage umbenennen heisst immer auch: ihre Marker im Theme umschreiben.
+// Sonst bleibt der Block unter der alten Kennung stehen, gilt als verwaist und
+// die Vorlage sieht ausgeschaltet aus, obwohl ihr CSS noch im Theme liegt.
+function hatgBenenneVorlagenMarkenUm(baeger, alt, neu) {
+  if (!alt || alt === neu) return 0;
+  const muster = new RegExp(
+    `([A-Z][A-Z0-9_]*:(?:UIX|CARDMOD):)${hatgRegexEscape(alt)}(:(?:START|END))`,
+    "g"
+  );
+  let getroffen = 0;
+  (baeger || []).forEach((bag) => {
+    if (!bag) return;
+    Object.keys(bag).forEach((k) => {
+      if (!hatgIstStilzielFeld(k)) return;
+      const vorher = String(bag[k] ?? "");
+      if (!vorher.includes(alt)) return;
+      const nachher = vorher.replace(muster, (ganz, kopf, pos) => `${kopf}${neu}${pos}`);
+      if (nachher !== vorher) {
+        bag[k] = nachher;
+        getroffen++;
+      }
+    });
+  });
+  return getroffen;
+}
+
 // Umbenannte Kopien eines HATG-Themes tragen die Marker unter anderer Vorsilbe
 // (/* HORIZON:UIX:glas-bubble:START */). HATG erkannte diese Bloecke nicht und
 // haengte beim Einschalten dieselbe Vorlage ein zweites Mal an. Der Import
@@ -2016,7 +2076,7 @@ function hatgVereinheitlicheVorlagenMarken(bag) {
     [bag[m], bag.extra?.[m]].forEach((b) => {
       if (!b) return;
       Object.keys(b).forEach((k) => {
-        if (!hatgIstStilzielKey(k)) return;
+        if (!hatgIstStilzielFeld(k)) return;
         const alt = String(b[k] ?? "");
         const ids = new Set();
         let neu = alt.replace(HATG_FREMDE_MARKE_RE, (ganz, vor, marke, art, id, pos) => {
@@ -7168,15 +7228,41 @@ class HATGPanel extends HTMLElement {
       const result = await this._hass.callWS({ type: "hatg/list_uix_templates" });
       this._state.eigeneVorlagenListe = (result && result.templates) || [];
       this._state.eigeneVorlagenGeladen = true;
+      const geheilt = this.eigeneVorlagenKennungenHeilen();
       this.render();
+      if (geheilt.length) {
+        const liste = geheilt.map((x) => `${x.alt} -> ${x.neu}`).join(", ");
+        const gespeichert = await this.speichereEigeneVorlagen();
+        const en = this._sprache === "en";
+        this.showToast(
+          gespeichert
+            ? en
+              ? `${geheilt.length} preset id${geheilt.length === 1 ? "" : "s"} could not be saved and ${geheilt.length === 1 ? "has" : "have"} been renamed (${liste}). Save the theme so the markers follow.`
+              : `${geheilt.length} Vorlagen-Kennung${geheilt.length === 1 ? "" : "en"} war nicht speicherbar und ${geheilt.length === 1 ? "wurde" : "wurden"} umbenannt (${liste}). Theme speichern, damit die Marker mitkommen.`
+            : en
+              ? `${geheilt.length} preset id${geheilt.length === 1 ? "" : "s"} cannot be saved (${liste}), and the correction could not be written either: ${this._vorlagenSpeicherFehler}`
+              : `${geheilt.length} Vorlagen-Kennung${geheilt.length === 1 ? "" : "en"} ist nicht speicherbar (${liste}), und die Korrektur liess sich ebenfalls nicht schreiben: ${this._vorlagenSpeicherFehler}`
+        );
+        this.render();
+      }
     } catch (error) {
       console.error("HATG ladeEigeneVorlagen failed", error);
     }
   }
 
+  // Der Grund einer Ablehnung steht in _vorlagenSpeicherFehler und wandert von
+  // dort in den Dialog. Vorher stand er nur in einem Toast: Der ist nach ein paar
+  // Sekunden weg, im Dialog blieb "siehe Meldung unten" stehen, und aus einem
+  // Screenshot war nicht mehr zu erkennen, ob die Kennung, das Stilziel oder ein
+  // Schreibfehler im Dateisystem der Grund war.
   async speichereEigeneVorlagen() {
+    this._vorlagenSpeicherFehler = null;
     if (!this._hass || typeof this._hass.callWS !== "function") {
-      this.showToast("Keine Verbindung zu Home Assistant - Vorlage nicht gespeichert.");
+      this._vorlagenSpeicherFehler =
+        this._sprache === "en"
+          ? "No connection to Home Assistant - preset not saved."
+          : "Keine Verbindung zu Home Assistant - Vorlage nicht gespeichert.";
+      this.showToast(this._vorlagenSpeicherFehler);
       return false;
     }
     try {
@@ -7187,23 +7273,23 @@ class HATGPanel extends HTMLElement {
       return true;
     } catch (error) {
       console.error("HATG speichereEigeneVorlagen failed", error);
-      const detail = error && (error.message || error.code) ? ` (${error.message || error.code})` : "";
-      this.showToast(`Vorlage konnte nicht gespeichert werden${detail}.`);
+      const text = String((error && (error.message || error.code)) || "").trim();
+      this._vorlagenSpeicherFehler =
+        text ||
+        (this._sprache === "en"
+          ? "Home Assistant rejected the save without giving a reason."
+          : "Home Assistant hat das Speichern ohne Angabe eines Grundes abgelehnt.");
+      this.showToast(
+        this._sprache === "en"
+          ? `Preset not saved: ${this._vorlagenSpeicherFehler}`
+          : `Vorlage nicht gespeichert: ${this._vorlagenSpeicherFehler}`
+      );
       return false;
     }
   }
 
   vorlagenIdAusName(name, ignoriereId) {
-    const basis =
-      String(name || "")
-        .toLowerCase()
-        .replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss")
-        .normalize("NFKD")
-        .replace(/[̀-ͯ]/g, "")
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "")
-        .slice(0, 48)
-        .replace(/-+$/g, "") || "vorlage";
+    const basis = hatgVorlagenIdSlug(name);
     const belegt = new Set(
       this.alleVorlagen().map((t) => t.id).filter((id) => id !== ignoriereId)
     );
@@ -7211,6 +7297,39 @@ class HATGPanel extends HTMLElement {
     let n = 2;
     while (belegt.has(kandidat)) kandidat = `eigene-${basis}-${n++}`;
     return kandidat;
+  }
+
+  // Eine Kennung, die der Server beim Schreiben ablehnt, macht die ganze Liste
+  // unspeicherbar: Ein einziger schlechter Eintrag laesst den Stapel scheitern,
+  // danach war keine Vorlage mehr speicherbar - auch keine neue. Die Liste wird
+  // deshalb beim Laden geradegezogen, und die Marker im Theme wandern mit, damit
+  // kein Block unter der alten Kennung verwaist zurueckbleibt.
+  eigeneVorlagenKennungenHeilen() {
+    const liste = this.eigeneVorlagen();
+    if (!liste.some((t) => !hatgVorlagenIdGueltig(t && t.id))) return [];
+    const belegt = new Set(this.alleVorlagen().map((t) => t && t.id).filter(Boolean));
+    const baeger = [
+      this._state.values?.light, this._state.values?.dark,
+      this._state.extraValues?.light, this._state.extraValues?.dark,
+    ];
+    const umbenannt = [];
+    liste.forEach((tpl) => {
+      if (!tpl || hatgVorlagenIdGueltig(tpl.id)) return;
+      const alt = String(tpl.id ?? "");
+      // Erst die Kennung selbst entschaerfen; bleibt davon nichts uebrig, den
+      // Namen nehmen - der steht dem Nutzer naeher als "eigene-vorlage".
+      let basis = hatgVorlagenIdSlug(alt.replace(/^eigene-/, ""));
+      if (basis === "vorlage" && tpl.label) basis = hatgVorlagenIdSlug(tpl.label);
+      let neu = `eigene-${basis}`;
+      let n = 2;
+      while (belegt.has(neu)) neu = `eigene-${basis}-${n++}`;
+      belegt.delete(alt);
+      belegt.add(neu);
+      tpl.id = neu;
+      hatgBenenneVorlagenMarkenUm(baeger, alt, neu);
+      umbenannt.push({ alt, neu });
+    });
+    return umbenannt;
   }
 
   oeffneVorlagenDialog(id) {
@@ -7267,7 +7386,10 @@ class HATGPanel extends HTMLElement {
     const gespeichert = await this.speichereEigeneVorlagen();
     if (!gespeichert) {
       this._state.eigeneVorlagenListe = vorherigeListe;
-      dialog.error = "Vorlage konnte nicht gespeichert werden - siehe Meldung unten.";
+      dialog.error =
+        this._sprache === "en"
+          ? `Home Assistant did not save the preset: ${this._vorlagenSpeicherFehler || "reason unknown"}`
+          : `Home Assistant hat die Vorlage nicht gespeichert: ${this._vorlagenSpeicherFehler || "Grund unbekannt"}`;
       this.render();
       return;
     }

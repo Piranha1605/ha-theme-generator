@@ -499,16 +499,29 @@ async def ws_save_uix_templates(hass: HomeAssistant, connection, msg):
     eintraege = []
     for eintrag in msg["templates"]:
         kennung = str(eintrag.get("id") or "").strip()
+        # Die Meldung nennt Name und Kennung: Ein einziger schlechter Eintrag
+        # laesst den ganzen Stapel scheitern, und ohne Namen war aus der
+        # Fehlermeldung nicht zu erkennen, welche der Vorlagen gemeint ist.
+        name = str(eintrag.get("label") or kennung or "ohne Namen")
         if not kennung or not _VORLAGEN_ID_RE.fullmatch(kennung):
-            connection.send_error(msg["id"], "invalid_id", f"Ungültige Vorlagen-Kennung: {kennung!r}")
+            connection.send_error(
+                msg["id"],
+                "invalid_id",
+                f"Vorlage {name!r} hat die ungültige Kennung {kennung!r}. "
+                "Erlaubt sind Buchstaben ohne Umlaute, Ziffern, - und _, höchstens 64 Zeichen.",
+            )
             return
         css = eintrag.get("css")
         if not isinstance(css, str):
-            connection.send_error(msg["id"], "invalid_css", f"Vorlage {kennung} enthält kein CSS.")
+            connection.send_error(msg["id"], "invalid_css", f"Vorlage {name!r} ({kennung}) enthält kein CSS.")
             return
         ziel = str(eintrag.get("ziel") or "uix-card")
         if not _VORLAGEN_ZIEL_RE.fullmatch(ziel):
-            connection.send_error(msg["id"], "invalid_target", f"Ungültiges Stilziel: {ziel!r}")
+            connection.send_error(
+                msg["id"],
+                "invalid_target",
+                f"Vorlage {name!r} ({kennung}) zeigt auf das ungültige Stilziel {ziel!r}.",
+            )
             return
         eintraege.append(
             {
@@ -522,7 +535,10 @@ async def ws_save_uix_templates(hass: HomeAssistant, connection, msg):
 
     kennungen = [e["id"] for e in eintraege]
     if len(kennungen) != len(set(kennungen)):
-        connection.send_error(msg["id"], "duplicate_id", "Zwei Vorlagen haben dieselbe Kennung.")
+        doppelt = sorted({k for k in kennungen if kennungen.count(k) > 1})
+        connection.send_error(
+            msg["id"], "duplicate_id", f"Diese Kennung kommt mehrfach vor: {', '.join(doppelt)}."
+        )
         return
 
     vorlagen_dir = Path(hass.config.path(THEMES_SUBDIR, VORLAGEN_SUBDIR))

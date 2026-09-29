@@ -91,13 +91,26 @@ function pruefe(datei) {
     }
   }
 
-  // Vorlagenmarken: doppelt oder unter fremder Vorsilbe?
-  const marken = [...text.matchAll(/([A-Z]+):UIX:([a-z0-9-]+):START/g)];
+  // Vorlagenmarken: doppelt, unter fremder Vorsilbe, oder mit einer Kennung,
+  // die der Server nie zurueckschreiben kann.
+  // Die Kennung wird hier absichtlich weit gefasst ([^:\s]+) statt [a-z0-9-]+:
+  // Eine Kennung mit Umlaut ist genau der Fehlerfall, den es zu finden gilt -
+  // mit der engen Regex war dieses Werkzeug dafuer blind.
+  const marken = [...text.matchAll(/([A-Z][A-Z0-9_]*):UIX:([^:\s]+):START/g)];
   const zaehler = {}; const fremd = new Set();
   for (const m of marken) { if (m[1] !== "HATG") fremd.add(m[1]); zaehler[m[2]] = (zaehler[m[2]] || 0) + 1; }
   const doppelt = Object.entries(zaehler).filter(([, n]) => n > 1);
   if (fremd.size) warnung.push(`Fremde Vorlagenmarken: ${[...fremd].join(", ")} - HATG erkennt nur HATG:`);
   if (doppelt.length) fehler.push(`Doppelte Vorlagenbloecke: ${doppelt.map(([id, n]) => `${id} (${n}x)`).join(", ")}`);
+  // Der Server nimmt beim Schreiben nur [A-Za-z0-9_-]{1,64} an, beim Lesen
+  // prueft er nichts. Steht so eine Kennung in uix-vorlagen.json, laesst sich
+  // die ganze Liste nie wieder speichern - keine Vorlage, auch keine neue.
+  const unspeicherbar = Object.keys(zaehler).filter((id) => !/^[A-Za-z0-9_-]{1,64}$/.test(id));
+  if (unspeicherbar.length)
+    fehler.push(
+      `Unspeicherbare Vorlagen-Kennung: ${unspeicherbar.join(", ")} - steht sie auch in ` +
+        `themes/hatg-vorlagen/uix-vorlagen.json, scheitert dort jedes Speichern einer Vorlage`
+    );
   const bekannteVorlagen = new Set(ctx.HATG_VORLAGEN.map((t) => t.id));
   const eigene = Object.keys(zaehler).filter((id) => !bekannteVorlagen.has(id));
   info.push(`Vorlagen: ${Object.keys(zaehler).length}${eigene.length ? `, davon ${eigene.length} eigene` : ""}`);

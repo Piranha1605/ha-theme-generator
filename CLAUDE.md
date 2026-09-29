@@ -11,7 +11,7 @@ custom_components/hatg/
 ├── __init__.py           Einstiegspunkt der Integration
 ├── config_flow.py        Einrichtung über die Oberfläche
 ├── const.py              Konstanten
-├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b10
+├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b11
 ├── translations/         de.json und en.json
 ├── brand/                Icons für den HACS-Store
 └── www/
@@ -107,6 +107,20 @@ Am 2026-09-27 an der Geräteseite nachgemessen: „Zu Dashboard hinzufügen", �
 Seit 1.3.2b7 sind vier dieser Marken Felder: `ha-color-on-primary-loud`, `-normal`, `-quiet` und `ha-color-text-link`. Die drei letzten hängen in `HATG_DERIVE_RULES` an **`accent-color`** (nicht an `primary-color` — dessen Liste ist kurz und endet bei `md-sys-color-primary`); `loud` bleibt bewusst draußen, das ist die Schrift *auf* der Akzentfläche und muss hell bleiben.
 
 **Der Schalter auf Einstellungsseiten** bekommt von UIX nichts ab: Dort entstehen nur `config`-, `drawer`- und `sidebar`-Knoten, kein `row`-Knoten. Seine Farbe kommt aus `--ha-switch-checked-background-color` (Rückfall über `--ha-color-fill-primary-normal-resting` bis `--primary-color`) — ein Feld, das HATG schon kennt und das mit dem Akzent mitzieht. Ein Verlauf ist dort nicht möglich: Der Weg dorthin führt über vier Pfadschritte, und Zwischenschritte nehmen nur den ersten Treffer, also nur die erste Zeile.
+
+## Eigene Vorlagen: die Kennung muss ASCII bleiben
+
+Die Kennung einer eigenen Vorlage steht in den Markern im Theme (`/* HATG:UIX:<kennung>:START */`) und ist damit kein freier Text. Die Marken-Regex kennt nur `[a-z0-9-]`, der Server nimmt beim Schreiben nur `[A-Za-z0-9_-]{1,64}` an.
+
+**Lesen und Schreiben waren unterschiedlich streng.** `ws_list_uix_templates` gab jede Kennung heraus, die in `themes/hatg-vorlagen/uix-vorlagen.json` stand; `ws_save_uix_templates` lehnt seit immer alles außerhalb von `[A-Za-z0-9_-]{1,64}` ab — und bricht beim **ersten** schlechten Eintrag den **ganzen Stapel** ab. Eine von Hand eingetragene Kennung mit Umlaut kam damit herein, ließ sich aber nie zurückschreiben: Danach war überhaupt keine Vorlage mehr speicherbar, auch keine neue, und die Meldung nannte nur die Kennung, nicht die Vorlage. Am 2026-09-29 an einer laufenden Instanz nachgestellt — ein Stapel aus einer sauberen und einer Umlaut-Kennung wurde komplett mit `invalid_id` abgelehnt, die saubere Vorlage inklusive.
+
+Seit 1.3.2b11: `eigeneVorlagenKennungenHeilen()` zieht die Liste beim Laden gerade und **schreibt die Marker im Theme mit um** (`hatgBenenneVorlagenMarkenUm`) — ohne das bliebe der Block unter der alten Kennung stehen, gälte als verwaist und die Vorlage sähe ausgeschaltet aus. `vorlagenIdAusName` und die Heilung benutzen dieselbe Slug-Regel (`hatgVorlagenIdSlug`). Der Generator war nie die Quelle: Er ersetzt Umlaute seit der ersten Fassung, `Füllung` wird `fuellung`.
+
+**Die Slug-Regel deckt nur vorkomponierte Umlaute ab.** `.replace(/ü/g, "ue")` trifft U+00FC; ein zerlegtes `u` + U+0308 fällt durch und verliert beim Entfernen der Kombinationszeichen den Punkt: aus `Füllung` wird dann `fullung`, nicht `fuellung`. Speicherbar ist beides, nur unterschiedlich schön.
+
+**`hatgIstStilzielKey` reicht dafür nicht.** Es kennt nur die feste Liste, `uix-knx-frontend-yaml` also nicht. `hatgVereinheitlicheVorlagenMarken` übersprang eigene Panel-Ziele damit komplett — fremde Vorsilben und doppelte Blöcke wurden dort nie aufgeräumt. Seit 1.3.2b11 gibt es `hatgIstStilzielFeld` (feste Liste **plus** jedes weitere `uix-`/`card-mod-`Feld); wer über Stilziele iteriert, nimmt das.
+
+**Was die Meldung sagen muss.** Der Grund einer Ablehnung stand nur in einem Toast, der nach Sekunden weg ist, während im Dialog „siehe Meldung unten" stehen blieb. Aus einem Screenshot war damit nicht zu erkennen, ob die Kennung, das Stilziel oder ein `write_failed` im Dateisystem der Grund war — drei Ursachen mit identischem Symptom „jedes Speichern scheitert". Der Dialog zeigt den Text des Servers jetzt wörtlich, und die Server-Meldungen nennen den **Namen** der Vorlage, nicht nur die Kennung.
 
 ## Meldungen
 

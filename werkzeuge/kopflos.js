@@ -123,9 +123,12 @@ function stilziele(text) {
   )];
 }
 
-// Alle Vorlagenmarken - auch unter fremder Vorsilbe (HORIZON:UIX:...).
+// Alle Vorlagenmarken - auch unter fremder Vorsilbe (HORIZON:UIX:...) und auch
+// mit einer Kennung, die HATG selbst nie erzeugen wuerde. Die Kennung wird
+// deshalb weit gefasst: Mit [a-z0-9-]+ blieb eine Kennung mit Umlaut
+// unsichtbar, und genau die ist der Fehlerfall.
 function vorlagenMarken(text) {
-  return new Set([...String(text).matchAll(/[A-Z]+:UIX:([a-z0-9-]+):START/g)].map((m) => m[1]));
+  return new Set([...String(text).matchAll(/[A-Z][A-Z0-9_]*:UIX:([^:\s]+):START/g)].map((m) => m[1]));
 }
 
 module.exports = { panelBauen, durchlauf, stilziele, stilzielBasis, vorlagenMarken, PANEL };
