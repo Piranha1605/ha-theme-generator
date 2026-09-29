@@ -141,6 +141,18 @@ Die beiden Balken auf der Vorlagenseite, die deckende Flächenfarben beziehungsw
 
 **Was die Werkzeuge nicht abfangen:** Ob HA oder UIX eine Variable oder einen Typnamen umbenannt haben, sieht nur eine Messung an einer laufenden Instanz. Nach jedem HA- oder UIX-Update gehört deshalb ein Lauf mit `live-messung.js` dazu, und die Typliste in `tests/hatg-vorlagen.test.js` gegen die neue `uix.js`.
 
+## Vor jedem Release, auch vor jeder Beta
+
+```bash
+werkzeuge/vor-release.sh 1.3.2b12
+```
+
+Läuft alles durch, was ohne laufende Instanz prüfbar ist: Syntax von Panel, Python und allen JSON-Dateien, die komplette Testsuite, eine Theme mit **allen** Vorlagen durch Import und Export, die Beispiel-Themes durch beide Prüfwerkzeuge, und zum Schluss den Stand im Git — nichts Uncommittetes, Branch gepusht, Version im Manifest gleich der geplanten Marke, Marke noch frei. Ein Fehlschlag heißt: nichts veröffentlichen.
+
+**Anlass:** 1.3.2b11 ging raus, bevor die Prüfungen vollständig gelaufen waren. Möglich war das, weil `ci.yml` nur bei Push auf `main` und bei PRs gegen `main` griff — Betas kommen aber aus einem Branch, und dieser Stand wurde nie angefasst. Seit dem 2026-09-29 läuft die CI auf **allen** Branches und Marken, und ein zweiter Job vergleicht bei einer Marke die Versionsnummer im Manifest mit dem Namen der Marke. Ein Tag auf einem Stand mit alter Nummer wäre sonst besonders tückisch: HACS liefert dann die neue Version mit altem Inhalt aus.
+
+Was das Tor **nicht** abdeckt: ob Home Assistant oder UIX eine Variable oder einen Typnamen umbenannt haben. Dafür bleibt `werkzeuge/live-messung.js` an einer laufenden Instanz nötig.
+
 ## Workflows
 
 Vier Stück: `ci`, `hacs`, `hassfest`, `validate`. Der Validate-Lauf geht täglich durch.

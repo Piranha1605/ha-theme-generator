@@ -1,8 +1,32 @@
 # Werkzeuge
 
-Drei Prüfwerkzeuge gegen Fehler, die sonst stumm bleiben. Alle Funde, auf denen sie beruhen, sind an einer laufenden Instanz nachgemessen und in `CLAUDE.md` festgehalten.
+Prüfwerkzeuge gegen Fehler, die sonst stumm bleiben. Alle Funde, auf denen sie beruhen, sind an einer laufenden Instanz nachgemessen und in `CLAUDE.md` festgehalten.
 
 Kein `npm install` nötig — die Werkzeuge brauchen nur node.
+
+---
+
+## `vor-release.sh` — das Tor vor jeder Veröffentlichung
+
+```bash
+werkzeuge/vor-release.sh            # nur prüfen
+werkzeuge/vor-release.sh 1.3.2b12   # und gegen die geplante Marke prüfen
+```
+
+Fasst alle anderen Werkzeuge und die Testsuite zusammen und prüft zusätzlich den Stand im Git: nichts Uncommittetes, Branch gepusht, Version im Manifest gleich der geplanten Marke, Marke noch frei. Schlägt etwas fehl, wird nichts veröffentlicht.
+
+**Auch vor Betas.** 1.3.2b11 ging raus, bevor die Prüfungen vollständig gelaufen waren — die CI griff damals nur bei Push auf `main`, Betas kommen aber aus einem Branch. Seit dem 2026-09-29 läuft die CI auf allen Branches und Marken; dieses Skript ist der Schritt davor, auf dem eigenen Rechner.
+
+## `alle-vorlagen-theme.js` — läuft in der CI
+
+```bash
+node werkzeuge/alle-vorlagen-theme.js            # nur prüfen
+node werkzeuge/alle-vorlagen-theme.js raus.yaml  # und ablegen
+```
+
+Schaltet **jede** eingebaute Vorlage ein und schickt die entstandene Theme durch Import und Export. Gemeldet wird eine Vorlage ohne Marker, ein verlorener Block, ein verlorenes Stilziel, ein Stilziel unter `modes` und ein Pfad mit `$$`.
+
+Grund: In `docs/beispiele` liegt genau eine Theme. Der Durchlauf-Test hat damit nur einen Bruchteil der Vorlagen angefasst — und die stummen Fehler stecken in einzelnen Vorlagen.
 
 ---
 
@@ -67,7 +91,7 @@ Gemeinsamer Unterbau: baut das Panel mit einem schmalen DOM-Ersatz in node, dami
 
 | Anlass | Werkzeug |
 |---|---|
-| vor jedem Release | `durchlauf-pruefen.js` (läuft in der CI mit) |
+| vor jedem Release **und jeder Beta** | `vor-release.sh` — fasst alles zusammen |
 | fremde Theme bekommen | `theme-pruefen.js`, dann `durchlauf-pruefen.js` |
 | neues Home Assistant | `live-messung.js`, dazu prüfen, welche HA-Variablen dazugekommen sind |
 | neues UI eXtension | `live-messung.js`, dazu die Typliste in `tests/hatg-vorlagen.test.js` gegen die neue `uix.js` |

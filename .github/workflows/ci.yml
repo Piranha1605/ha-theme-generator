@@ -1,28 +1,41 @@
 name: CI
 
+# Auch Branches und Marken, nicht nur main: Betas kommen aus einem Branch, und
+# bis 1.3.2b11 hat die CI diesen Stand nie angefasst.
 on:
   push:
-    branches: [main]
+    branches: ['**']
+    tags: ['*']
   pull_request:
-    branches: [main]
+  workflow_dispatch:
 
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Validate JSON
-        run: |
-          python -m json.tool custom_components/hatg/manifest.json >/dev/null
-          python -m json.tool hacs.json >/dev/null
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+      - name: JSON prüfen
+        run: |
+          python -m json.tool custom_components/hatg/manifest.json >/dev/null
+          python -m json.tool hacs.json >/dev/null
+          for f in custom_components/hatg/translations/*.json; do
+            python -m json.tool "$f" >/dev/null
+          done
+      - name: Python-Syntax prüfen
+        run: |
+          for f in custom_components/hatg/*.py; do
+            python -c "import ast,sys; ast.parse(open(sys.argv[1]).read())" "$f"
+          done
       - name: Panel-Syntax prüfen
         run: node --check custom_components/hatg/www/hatg-panel.js
       - name: Tests
@@ -31,3 +44,36 @@ jobs:
             echo "== $t"
             node "$t"
           done
+      - name: Alle Vorlagen durch Import und Export
+        run: node werkzeuge/alle-vorlagen-theme.js
+      - name: Beispiel-Themes
+        run: |
+          for f in docs/beispiele/*.yaml; do
+            [ -e "$f" ] || continue
+            echo "== $f"
+            node werkzeuge/durchlauf-pruefen.js "$f"
+            node werkzeuge/theme-pruefen.js "$f"
+          done
+
+  # Bei einer Marke zusaetzlich: Traegt der getaggte Stand wirklich die Version,
+  # die die Marke behauptet? Ein Tag auf einem Stand mit alter Versionsnummer
+  # laesst HACS die Datei unter der neuen Version mit altem Inhalt ausliefern.
+  marke:
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Marke und Version vergleichen
+        run: |
+          marke="${GITHUB_REF#refs/tags/}"
+          version=$(python -c "import json;print(json.load(open('custom_components/hatg/manifest.json'))['version'])")
+          echo "Marke: $marke"
+          echo "Manifest: $version"
+          if [ "${marke#v}" != "$version" ]; then
+            echo "::error::Die Marke $marke passt nicht zur Version $version im Manifest."
+            exit 1
+          fi
