@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.3.2b13";
+const HATG_VERSION = "1.3.2b14";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -13402,6 +13402,39 @@ uix:
       { light: this._state.values.light, dark: this._state.values.dark, extra: this._state.extraValues },
       eigeneFelder.behalten
     );
+    // Ausmisten: Alles, was danach noch unbekannt ist und auf das niemand
+    // zeigt, fliegt raus. In der Theme eines Nutzers waren das am 2026-09-30
+    // vierzehn Felder aus einer aelteren Fassung (liquid-*,
+    // bubble-menu-bar-main-background-color), jedes zweimal geschrieben - 28
+    // Zeilen, die HATG bei jedem Import treu weitergereicht hat. Ohne diesen
+    // Schritt schleppt man sie ewig mit, denn die Ausgabe haengt unbekannte
+    // Felder immer wieder an.
+    //
+    // Was noch jemand liest, bleibt stehen: hatgEntferneVerwaisteEigenfelder
+    // folgt den var()-Ketten auch ueber mehrere Stufen. Der Bericht nennt jedes
+    // entfernte Feld beim Namen - ein Feld kann auch von ausserhalb der Theme
+    // gelesen werden, etwa aus der Konfiguration einer einzelnen Karte, und das
+    // sieht HATG nicht.
+    const ballastVorher = new Set([
+      ...Object.keys(this._state.extraValues.light || {}),
+      ...Object.keys(this._state.extraValues.dark || {}),
+    ]);
+    hatgEntferneVerwaisteEigenfelder(
+      { light: this._state.values.light, dark: this._state.values.dark, extra: this._state.extraValues },
+      [...ballastVorher]
+    );
+    const ballastNachher = new Set([
+      ...Object.keys(this._state.extraValues.light || {}),
+      ...Object.keys(this._state.extraValues.dark || {}),
+    ]);
+    const ausgemistet = [...ballastVorher].filter((k) => !ballastNachher.has(k)).sort();
+    if (ausgemistet.length)
+      parts.push(
+        (en
+          ? `${ausgemistet.length} unused field${ausgemistet.length === 1 ? "" : "s"} removed - nothing referred to ${ausgemistet.length === 1 ? "it" : "them"}: `
+          : `${ausgemistet.length} ungenutzte${ausgemistet.length === 1 ? "s Feld entfernt - nichts zeigte darauf: " : " Felder entfernt - nichts zeigte darauf: "}`) +
+          hatgFelderNennen(ausgemistet, en ? "more" : "weitere")
+      );
     const entferntGesamt = eigeneFelder.entfernt + verwaist.entfernt;
     if (entferntGesamt)
       parts.push(

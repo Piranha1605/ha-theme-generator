@@ -11,7 +11,7 @@ custom_components/hatg/
 ├── __init__.py           Einstiegspunkt der Integration
 ├── config_flow.py        Einrichtung über die Oberfläche
 ├── const.py              Konstanten
-├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b13
+├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b14
 ├── translations/         de.json und en.json
 ├── brand/                Icons für den HACS-Store
 └── www/
@@ -151,6 +151,18 @@ Seit 1.3.2b13 liegen die Bilder der Galerie in `config/www/hatg` und kommen unte
 - **Import, Autosave und Entwurf ziehen alte Adressen mit** (`hatgMigriereWallpaperAdressen`), und der Import-Bericht nennt die betroffenen Felder.
 - **`/local` hängt an `config/www` zum Startzeitpunkt.** Home Assistant registriert die Route nur, wenn der Ordner beim Start schon da war. Legt HATG ihn gerade erst an, bleibt `/local` bis zum nächsten Neustart tot — das steht als Warnung im Log, sonst sucht man den Fehler in der Theme.
 - Client und Server halten dieselben zwei Adressen (`HATG_WALLPAPER_ADRESSE_ALT`/`-NEU` gegen `WALLPAPER_STATIC_PATH`/`WALLPAPER_LOCAL_PATH`); ein Test vergleicht sie.
+
+## Ausmisten beim Import
+
+Der Import entfernt seit 1.3.2b14 **unbekannte Felder, auf die nichts zeigt**. Grund: Die Ausgabe hängt unbekannte Felder immer wieder an — ein Feld aus einer älteren Fassung des Themes wird damit bei jedem Durchlauf treu weitergereicht, man wird es nie wieder los. In der Theme eines Nutzers waren das am 2026-09-30 vierzehn Felder (`liquid-*`, `bubble-menu-bar-main-background-color`), jedes zweimal geschrieben: 28 Zeilen Ballast, auf die **keiner** der 1236 Einträge verwies.
+
+Die Maschinerie dafür gab es schon (`hatgEntferneVerwaisteEigenfelder`), sie wurde nur mit zu wenigen Kandidaten aufgerufen — nur mit denen, die `hatgLoeseEigeneFelderAuf` behalten wollte. Jetzt bekommt sie **alle** übrigen unbekannten Felder.
+
+- **Was noch jemand liest, bleibt.** Die Funktion folgt den `var()`-Ketten transitiv: Zeigt `primary-color` auf `liquid-b` und `liquid-b` auf `liquid-a`, überleben beide — beziehungsweise werden aufgelöst, der Wert tritt ein.
+- **Die Grenze, die HATG nicht sieht:** Ein Feld kann von außerhalb der Theme gelesen werden, etwa aus der Konfiguration einer einzelnen Karte. Deshalb nennt der Bericht **jedes** entfernte Feld beim Namen, und der Bericht steht auch im Kopf der Datei.
+- Ein Test hält beides fest (`tests/hatg-ausmisten.test.js`): dass Ballast fliegt und dass nach dem Import kein `var()` mehr ins Leere zeigt.
+
+Noch nicht ausgemistet sind **bekannte** Felder, die HA oder Bubble Card nicht mehr lesen. Der Stand der Prüfung am 2026-09-30: 21 von 387 HA-Feldern, 61 von 124 Bubble-Feldern und 3 Druckerfarben sind Kandidaten; ein großer Teil davon sind **Umbenennungen**, keine Leichen. Zwei Fallen dabei, beide selbst hineingetappt: HA baut Zustandsfarben als `--state-${domain}-${state}-color` zusammen, ein Literalname steht nirgends — ein erster Lauf meldete deshalb `state-switch-on-color` als tot, obwohl es nachweislich das Schalter-Icon färbt. Und ein Ähnlichkeitsvergleich schlägt Nachfolger vor, die zum Teil Unsinn sind (`input-background-color` → `chip-background-color`). Jede Zuordnung gehört gegen die echte Quelle geprüft, nicht gegen eine Heuristik.
 
 ## Meldungen
 
