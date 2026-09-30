@@ -11,7 +11,7 @@ custom_components/hatg/
 ├── __init__.py           Einstiegspunkt der Integration
 ├── config_flow.py        Einrichtung über die Oberfläche
 ├── const.py              Konstanten
-├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b14
+├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b15
 ├── translations/         de.json und en.json
 ├── brand/                Icons für den HACS-Store
 └── www/
@@ -34,7 +34,7 @@ Die Versionsnummer steht an vier Stellen und muss überall gleich sein: `manifes
 
 - **Startseite** — Grundfarben, Basis-Einstellungen, Zustände, Hintergründe
 - **Thematische Bereiche** — HA-Grundgerüst, Bubble Card mit Unterseiten, Mushroom, Button Card (nur ihre eigenen Variablen für Klick-Effekt, Ladeanzeige, Tooltip; gegen button-card v7.0.1 `src/styles.ts` geprüft)
-- **Alle Felder** — Volltext- und Filtersuche über sämtliche 683 verifizierten Variablen
+- **Alle Felder** — Volltext- und Filtersuche über sämtliche 622 verifizierten Variablen
 - **Verlauf für aktive Flächen** — im Glas-Bereich: zwei Farben, Richtung, Schriftfarbe; Block `verlauf-akzent` in `uix-card` und `uix-sidebar`. Horizon-Cards (frueher HA-Karten) lesen ihn seit Sammlung v2.6.1 über die gemeinsame Kette `--karten-gewaehlt`, `-vorn`, `-schatten` (Kurzform `background`), die Kante kommt aus `neumorph-tiefe`/`neumorph-hell`; HA-eigene Knöpfe nehmen keinen Verlauf an (nur Farbvariablen)
 - **Code-Editor** — textbasierte Bearbeitung mit Syntax-Highlighting
 - **Vorlagen** — vorgefertigte CSS-Effekte, eine Unterseite je Stilziel; feste Werte sind über `werte: [...]` einstellbar (im CSS `[[id]]`, im Theme zwischen `/*HATG:WERT:id*/…/*HATG:WERT*/`, nur im Vorlagenblock, keine Theme-Felder, bleiben beim Auffrischen)
@@ -162,7 +162,26 @@ Die Maschinerie dafür gab es schon (`hatgEntferneVerwaisteEigenfelder`), sie wu
 - **Die Grenze, die HATG nicht sieht:** Ein Feld kann von außerhalb der Theme gelesen werden, etwa aus der Konfiguration einer einzelnen Karte. Deshalb nennt der Bericht **jedes** entfernte Feld beim Namen, und der Bericht steht auch im Kopf der Datei.
 - Ein Test hält beides fest (`tests/hatg-ausmisten.test.js`): dass Ballast fliegt und dass nach dem Import kein `var()` mehr ins Leere zeigt.
 
-Noch nicht ausgemistet sind **bekannte** Felder, die HA oder Bubble Card nicht mehr lesen. Der Stand der Prüfung am 2026-09-30: 21 von 387 HA-Feldern, 61 von 124 Bubble-Feldern und 3 Druckerfarben sind Kandidaten; ein großer Teil davon sind **Umbenennungen**, keine Leichen. Zwei Fallen dabei, beide selbst hineingetappt: HA baut Zustandsfarben als `--state-${domain}-${state}-color` zusammen, ein Literalname steht nirgends — ein erster Lauf meldete deshalb `state-switch-on-color` als tot, obwohl es nachweislich das Schalter-Icon färbt. Und ein Ähnlichkeitsvergleich schlägt Nachfolger vor, die zum Teil Unsinn sind (`input-background-color` → `chip-background-color`). Jede Zuordnung gehört gegen die echte Quelle geprüft, nicht gegen eine Heuristik.
+### Bubble Card: 61 Felder raus (1.3.2b15)
+
+Bubble Card **3.2.0 liest 61 der 124 Felder in HATGs Bubble-Abschnitt nicht** — die Namen kommen im ganzen Quelltext nicht vor, weder bei Bubble noch bei HA noch bei Mushroom. Damit sind 683 Felder auf **622** geschrumpft.
+
+Der Grund ist ein Schemawechsel: Bubble Card 3.x hat die Variablen **pro Kartentyp** durch eine gemeinsame Familie ersetzt. `.bubble-container` liest `var(--bubble-card-type-main-background-color, var(--bubble-main-background-color, …))` — statt `bubble-climate-…`, `bubble-cover-…`, `bubble-media-player-…` je einzeln. **Umbenennen geht deshalb nicht:** fünf alte Felder zeigen auf ein neues, eine Zuordnung würde die Einstellung eines Kartentyps auf alle anderen ausschütten. Sie sind ohnehin wirkungslos — Entfernen ändert nichts am Aussehen.
+
+**Vor dem Löschen zwingend zu prüfen, woran es fast gescheitert wäre:**
+
+- **HATGs eigene Vorlagen schrieben sechs davon** (`glas-bubble`, `symbole-kachel`). Beide setzen die generische Variante gleich daneben (`--bubble-icon-border-radius`, `--bubble-main-background-color`), der Effekt kommt also an; die sechs Zeilen waren Totholz.
+- **Die Felder hingen an acht weiteren Stellen**, nicht nur am Manifest: Radius- und Schattenlisten, drei Basis-Vorlagen (iOS, MD3, v0219) je Light und Dark, Ableitungsregeln, Glas-Feldlisten, Sync-Zuordnungen und Plugin-CSS. 179 Zeilen insgesamt. Wer nur das Manifest anfasst, bekommt sie über `reapplyBasis` wieder in `values` zurück — genau so passiert und erst durch eine Gegenprobe aufgefallen.
+- **Die Feldliste kommt aus `HATG_MANIFEST.light`/`.dark`, nicht aus `sections`.** Nur die Sections zu kürzen lässt die Felder in `values` stehen; sie gelten dann beim Import weiter als bekannt, und der Cleaner räumt sie nicht ab.
+- Für `card-background-color`, `primary-text-color` und `secondary-text-color` gibt es in 3.2.0 **kein** Bubble-Gegenstück mehr. Die Dreiklänge behalten ihre Mushroom-Seite; der Renderer lässt den Bubble-Chip jetzt weg, statt „Bubble Card: undefined" anzuzeigen.
+
+Bleiben in HATG, obwohl Bubble Card sie nicht liest: `ha-dialog-surface-background`, `ha-dialog-scrim-color` und `mdc-dialog-scrim-color` — das sind HA-Variablen im Bubble-Abschnitt, Bubbles Pop-up nutzt HAs Dialog.
+
+### Noch offen
+
+21 von 387 HA-Feldern, 3 Druckerfarben, Mushroom (18 Kandidaten) und Button Card (31 Felder, gegen `src/styles.ts` zu prüfen — auf der Testinstanz nicht installiert).
+
+Zwei Fallen, beide selbst hineingetappt: HA baut Zustandsfarben als `--state-${domain}-${state}-color` zusammen, ein Literalname steht nirgends — ein erster Lauf meldete deshalb `state-switch-on-color` als tot, obwohl es nachweislich das Schalter-Icon färbt. Und ein Ähnlichkeitsvergleich schlägt Nachfolger vor, die zum Teil Unsinn sind (`input-background-color` → `chip-background-color`). Jede Zuordnung gehört gegen die echte Quelle geprüft, nicht gegen eine Heuristik.
 
 ## Meldungen
 

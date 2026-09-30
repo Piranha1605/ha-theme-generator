@@ -1,13 +1,13 @@
 DOMAIN = "hatg"
 NAME = "HATG"
-VERSION = "1.3.2b14"
+VERSION = "1.3.2b15"
 
 PANEL_URL = "hatg"
 PANEL_TITLE = "HATG"
 PANEL_ICON = "mdi:palette-swatch"
 PANEL_TAG = "hatg-panel"
 STATIC_PATH = "/hatg_static"
-FRONTEND_MODULE = "/hatg_static/hatg-panel.js?v=1.3.2b14"
+FRONTEND_MODULE = "/hatg_static/hatg-panel.js?v=1.3.2b15"
 
 # Die Adresse, unter der HATG die Hintergrundbilder selbst ausliefert. Sie
 # bleibt bestehen, damit Themes von vor 1.3.2b13 weiter funktionieren - sie
