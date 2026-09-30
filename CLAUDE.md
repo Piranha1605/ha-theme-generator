@@ -112,7 +112,7 @@ Seit 1.3.2b7 sind vier dieser Marken Felder: `ha-color-on-primary-loud`, `-norma
 
 Die Kennung einer eigenen Vorlage steht in den Markern im Theme (`/* HATG:UIX:<kennung>:START */`) und ist damit kein freier Text. Die Marken-Regex kennt nur `[a-z0-9-]`, der Server nimmt beim Schreiben nur `[A-Za-z0-9_-]{1,64}` an.
 
-**Lesen und Schreiben waren unterschiedlich streng.** `ws_list_uix_templates` gab jede Kennung heraus, die in `themes/hatg-vorlagen/uix-vorlagen.json` stand; `ws_save_uix_templates` lehnt seit immer alles außerhalb von `[A-Za-z0-9_-]{1,64}` ab — und bricht beim **ersten** schlechten Eintrag den **ganzen Stapel** ab. Eine von Hand eingetragene Kennung mit Umlaut kam damit herein, ließ sich aber nie zurückschreiben: Danach war überhaupt keine Vorlage mehr speicherbar, auch keine neue, und die Meldung nannte nur die Kennung, nicht die Vorlage. Am 2026-09-29 an einer laufenden Instanz nachgestellt — ein Stapel aus einer sauberen und einer Umlaut-Kennung wurde komplett mit `invalid_id` abgelehnt, die saubere Vorlage inklusive.
+**Lesen und Schreiben waren unterschiedlich streng.** `ws_list_uix_templates` gab jede Kennung heraus, die in `config/themes/hatg/hatg-uix-vorlagen.json` stand; `ws_save_uix_templates` lehnt seit immer alles außerhalb von `[A-Za-z0-9_-]{1,64}` ab — und bricht beim **ersten** schlechten Eintrag den **ganzen Stapel** ab. Eine von Hand eingetragene Kennung mit Umlaut kam damit herein, ließ sich aber nie zurückschreiben: Danach war überhaupt keine Vorlage mehr speicherbar, auch keine neue, und die Meldung nannte nur die Kennung, nicht die Vorlage. Am 2026-09-29 an einer laufenden Instanz nachgestellt — ein Stapel aus einer sauberen und einer Umlaut-Kennung wurde komplett mit `invalid_id` abgelehnt, die saubere Vorlage inklusive.
 
 Seit 1.3.2b11: `eigeneVorlagenKennungenHeilen()` zieht die Liste beim Laden gerade und **schreibt die Marker im Theme mit um** (`hatgBenenneVorlagenMarkenUm`) — ohne das bliebe der Block unter der alten Kennung stehen, gälte als verwaist und die Vorlage sähe ausgeschaltet aus. `vorlagenIdAusName` und die Heilung benutzen dieselbe Slug-Regel (`hatgVorlagenIdSlug`). Der Generator war nie die Quelle: Er ersetzt Umlaute seit der ersten Fassung, `Füllung` wird `fuellung`.
 
@@ -124,7 +124,7 @@ Seit 1.3.2b11: `eigeneVorlagenKennungenHeilen()` zieht die Liste beim Laden gera
 
 ## Eigene Panel-Ziele als Vorlagenziel
 
-Seit 1.3.2b12 ist das Ziel im Vorlagen-Dialog frei eintippbar (Liste über `<datalist>`, oder selbst schreiben). Damit lassen sich Vorlagen für eigene Panels anlegen, ohne den Block von Hand in den Code-Editor zu schreiben. Die Vorlage bleibt in der bestehenden Liste und in `uix-vorlagen.json` — eine zweite Datei braucht es nicht, der Eintrag trug schon immer ein `ziel`-Feld.
+Seit 1.3.2b12 ist das Ziel im Vorlagen-Dialog frei eintippbar (Liste über `<datalist>`, oder selbst schreiben). Damit lassen sich Vorlagen für eigene Panels anlegen, ohne den Block von Hand in den Code-Editor zu schreiben. Die Vorlage bleibt in der bestehenden Liste und in `config/themes/hatg/hatg-uix-vorlagen.json` — eine zweite Datei braucht es nicht, der Eintrag trug schon immer ein `ziel`-Feld.
 
 **Vorher war es nicht nur unmöglich, sondern still falsch.** `hatgVorlagenZiel` prüfte mit `hatgIstStilzielKey`, das nur die feste Liste kennt, und fiel sonst auf `uix-card` zurück. Eine Vorlage für `uix-knx-frontend-yaml` landete deshalb kommentarlos im falschen Feld. Am 2026-09-30 gemessen; jetzt entscheidet `hatgVorlagenZielGueltig`.
 

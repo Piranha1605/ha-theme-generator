@@ -4,7 +4,7 @@
 // Custom preset ids must stay writable.
 //
 // Der Fehler, gegen den dieser Test steht: ws_list_uix_templates gibt jede
-// Kennung heraus, die in uix-vorlagen.json steht, ws_save_uix_templates nimmt
+// Kennung heraus, die in hatg-uix-vorlagen.json steht, ws_save_uix_templates nimmt
 // aber nur [A-Za-z0-9_-]{1,64} an - und bricht beim ersten schlechten Eintrag
 // den ganzen Stapel ab. Eine von Hand eingetragene Kennung mit Umlaut kam damit
 // herein, liess sich nie zurueckschreiben, und danach war ueberhaupt keine

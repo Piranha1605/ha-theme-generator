@@ -63,7 +63,7 @@ Liest eine Theme-Datei, ohne sie zu verändern, und sucht:
 | offene Klammer | alles danach fällt aus |
 | doppelter Vorlagenblock | die vorderen Blöcke verlieren |
 | fremde Vorlagenmarke | HATG erkennt nur `HATG:` |
-| unspeicherbare Vorlagen-Kennung | steht sie auch in `uix-vorlagen.json`, scheitert dort **jedes** Speichern einer Vorlage |
+| unspeicherbare Vorlagen-Kennung | steht sie auch in `config/themes/hatg/hatg-uix-vorlagen.json`, scheitert dort **jedes** Speichern einer Vorlage |
 | ungültige Werte, unbekannte Felder | wie HATGs Import sie sieht |
 
 Ein Stilziel, dessen Typ nicht in UIX' fester Liste steht, ist **kein** Fehler: Mit der UIX-Option *Style custom panels* heißt ein Ziel nach dem Wurzelelement des Panels (`uix-hacs-frontend-yaml`). Das Werkzeug meldet es als Hinweis.

@@ -2022,7 +2022,7 @@ function hatgIstYamlStilzielFeld(key) {
 // (/* HATG:UIX:<kennung>:START */) und muss deshalb bei ASCII bleiben: Die
 // Marken-Regex kennt nur [a-z0-9-], und der Server nimmt beim Schreiben nur
 // [A-Za-z0-9_-] bis 64 Zeichen an. Beim Lesen prueft er nichts. Eine von Hand
-// in uix-vorlagen.json eingetragene Kennung mit Umlaut kommt also herein, laesst
+// in themes/hatg/hatg-uix-vorlagen.json eingetragene Kennung mit Umlaut kommt also herein, laesst
 // sich aber nie zurueckschreiben - und weil ein einziger schlechter Eintrag den
 // ganzen Stapel kippt, war danach ueberhaupt keine Vorlage mehr speicherbar,
 // auch keine neue. Am 2026-09-29 an einer laufenden Instanz nachgestellt.

@@ -122,13 +122,13 @@ function pruefe(datei) {
   if (fremd.size) warnung.push(`Fremde Vorlagenmarken: ${[...fremd].join(", ")} - HATG erkennt nur HATG:`);
   if (doppelt.length) fehler.push(`Doppelte Vorlagenbloecke: ${doppelt.map(([id, n]) => `${id} (${n}x)`).join(", ")}`);
   // Der Server nimmt beim Schreiben nur [A-Za-z0-9_-]{1,64} an, beim Lesen
-  // prueft er nichts. Steht so eine Kennung in uix-vorlagen.json, laesst sich
+  // prueft er nichts. Steht so eine Kennung in hatg-uix-vorlagen.json, laesst sich
   // die ganze Liste nie wieder speichern - keine Vorlage, auch keine neue.
   const unspeicherbar = Object.keys(zaehler).filter((id) => !/^[A-Za-z0-9_-]{1,64}$/.test(id));
   if (unspeicherbar.length)
     fehler.push(
       `Unspeicherbare Vorlagen-Kennung: ${unspeicherbar.join(", ")} - steht sie auch in ` +
-        `themes/hatg-vorlagen/uix-vorlagen.json, scheitert dort jedes Speichern einer Vorlage`
+        `config/themes/hatg/hatg-uix-vorlagen.json, scheitert dort jedes Speichern einer Vorlage`
     );
   const bekannteVorlagen = new Set(ctx.HATG_VORLAGEN.map((t) => t.id));
   const eigene = Object.keys(zaehler).filter((id) => !bekannteVorlagen.has(id));
