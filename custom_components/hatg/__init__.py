@@ -4,6 +4,7 @@ import base64
 import binascii
 import hashlib
 import json
+import logging
 import re
 from pathlib import Path
 
@@ -23,16 +24,43 @@ from .const import (
     PANEL_TITLE,
     PANEL_URL,
     STATIC_PATH,
+    WALLPAPER_LOCAL_PATH,
     WALLPAPER_STATIC_PATH,
 )
+
+_LOGGER = logging.getLogger(__name__)
 
 THEMES_SUBDIR = "themes"
 WORK_FILE_PREFIX = "hatg-work-"
 _WS_REGISTERED_FLAG = f"{DOMAIN}_ws_registered"
 
+# Hintergrundbilder liegen seit 1.3.2b13 in config/www/hatg und werden von Home
+# Assistant selbst unter /local/hatg ausgeliefert. Davor lagen sie in
+# config/themes/Wallpaper hinter der HATG-eigenen Route /hatg_wallpaper - und
+# damit stand in jeder weitergegebenen Theme eine Adresse, die es ohne HATG
+# nicht gibt. Der alte Ordner wird beim Start einmal geleert (die Dateien
+# wandern mit), die alte Route bleibt und zeigt auf den neuen Ordner, damit
+# bestehende Themes weiter funktionieren.
+WWW_SUBDIR = "www"
 WALLPAPER_SUBDIR = "Wallpaper"
+WALLPAPER_WWW_SUBDIR = "hatg"
 _WALLPAPER_ALLOWED_EXT = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
 _WALLPAPER_SAFE_NAME_RE = re.compile(r"[^A-Za-z0-9._-]+")
+
+
+def _wallpaper_dir(hass: HomeAssistant) -> Path:
+    """Der Ordner, in dem die Hintergrundbilder liegen."""
+    return Path(hass.config.path(WWW_SUBDIR, WALLPAPER_WWW_SUBDIR))
+
+
+def _wallpaper_dir_alt(hass: HomeAssistant) -> Path:
+    """Der Ordner bis 1.3.2b12."""
+    return Path(hass.config.path(THEMES_SUBDIR, WALLPAPER_SUBDIR))
+
+
+def _wallpaper_url(name: str) -> str:
+    return f"{WALLPAPER_LOCAL_PATH}/{name}"
+
 
 VORLAGEN_SUBDIR = "hatg"
 VORLAGEN_FILE = "hatg-uix-vorlagen.json"
@@ -364,7 +392,7 @@ async def ws_upload_wallpaper(hass: HomeAssistant, connection, msg):
         connection.send_error(msg["id"], "invalid_data", "Die Bilddatei ist leer.")
         return
 
-    wallpaper_dir = Path(hass.config.path(THEMES_SUBDIR, WALLPAPER_SUBDIR))
+    wallpaper_dir = _wallpaper_dir(hass)
 
     def _write():
         wallpaper_dir.mkdir(parents=True, exist_ok=True)
@@ -387,7 +415,7 @@ async def ws_upload_wallpaper(hass: HomeAssistant, connection, msg):
         {
             "uploaded": True,
             "filename": final_name,
-            "url": f"{WALLPAPER_STATIC_PATH}/{final_name}",
+            "url": _wallpaper_url(final_name),
             "duplicate": war_schon_da,
         },
     )
@@ -401,7 +429,7 @@ async def ws_upload_wallpaper(hass: HomeAssistant, connection, msg):
 @websocket_api.async_response
 async def ws_list_wallpapers(hass: HomeAssistant, connection, msg):
     """Listet alle Bilder im Wallpaper-Ordner auf."""
-    wallpaper_dir = Path(hass.config.path(THEMES_SUBDIR, WALLPAPER_SUBDIR))
+    wallpaper_dir = _wallpaper_dir(hass)
 
     def _list():
         if not wallpaper_dir.exists():
@@ -421,7 +449,7 @@ async def ws_list_wallpapers(hass: HomeAssistant, connection, msg):
             items.append(
                 {
                     "filename": entry.name,
-                    "url": f"{WALLPAPER_STATIC_PATH}/{entry.name}",
+                    "url": _wallpaper_url(entry.name),
                     "modified": stat.st_mtime,
                     "size": stat.st_size,
                     "hash": digest,
@@ -583,7 +611,7 @@ async def ws_delete_wallpaper(hass: HomeAssistant, connection, msg):
             return
         namen.append(sauber)
 
-    wallpaper_dir = Path(hass.config.path(THEMES_SUBDIR, WALLPAPER_SUBDIR))
+    wallpaper_dir = _wallpaper_dir(hass)
 
     def _delete():
         geloescht = []
@@ -623,12 +651,67 @@ def _register_websocket_commands(hass: HomeAssistant) -> None:
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     www_path = Path(__file__).parent / "www"
-    wallpaper_path = Path(hass.config.path(THEMES_SUBDIR, WALLPAPER_SUBDIR))
+    wallpaper_path = _wallpaper_dir(hass)
 
-    def _ensure_wallpaper_dir():
+    # Einmalige Umstellung: Die Bilder ziehen von config/themes/Wallpaper nach
+    # config/www/hatg um. Erst dort liefert Home Assistant sie selbst aus, unter
+    # /local/hatg - und erst damit laesst sich eine Theme weitergeben, ohne dass
+    # der Empfaenger HATG installieren muss. Verschoben statt kopiert, sonst
+    # liegt jedes Bild doppelt auf der Platte; die alte Route zeigt danach auf
+    # den neuen Ordner, also funktionieren bestehende Themes weiter.
+    def _wallpaper_umziehen() -> dict:
+        eltern = Path(hass.config.path(WWW_SUBDIR))
+        # Home Assistant registriert /local nur, wenn config/www beim Start
+        # schon da war. Legen wir den Ordner gerade erst an, bleibt /local bis
+        # zum naechsten Neustart tot - das muss gesagt werden, sonst sucht man
+        # den Fehler in der Theme.
+        www_fehlte = not eltern.is_dir()
         wallpaper_path.mkdir(parents=True, exist_ok=True)
+        alt = _wallpaper_dir_alt(hass)
+        verschoben = 0
+        liegengeblieben = []
+        if alt.is_dir() and alt.resolve() != wallpaper_path.resolve():
+            for eintrag in sorted(alt.iterdir()):
+                if not eintrag.is_file() or eintrag.suffix.lower() not in _WALLPAPER_ALLOWED_EXT:
+                    continue
+                ziel = wallpaper_path / eintrag.name
+                if ziel.exists():
+                    liegengeblieben.append(eintrag.name)
+                    continue
+                try:
+                    eintrag.replace(ziel)
+                    verschoben += 1
+                except OSError:
+                    # Anderes Dateisystem oder keine Rechte: kopieren reicht auch.
+                    try:
+                        ziel.write_bytes(eintrag.read_bytes())
+                        eintrag.unlink()
+                        verschoben += 1
+                    except OSError:
+                        liegengeblieben.append(eintrag.name)
+        return {"verschoben": verschoben, "liegengeblieben": liegengeblieben, "www_fehlte": www_fehlte}
 
-    await hass.async_add_executor_job(_ensure_wallpaper_dir)
+    umzug = await hass.async_add_executor_job(_wallpaper_umziehen)
+    if umzug["verschoben"]:
+        _LOGGER.info(
+            "HATG: %s Hintergrundbild(er) nach %s verschoben, erreichbar unter %s",
+            umzug["verschoben"],
+            wallpaper_path,
+            WALLPAPER_LOCAL_PATH,
+        )
+    if umzug["liegengeblieben"]:
+        _LOGGER.warning(
+            "HATG: diese Hintergrundbilder blieben in %s liegen: %s",
+            _wallpaper_dir_alt(hass),
+            ", ".join(umzug["liegengeblieben"]),
+        )
+    if umzug["www_fehlte"]:
+        _LOGGER.warning(
+            "HATG: %s wurde gerade erst angelegt. Home Assistant bedient %s erst nach einem Neustart - "
+            "bis dahin bleiben Hintergrundbilder aus einer neu gespeicherten Theme leer.",
+            Path(hass.config.path(WWW_SUBDIR)),
+            WALLPAPER_LOCAL_PATH,
+        )
 
     # Der Cache-Buster haengt am Inhalt, nicht nur an der Versionsnummer.
     # Home Assistant liefert /hatg_static mit max-age=2678400 aus: Wer die

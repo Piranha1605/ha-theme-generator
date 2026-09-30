@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.3.2b12";
+const HATG_VERSION = "1.3.2b13";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -2067,6 +2067,35 @@ function hatgBenenneVorlagenMarkenUm(baeger, alt, neu) {
     });
   });
   return getroffen;
+}
+
+// Hintergrundbilder lagen bis 1.3.2b12 hinter der HATG-eigenen Adresse
+// /hatg_wallpaper. Das Feld war in Ordnung - lovelace-background liest Home
+// Assistant selbst -, aber sein Wert zeigte auf eine Adresse, die es nur mit
+// installiertem HATG gibt. Wer so eine Theme weitergab, beim Empfaenger blieb
+// der Hintergrund leer, ohne Fehlermeldung: Ein fehlendes Bild tut in CSS
+// einfach nichts. Am 2026-09-30 an einer weitergegebenen Theme aufgefallen.
+// Seit 1.3.2b13 liegen die Bilder in config/www/hatg und kommen unter
+// /local/hatg von Home Assistant selbst; Import, Autosave und Entwurf ziehen
+// alte Adressen mit. Die alte Adresse bleibt trotzdem gueltig - die
+// Integration bedient sie weiter aus demselben Ordner.
+const HATG_WALLPAPER_ADRESSE_ALT = "/hatg_wallpaper/";
+const HATG_WALLPAPER_ADRESSE_NEU = "/local/hatg/";
+function hatgMigriereWallpaperAdressen(bag) {
+  const felder = new Set();
+  if (!bag) return felder;
+  ["light", "dark"].forEach((m) =>
+    [bag[m], bag.extra?.[m]].forEach((b) => {
+      if (!b) return;
+      Object.keys(b).forEach((k) => {
+        const alt = String(b[k] ?? "");
+        if (!alt.includes(HATG_WALLPAPER_ADRESSE_ALT)) return;
+        b[k] = alt.split(HATG_WALLPAPER_ADRESSE_ALT).join(HATG_WALLPAPER_ADRESSE_NEU);
+        felder.add(k);
+      });
+    })
+  );
+  return felder;
 }
 
 // Umbenannte Kopien eines HATG-Themes tragen die Marker unter anderer Vorsilbe
@@ -5913,6 +5942,7 @@ class HATGPanel extends HTMLElement {
         if (!saved.extraValues) saved.extraValues = { light: {}, dark: {} };
         hatgRepariereAlteStilziele({ light: saved.values.light, dark: saved.values.dark, extra: saved.extraValues });
         hatgVereinheitlicheVorlagenMarken({ light: saved.values.light, dark: saved.values.dark, extra: saved.extraValues });
+        hatgMigriereWallpaperAdressen({ light: saved.values.light, dark: saved.values.dark, extra: saved.extraValues });
         hatgMigriereHintergrundBewegung({ light: saved.values.light, dark: saved.values.dark, extra: saved.extraValues });
         hatgMigriereAkzentVerlauf({ light: saved.values.light, dark: saved.values.dark });
         hatgMigriereVerlaufAus({ light: saved.values.light, dark: saved.values.dark });
@@ -13313,6 +13343,7 @@ uix:
     }
     const altlasten = hatgRepariereAlteStilziele(parsed);
     const marken = hatgVereinheitlicheVorlagenMarken(parsed);
+    const bildAdressen = hatgMigriereWallpaperAdressen(parsed);
     hatgMigriereHintergrundBewegung(parsed);
     hatgMigriereAkzentVerlauf(parsed);
     hatgMigriereVerlaufAus(parsed);
@@ -13437,6 +13468,12 @@ uix:
         en
           ? marken.doppelt === 1 ? "1 duplicate preset block removed" : `${marken.doppelt} duplicate preset blocks removed`
           : marken.doppelt === 1 ? "1 doppelter Vorlagenblock entfernt" : `${marken.doppelt} doppelte Vorlagenblöcke entfernt`
+      );
+    if (bildAdressen.size)
+      parts.push(
+        en
+          ? `${bildAdressen.size} background image address${bildAdressen.size === 1 ? "" : "es"} switched from /hatg_wallpaper to /local/hatg (${hatgFelderNennen([...bildAdressen], "more")}) - the theme now works without HATG installed`
+          : `${bildAdressen.size} Bildadresse${bildAdressen.size === 1 ? "" : "n"} von /hatg_wallpaper auf /local/hatg umgestellt (${hatgFelderNennen([...bildAdressen], "weitere")}) - die Theme kommt damit ohne installiertes HATG aus`
       );
     if (aufgefrischt)
       parts.push(
@@ -13584,6 +13621,7 @@ uix:
         if (!loaded.extraValues) loaded.extraValues = { light: {}, dark: {} };
         hatgRepariereAlteStilziele({ light: loaded.values.light, dark: loaded.values.dark, extra: loaded.extraValues });
         hatgVereinheitlicheVorlagenMarken({ light: loaded.values.light, dark: loaded.values.dark, extra: loaded.extraValues });
+        hatgMigriereWallpaperAdressen({ light: loaded.values.light, dark: loaded.values.dark, extra: loaded.extraValues });
         hatgMigriereHintergrundBewegung({ light: loaded.values.light, dark: loaded.values.dark, extra: loaded.extraValues });
         hatgMigriereAkzentVerlauf({ light: loaded.values.light, dark: loaded.values.dark });
         hatgMigriereVerlaufAus({ light: loaded.values.light, dark: loaded.values.dark });

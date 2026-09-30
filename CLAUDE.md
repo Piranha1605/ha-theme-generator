@@ -11,7 +11,7 @@ custom_components/hatg/
 ├── __init__.py           Einstiegspunkt der Integration
 ├── config_flow.py        Einrichtung über die Oberfläche
 ├── const.py              Konstanten
-├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b12
+├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b13
 ├── translations/         de.json und en.json
 ├── brand/                Icons für den HACS-Store
 └── www/
@@ -139,6 +139,18 @@ Seit 1.3.2b12 ist das Ziel im Vorlagen-Dialog frei eintippbar (Liste über `<dat
 Eigene Ziele kommen nur an, wenn in UIX **Style custom panels** eingeschaltet ist; der Hinweis steht im Dialog.
 
 In der Seitenleiste ist „UIX-Vorlagen" seit 1.3.2b12 ein gewöhnlicher Eintrag. Vorher stand dort eine Gruppenüberschrift zum Aufklappen und darunter genau ein Untereintrag „Alle Vorlagen" mit **derselben** Abschnitts-ID — zwei Klicks für dieselbe Seite, seit die Stilziele in ein Auswahlfeld auf der Seite gewandert sind.
+
+## Hintergrundbilder liegen in `config/www/hatg`
+
+Seit 1.3.2b13 liegen die Bilder der Galerie in `config/www/hatg` und kommen unter **`/local/hatg/<name>`** von Home Assistant selbst. Davor lagen sie in `config/themes/Wallpaper` hinter der HATG-eigenen Route `/hatg_wallpaper`.
+
+**Warum das wichtig ist.** Das Feld war nie das Problem — `lovelace-background` und `popup-custom-wallpaper` liest HA selbst. Der **Wert** zeigte aber auf eine Adresse, die nur die HATG-Integration registriert. Wer so eine Theme weitergab, beim Empfänger blieb der Hintergrund leer: ohne Fehlermeldung, weil ein fehlendes Bild in CSS einfach nichts tut. Am 2026-09-30 an einer weitergegebenen Theme aufgefallen — der Rest der Datei war sauber, keine `hatg-*`-Felder, keine `var(--hatg-…)`; die einzige Bindung waren vier Zeilen mit zwei Bildadressen. Das Versprechen „am Ende steht eine ganz normale Theme-Datei" gilt eben auch für die Werte, nicht nur für die Feldnamen.
+
+- **Umzug beim Start.** `async_setup_entry` verschiebt vorhandene Bilder einmalig aus dem alten Ordner (`eintrag.replace`, bei anderem Dateisystem kopieren und löschen). Verschoben statt kopiert, sonst liegt jedes Bild doppelt auf der Platte.
+- **Die alte Route bleibt** und zeigt jetzt auf den neuen Ordner. Themes von vor b13 funktionieren damit auf Rechnern mit HATG unverändert weiter.
+- **Import, Autosave und Entwurf ziehen alte Adressen mit** (`hatgMigriereWallpaperAdressen`), und der Import-Bericht nennt die betroffenen Felder.
+- **`/local` hängt an `config/www` zum Startzeitpunkt.** Home Assistant registriert die Route nur, wenn der Ordner beim Start schon da war. Legt HATG ihn gerade erst an, bleibt `/local` bis zum nächsten Neustart tot — das steht als Warnung im Log, sonst sucht man den Fehler in der Theme.
+- Client und Server halten dieselben zwei Adressen (`HATG_WALLPAPER_ADRESSE_ALT`/`-NEU` gegen `WALLPAPER_STATIC_PATH`/`WALLPAPER_LOCAL_PATH`); ein Test vergleicht sie.
 
 ## Meldungen
 

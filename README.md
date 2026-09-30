@@ -291,7 +291,7 @@ Ja. Über den Import liest HATG jedes Theme ein. Unbekannte Felder gehen nicht v
 Die drei häufigsten Gründe: (1) Unter **Einstellungen → Profil** ist ein anderes Theme aktiv. (2) Du hast im anderen Modus (Light/Dark) eingestellt als dem, den dein Gerät verwendet. (3) Der Browser hält eine alte Version im Cache — einmal hart neu laden.
 
 **Was passiert bei einem HATG-Update mit meinen Themes?**
-Nichts — Themes liegen in `config/themes/`, eigene UIX-Vorlagen in `config/themes/hatg/hatg-uix-vorlagen.json`, Hintergrundbilder in `config/themes/Wallpaper/`. Alles außerhalb des Integrationsordners, alles update-sicher, alles im Backup.
+Nichts — Themes liegen in `config/themes/`, eigene UIX-Vorlagen in `config/themes/hatg/hatg-uix-vorlagen.json`, Hintergrundbilder in `config/www/hatg/` (erreichbar unter `/local/hatg/`). Alles außerhalb des Integrationsordners, alles update-sicher, alles im Backup.
 
 **Die UIX-Vorlagen zeigen keine Wirkung.**
 Dafür muss [UI eXtension](https://github.com/Lint-Free-Technology/uix) installiert **und als Gerät hinzugefügt** sein. Außerdem muss das aktive Theme das von HATG gespeicherte sein — das CSS steht in der Theme-Datei.

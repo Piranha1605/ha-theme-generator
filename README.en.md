@@ -293,7 +293,7 @@ Yes. HATG reads any theme via import. Unknown fields aren't lost; they're re-att
 The three most common reasons: (1) a different theme is active under **Settings → Profile**. (2) You edited the other mode (light/dark) than the one your device uses. (3) The browser is holding an old version in cache — do one hard reload.
 
 **What happens to my themes during a HATG update?**
-Nothing — themes live in `config/themes/`, custom UIX presets in `config/themes/hatg/hatg-uix-vorlagen.json`, background images in `config/themes/Wallpaper/`. All outside the integration folder, all update-safe, all covered by your backup.
+Nothing — themes live in `config/themes/`, custom UIX presets in `config/themes/hatg/hatg-uix-vorlagen.json`, background images in `config/www/hatg/` (served at `/local/hatg/`). All outside the integration folder, all update-safe, all covered by your backup.
 
 **The UIX presets have no effect.**
 [UI eXtension](https://github.com/Lint-Free-Technology/uix) needs to be installed **and added as a device** for that. The active theme also has to be the one saved by HATG — the CSS lives in the theme file.
