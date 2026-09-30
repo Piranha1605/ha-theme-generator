@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.3.2b15";
+const HATG_VERSION = "1.3.2b16";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -296,6 +296,8 @@ const HATG_TEXTE = {
   "Bedienelemente in Glas: Dialoge": "Glass controls: dialogs",
   "Bedienelemente in Glas: Einstellungsseiten": "Glass controls: settings pages",
   "Bedienelemente in Glas: Glanz": "Glass controls: sheen",
+  "Gauge in Glas": "Gauge in glass",
+  "Der graue Ring hinter dem Wertbogen wird durchscheinend, der Hintergrund kommt durch. Der Bogen bekommt einen Schein in seiner eigenen Farbe - auch in der Schwellenfarbe, wenn die Karte Segmente hat.": "The grey track behind the value arc becomes translucent, so the background shows through. The arc gets a glow in its own colour - including the severity colour when the card has segments.",
   "Knöpfe, Regler und Chips in Karten mit kleiner Rundung und weichem Schatten.": "Buttons, sliders and chips in cards with a small radius and soft shadow.",
   "Die Knöpfe der Dashboard-Kopfleiste mit kleiner Rundung und weichem Schatten.": "The buttons of the dashboard top bar with a small radius and soft shadow.",
   "Die Knöpfe in Dialogen mit kleiner Rundung und weichem Schatten.": "The buttons in dialogs with a small radius and soft shadow.",
@@ -3732,6 +3734,47 @@ ha-control-slider {
     background-image: none;
     backdrop-filter: blur([[weichzeichnung]]);
     -webkit-backdrop-filter: blur([[weichzeichnung]]);
+  }`,
+  },
+  {
+    id: "glas-gauge",
+    paket: "glas",
+    label: "Gauge in Glas",
+    desc: "Der graue Ring hinter dem Wertbogen wird durchscheinend, der Hintergrund kommt durch. Der Bogen bekommt einen Schein in seiner eigenen Farbe - auch in der Schwellenfarbe, wenn die Karte Segmente hat.",
+    werte: [
+      { id: "ring", label: "Ring", labelEn: "Track", standard: "rgba(255, 255, 255, 0.18)" },
+      { id: "schein", label: "Schein um den Bogen", labelEn: "Glow around the arc", standard: "6px" },
+      { id: "nadel", label: "Nadelkante", labelEn: "Needle outline", standard: "rgba(255, 255, 255, 0.35)" },
+    ],
+    ziel: "uix-card-yaml",
+    // ha-gauge zeichnet drei Pfade in seinem Shadow Root - am 2026-09-30 aus
+    // dem Stylesheet der laufenden Instanz gelesen:
+    //   .levels-base  stroke: var(--primary-background-color)   der Ring
+    //   .value        stroke: var(--gauge-color)                der Wertbogen
+    //   .needle       fill/stroke aus primary-text/card-background
+    //
+    // Der Ring und die Nadel brauchen !important: UIX haengt seinen Knoten als
+    // erstes Kind des Shadow Roots ein, seine Regeln verlieren deshalb gegen
+    // die gleich spezifischen des Elements selbst. Beim Schein ist es unnoetig -
+    // filter setzt ha-gauge nirgends.
+    //
+    // Ein Farbverlauf geht hier NICHT: stroke ist SVG-Malfarbe und nimmt nur
+    // eine Farbe oder einen Verweis auf ein <linearGradient> im selben
+    // Dokument. UIX spritzt nur <style> ein, kann also kein Gradient-Element
+    // anlegen. Farbe nach Wert kann allein die Karte, ueber ihre segments.
+    //
+    // --gauge-color setzt die Karte inline je Wert; im Shadow Root ist sie
+    // deshalb vererbt verfuegbar - der Schein nimmt damit die Farbe des
+    // Bogens an, ohne sie doppelt zu pflegen.
+    css: `ha-card ha-gauge $: |
+  .levels-base {
+    stroke: [[ring]] !important;
+  }
+  .value {
+    filter: drop-shadow(0 0 [[schein]] var(--gauge-color));
+  }
+  .needle {
+    stroke: [[nadel]] !important;
   }`,
   },
   {
