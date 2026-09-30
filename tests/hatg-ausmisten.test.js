@@ -125,6 +125,21 @@ pruefe("Bekannte Felder werden nie angefasst", () => {
   assert.equal(p._state.values.light["accent-color"], "#FF0000");
 });
 
+// Der wichtigste Fall: Ein eigenes Panel-Ziel ist HATG unbekannt, und es zeigt
+// kein var() darauf - nach der reinen Ballast-Regel floege es raus und naehme
+// das CSS einer Vorlage mit. Genau das hat der Durchlauf-Test am 2026-09-30
+// gefangen, bevor es jemanden getroffen hat.
+pruefe("Ein eigenes Panel-Ziel wird NICHT ausgemistet", () => {
+  const p = importiere(
+    ['      liquid-tot: "#000000"'],
+    ["  uix-knx-frontend-yaml: |", "    knx-frontend $: |", "      :host { background: red; }"]
+  );
+  const text = ohneKopf(p);
+  assert.ok(text.includes("uix-knx-frontend-yaml"), "das eigene Panel-Ziel wurde entfernt");
+  assert.ok(text.includes("knx-frontend $:"), "der Pfad des eigenen Ziels ist verloren");
+  assert.ok(!text.includes("liquid-tot"), "der echte Ballast blieb liegen");
+});
+
 pruefe("Ein Vorlagenblock ueberlebt das Ausmisten", () => {
   const p = importiere(
     ['      liquid-tot: "#000000"'],

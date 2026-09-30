@@ -13415,10 +13415,15 @@ uix:
     // entfernte Feld beim Namen - ein Feld kann auch von ausserhalb der Theme
     // gelesen werden, etwa aus der Konfiguration einer einzelnen Karte, und das
     // sieht HATG nicht.
+    // Stilziele sind ausgenommen, und zwar nicht als Feinheit: Ein eigenes
+    // Panel-Ziel wie uix-knx-frontend-yaml ist HATG unbekannt, und es zeigt
+    // auch kein var() darauf - nach der Regel oben waere es Ballast und floege
+    // raus. Es traegt aber das CSS einer Vorlage. Der Durchlauf-Test hat genau
+    // das gefangen, bevor es jemanden getroffen hat.
     const ballastVorher = new Set([
       ...Object.keys(this._state.extraValues.light || {}),
       ...Object.keys(this._state.extraValues.dark || {}),
-    ]);
+    ].filter((k) => !hatgIstStilzielFeld(k)));
     hatgEntferneVerwaisteEigenfelder(
       { light: this._state.values.light, dark: this._state.values.dark, extra: this._state.extraValues },
       [...ballastVorher]
