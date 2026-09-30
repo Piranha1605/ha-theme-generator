@@ -22,10 +22,15 @@ function ladeHelfer() {
   const start = quelle.indexOf("function hatgMergeStilzielYaml");
   const ende = quelle.indexOf("function hatgParseThemeYaml");
   assert.ok(start !== -1 && ende > start, "Stilziel-Helfer in hatg-panel.js nicht gefunden");
-  // hatgIstYamlZiel haengt an der Stilziel-Tabelle aus dem Manifest. Fuer
-  // diesen Test genuegt die Namensregel - geprueft wird das Auftrennen.
+  // Die Erkennung haengt an der Stilziel-Tabelle aus dem Manifest. Fuer diesen
+  // Test genuegt die Namensregel - geprueft wird das Auftrennen.
+  // hatgIstYamlStilzielFeld loest seit 1.3.2b12 hatgIstYamlZiel ab: Ueber die
+  // Schreibweise entscheidet allein die Endung, damit auch ein eigenes
+  // Panel-Ziel (uix-knx-frontend-yaml) als YAML behandelt wird.
+  const namensregel = (key) => /-yaml$/.test(String(key || "")) && /^(?:uix|card-mod)-[a-z0-9-]+$/.test(String(key || ""));
   const kontext = {
-    hatgIstYamlZiel: (key) => /^uix-[a-z-]+-yaml$/.test(String(key || "")),
+    hatgIstYamlStilzielFeld: namensregel,
+    hatgIstYamlZiel: namensregel,
   };
   vm.runInNewContext(
     `${quelle.slice(start, ende)}

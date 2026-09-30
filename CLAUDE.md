@@ -11,7 +11,7 @@ custom_components/hatg/
 ├── __init__.py           Einstiegspunkt der Integration
 ├── config_flow.py        Einrichtung über die Oberfläche
 ├── const.py              Konstanten
-├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b11
+├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b12
 ├── translations/         de.json und en.json
 ├── brand/                Icons für den HACS-Store
 └── www/
@@ -121,6 +121,24 @@ Seit 1.3.2b11: `eigeneVorlagenKennungenHeilen()` zieht die Liste beim Laden gera
 **`hatgIstStilzielKey` reicht dafür nicht.** Es kennt nur die feste Liste, `uix-knx-frontend-yaml` also nicht. `hatgVereinheitlicheVorlagenMarken` übersprang eigene Panel-Ziele damit komplett — fremde Vorsilben und doppelte Blöcke wurden dort nie aufgeräumt. Seit 1.3.2b11 gibt es `hatgIstStilzielFeld` (feste Liste **plus** jedes weitere `uix-`/`card-mod-`Feld); wer über Stilziele iteriert, nimmt das.
 
 **Was die Meldung sagen muss.** Der Grund einer Ablehnung stand nur in einem Toast, der nach Sekunden weg ist, während im Dialog „siehe Meldung unten" stehen blieb. Aus einem Screenshot war damit nicht zu erkennen, ob die Kennung, das Stilziel oder ein `write_failed` im Dateisystem der Grund war — drei Ursachen mit identischem Symptom „jedes Speichern scheitert". Der Dialog zeigt den Text des Servers jetzt wörtlich, und die Server-Meldungen nennen den **Namen** der Vorlage, nicht nur die Kennung.
+
+## Eigene Panel-Ziele als Vorlagenziel
+
+Seit 1.3.2b12 ist das Ziel im Vorlagen-Dialog frei eintippbar (Liste über `<datalist>`, oder selbst schreiben). Damit lassen sich Vorlagen für eigene Panels anlegen, ohne den Block von Hand in den Code-Editor zu schreiben. Die Vorlage bleibt in der bestehenden Liste und in `uix-vorlagen.json` — eine zweite Datei braucht es nicht, der Eintrag trug schon immer ein `ziel`-Feld.
+
+**Vorher war es nicht nur unmöglich, sondern still falsch.** `hatgVorlagenZiel` prüfte mit `hatgIstStilzielKey`, das nur die feste Liste kennt, und fiel sonst auf `uix-card` zurück. Eine Vorlage für `uix-knx-frontend-yaml` landete deshalb kommentarlos im falschen Feld. Am 2026-09-30 gemessen; jetzt entscheidet `hatgVorlagenZielGueltig`.
+
+**Drei Stellen hingen an der festen Liste, nicht eine.** Wer eigene Ziele zulässt, muss alle drei anfassen, sonst sieht es aus, als ginge es, und die Vorlage kommt trotzdem nicht an:
+
+1. `hatgVorlagenZiel` — sonst falsches Feld, stumm.
+2. `hatgIstYamlZiel` entschied, ob der Marker als CSS- oder YAML-Kommentar geschrieben wird. Bei einem eigenen Ziel sagte es nein, und der Marker ging als `/* … */` **mitten in eine YAML-Karte** — das macht die Theme-Datei unlesbar. Dafür gibt es jetzt `hatgIstYamlStilzielFeld`: Über die Schreibweise entscheidet allein die Endung `-yaml`.
+3. `buildYamlText` läuft beim Sammeln der Felder nur über die Abschnitte des Manifests. Ein eigenes Ziel steht dort nicht und fiel deshalb aus der Datei — die Vorlage war eingeschaltet und stand trotzdem nirgends. Ein Nachlauf über `values` nimmt jetzt jedes Stilziel-Feld mit.
+
+**Die Regex muss auf beiden Seiten gleich sein.** `HATG_VORLAGEN_ZIEL_RE` in `hatg-panel.js` und `_VORLAGEN_ZIEL_RE` in `__init__.py` sind zeichengleich `uix-[a-z][a-z0-9-]{0,47}`, und ein Test vergleicht sie. Ziffern sind seit 1.3.2b12 erlaubt, weil ein Panel-Ziel nach dem Wurzelelement heißt und ein Custom-Element-Name Ziffern tragen darf. Wäre der Client großzügiger als der Server, scheiterte das Speichern der **ganzen** Liste an diesem einen Eintrag — derselbe Mechanismus wie bei den Kennungen.
+
+Eigene Ziele kommen nur an, wenn in UIX **Style custom panels** eingeschaltet ist; der Hinweis steht im Dialog.
+
+In der Seitenleiste ist „UIX-Vorlagen" seit 1.3.2b12 ein gewöhnlicher Eintrag. Vorher stand dort eine Gruppenüberschrift zum Aufklappen und darunter genau ein Untereintrag „Alle Vorlagen" mit **derselben** Abschnitts-ID — zwei Klicks für dieselbe Seite, seit die Stilziele in ein Auswahlfeld auf der Seite gewandert sind.
 
 ## Meldungen
 

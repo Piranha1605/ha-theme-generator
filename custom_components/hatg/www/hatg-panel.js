@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.3.2b11";
+const HATG_VERSION = "1.3.2b12";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -96,7 +96,6 @@ const HATG_TEXTE = {
   "Erweiterungen": "Extensions",
   "Generatoren": "Generators",
   "UIX-Vorlagen": "UIX presets",
-  "Alle Vorlagen": "All presets",
   "Vorlagen, die in": "Presets that write into",
   "Selbst angelegte Vorlagen, quer über alle Stilziele. Sie liegen in": "Presets you created yourself, across all style targets. They live in",
   "Für dieses Stilziel gibt es noch keine Vorlage.": "There is no preset for this style target yet.",
@@ -2010,6 +2009,14 @@ function hatgLeseVorlagenBlock(text, id) {
 function hatgIstStilzielFeld(key) {
   return hatgIstStilzielKey(key) || /^(?:uix|card-mod)-[a-z0-9-]+$/.test(String(key || ""));
 }
+// Ob in ein Stilziel-Feld YAML geschrieben wird, entscheidet allein die Endung.
+// hatgIstYamlZiel taugt dafuer nicht: Es verlangt den Basisnamen in der festen
+// Liste und sagt bei uix-knx-frontend-yaml deshalb nein. Der Vorlagenmarker
+// ginge dann als /* ... */ mitten in eine YAML-Karte - und ein CSS-Kommentar in
+// YAML macht die Theme-Datei unlesbar.
+function hatgIstYamlStilzielFeld(key) {
+  return /-yaml$/.test(String(key || "")) && hatgIstStilzielFeld(key);
+}
 
 // Die Kennung einer eigenen Vorlage steht in den Markern im Theme
 // (/* HATG:UIX:<kennung>:START */) und muss deshalb bei ASCII bleiben: Die
@@ -2707,7 +2714,7 @@ function hatgVorlagenPaket(tpl) {
 // demselben Pfad im selben Ziel loeschen sich gegenseitig aus: YAML behaelt den
 // letzten, der Rest verschwindet ohne Fehlermeldung.
 function hatgVorlagenPfade(tpl) {
-  if (!hatgIstYamlZiel(hatgVorlagenZiel(tpl))) return [];
+  if (!hatgIstYamlStilzielFeld(hatgVorlagenZiel(tpl))) return [];
   const treffer = [];
   for (const m of String((tpl && tpl.css) || "").matchAll(/^\s*(?:"([^"]+)"|([^\s#][^\n:]*(?:\$[^\n:]*)?)):\s*\|\s*$/gm)) {
     const pfad = (m[1] || m[2] || "").trim();
@@ -2778,10 +2785,25 @@ function hatgVorlageSoll(tpl, vorhanden) {
   if (!tpl) return "";
   return hatgVorlageBauen(tpl, hatgVorlageTitelLesen(vorhanden), hatgVorlageWerteLesen(tpl, vorhanden));
 }
+// Zeichengleich mit _VORLAGEN_ZIEL_RE in __init__.py. Client und Server muessen
+// dieselbe Regel benutzen: Laesst der Client etwas durch, das der Server
+// ablehnt, scheitert das Speichern der ganzen Liste - derselbe Fehler wie bei
+// den Kennungen. Ziffern sind erlaubt, weil ein eigenes Panel nach seinem
+// Wurzelelement heisst und ein Custom-Element-Name Ziffern tragen darf.
+const HATG_VORLAGEN_ZIEL_RE = /^uix-[a-z][a-z0-9-]{0,47}$/;
+function hatgVorlagenZielGueltig(key) {
+  return HATG_VORLAGEN_ZIEL_RE.test(String(key || ""));
+}
+// Das Ziel einer Vorlage darf auch ein eigenes Panel sein. Bis 1.3.2b11 stand
+// hier hatgIstStilzielKey, das nur die feste Liste kennt - eine Vorlage fuer
+// uix-knx-frontend-yaml landete deshalb kommentarlos in uix-card, also im
+// falschen Feld und ohne jede Meldung. Genau deswegen liess sich so eine
+// Vorlage ueber die Oberflaeche nicht anlegen; der Nutzer musste den Block von
+// Hand in den Code-Editor schreiben. Am 2026-09-30 gemessen und behoben.
 function hatgVorlagenZiel(tpl) {
   const ziel = tpl && tpl.ziel;
   if (!ziel || ziel === HATG_UIX_THEME_KEY) return HATG_VORLAGEN_STANDARDZIEL;
-  return hatgIstStilzielKey(ziel) ? ziel : HATG_VORLAGEN_STANDARDZIEL;
+  return hatgVorlagenZielGueltig(ziel) ? ziel : HATG_VORLAGEN_STANDARDZIEL;
 }
 // Alle Ziele, in denen Vorlagenbloecke stecken koennen - fuer Suche und
 // Aufraeumen. Es reicht nicht, die Ziele der heutigen Vorlagen zu nehmen: Zieht
@@ -5454,7 +5476,7 @@ function hatgEntflechteStilzieleImBag(bag) {
   if (!bag) return 0;
   let geteilt = 0;
   Object.keys(bag).forEach((key) => {
-    if (!hatgIstYamlZiel(key)) return;
+    if (!hatgIstYamlStilzielFeld(key)) return;
     const { punkt, rest } = hatgTeileStilzielYaml(bag[key]);
     if (!punkt) return;
     const basis = key.replace(/-yaml$/, "");
@@ -6067,7 +6089,8 @@ class HATGPanel extends HTMLElement {
     const renderPlainHeading = (label) => `<div class="nav-group-heading nav-group-heading-plain">${label}</div>`;
 
     const overviewItem = renderItem({ id: "overview", label: "Start", icon: "mdi:view-grid-outline" });
-    // Die Vorlagen sind der einzige Werkzeug-Eintrag mit Untermenues - nach Stilziel getrennt.
+    // Bei den Vorlagen haengen die UIX-Felder mit in derselben Ecke - deshalb
+    // faellt dieser Eintrag aus der Reihe und wird eigens gebaut.
     const werkzeugEintraege = () => {
       const eintraege = [];
       HATG_TAIL_NAV.forEach((s) => {
@@ -6087,18 +6110,13 @@ class HATGPanel extends HTMLElement {
         // Die Stilziele stehen nicht mehr in der Seitenleiste, sondern als
         // Auswahlfeld auf der Seite selbst - sonst haengen dort zwei Dutzend
         // Eintraege, die dasselbe zeigen wie die Seite darunter.
-        const gruppen = [];
-        const pseudo = { ...s, groups: [{ id: s.id }, ...gruppen] };
-        eintraege.push(renderGroupHeading(pseudo));
-        if (this.navGroupExpanded(pseudo)) {
-          eintraege.push(
-            renderSubItem(
-              { id: s.id, label: this._sprache === "en" ? "All presets" : "Alle Vorlagen", icon: "mdi:view-grid-outline" },
-              s.id
-            )
-          );
-          gruppen.forEach((g) => eintraege.push(renderSubItem(g, s.id)));
-        }
+        //
+        // Damit bleibt der Gruppe kein einziges Kind mehr. Bis 1.3.2b11 stand
+        // hier trotzdem eine Ueberschrift zum Aufklappen und darunter genau ein
+        // Untereintrag "Alle Vorlagen" - mit derselben Abschnitts-ID wie die
+        // Ueberschrift. Zwei Klicks fuer dieselbe Seite. Jetzt ist es ein
+        // gewoehnlicher Eintrag, der direkt dorthin springt.
+        eintraege.push(renderItem(s));
       });
       return eintraege;
     };
@@ -7367,6 +7385,20 @@ class HATGPanel extends HTMLElement {
       this.render();
       return;
     }
+    // Das Ziel ist seit 1.3.2b12 frei eintippbar. Ein ungueltiges hier
+    // abzufangen ist wichtiger als es aussieht: hatgVorlagenZiel wuerde still
+    // auf uix-card zurueckfallen, und die Vorlage laege danach im falschen Feld,
+    // ohne dass irgendwo etwas davon steht.
+    const zielText = String(dialog.ziel || HATG_VORLAGEN_STANDARDZIEL).trim();
+    if (!hatgVorlagenZielGueltig(zielText)) {
+      dialog.error =
+        this._sprache === "en"
+          ? `"${zielText}" is not a valid style target. It has to start with "uix-" followed by lowercase letters, digits and hyphens, for example uix-card or uix-knx-frontend-yaml.`
+          : `"${zielText}" ist kein gültiges Stilziel. Es muss mit "uix-" anfangen, danach Kleinbuchstaben, Ziffern und Bindestriche, etwa uix-card oder uix-knx-frontend-yaml.`;
+      this.render();
+      return;
+    }
+    dialog.ziel = zielText;
 
     const vorherigeListe = [...this.eigeneVorlagen()];
     const liste = [...vorherigeListe];
@@ -7404,7 +7436,7 @@ class HATGPanel extends HTMLElement {
       ["light", "dark"].forEach((mode) => {
         this._state.editorMode = mode;
         const text = String(this.currentValues()[ziel] || "");
-        this.commitField(ziel, hatgHaengeVorlagenBlockAn(text, eintrag.id, eintrag.css, hatgIstYamlZiel(ziel)));
+        this.commitField(ziel, hatgHaengeVorlagenBlockAn(text, eintrag.id, eintrag.css, hatgIstYamlStilzielFeld(ziel)));
       });
       this._state.editorMode = currentMode;
       this.applyPreviewTheme();
@@ -7502,7 +7534,7 @@ class HATGPanel extends HTMLElement {
       const existing = String(this.currentValues()[targetKey] || "");
       const updated = wasActive
         ? hatgEntferneVorlagenBlock(existing, id)
-        : hatgHaengeVorlagenBlockAn(existing, id, tpl.css, hatgIstYamlZiel(targetKey));
+        : hatgHaengeVorlagenBlockAn(existing, id, tpl.css, hatgIstYamlStilzielFeld(targetKey));
       this.commitField(targetKey, updated);
     });
     this._state.editorMode = currentMode;
@@ -7789,7 +7821,7 @@ class HATGPanel extends HTMLElement {
     const belegt = new Map();
     this.alleVorlagen().forEach((tpl) => {
       const ziel = hatgVorlagenZiel(tpl);
-      if (!hatgIstYamlZiel(ziel)) return;
+      if (!hatgIstYamlStilzielFeld(ziel)) return;
       if (!hatgVorlagenBlockActive(String(werte[ziel] || ""), tpl.id)) return;
       hatgVorlagenPfade(tpl).forEach((pfad) => {
         const schluessel = `${ziel} → ${pfad}`;
@@ -7889,7 +7921,7 @@ class HATGPanel extends HTMLElement {
         if (vorhanden === null) return;
         const soll = hatgVorlageSoll(tpl, vorhanden);
         if (hatgCssOhneKommentare(vorhanden) === hatgCssOhneKommentare(soll)) return;
-        this.commitField(ziel, hatgHaengeVorlagenBlockAn(text, tpl.id, soll, hatgIstYamlZiel(ziel)));
+        this.commitField(ziel, hatgHaengeVorlagenBlockAn(text, tpl.id, soll, hatgIstYamlStilzielFeld(ziel)));
         if (mode === "light") anzahl++;
       });
     });
@@ -7947,7 +7979,7 @@ class HATGPanel extends HTMLElement {
       this._state.editorMode = mode;
       const text = String(this.currentValues()[ziel] || "");
       const css = bauen(hatgLeseVorlagenBlock(text, tpl.id) || "");
-      const neu = hatgHaengeVorlagenBlockAn(text, tpl.id, css, hatgIstYamlZiel(ziel));
+      const neu = hatgHaengeVorlagenBlockAn(text, tpl.id, css, hatgIstYamlStilzielFeld(ziel));
       if (neu !== text) this.commitField(ziel, neu);
     });
     this._state.editorMode = currentMode;
@@ -7980,20 +8012,28 @@ class HATGPanel extends HTMLElement {
           <textarea class="text-input eigene-vorlage-desc" spellcheck="false" rows="3" data-eigene-vorlage-desc placeholder="Wofür ist die Vorlage gut?">${hatgEscape(dialog.desc || "")}</textarea>
         </label>
         <label class="eigene-vorlage-label">Wirkt auf
-          <select class="text-input" data-eigene-vorlage-ziel>
-            ${[
-              { suffix: "", gruppe: this._sprache === "en" ? "CSS" : "CSS" },
-              { suffix: "-yaml", gruppe: this._sprache === "en" ? "YAML with shadow DOM paths" : "YAML mit Shadow-DOM-Pfaden" },
-            ]
-              .map(
-                ({ suffix, gruppe }) => `<optgroup label="${gruppe}">${HATG_STILZIELE.map((z) => {
+          <input class="text-input" type="text" spellcheck="false" autocapitalize="off" autocomplete="off"
+                 list="hatg-vorlagen-ziele" data-eigene-vorlage-ziel
+                 value="${hatgEscape(hatgVorlagenZiel(dialog))}" placeholder="uix-card" />
+          <datalist id="hatg-vorlagen-ziele">
+            ${["", "-yaml"]
+              .map((suffix) =>
+                HATG_STILZIELE.map((z) => {
                   const key = `uix-${z.id}${suffix}`;
-                  const gewaehlt = key === hatgVorlagenZiel(dialog) ? " selected" : "";
-                  return `<option value="${key}"${gewaehlt}>${hatgEscape(hatgStilzielLabel(z, this._sprache === "en" ? "en" : "de"))} (${key})</option>`;
-                }).join("")}</optgroup>`
+                  const name = hatgStilzielLabel(z, this._sprache === "en" ? "en" : "de");
+                  const art = suffix
+                    ? this._sprache === "en" ? "YAML, shadow DOM paths" : "YAML, Shadow-DOM-Pfade"
+                    : "CSS";
+                  return `<option value="${key}" label="${hatgEscape(`${name} - ${art}`)}"></option>`;
+                }).join("")
               )
               .join("")}
-          </select>
+          </datalist>
+          <small>${
+            this._sprache === "en"
+              ? "Pick one from the list, or type your own panel target - the name of the panel's root element, for example <code>uix-knx-frontend-yaml</code>. Custom targets only arrive with the UIX option <em>Style custom panels</em> switched on."
+              : "Aus der Liste wählen oder ein eigenes Panel-Ziel eintippen - der Name des Wurzelelements des Panels, etwa <code>uix-knx-frontend-yaml</code>. Eigene Ziele kommen nur an, wenn in UIX die Option <em>Style custom panels</em> eingeschaltet ist."
+          }</small>
         </label>
         <label class="eigene-vorlage-label">CSS
           <textarea class="text-input eigene-vorlage-css" spellcheck="false" data-eigene-vorlage-css placeholder="ha-card {\n  border: 2px solid var(--accent-color) !important;\n}">${hatgEscape(dialog.css || "")}</textarea>
@@ -9945,6 +9985,15 @@ uix:
             }
           }
         });
+      });
+      // Ein eigenes Panel-Ziel steht in keinem Abschnitt des Manifests - die
+      // Schleife oben laeuft nur ueber bekannte Felder, und die Zusatzwerte
+      // unten kennen nur, was beim Import hereinkam. Ohne diesen Nachlauf stuende
+      // ein selbst angelegtes Ziel im Zustand, aber in keiner Datei: Die Vorlage
+      // waere eingeschaltet und trotzdem nirgends. Am 2026-09-30 gemessen.
+      Object.keys(values).forEach((k) => {
+        if (k === HATG_UIX_THEME_KEY || !hatgIstStilzielFeld(k)) return;
+        noteFlat(k, values[k]);
       });
       const extra = this._state.extraValues ? this._state.extraValues[mode] : null;
       if (extra) {

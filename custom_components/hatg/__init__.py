@@ -40,7 +40,11 @@ VORLAGEN_FILE = "hatg-uix-vorlagen.json"
 VORLAGEN_FILE_ALT = "hatg-cardmod-vorlagen.json"
 _VORLAGEN_ID_RE = re.compile(r"[A-Za-z0-9_-]{1,64}")
 # Stilziel einer Vorlage, z.B. uix-card. Ohne Angabe gilt uix-card.
-_VORLAGEN_ZIEL_RE = re.compile(r"uix-[a-z-]{1,48}")
+# Zeichengleich mit HATG_VORLAGEN_ZIEL_RE in hatg-panel.js. Ziffern sind
+# erlaubt: Ein eigenes Panel-Ziel heisst nach dem Wurzelelement des Panels, und
+# ein Custom-Element-Name darf Ziffern tragen. Waere der Server strenger als der
+# Client, scheiterte das Speichern der ganzen Liste an einem einzigen Eintrag.
+_VORLAGEN_ZIEL_RE = re.compile(r"uix-[a-z][a-z0-9-]{0,47}")
 
 
 def _is_safe_theme_name(name: str) -> bool:
