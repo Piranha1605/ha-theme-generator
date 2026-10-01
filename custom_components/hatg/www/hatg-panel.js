@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.3.2b17";
+const HATG_VERSION = "1.3.2b18";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -1586,6 +1586,58 @@ function hatgErsetzeVarAufrufe(text, ersetze) {
   return aus;
 }
 
+// Verweise, die in CSS wirklich ins Leere laufen.
+//
+// Ein var(--x) ohne Ausweichwert laesst die Eigenschaft ersatzlos ausfallen -
+// die Karte verliert dann etwa ihren Hintergrund, ohne dass irgendwo etwas
+// steht. Harmlos sind dagegen zwei Faelle, und beide kommen in echten Themes
+// staendig vor:
+//
+//   var(--x, none)                     ein fester Ausweichwert
+//   var(--a, var(--b, var(--c)))       eine Kette; loest ein Glied auf,
+//                                      kommt --c nie zum Einsatz
+//
+// Am 2026-10-01 beide Fallen nacheinander getreten: Erst meldete die Pruefung
+// sechs harmlose Ausweichwerte in docs/beispiele/glas-basis, dann noch
+// --bubble-default-color, das dort nur als letztes Glied einer Kette steht,
+// deren erstes Glied ein bekanntes Feld ist. Gemeldet wird deshalb nur eine
+// Kette, in der KEIN Glied auflöst und am Ende kein fester Wert steht.
+// Variablen, die Home Assistant beziehungsweise eine Karte selbst setzt und
+// die HATG bewusst nicht als Feld fuehrt - ein Verweis darauf ist in Ordnung.
+// --gauge-color etwa setzt die Gauge-Karte inline je nach Wert, ein Theme-Feld
+// dafuer wuerde immer verlieren (am 2026-09-30 nachgemessen).
+const HATG_FREMDE_VARIABLEN = new Set([
+  "gauge-color",
+  "tile-icon-color",
+  "bubble-default-color",
+]);
+function hatgVerweiseInsLeere(text, istBekannt) {
+  const s = String(text ?? "");
+  const raus = [];
+  // Verschachtelte var( gehoeren zur Kette ihres aeusseren und duerfen nicht
+  // einzeln geprueft werden - sonst gilt das letzte Glied jeder Kette als tot.
+  let grenze = -1;
+  for (let i = s.indexOf("var("); i >= 0; i = s.indexOf("var(", i + 1)) {
+    if (i < grenze) continue;
+    let tiefe = 0, ende = i;
+    for (let j = i + 3; j < s.length; j++) {
+      if (s[j] === "(") tiefe++;
+      else if (s[j] === ")") { tiefe--; if (tiefe === 0) { ende = j; break; } }
+    }
+    if (ende <= i) continue;
+    grenze = ende;
+    const kette = s.slice(i, ende + 1);
+    const namen = [...kette.matchAll(/--([a-zA-Z0-9_-]+)/g)].map((m) => m[1]);
+    if (!namen.length) continue;
+    if (namen.some((n) => istBekannt(n))) continue;
+    // Steht hinter dem letzten Komma etwas, das kein var( ist, gibt es einen
+    // festen Ausweichwert - dann faellt nichts aus.
+    const letzterTeil = kette.slice(kette.lastIndexOf(",") + 1, -1).trim();
+    if (kette.includes(",") && letzterTeil && !letzterTeil.startsWith("var(")) continue;
+    raus.push(namen[namen.length - 1]);
+  }
+  return raus;
+}
 function hatgVarNamen(text) {
   return [...String(text ?? "").matchAll(HATG_VAR_NAME_RE)].map((t) => t[1]);
 }
@@ -13322,6 +13374,51 @@ uix:
           : `${ausgemistet.length} ungenutzte${ausgemistet.length === 1 ? "s Feld entfernt - nichts zeigte darauf: " : " Felder entfernt - nichts zeigte darauf: "}`) +
           hatgFelderNennen(ausgemistet, en ? "more" : "weitere")
       );
+    // Verweise, die ins Leere zeigen. hatgLoeseEigeneFelderAuf betrachtet nur
+    // Felder, die es im Theme GIBT - ein var() auf einen Namen, den niemand
+    // definiert, faellt durch jedes Raster. Am 2026-10-01 in der Theme eines
+    // Nutzers gefunden: drei Verweise (--custom-card-gradient, -shadows,
+    // -border) zeigten auf nichts, HATG reichte sie bei jedem Durchlauf still
+    // weiter. In CSS faellt so eine Eigenschaft ersatzlos aus - die Karte
+    // verliert ihren Hintergrund, ohne dass irgendwo etwas steht.
+    //
+    // Die Vorsilben ha-, wa-, md- und mdc- bleiben aussen vor: Die liefert
+    // Home Assistant selbst, und HATG kennt bewusst nicht jede davon (die 151
+    // semantischen Farbmarken etwa stehen nicht in der Feldliste). Sie zu
+    // melden gaebe Fehlalarm. Damit bleibt die Pruefung auf dem, was wirklich
+    // aus einer Theme stammt: eigene Hilfsfelder unter eigener Vorsilbe.
+    const bekannteFelder = new Set(Object.keys(HATG_MANIFEST.light));
+    const vorhanden = new Set([
+      ...Object.keys(this._state.values.light), ...Object.keys(this._state.values.dark),
+      ...Object.keys(this._state.extraValues.light || {}), ...Object.keys(this._state.extraValues.dark || {}),
+    ]);
+    // Eine Variable kann auch IM CSS definiert sein, nicht nur als Theme-Feld:
+    // Die Verlauf-Vorlage setzt --verlauf-akzent und --verlauf-vorn direkt im
+    // Block von uix-card und uix-sidebar. Ohne diese Zeile galten beide als tot.
+    ["light", "dark"].forEach((m) =>
+      [this._state.values[m], this._state.extraValues[m] || {}].forEach((b) =>
+        Object.values(b).forEach((v) => {
+          for (const d of String(v ?? "").matchAll(/--([a-zA-Z0-9_-]+)\s*:/g)) vorhanden.add(d[1]);
+        })
+      )
+    );
+    const insLeere = new Set();
+    ["light", "dark"].forEach((m) =>
+      [this._state.values[m], this._state.extraValues[m] || {}].forEach((b) =>
+        Object.values(b).forEach((v) =>
+          hatgVerweiseInsLeere(v, (n) => bekannteFelder.has(n) || vorhanden.has(n) || HATG_FREMDE_VARIABLEN.has(n) || /^(ha|wa|md|mdc)-/.test(n))
+            .forEach((n) => insLeere.add(n))
+        )
+      )
+    );
+    if (insLeere.size) {
+      const namen = [...insLeere].sort();
+      parts.push(
+        en
+          ? `${namen.length} reference${namen.length === 1 ? "" : "s"} point${namen.length === 1 ? "s" : ""} at a field that does not exist (${hatgFelderNennen(namen, "more")}) - in CSS the property is dropped entirely`
+          : `${namen.length} Verweis${namen.length === 1 ? "" : "e"} zeig${namen.length === 1 ? "t" : "en"} auf ein Feld, das es nicht gibt (${hatgFelderNennen(namen, "weitere")}) - die Eigenschaft fällt in CSS ersatzlos aus`
+      );
+    }
     const entferntGesamt = eigeneFelder.entfernt + verwaist.entfernt;
     if (entferntGesamt)
       parts.push(
