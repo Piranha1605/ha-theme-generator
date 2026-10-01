@@ -5796,8 +5796,61 @@ function hatgIsColorValue(value) {
   return HATG_NAMED_COLORS.has(v.toLowerCase());
 }
 
-function hatgIsCssBackgroundLayer(teil) {
+// Was in einer Ebene der Kurzform background HINTER dem Bild stehen darf:
+// Anheftung, Wiederholung, Ursprung und Beschnitt, die Position und - nach
+// einem Schraegstrich - die Groesse. Bis 1.3.2b20 galt eine Ebene nur dann als
+// gueltig, wenn sie genau ein url() oder ein Verlauf war; alles dahinter liess
+// den Wert durchfallen. Beim Speichern stand dann "1 ungueltiger Wert" fuer
+// etwas, das gueltiges CSS ist - am 2026-10-01 an
+// "linear-gradient(145deg, #777775 0%, #B8B8B5 100%) fixed" gemeldet.
+const HATG_BG_WORT_RE = /^(?:scroll|fixed|local|repeat|repeat-x|repeat-y|no-repeat|space|round|border-box|padding-box|content-box|text|left|right|top|bottom|center|cover|contain|auto|inherit|initial|unset|revert)$/i;
+const HATG_BG_MASS_RE = /^[-+]?(?:\d+\.?\d*|\.\d+)(?:px|em|rem|%|vh|vw|vmin|vmax|ch|ex|pt|cm|mm|in|pc|q)?$/i;
+
+// Ab Position i steht ein Funktionsaufruf: Index hinter die passende
+// schliessende Klammer liefern, oder -1. Klammern in Zeichenketten zaehlen
+// nicht mit - ein Dateiname darf eine Klammer tragen: url("a(1).png").
+function hatgKlammerEnde(text, i) {
+  const auf = text.indexOf("(", i);
+  if (auf < 0) return -1;
+  let tiefe = 0;
+  let quote = "";
+  for (let k = auf; k < text.length; k++) {
+    const c = text[k];
+    if (quote) {
+      if (c === "\\") k++;
+      else if (c === quote) quote = "";
+      continue;
+    }
+    if (c === '"' || c === "'") { quote = c; continue; }
+    if (c === "(") tiefe++;
+    else if (c === ")") { tiefe--; if (!tiefe) return k + 1; }
+  }
+  return -1;
+}
+
+function hatgIstBildEbene(teil) {
   return /^url\(/i.test(teil) || HATG_GRADIENT_RE.test(teil);
+}
+
+function hatgIsCssBackgroundLayer(teil) {
+  const v = String(teil ?? "").trim();
+  if (!v) return false;
+  if (hatgIstBildEbene(v)) return true;
+  // Sonst: ein Bild, gefolgt von Position, Groesse, Wiederholung, Anheftung.
+  if (!/^(?:url|(?:repeating-)?(?:linear|radial|conic)-gradient)\s*\(/i.test(v)) return false;
+  const ende = hatgKlammerEnde(v, 0);
+  if (ende < 0) return false;
+  const rest = v.slice(ende).trim();
+  if (!rest) return true;
+  // Der Schraegstrich trennt Position und Groesse und darf anliegen.
+  const stuecke = rest.replace(/\//g, " / ").split(/\s+/).filter(Boolean);
+  return stuecke.every((s) => {
+    if (s === "/") return true;
+    if (HATG_BG_WORT_RE.test(s) || HATG_BG_MASS_RE.test(s)) return true;
+    // calc() und var() duerfen als Mass oder Position stehen.
+    if (/^(?:calc|var|min|max|clamp)\s*\(/i.test(s)) return hatgKlammerEnde(s, 0) === s.length;
+    return false;
+  });
 }
 
 function hatgIsCssBackground(value) {

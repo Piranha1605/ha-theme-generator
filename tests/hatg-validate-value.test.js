@@ -123,6 +123,43 @@ pruefe("einfache Werte werden weiterhin geprueft", () => {
   assert.equal(hatgValidateValue("rgb_triplet", "1, 2, 3", "rgb-primary-color"), "ok");
 });
 
+// Eine Ebene der Kurzform background ist nicht nur das Bild: Dahinter duerfen
+// Position, Groesse, Wiederholung und Anheftung stehen. Bis 1.3.2b19 galt eine
+// Ebene nur dann als gueltig, wenn sie GENAU ein url() oder ein Verlauf war -
+// beim Speichern meldete HATG deshalb "1 ungueltiger Wert" fuer gueltiges CSS.
+// Am 2026-10-01 aus einer echten Theme gemeldet, der Wert war
+// "linear-gradient(145deg, #777775 0%, #B8B8B5 100%) fixed".
+[
+  "linear-gradient(145deg, #777775 0%, #B8B8B5 100%) fixed",
+  "url(/local/hatg/x.png) center / cover no-repeat fixed",
+  "url(/local/hatg/x.png) no-repeat",
+  "url(/x.png) calc(50% + 10px) 0 / cover",
+  'url("a(1).png") no-repeat',
+].forEach((wert) => {
+  pruefe(`Hintergrund-Ebene mit Position und Anheftung: ${wert.slice(0, 52)}`, () => {
+    assert.equal(hatgIsCssBackground(wert), true);
+    for (const k of ["lovelace-background", "popup-custom-wallpaper", "ha-card-background"])
+      assert.equal(hatgValidateValue("hex", wert, k), "ok", `${k} lehnte den Wert ab`);
+  });
+});
+
+// Die Gegenrichtung, sonst waere "alles ist ein Hintergrund" die Loesung.
+// Absichtlich NICHT dabei: alles, was mit url( beginnt. hatgIstBildEbene prueft
+// dort nur den Anfang, "url(/x.png) center / cover quatsch" geht also durch.
+// Das ist seit jeher so und bleibt: Ein falsches "ungueltig" nervt bei
+// gueltigem CSS mehr, als ein durchgerutschter Tippfehler kostet - die Meldung
+// ist ein Hinweis, kein Tor, und genau sie hat am 2026-10-01 bei gueltigem CSS
+// angeschlagen. Verlaeufe werden geprueft, weil sie eine geschlossene Form
+// haben; eine URL kann alles sein.
+[
+  "linear-gradient(145deg, #777775 0%, #B8B8B5 100%) wackelpudding",
+  "linear-gradient(145deg, #777",
+].forEach((wert) => {
+  pruefe(`Unsinn hinter dem Bild faellt durch: ${wert.slice(0, 52)}`, () => {
+    assert.equal(hatgIsCssBackground(wert), false);
+  });
+});
+
 if (fehler) {
   console.error(`\n${fehler} Test(s) fehlgeschlagen.`);
   process.exit(1);
