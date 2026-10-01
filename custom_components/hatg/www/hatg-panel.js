@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.3.2b16";
+const HATG_VERSION = "1.3.2b17";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -299,7 +299,7 @@ const HATG_TEXTE = {
   "Gauge in Glas": "Gauge in glass",
   "Der graue Ring hinter dem Wertbogen wird durchscheinend, der Hintergrund kommt durch. Der Bogen bekommt einen Schein in seiner eigenen Farbe - auch in der Schwellenfarbe, wenn die Karte Segmente hat.": "The grey track behind the value arc becomes translucent, so the background shows through. The arc gets a glow in its own colour - including the severity colour when the card has segments.",
   "Knöpfe, Regler und Chips in Karten mit kleiner Rundung und weichem Schatten.": "Buttons, sliders and chips in cards with a small radius and soft shadow.",
-  "Die Knöpfe der Dashboard-Kopfleiste mit kleiner Rundung und weichem Schatten.": "The buttons of the dashboard top bar with a small radius and soft shadow.",
+  "Die Knöpfe der Dashboard-Kopfleiste mit kleiner Rundung und weichem Schatten. Nicht im Glas-Paket enthalten - die Symbole der Ansichtsleiste stehen eng beieinander und wirken damit schnell gedrängt.": "The buttons of the dashboard top bar with a small radius and soft shadow. Not part of the glass package - the view bar icons sit close together and quickly look crowded with it.",
   "Die Knöpfe in Dialogen mit kleiner Rundung und weichem Schatten.": "The buttons in dialogs with a small radius and soft shadow.",
   "Gibt Schaltflächen den Aufbau der Knöpfe eigener Karten: kleine Rundung, feine Lichtkante oben und ein kleiner weicher Schatten. Betrifft die Schaltflächen auf den Einstellungsseiten, inklusive der Aktionsknöpfe in den Listen. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.": "Gives buttons the build of the buttons in custom cards: a small corner radius, a fine light edge at the top and a small soft shadow. Applies to the buttons on the settings pages, including the action buttons in the lists. It only sets variables Home Assistant provides itself, so it needs no shadow DOM paths.",
   "Weichzeichnung auf der Fläche der Knöpfe in Karten. Wirkt nur zusammen mit der Vorlage für Knöpfe in Karten.": "Blur on the surface of buttons in cards. Works only together with the preset for buttons in cards.",
@@ -3627,9 +3627,13 @@ ha-control-slider {
   },
   {
     id: "glas-buttons-rahmen",
-    paket: "glas",
+    // Bewusst NICHT im Glas-Paket: Die Vorlage legt Rundung und Schatten auf
+    // jeden ha-button, ha-icon-button und assist-chip im Dashboard-Rahmen - also
+    // auch auf die Symbole der Ansichtsleiste oben. Die stehen dort ohnehin eng
+    // beieinander; mit Schatten stossen sie sichtbar aneinander. Wer sie will,
+    // schaltet sie einzeln dazu. Am 2026-10-01 auf Ansage herausgenommen.
     label: "Bedienelemente in Glas: Kopfleiste und Rahmen",
-    desc: "Die Knöpfe der Dashboard-Kopfleiste mit kleiner Rundung und weichem Schatten.",
+    desc: "Die Knöpfe der Dashboard-Kopfleiste mit kleiner Rundung und weichem Schatten. Nicht im Glas-Paket enthalten - die Symbole der Ansichtsleiste stehen eng beieinander und wirken damit schnell gedrängt.",
     werte: [
       { id: "rundung", label: "Rundung der Knöpfe", labelEn: "Button rounding", standard: "calc(var(--ha-card-border-radius, 14px) - 7px)" },
       { id: "schatten", label: "Schatten der Knöpfe", labelEn: "Button shadow", standard: "0 1.33px 5.33px rgba(0, 0, 0, 0.28), inset 0 0.17px 0 rgba(255, 255, 255, 0.3)" },
