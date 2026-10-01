@@ -132,10 +132,21 @@ pruefe("Bleibt nach dem Auftrennen nichts uebrig, faellt das -yaml-Feld weg", ()
   assert.ok(!("uix-card-yaml" in bag), "leeres -yaml-Feld blieb stehen");
 });
 
-pruefe("Ein bereits belegtes einfaches Feld wird nicht ueberschrieben", () => {
+// Diese Pruefung hielt bis zum 2026-10-01 das Gegenteil fest: Sie verlangte,
+// dass im einfachen Feld NUR der Handeintrag steht - also dass der "."-Eintrag
+// verworfen wird. Der Name sagte "wird nicht ueberschrieben", die Behauptung
+// sagte "wird weggeworfen", und damit war ein stiller Verlust festgeschrieben.
+// Nachgestellt: docs/beispiele/glas-basis.yaml plus zwei von Hand ergaenzte
+// Zeilen "uix-card:" - beim naechsten Import waren die Vorlagen glas-ebene,
+// glas-bubble und glas-buttons-karten weg, ohne eine Zeile im Bericht.
+pruefe("Ein bereits belegtes einfaches Feld bekommt den \".\"-Eintrag angehaengt", () => {
   const bag = { "uix-card": "/* von Hand */", "uix-card-yaml": hatgMergeStilzielYaml(EINFACH, KARTE) };
   hatgEntflechteStilzieleImBag(bag);
-  assert.equal(bag["uix-card"], "/* von Hand */");
+  assert.ok(
+    bag["uix-card"].startsWith("/* von Hand */"),
+    `der Handeintrag steht nicht mehr vorn: ${bag["uix-card"].slice(0, 40)}`
+  );
+  assert.ok(bag["uix-card"].includes(EINFACH), "der \".\"-Eintrag ist verloren gegangen");
 });
 
 pruefe("Unquotierter Punkt-Schluessel wird ebenfalls erkannt", () => {

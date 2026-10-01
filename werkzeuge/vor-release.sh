@@ -45,7 +45,15 @@ kopf "Tests"
 for t in tests/*.test.js; do
   if ausgabe=$(node "$t" 2>&1); then
     # Die Testdateien schreiben ihre Zeilen unterschiedlich weit eingerueckt.
-    ok "$(basename "$t")  $(printf '%s' "$ausgabe" | grep -cE '^[[:space:]]*ok ') Pruefungen"
+    ANZAHL=$(printf '%s' "$ausgabe" | grep -cE '^[[:space:]]*ok ')
+    # Null Pruefungen heisst nicht bestanden, sondern nichts getan. Eine
+    # Testdatei kann sich selbst stilllegen, ohne rot zu werden - etwa wenn sie
+    # bei fehlender Beispiel-Theme mit return abbricht und trotzdem "ok" druckt.
+    if [ "$ANZAHL" -gt 0 ]; then
+      ok "$(basename "$t")  $ANZAHL Pruefungen"
+    else
+      fehl "$(basename "$t") hat keine einzige Pruefung ausgefuehrt"
+    fi
   else
     fehl "$(basename "$t")"
     printf '%s\n' "$ausgabe" | grep -A3 'FEHL' | head -12 | sed 's/^/         /'
@@ -83,7 +91,12 @@ for f in docs/beispiele/*.yaml; do
 done
 
 kopf "Stand im Git"
-if [ -z "$(git status --porcelain -- ':!ARTEFAKTE.md' ':!TASKS.md' ':!dashboard.html')" ]; then
+# Erst den Rueckgabewert, dann die Ausgabe: Ein scheiterndes git liefert eine
+# leere Ausgabe, und die galt hier als "nichts Uncommittetes". Am 2026-10-01
+# nachgestellt - git mit Rueckgabewert 128 machte den Schritt gruen.
+if ! GITSTAND=$(git status --porcelain -- ':!ARTEFAKTE.md' ':!TASKS.md' ':!dashboard.html'); then
+  fehl "git status liess sich nicht ausfuehren - der Stand im Git ist unbekannt"
+elif [ -z "$GITSTAND" ]; then
   ok "nichts Uncommittetes"
 else
   fehl "es liegen ungespeicherte Aenderungen - die kommen nicht in den Tag"
@@ -99,10 +112,20 @@ else
 fi
 
 kopf "Version"
-VERSION=$(python3 -c "import json;print(json.load(open('custom_components/hatg/manifest.json'))['version'])" 2>/dev/null)
-ok "manifest.json sagt $VERSION"
+if ! VERSION=$(python3 -c "import json;print(json.load(open('custom_components/hatg/manifest.json'))['version'])"); then
+  fehl "die Version liess sich nicht aus manifest.json lesen"
+  VERSION=""
+elif [ -z "$VERSION" ]; then
+  fehl "manifest.json enthaelt keine Version"
+else
+  ok "manifest.json sagt $VERSION"
+fi
 if [ -n "$MARKE" ]; then
-  if [ "$MARKE" = "$VERSION" ]; then
+  # Stabile Releases tragen ein v (v1.3.0), Betas nicht (1.3.2b18). ci.yml
+  # streift es mit ${marke#v} ab, dieses Tor verglich vorher Zeichen fuer
+  # Zeichen - mit dem echten Markennamen eines stabilen Release war es damit
+  # nicht laufbar und meldete falsches Rot.
+  if [ "${MARKE#v}" = "$VERSION" ]; then
     ok "geplante Marke $MARKE passt"
   else
     fehl "geplante Marke $MARKE, im Manifest steht $VERSION"

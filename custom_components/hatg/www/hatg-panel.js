@@ -5,28 +5,33 @@ const HATG_SPRACHE_SPEICHER = "hatg-sprache";
 const HATG_UEBERSETZUNG_TABU = new Set(["STYLE", "SCRIPT", "TEXTAREA", "INPUT", "PRE"]);
 
 const HATG_TEXTE = {
+  en: {
+    // Diese Eintraege standen bis zum 2026-10-01 VOR dem en-Block, also
+    // direkt unter HATG_TEXTE. hatgUebersetze liest HATG_TEXTE[sprache] -
+    // damit war keiner von ihnen erreichbar, und die englische Oberflaeche
+    // zeigte fuer sieben Vorlagen deutschen Text (symbole-kachel und seine
+    // drei Geschwister, schalter-verlauf und seine zwei).
   "Symbole als Kachel": "Symbols as a tile",
   "Symbole sitzen in einer abgerundeten Kachel statt im Kreis, wie die Knöpfe der Horizon-Cards. Gilt für Kacheln, Mushroom, Bubble, Entitätenzeilen, Glance und Picture-Elements. Die Rundung hat Vorrang vor der aus dem Bubble-Glas.":
-    "Symbols sit in a rounded tile instead of a circle, like the buttons of the Horizon Cards. Applies to tiles, Mushroom, Bubble, entity rows, glance and picture elements. Its rounding takes precedence over the one from the Bubble glass preset.",
+  "Symbols sit in a rounded tile instead of a circle, like the buttons of the Horizon Cards. Applies to tiles, Mushroom, Bubble, entity rows, glance and picture elements. Its rounding takes precedence over the one from the Bubble glass preset.",
   "Symbole als Kachel: Entitätenzeilen": "Symbols as a tile: entity rows",
   "Gibt den Symbolen in Entitätenzeilen die Kachelfläche. Ohne sie stehen sie dort ohne Grund, weil Home Assistant das state-badge leer lässt.":
-    "Gives the symbols in entity rows their tile surface. Without it they sit there with no backdrop, because Home Assistant leaves the state badge empty.",
+  "Gives the symbols in entity rows their tile surface. Without it they sit there with no backdrop, because Home Assistant leaves the state badge empty.",
   "Symbole als Kachel: Glance-Karten": "Symbols as a tile: glance cards",
   "Dieselbe Kachelfläche für die Symbole einer Glance-Karte.":
-    "The same tile surface for the symbols of a glance card.",
+  "The same tile surface for the symbols of a glance card.",
   "Symbole als Kachel: Picture-Elements": "Symbols as a tile: picture elements",
   "Dieselbe Kachelfläche für Symbole auf einer Picture-Elements-Karte.":
-    "The same tile surface for symbols on a picture elements card.",
+  "The same tile surface for symbols on a picture elements card.",
   "Schalter mit Verlauf: Kopf der Entitätenkarte": "Switches with gradient: entities card header",
   "Der Sammelschalter in der Überschrift einer Entitätenkarte. Er sitzt wieder woanders und braucht einen eigenen Pfad.":
-    "The master switch in the heading of an entities card. It sits somewhere else again and needs its own path.",
+  "The master switch in the heading of an entities card. It sits somewhere else again and needs its own path.",
   "Schalter mit Verlauf: Entitätenzeilen": "Switches with gradient: entity rows",
   "Dasselbe für die Zeilen der Entitätenkarte. Die braucht einen eigenen Weg, weil der Schalter dort tiefer liegt.":
-    "The same for the rows of the entities card. Those need their own route, because the switch sits deeper there.",
+  "The same for the rows of the entities card. Those need their own route, because the switch sits deeper there.",
   "Schalter mit Verlauf": "Switches with gradient",
   "Eingeschaltete Schalter nehmen den Verlauf für aktive Flächen, der Knopf die dazu passende Schriftfarbe.":
-    "Switches that are on take the gradient for active surfaces, the knob takes the matching text colour.",
-  en: {
+  "Switches that are on take the gradient for active surfaces, the knob takes the matching text colour.",
   "Speichern": "Save",
   "Öffnen": "Open",
   "Einstellungen": "Settings",
@@ -1611,6 +1616,127 @@ const HATG_FREMDE_VARIABLEN = new Set([
   "tile-icon-color",
   "bubble-default-color",
 ]);
+// Namen, die ein anderes System liest, obwohl HATG sie nicht als Feld fuehrt.
+// Der Cleaner beim Import darf sie nicht entfernen, und ein Verweis darauf ist
+// kein toter Verweis.
+//
+// Anlass: Der Cleaner aus 1.3.2b14 entschied allein nach "HATG kennt das Feld
+// nicht, und kein var() zeigt darauf". Home Assistant liest seine Variablen
+// aber nicht per var() aus der Theme, sondern aus seinem eigenen Stylesheet -
+// fuer den Cleaner sah damit jede HA-Variable, die HATG nicht als Feld
+// anbietet, wie Ballast aus. Am 2026-10-01 nachgemessen: Von zwoelf echten
+// Namen (scrollbar-thumb-color, mush-chip-height, ha-space-4, rgb-error-color,
+// codemirror-keyword und weiteren) loeschte der Import elf. Wer so ein Feld von
+// Hand gesetzt hatte, verlor es beim ersten Import - und im Bericht standen nur
+// die ersten drei Namen.
+//
+// Geschuetzt wird auf zwei Wegen, weil die Namen auf zwei Weisen entstehen.
+//
+// Vorsilben fuer Familien, deren Mitglieder HATG nicht alle kennen KANN:
+// state-<domain>-<zustand>-color und bubble-state-<domain>-<zustand>-color
+// entstehen erst zur Laufzeit, rgb-<name> leitet HA aus jedem Hex-Feld ab
+// (apply_themes_on_element.ts), die 151 semantischen ha-color-Marken stehen
+// bewusst nicht in der Feldliste, und von Mushroom sind erst 18 Namen geprueft.
+//
+// Eine feste Liste fuer alles ohne solche Vorsilbe, am 2026-10-01 aus den
+// Quellen geholt und gegen HATGs Feldliste abgeglichen:
+//   Home Assistant, src/resources/theme/core.globals.ts,
+//   color/color.globals.ts und color/semantic.globals.ts (Zweig dev): 421
+//   Variablen auf html, davon kennt HATG 188 nicht, und 15 tragen keine der
+//   Vorsilben oben.
+//   Bubble Card, dist/bubble-card.js (Zweig main): 119 --bubble-*-Namen, davon
+//   kennt HATG 60 nicht. Das ist der Grund, warum eine blosse Vorsilben-Regel
+//   hier nicht reicht und eine blosse Feldliste auch nicht: HATG hat 1.3.2b15
+//   geprueft, welche SEINER Bubble-Felder Bubble nicht mehr liest - nicht,
+//   welche Namen Bubble zusaetzlich liest. Die ganze Familie
+//   bubble-card-type-* und alle bubble-pop-up-Masse fehlten.
+//
+// Gegenprobe, damit die Liste nicht zu weit greift: Die 61 Felder, die 1.3.2b15
+// als tot aus der Liste genommen hat, stehen in keiner der beiden Quellen - sie
+// fliegen also weiter, ohne dass es dafuer eine Ausnahmeliste braucht.
+//
+// Was damit NICHT abgedeckt ist: Variablen einer fremden Karte, die HATG
+// ueberhaupt nicht kennt. Dafuer bleibt es dabei, dass der Bericht sie beim
+// Namen nennt - deshalb nennt er jetzt alle und nicht nur drei.
+const HATG_FREMDE_VORSILBEN_RE = /^(?:ha|wa|md|mdc|mush|rgb|state|codemirror|energy|history|bubble-state)-|^color-\d+$/;
+const HATG_FREMDE_FELDER = new Set([
+  "app-header-border-bottom",
+  "bar-box-shadow",
+  "bubble-backdrop-filter",
+  "bubble-button-accent-color",
+  "bubble-card-type-border",
+  "bubble-card-type-border-radius",
+  "bubble-card-type-box-shadow",
+  "bubble-card-type-icon-background-color",
+  "bubble-card-type-icon-border-radius",
+  "bubble-card-type-main-background-color",
+  "bubble-color-cursor-background",
+  "bubble-color-cursor-indicator-active-bottom",
+  "bubble-color-cursor-indicator-active-opacity",
+  "bubble-color-cursor-indicator-active-top",
+  "bubble-color-cursor-indicator-bottom",
+  "bubble-color-cursor-indicator-color",
+  "bubble-color-cursor-indicator-opacity",
+  "bubble-color-cursor-indicator-top",
+  "bubble-content-inline-start",
+  "bubble-cover-buttons-border-radius",
+  "bubble-default-backdrop-background-color",
+  "bubble-default-color",
+  "bubble-event-accent-color",
+  "bubble-horizontal-buttons-stack-content-inline-start",
+  "bubble-list-item-accent-color",
+  "bubble-main-background-color",
+  "bubble-media-player-play-pause-icon-color",
+  "bubble-pop-up-available-height",
+  "bubble-pop-up-border",
+  "bubble-pop-up-bottom-padding",
+  "bubble-pop-up-close-button-border",
+  "bubble-pop-up-content-border-radius",
+  "bubble-pop-up-content-inline-start",
+  "bubble-pop-up-extra-bottom-space",
+  "bubble-pop-up-fade-color",
+  "bubble-pop-up-gap",
+  "bubble-pop-up-header-gap",
+  "bubble-pop-up-header-gap-reserve",
+  "bubble-pop-up-header-overlap",
+  "bubble-pop-up-home-assistant-icon-display",
+  "bubble-pop-up-mask-bottom-alpha",
+  "bubble-pop-up-mask-bottom-stop",
+  "bubble-pop-up-mask-top-alpha",
+  "bubble-pop-up-mask-top-stop",
+  "bubble-pop-up-safe-area-top",
+  "bubble-pop-up-visible-bottom-padding",
+  "bubble-scroll-lock-size",
+  "bubble-select-border",
+  "bubble-separator-border",
+  "bubble-slider-fill-color",
+  "bubble-sub-button-group-justify-content",
+  "bubble-sub-button-height",
+  "bubble-sub-button-highlight-font-size",
+  "bubble-sub-button-highlight-font-weight",
+  "bubble-sub-button-justify-content",
+  "bubble-sub-button-light-background-color",
+  "bubble-sub-buttons-content-inline-start",
+  "bubble-sub-slider-left-offset",
+  "bubble-sub-slider-width",
+  "chip-background-color",
+  "clear-background-color",
+  "darker-primary-color",
+  "data-table-background-color",
+  "input-outlined-hover-border-color",
+  "input-outlined-idle-border-color",
+  "label-badge-grey",
+  "map-filter",
+  "markdown-code-background-color",
+  "scrollbar-thumb-color",
+  "shadow-color",
+  "table-header-background-color",
+  "text-light-primary-color",
+]);
+function hatgIstFremdesFeld(key) {
+  const n = String(key || "");
+  return HATG_FREMDE_VORSILBEN_RE.test(n) || HATG_FREMDE_FELDER.has(n);
+}
 function hatgVerweiseInsLeere(text, istBekannt) {
   const s = String(text ?? "");
   const raus = [];
@@ -5183,7 +5309,19 @@ function hatgQuoteYamlValue(value, indentSpaces = 8) {
       .join("\n");
     return "|\n" + indented;
   }
-  return `"${v.replaceAll('"', '\\"')}"`;
+  // In einem doppelt gequoteten YAML-Skalar ist der Backslash das
+  // Fluchtzeichen. Er muss deshalb VOR dem Anfuehrungszeichen verdoppelt
+  // werden, sonst schreibt HATG eine Datei, die Home Assistant nicht mehr
+  // laden kann - und zwar die ganze Datei, nicht nur das Feld.
+  //
+  // Am 2026-10-01 nachgemessen, mit PyYAML gegengeprueft (das liest HA):
+  // Eingabe  uix-card: 'ha-card::before { content: "\\201C"; }'   <- gueltig
+  // Ausgabe  uix-card: "ha-card::before { content: \\"\\201C\\"; }"   <- ScannerError
+  // \\2 ist keine gueltige Fluchtfolge. Ein Wert, der auf \\ endet, verschluckt
+  // ausserdem das Folgefeld: aus "a\\" wird das Anfuehrungszeichen escaped, und
+  // der Parser liest die naechste Feldzeile als Teil des Wertes weiter.
+  // HATGs eigener Parser merkt davon nichts, die Oberflaeche sieht sauber aus.
+  return `"${v.replaceAll("\\", "\\\\").replaceAll('"', '\\"')}"`;
 }
 function hatgNormalizeHex6(hex) {
   const v = String(hex ?? "").trim();
@@ -5405,11 +5543,22 @@ function hatgYamlPfadeZusammenfuehren(yamlKarte) {
 // Gegenstueck dazu. Beim Import muss der "."-Eintrag zurueck ins einfache Feld,
 // sonst findet HATG seine Vorlagenmarken dort nicht wieder und haelt jede
 // Kartenvorlage fuer abgeschaltet.
+// Ein "."-Eintrag INNERHALB eines Vorlagenblocks gehoert der Vorlage und bleibt,
+// wo er ist. Holt man ihn heraus, bleiben die Marker ohne ihn zurueck: Die
+// Vorlage gilt dann als unvollstaendig, das Auffrischen haengt sie erneut an,
+// und die herausgeholte Kopie liegt im einfachen Feld - ohne Marker, also
+// unerkennbar. Am 2026-10-01 gemessen: symbole-kachel (die einzige Vorlage mit
+// einem "."-Eintrag in einem -yaml-Ziel) vermehrte sich bei jedem Durchlauf,
+// die Theme wuchs um 1027 Zeichen, und jeder Import meldete "1 UIX-Vorlage auf
+// den aktuellen Stand gebracht".
+const HATG_MARKE_START_ZEILE_RE = /(?:\/\*\s*|#\s*)[A-Z][A-Z0-9_]*:(?:UIX|CARDMOD):[^\s:]+:START/;
+const HATG_MARKE_END_ZEILE_RE = /(?:\/\*\s*|#\s*)[A-Z][A-Z0-9_]*:(?:UIX|CARDMOD):[^\s:]+:END/;
 function hatgTeileStilzielYaml(yamlKarte) {
   const zeilen = String(yamlKarte ?? "").replace(/\r\n?/g, "\n").split("\n");
   const punkt = [];
   const rest = [];
   let imPunkt = false;
+  let inVorlage = false;
   for (const zeile of zeilen) {
     if (imPunkt) {
       if (zeile.trim() === "") {
@@ -5423,7 +5572,9 @@ function hatgTeileStilzielYaml(yamlKarte) {
       }
       imPunkt = false;
     }
-    if (/^(?:"\."|\.):\s*\|-?\s*$/.test(zeile)) {
+    if (HATG_MARKE_START_ZEILE_RE.test(zeile)) inVorlage = true;
+    else if (HATG_MARKE_END_ZEILE_RE.test(zeile)) inVorlage = false;
+    else if (!inVorlage && /^(?:"\."|\.):\s*\|-?\s*$/.test(zeile)) {
       imPunkt = true;
       continue;
     }
@@ -5444,7 +5595,16 @@ function hatgEntflechteStilzieleImBag(bag) {
     const { punkt, rest } = hatgTeileStilzielYaml(bag[key]);
     if (!punkt) return;
     const basis = key.replace(/-yaml$/, "");
-    if (!String(bag[basis] ?? "").trim()) bag[basis] = punkt;
+    // Steht im einfachen Feld schon etwas, wird angehaengt - nicht verworfen.
+    // Vorher ging der "."-Eintrag in diesem Fall ersatzlos verloren, und zwar
+    // ohne eine Zeile im Bericht. Am 2026-10-01 nachgestellt: Nimmt man
+    // docs/beispiele/glas-basis.yaml und schreibt von Hand zwei Zeilen
+    // "uix-card:" dazu - der uebliche Weg, wenn jemand etwas aus einem
+    // Forenbeitrag uebernimmt -, verschwinden beim naechsten Import die
+    // Vorlagen glas-ebene, glas-bubble und glas-buttons-karten. Dieselbe
+    // Reihenfolge wie in hatgRepariereAlteStilziele: Vorhandenes zuerst.
+    const vorhanden = String(bag[basis] ?? "").replace(/\s+$/, "");
+    bag[basis] = vorhanden ? `${vorhanden}\n${punkt}` : punkt;
     if (rest) bag[key] = rest;
     else delete bag[key];
     geteilt++;
@@ -13357,7 +13517,7 @@ uix:
     const ballastVorher = new Set([
       ...Object.keys(this._state.extraValues.light || {}),
       ...Object.keys(this._state.extraValues.dark || {}),
-    ].filter((k) => !hatgIstStilzielFeld(k)));
+    ].filter((k) => !hatgIstStilzielFeld(k) && !hatgIstFremdesFeld(k)));
     hatgEntferneVerwaisteEigenfelder(
       { light: this._state.values.light, dark: this._state.values.dark, extra: this._state.extraValues },
       [...ballastVorher]
@@ -13372,7 +13532,7 @@ uix:
         (en
           ? `${ausgemistet.length} unused field${ausgemistet.length === 1 ? "" : "s"} removed - nothing referred to ${ausgemistet.length === 1 ? "it" : "them"}: `
           : `${ausgemistet.length} ungenutzte${ausgemistet.length === 1 ? "s Feld entfernt - nichts zeigte darauf: " : " Felder entfernt - nichts zeigte darauf: "}`) +
-          hatgFelderNennen(ausgemistet, en ? "more" : "weitere")
+          ausgemistet.join(", ")
       );
     // Verweise, die ins Leere zeigen. hatgLoeseEigeneFelderAuf betrachtet nur
     // Felder, die es im Theme GIBT - ein var() auf einen Namen, den niemand
@@ -13406,7 +13566,7 @@ uix:
     ["light", "dark"].forEach((m) =>
       [this._state.values[m], this._state.extraValues[m] || {}].forEach((b) =>
         Object.values(b).forEach((v) =>
-          hatgVerweiseInsLeere(v, (n) => bekannteFelder.has(n) || vorhanden.has(n) || HATG_FREMDE_VARIABLEN.has(n) || /^(ha|wa|md|mdc)-/.test(n))
+          hatgVerweiseInsLeere(v, (n) => bekannteFelder.has(n) || vorhanden.has(n) || HATG_FREMDE_VARIABLEN.has(n) || hatgIstFremdesFeld(n))
             .forEach((n) => insLeere.add(n))
         )
       )

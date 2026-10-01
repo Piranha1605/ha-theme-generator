@@ -15,9 +15,22 @@
 const assert = require("node:assert/strict");
 const { panelBauen } = require("../werkzeuge/kopflos.js");
 
-// Genau die Regex des Servers in __init__.py.
-const SERVER_ID_RE = /^[A-Za-z0-9_-]{1,64}$/;
-const SERVER_ZIEL_RE = /^uix-[a-z-]{1,48}$/;
+// Die Regeln des Servers - aus __init__.py GELESEN, nicht abgeschrieben.
+// Die abgeschriebene Fassung stand hier mit dem Kommentar "Genau die Regex des
+// Servers" und war seit 1.3.2b12 falsch: Sie verbot Ziffern und erlaubte ein
+// fuehrendes "-". Heute harmlos, aber als Referenz irrefuehrend - und genau
+// diese Sorte Doppelwahrheit hat in diesem Projekt schon zweimal Zeit gekostet.
+const PY_QUELLE = require("node:fs").readFileSync(
+  require("node:path").join(__dirname, "..", "custom_components", "hatg", "__init__.py"), "utf8"
+);
+function serverRegex(name) {
+  const m = new RegExp(name + String.raw`\s*=\s*re\.compile\(r['"]([^'"]+)['"]\)`).exec(PY_QUELLE);
+  if (!m) throw new Error("die Server-Regex " + name + " wurde in __init__.py nicht gefunden");
+  // Der Server benutzt fullmatch, die Regex steht dort ohne Anker.
+  return new RegExp("^" + m[1] + "$");
+}
+const SERVER_ID_RE = serverRegex("_VORLAGEN_ID_RE");
+const SERVER_ZIEL_RE = serverRegex("_VORLAGEN_ZIEL_RE");
 
 let fehler = 0;
 function pruefe(name, fn) {

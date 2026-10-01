@@ -150,5 +150,66 @@ pruefe("Ein Vorlagenblock ueberlebt das Ausmisten", () => {
   assert.ok(!ohneKopf(p).includes("liquid-tot"), "das ungenutzte Feld steht noch da");
 });
 
+// Die Gegenrichtung, und sie fehlte: Alle Pruefungen oben fuettern Ballast ein
+// und schauen, ob er fliegt. Keine schaut, ob NUR Ballast fliegt. Deshalb konnte
+// 1.3.2b14 unbemerkt Felder loeschen, die Home Assistant selbst liest - HA liest
+// seine Variablen aus seinem eigenen Stylesheet, nicht per var() aus der Theme,
+// also sah jede HA-Variable ohne HATG-Feld wie Ballast aus. Am 2026-10-01
+// gemessen: elf von zwoelf echten Namen waren nach dem Import weg.
+//
+// Die Namen unten sind nicht geraten. Sie stammen aus den Quellen der beiden
+// Systeme (HA frontend src/resources/theme/*, Bubble Card dist/bubble-card.js)
+// und waren alle elf beziehungsweise zwei nachweislich betroffen.
+pruefe("Felder, die Home Assistant selbst liest, bleiben stehen", () => {
+  const namen = [
+    "ha-space-4", "ha-border-radius-md", "scrollbar-thumb-color", "clear-background-color",
+    "markdown-code-background-color", "data-table-background-color", "codemirror-keyword",
+    "rgb-error-color", "shadow-color", "label-badge-grey", "text-light-primary-color",
+  ];
+  const p = importiere([...namen.map((n) => `      ${n}: "#123456"`), '      primary-color: "#0277BD"']);
+  const text = ohneKopf(p);
+  const weg = namen.filter((n) => !new RegExp("^\\s+" + n + ":", "m").test(text));
+  assert.deepEqual(weg, [], `geloescht, obwohl Home Assistant sie liest: ${weg.join(", ")}`);
+});
+
+pruefe("Felder, die Bubble Card selbst liest, bleiben stehen", () => {
+  // Die ganze Familie bubble-card-type-* und die Pop-up-Masse kennt HATG nicht:
+  // 1.3.2b15 hat geprueft, welche von HATGs Bubble-Feldern Bubble nicht mehr
+  // liest - nicht, welche Namen Bubble zusaetzlich liest. Das sind 60.
+  const namen = ["bubble-card-type-main-background-color", "bubble-pop-up-gap", "bubble-sub-button-height"];
+  const p = importiere([...namen.map((n) => `      ${n}: "12px"`), '      primary-color: "#0277BD"']);
+  const text = ohneKopf(p);
+  const weg = namen.filter((n) => !new RegExp("^\\s+" + n + ":", "m").test(text));
+  assert.deepEqual(weg, [], `geloescht, obwohl Bubble Card sie liest: ${weg.join(", ")}`);
+});
+
+// Und die Gegenprobe zur Gegenprobe: Die Schutzliste darf nicht so weit greifen,
+// dass nichts mehr fliegt. Diese Namen stehen in keiner der beiden Quellen -
+// die 61 Felder aus 1.3.2b15 sind genau daran erkennbar.
+pruefe("Nachweislich tote Felder fliegen weiter, auch mit fremder Vorsilbe", () => {
+  const namen = [
+    "bubble-climate-main-background-color", "bubble-cover-box-shadow",
+    "bubble-menu-bar-main-background-color", "popup-border-radius", "more-info-header-color",
+  ];
+  const p = importiere([...namen.map((n) => `      ${n}: "#123456"`), '      primary-color: "#0277BD"']);
+  const text = ohneKopf(p);
+  const geblieben = namen.filter((n) => new RegExp("^\\s+" + n + ":", "m").test(text));
+  assert.deepEqual(geblieben, [], `Ballast blieb liegen: ${geblieben.join(", ")}`);
+});
+
+// Ein entferntes Feld laesst sich nur wiederherstellen, wenn man seinen Namen
+// kennt. Der Bericht kuerzte ab fuenf Namen auf drei - bei 48 geloeschten
+// Feldern stand dort "+45 weitere", und damit war das Versprechen aus CLAUDE.md
+// ("der Bericht nennt jedes entfernte Feld beim Namen") gebrochen.
+pruefe("Der Bericht nennt ALLE entfernten Felder, nicht nur drei", () => {
+  const namen = ["liquid-a1", "liquid-b2", "liquid-c3", "liquid-d4", "liquid-e5", "liquid-f6"];
+  const p = importiere(namen.map((n) => `      ${n}: "#123456"`));
+  const zeilen = (p._state.importBericht && p._state.importBericht.zeilen) || [];
+  const zeile = zeilen.find((z) => z.includes("ungenutzte")) || "";
+  const fehlend = namen.filter((n) => !zeile.includes(n));
+  assert.deepEqual(fehlend, [], `nicht genannt: ${fehlend.join(", ")} - Zeile war: ${zeile}`);
+  assert.ok(!/\+\d+ weitere/.test(zeile), `immer noch abgekuerzt: ${zeile}`);
+});
+
 console.log(fehler ? `\n${fehler} Test(s) fehlgeschlagen.` : "\nAlle Tests bestanden.");
 process.exit(fehler ? 1 : 0);

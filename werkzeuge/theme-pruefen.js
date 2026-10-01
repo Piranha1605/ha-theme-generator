@@ -118,7 +118,21 @@ function pruefe(datei) {
   const marken = [...text.matchAll(/([A-Z][A-Z0-9_]*):UIX:([^:\s]+):START/g)];
   const zaehler = {}; const fremd = new Set();
   for (const m of marken) { if (m[1] !== "HATG") fremd.add(m[1]); zaehler[m[2]] = (zaehler[m[2]] || 0) + 1; }
-  const doppelt = Object.entries(zaehler).filter(([, n]) => n > 1);
+  // Doppelt ist eine Vorlage nur INNERHALB desselben Stilziels. Mehrere Ziele
+  // sind bei einigen Vorlagen Absicht: verlauf-akzent steht in uix-card und
+  // uix-sidebar, hintergrund-bewegung in uix-root und uix-drawer. Ueber die
+  // ganze Datei gezaehlt galten beide als doppelt - am 2026-10-01 faelschlich
+  // als Fehler gemeldet.
+  const jeZiel = {};
+  for (const k of Object.keys(bloecke)) {
+    for (const m of String(bloecke[k]).matchAll(/[A-Z][A-Z0-9_]*:UIX:([^:\s]+):START/g)) {
+      const schl = `${k}|${m[1]}`;
+      jeZiel[schl] = (jeZiel[schl] || 0) + 1;
+    }
+  }
+  const doppelt = Object.entries(jeZiel)
+    .filter(([, n]) => n > 1)
+    .map(([schl, n]) => [schl.split("|")[1] + " in " + schl.split("|")[0], n]);
   if (fremd.size) warnung.push(`Fremde Vorlagenmarken: ${[...fremd].join(", ")} - HATG erkennt nur HATG:`);
   if (doppelt.length) fehler.push(`Doppelte Vorlagenbloecke: ${doppelt.map(([id, n]) => `${id} (${n}x)`).join(", ")}`);
   // Der Server nimmt beim Schreiben nur [A-Za-z0-9_-]{1,64} an, beim Lesen

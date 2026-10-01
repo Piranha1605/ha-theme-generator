@@ -85,7 +85,10 @@ pruefe("Die Beispiel-Theme loest keinen Fehlalarm aus", () => {
   const fs = require("node:fs");
   const path = require("node:path");
   const datei = path.join(__dirname, "..", "docs", "beispiele", "glas-basis.yaml");
-  if (!fs.existsSync(datei)) return;
+  // Vorher stand hier "if (!fs.existsSync(datei)) return;" - fehlte die Datei,
+  // druckte die Pruefung "ok", ohne etwas geprueft zu haben. Eine Pruefung, die
+  // sich selbst stilllegen kann, ist keine.
+  assert.ok(fs.existsSync(datei), `die Beispiel-Theme fehlt: ${datei}`);
   assert.deepEqual(berichtZeilen(fs.readFileSync(datei, "utf8")), []);
 });
 

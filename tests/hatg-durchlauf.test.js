@@ -102,5 +102,57 @@ pruefe("Ein unbekanntes uix-Ziel bleibt auf Theme-Ebene", () => {
   assert.match(r.ausgabe, /knx-frontend \$:/, "der Pfad ist verloren gegangen");
 });
 
+// Idempotenz: Zweimal durch Import und Export muss dasselbe herauskommen wie
+// einmal. Sonst waechst die Theme bei jedem Speichern, und niemand sieht es, bis
+// die Datei doppelt so gross ist.
+//
+// Der Anlass: symbole-kachel ist die einzige Vorlage mit einem "."-Eintrag in
+// einem -yaml-Ziel. Beim Import holte hatgTeileStilzielYaml diesen Eintrag aus
+// dem Vorlagenblock heraus - die Marker blieben ohne ihn zurueck, die Vorlage
+// galt als unvollstaendig, das Auffrischen haengte sie erneut an, und die
+// herausgeholte Kopie lag ohne Marker im einfachen Feld. Am 2026-10-01 gemessen:
+// pro Durchlauf 1027 Zeichen mehr und eine Kopie von --symbol-rundung obendrauf,
+// dazu bei jedem Import die Meldung "1 UIX-Vorlage auf den aktuellen Stand
+// gebracht" - die einzige Spur, und die klang nach Normalbetrieb.
+pruefe("Zweimal durchlaufen aendert nichts mehr (symbole-kachel)", () => {
+  const { panelBauen } = require("../werkzeuge/kopflos.js");
+  const { panel } = panelBauen();
+  panel.schalteVorlage("symbole-kachel");
+  const eins = durchlauf(panel.buildYamlText());
+  assert.ok(!eins.fehler, `Import fehlgeschlagen: ${eins.fehler}`);
+  const zwei = durchlauf(eins.ausgabe);
+  assert.ok(!zwei.fehler, `zweiter Import fehlgeschlagen: ${zwei.fehler}`);
+  const zaehl = (s) => (s.match(/--symbol-rundung:/g) || []).length;
+  assert.equal(zaehl(zwei.ausgabe), zaehl(eins.ausgabe), "der Vorlagenblock hat sich vermehrt");
+  assert.equal(zwei.ausgabe.length, eins.ausgabe.length, "die Datei ist beim zweiten Durchlauf gewachsen");
+  assert.equal(zwei.ausgabe, eins.ausgabe, "der zweite Durchlauf liefert etwas anderes");
+});
+
+// Gegenstueck zum stillen Verlust: Steht neben einem -yaml-Feld mit "."-Eintrag
+// schon ein einfaches Feld, darf nichts verschwinden. Vorher wurde der
+// "."-Eintrag ersatzlos weggeworfen, ohne eine Zeile im Bericht.
+pruefe("Ein einfaches Feld neben dem \".\"-Eintrag kostet kein CSS", () => {
+  const theme = [
+    "meintest:",
+    "  uix-card: |",
+    "    ha-card { border: 1px solid red; }",
+    "  uix-card-yaml: |",
+    '    ".": |',
+    "      ha-card { outline: 2px dashed lime; }",
+    '    "ha-button $": |',
+    "      .mdc-button { color: blue; }",
+    "  modes:",
+    "    light:",
+    '      primary-color: "#0277BD"',
+    "    dark:",
+    '      primary-color: "#0A84FF"',
+    "",
+  ].join("\n");
+  const r = durchlauf(theme);
+  assert.ok(!r.fehler, `Import fehlgeschlagen: ${r.fehler}`);
+  for (const stueck of ["border: 1px solid red", "outline: 2px dashed lime", "color: blue"])
+    assert.ok(r.ausgabe.includes(stueck), `verloren: ${stueck}`);
+});
+
 console.log(fehler ? `\n${fehler} Test(s) fehlgeschlagen.` : "\nAlle Tests bestanden.");
 process.exit(fehler ? 1 : 0);
