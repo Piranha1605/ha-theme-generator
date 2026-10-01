@@ -11,7 +11,7 @@ custom_components/hatg/
 ├── __init__.py           Einstiegspunkt der Integration
 ├── config_flow.py        Einrichtung über die Oberfläche
 ├── const.py              Konstanten
-├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b18
+├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b19
 ├── translations/         de.json und en.json
 ├── brand/                Icons für den HACS-Store
 └── www/
@@ -162,6 +162,18 @@ Die Maschinerie dafür gab es schon (`hatgEntferneVerwaisteEigenfelder`), sie wu
 - **Die Grenze, die HATG nicht sieht:** Ein Feld kann von außerhalb der Theme gelesen werden, etwa aus der Konfiguration einer einzelnen Karte. Deshalb nennt der Bericht **jedes** entfernte Feld beim Namen, und der Bericht steht auch im Kopf der Datei.
 - Ein Test hält beides fest (`tests/hatg-ausmisten.test.js`): dass Ballast fliegt und dass nach dem Import kein `var()` mehr ins Leere zeigt.
 
+**Die Regel "unbekannt und unreferenziert" war falsch, und zwar teuer (1.3.2b19).** Home Assistant liest seine Variablen aus seinem **eigenen Stylesheet**, nicht per `var()` aus der Theme. Für den Cleaner sah damit jede HA-Variable, die HATG nicht als Feld anbietet, wie Ballast aus. Am 2026-10-01 gemessen: Von zwölf echten Namen (`scrollbar-thumb-color`, `mush-chip-height`, `ha-space-4`, `rgb-error-color`, `codemirror-keyword` und weiteren) löschte der Import **elf**. Nur `ha-animation-duration-fast` blieb, weil HATG genau dieses Feld kennt. Das steckte in b14 und damit in der veröffentlichten b15.
+
+`hatgIstFremdesFeld()` entscheidet jetzt, was der Cleaner nicht anfassen darf — und **dieselbe** Funktion benutzt auch die Verweisprüfung, die vorher eine eigene, engere Regel hatte (ein Verweis auf `--rgb-error-color` galt damit als tot).
+
+- **Vorsilben** für Familien, deren Mitglieder HATG nicht alle kennen *kann*: `state-<domain>-<zustand>-color` und `bubble-state-…` entstehen erst zur Laufzeit, `rgb-<name>` leitet HA aus jedem Hex-Feld ab (`apply_themes_on_element.ts`), die 151 semantischen `ha-color-`Marken stehen bewusst nicht in der Feldliste, von Mushroom sind erst 18 Namen geprüft.
+- **Eine feste Liste von 72 Namen** für alles ohne solche Vorsilbe, am 2026-10-01 aus den Quellen geholt: HA (`src/resources/theme/core.globals.ts`, `color/color.globals.ts`, `color/semantic.globals.ts`, Zweig dev) definiert **421** Variablen auf `html`, davon kennt HATG **233** nicht, und 15 tragen keine der Vorsilben. Bubble Card (`dist/bubble-card.js`) liest **119** `--bubble-*`-Namen, davon kennt HATG **60** nicht.
+- **Der Denkfehler bei Bubble, zum Nachlesen:** b15 hat geprüft, welche von HATGs Bubble-Feldern Bubble nicht mehr liest. **Nicht**, welche Namen Bubble zusätzlich liest. Die ganze Familie `bubble-card-type-*` und alle `bubble-pop-up-`Maße fehlten deshalb. Eine Vorsilbenregel allein reicht hier nicht, eine Feldliste allein auch nicht.
+- **Gegenprobe gegen eine zu weite Schutzliste:** Die 61 Felder, die b15 als tot herausgenommen hat, stehen in **keiner** der beiden Quellen. Sie fliegen weiter, ohne dass es eine Ausnahmeliste braucht — und die b15-Prüfung ist damit unabhängig bestätigt.
+- **Der Bericht nennt jetzt wirklich alle** entfernten Felder. `hatgFelderNennen` kürzt ab fünf Namen auf drei; bei 48 gelöschten Feldern stand dort "+45 weitere", und damit war der einzige Rettungsanker gekappt. Für diese Zeile wird nicht gekürzt.
+
+**Warum neun Tests das nicht gesehen haben.** Jeder fütterte Ballast ein und prüfte, ob er fliegt — keiner, ob **nur** Ballast fliegt; alle Kandidaten hießen `liquid-*`. Schlimmer: Das Orakel des Tests für "bekannt" war `HATG_MANIFEST`, also genau das Orakel, das auch der Code benutzt. Ein unabhängiges Orakel gab es im Repository nicht, es musste erst aus den Quellen von HA und Bubble geholt werden. Wer eine Prüfung gegen dieselbe Quelle stellt, die der Code benutzt, prüft nichts.
+
 ### Bubble Card: 61 Felder raus (1.3.2b15)
 
 Bubble Card **3.2.0 liest 61 der 124 Felder in HATGs Bubble-Abschnitt nicht** — die Namen kommen im ganzen Quelltext nicht vor, weder bei Bubble noch bei HA noch bei Mushroom. Damit sind 683 Felder auf **622** geschrumpft.
@@ -182,6 +194,31 @@ Bleiben in HATG, obwohl Bubble Card sie nicht liest: `ha-dialog-surface-backgrou
 21 von 387 HA-Feldern, 3 Druckerfarben, Mushroom (18 Kandidaten) und Button Card (31 Felder, gegen `src/styles.ts` zu prüfen — auf der Testinstanz nicht installiert).
 
 Zwei Fallen, beide selbst hineingetappt: HA baut Zustandsfarben als `--state-${domain}-${state}-color` zusammen, ein Literalname steht nirgends — ein erster Lauf meldete deshalb `state-switch-on-color` als tot, obwohl es nachweislich das Schalter-Icon färbt. Und ein Ähnlichkeitsvergleich schlägt Nachfolger vor, die zum Teil Unsinn sind (`input-background-color` → `chip-background-color`). Jede Zuordnung gehört gegen die echte Quelle geprüft, nicht gegen eine Heuristik.
+
+## Werte schreiben: der Backslash ist das Fluchtzeichen
+
+`hatgQuoteYamlValue` schreibt einzeilige Werte doppelt gequotet. In einem doppelt gequoteten YAML-Skalar ist der **Backslash** das Fluchtzeichen, er muss deshalb **vor** dem Anführungszeichen verdoppelt werden. Bis 1.3.2b19 wurde nur das Anführungszeichen escaped. Am 2026-10-01 gemessen und mit PyYAML gegengeprüft, also mit dem Parser, den Home Assistant benutzt:
+
+    Eingabe   uix-card: 'ha-card::before { content: "\201C"; }'    liest PyYAML
+    Ausgabe   uix-card: "ha-card::before { content: \"\201C\"; }"    ScannerError
+
+`\2` ist keine gültige Fluchtfolge. Ein Wert, der auf `\` endet, verschluckt zusätzlich das Folgefeld. HATGs eigener Parser liest beides klaglos zurück, die Oberfläche sieht sauber aus — und wer `themes: !include_dir_merge_named themes` in der `configuration.yaml` hat (der übliche Weg), bekommt beim nächsten Start den Wiederherstellungsmodus. Das ist der schwerste Ausfall, den HATG auslösen kann: Nicht das Feld fällt aus, sondern die ganze Datei.
+
+## Ein "."-Eintrag gehört der Vorlage, in der er steht
+
+Zwei Fehler an derselben Stelle, beide in 1.3.2b19 behoben.
+
+**Der `"."`-Eintrag wurde verworfen, wenn das einfache Feld schon belegt war.** `hatgEntflechteStilzieleImBag` schrieb ihn nur dorthin, wenn dort nichts stand — sonst fiel er ersatzlos weg, ohne eine Zeile im Bericht. Der Weg dorthin ist alltäglich: `docs/beispiele/glas-basis.yaml` nehmen und von Hand zwei Zeilen `uix-card:` aus einem Forenbeitrag ergänzen. Beim nächsten Import sind `glas-ebene`, `glas-bubble` und `glas-buttons-karten` weg. Jetzt wird angehängt, Vorhandenes zuerst, wie in `hatgRepariereAlteStilziele`. **Ein Test hielt genau das kaputte Verhalten fest** — er hieß "Ein bereits belegtes einfaches Feld wird nicht ueberschrieben" und behauptete, danach stehe dort *nur* der Handeintrag.
+
+**Das Teilen respektiert Markergrenzen.** `symbole-kachel` ist die einzige Vorlage mit einem `.`-Eintrag in einem `-yaml`-Ziel. Holt man diesen Eintrag aus dem Vorlagenblock heraus, bleiben die Marker ohne ihn zurück: Die Vorlage gilt als unvollständig, das Auffrischen hängt sie erneut an, und die herausgeholte Kopie liegt ohne Marker im einfachen Feld. Am 2026-10-01 gemessen: 1027 Zeichen mehr pro Durchlauf, `--symbol-rundung` 1x → 2x → 3x → 4x → 5x. Die einzige Spur war die Berichtszeile "1 UIX-Vorlage auf den aktuellen Stand gebracht" — die klingt nach Normalbetrieb.
+
+**Offen, und es braucht eine Entscheidung:** Sind zusätzlich Vorlagen mit Ziel `uix-card` eingeschaltet (also fast immer), fasst schon der **Export** beide `.`-Einträge zu einem zusammen (`hatgYamlPfadeZusammenfuehren`) und holt den Block dabei aus den Markern. Dort hilft der Eingriff beim Teilen nicht. Eine Vorlage, die CSS in einem `"."`-Eintrag **und** in einem Pfad desselben `-yaml`-Feldes besitzt, lässt sich mit der heutigen Markermaschinerie nicht abbilden: Zieht man die Marker mit, trägt die Vorlage ihren Block zweimal, und `hatgVereinheitlicheVorlagenMarken` lässt von doppelten nur den letzten stehen — also die Hälfte der Vorlage. Die zwei Wege: `symbole-kachel` in zwei Vorlagen teilen (`:host`-Variablen nach `uix-card`, Pfad in eine neue Vorlage), oder der Maschinerie beibringen, dass eine Vorlage CSS in zwei Feldern besitzen darf.
+
+## Idempotenz ist die Prüfung, die gefehlt hat
+
+Ein Durchlauf Import → Export muss beim **zweiten** Mal dasselbe liefern wie beim ersten. Fast jede Durchlaufprüfung fragte bis 1.3.2b19 nur "ist etwas verloren gegangen?", keine "ist etwas dazugekommen?" — und die Hilfsfunktionen in `kopflos.js` konnten Dubletten gar nicht zählen, weil `vorlagenMarken` ein `Set` zurückgibt. Die Größe stand nur als Info da.
+
+Die richtige Erwartung ist nicht "Pass 0 == Pass 1": Der erste Durchlauf normiert (Vorlagen auffrischen, Standards nachfüllen, Ballast entfernen) und darf viel ändern. Ab dem zweiten darf sich nichts mehr ändern.
 
 ## Meldungen
 
@@ -210,6 +247,17 @@ werkzeuge/vor-release.sh 1.3.2b12
 
 Läuft alles durch, was ohne laufende Instanz prüfbar ist: Syntax von Panel, Python und allen JSON-Dateien, die komplette Testsuite, eine Theme mit **allen** Vorlagen durch Import und Export, die Beispiel-Themes durch beide Prüfwerkzeuge, und zum Schluss den Stand im Git — nichts Uncommittetes, Branch gepusht, Version im Manifest gleich der geplanten Marke, Marke noch frei. Ein Fehlschlag heißt: nichts veröffentlichen.
 
+Das führende `v` einer Marke wird abgestreift, wie `ci.yml` es tut: Stabile Releases tragen eins (`v1.3.0`), die Version im Manifest nicht. Vorher war das Tor mit dem echten Markennamen eines stabilen Release nicht laufbar.
+
+**Vier Stellen konnten grün melden, ohne geprüft zu haben (bis 1.3.2b19).** Am 2026-10-01 gefunden, die erste nachgestellt:
+
+1. `git status` wurde an der **Ausgabe** geprüft, nicht am Rückgabewert. Ein scheiterndes git liefert eine leere Ausgabe — und die galt als "nichts Uncommittetes". Mit Rückgabewert 128 war der Schritt grün.
+2. Die Version wurde mit `2>/dev/null` gelesen, danach stand ein **bedingungsloses** `ok "manifest.json sagt $VERSION"`. War die Datei nicht lesbar, meldete das Tor "ok manifest.json sagt " und lief weiter.
+3. Ein Test mit **null** Prüfungen galt als bestanden. Eine Testdatei konnte sich damit selbst stilllegen, ohne rot zu werden — und `hatg-tote-verweise.test.js` tat das: Fehlte die Beispiel-Theme, sprang die Prüfung mit `return` heraus und druckte "ok".
+4. Die Marke wurde zeichengenau mit der Version verglichen, siehe oben.
+
+Dazu, weil es dieselbe Fehlerklasse ist: `hassfest` und `hacs` laufen weiterhin **nur** auf `main` und bei PRs gegen `main`. "Seit dem 2026-09-29 läuft die CI auf allen Branches" gilt nur für `ci.yml` und `validate.yml`. Eine Beta aus einem Branch bekommt keinen hassfest-Lauf.
+
 **Anlass:** 1.3.2b11 ging raus, bevor die Prüfungen vollständig gelaufen waren. Möglich war das, weil `ci.yml` nur bei Push auf `main` und bei PRs gegen `main` griff — Betas kommen aber aus einem Branch, und dieser Stand wurde nie angefasst. Seit dem 2026-09-29 läuft die CI auf **allen** Branches und Marken, und ein zweiter Job vergleicht bei einer Marke die Versionsnummer im Manifest mit dem Namen der Marke. Ein Tag auf einem Stand mit alter Nummer wäre sonst besonders tückisch: HACS liefert dann die neue Version mit altem Inhalt aus.
 
 Was das Tor **nicht** abdeckt: ob Home Assistant oder UIX eine Variable oder einen Typnamen umbenannt haben. Dafür bleibt `werkzeuge/live-messung.js` an einer laufenden Instanz nötig.
@@ -231,6 +279,8 @@ Fortgeschrittene. Wer rund 620 Theme-Variablen anfasst, kennt sein System, nutzt
 Sachlich, per du, **keine Emojis, kein Marketing-Sprech**. Funktionen beschreiben, was sie tun, nicht wie großartig sie sind.
 
 Alles, was nach außen geht — README, Release Notes, Issue-Antworten, Dokumentation — **immer in beiden Sprachen, deutsch und englisch**. Das Repository hat dafür `README.md` und `README.en.md`.
+
+**Die `HATG_TEXTE`-Falle.** Übersetzungen gehören in den `en:`-Block, nicht daneben. `hatgUebersetze` liest `HATG_TEXTE[sprache]`, also nur `.en` — ein Eintrag direkt unter `HATG_TEXTE` ist stumm unerreichbar. Am 2026-10-01 standen so **21** Einträge davor: Die englische Oberfläche zeigte für sieben Vorlagen deutschen Text (`symbole-kachel` samt drei Geschwistern, `schalter-verlauf` samt zwei). Der Test war grün, weil er im **Quelltextausschnitt** nach dem String suchte und nicht im Objekt — der Ausschnitt enthielt die toten Einträge mit. Wer das prüft, fragt `HATG_TEXTE.en[text]` ab.
 
 ## Umgang mit GitHub
 
