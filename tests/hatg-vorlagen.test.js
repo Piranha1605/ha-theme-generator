@@ -165,7 +165,15 @@ pruefe("glas-bubble: Flaechen mit Rahmen und Schatten der HA-Karten, ohne Glanz,
   const regeln = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)];
   assert.ok(!/--hatg-glas-reflex|--hatg-glas-rand/.test(c), "Glanz oder Ring steht wieder in glas-bubble");
   const flaeche = regeln.find((m) => m[1].split(",").map((s) => s.trim()).includes(".bubble-button-container"));
-  assert.ok(flaeche && /background-image:\s*none/.test(flaeche[2]) && /border-radius:\s*13px/.test(flaeche[2]), "Flaeche nicht im Knopfstil");
+  // Die Rundung kommt aus dem Kartenfeld, damit Bubble-Karten so rund sind wie
+  // HA-Karten und die Karten der Sammlung (2026-09-20).
+  // background-image traegt den Verlauf fuer ruhende Flaechen und faellt ohne
+  // gesetzten Verlauf auf none zurueck. Stuende hier fest "none", kaeme der
+  // Verlauf bei Bubble-Karten nie an - am 2026-09-27 nachgemessen.
+  assert.ok(
+    flaeche && /background-image:\s*var\(--verlauf-inaktiv,\s*none\)/.test(flaeche[2]) && /border-radius:\s*var\(--ha-card-border-radius/.test(flaeche[2]),
+    "Flaeche nicht im Knopfstil"
+  );
   assert.ok(/border:\s*var\(--ha-card-border-width[^;]*var\(--ha-card-border-color/.test(flaeche[2]), "Rahmen kommt nicht aus den HA-Kartenfeldern");
   assert.ok(/box-shadow:\s*var\(--ha-card-box-shadow/.test(flaeche[2]), "Schatten kommt nicht aus ha-card-box-shadow");
   const icon = regeln.find((m) => m[1].split(",").map((s) => s.trim()).includes(".bubble-main-icon-container") && /border-radius/.test(m[2]));
@@ -175,10 +183,14 @@ pruefe("glas-bubble: Flaechen mit Rahmen und Schatten der HA-Karten, ohne Glanz,
 pruefe("Aktiver Seitenleisten-Eintrag ohne Schlagschatten", () => {
   // ha-list-nav hat overflow: hidden auto und schneidet einen Aussenschatten
   // ab - an einer laufenden Instanz blieb ein dunkles Rechteck hinter der Pille.
-  const c = ohneKommentare(css(vorlagen.find((x) => x.id === "seitenleiste-aktiv-liquid").block));
-  const regel = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)].find((m) => m[1].trim() === "ha-list-item-button.selected::before");
-  assert.ok(regel, "Regel fuer den aktiven Eintrag fehlt");
-  const schatten = (regel[2].match(/box-shadow:([^;]*);/) || [])[1] || "";
+  // Geprueft wird jede Sidebar-Vorlage, die den aktiven Eintrag mit einem
+  // Schatten belegt - die Form steckt seit 09/2026 in eigenen Vorlagen.
+  const regeln = vorlagen
+    .filter((v) => (feld(v.block, "ziel") || "") === "uix-sidebar")
+    .flatMap((v) => [...ohneKommentare(css(v.block) || "").matchAll(/([^{}]+)\{([^{}]*)\}/g)])
+    .filter((m) => m[1].trim().startsWith("ha-list-item-button.selected::before") && /box-shadow:/.test(m[2]));
+  assert.ok(regeln.length, "keine Vorlage belegt den aktiven Eintrag mit einem Schatten");
+  const schatten = regeln.map((m) => (m[2].match(/box-shadow:([^;]*);/) || [])[1] || "").join(",");
   assert.ok(!/--hatg-glas-schatten/.test(schatten), "Schlagschatten steht wieder im box-shadow");
   // An Kommas nur ausserhalb von Klammern trennen - var(--x, rgba(...)) ist verschachtelt.
   const teile = [];
@@ -317,7 +329,7 @@ pruefe("Glas-Knoepfe: kleiner Schatten ohne Ring, kleine Rundung", () => {
     const c = ohneKommentare(css(v.block));
     const schatten = (c.match(/--ha-button-box-shadow:([^;]*);/) || [])[1] || "";
     assert.ok(!/--hatg-glas-rand|--hatg-glas-schatten/.test(schatten), `${v.id}: Ring oder Kartenschatten im Knopfschatten`);
-    assert.ok(/--ha-button-border-radius:\s*11px/.test(c), `${v.id}: Knopf nicht mit kleiner Rundung`);
+    assert.ok(/--ha-button-border-radius:\s*calc\(var\(--ha-card-border-radius[^)]*\) - 7px\)/.test(c), `${v.id}: Knopf nicht mit kleiner Rundung`);
   }
 });
 
@@ -343,13 +355,26 @@ pruefe("Jeder dataset-Zugriff hat ein passendes data-Attribut", () => {
 
 pruefe("Jede Vorlage liegt in einer angezeigten Gruppe der Vorlagenseite", () => {
   const alles = fs.readFileSync(PANEL, "utf8");
-  const kollisionen = /const HATG_GLAS_KOLLISIONEN = (\[[^\]]*\]);/.exec(alles)[1];
   const start = alles.indexOf("const HATG_VORLAGEN_GRUPPEN");
   const ende = alles.indexOf("const HATG_VORLAGEN = [");
   const kontext = {};
-  require("node:vm").runInNewContext(`const HATG_GLAS_KOLLISIONEN = ${kollisionen};\n${alles.slice(start, ende)}\nthis.gruppen = HATG_VORLAGEN_GRUPPEN; this.von = hatgVorlagenGruppeVon;`, kontext);
+  require("node:vm").runInNewContext(`${alles.slice(start, ende)}\nthis.gruppen = HATG_VORLAGEN_GRUPPEN; this.von = hatgVorlagenGruppeVon;`, kontext);
   const reihenfolge = JSON.parse(/const reihenfolge = (\[[^\]]*\]);/.exec(alles)[1].replace(/'/g, '"'));
-  assert.deepEqual([...reihenfolge].sort(), Array.from(kontext.gruppen, (g) => g.id).sort(), "nicht jede Gruppe wird angezeigt");
+  // Die Glas-Vorlagen stehen im Glas-Kasten oben, nicht in der Gruppenliste -
+  // sie muessen aber weiterhin irgendwo auftauchen.
+  // Glas und Hintergrund stehen in ihrem eigenen Kasten oben, nicht in der
+  // Gruppenliste - sie muessen aber weiterhin irgendwo auftauchen.
+  const gruppenIds = Array.from(kontext.gruppen, (g) => g.id);
+  const imKasten = [...alles.matchAll(/renderGlasVorlagenteil\([^)]*?"([a-z-]+)"/g)].map((m) => m[1]).filter((id) => gruppenIds.includes(id));
+  for (const id of ["glas", "hintergrund"]) assert.ok(imKasten.includes(id), `Gruppe ${id} wird nirgends gezeichnet`);
+  assert.deepEqual([...new Set([...reihenfolge, ...imKasten])].sort(), gruppenIds.sort(), "nicht jede Gruppe wird angezeigt");
+
+  // Die Vorlagen der Seitenleiste stehen quer ueber die Gruppen in ihrem
+  // eigenen Kasten und sind darum aus den Gruppenlisten genommen.
+  const seiten = JSON.parse(/const HATG_SEITENLEISTE_VORLAGEN = (\[[\s\S]*?\]);/.exec(alles)[1].replace(/,\s*\]/, "]").replace(/'/g, '"'));
+  const alleIds = new Set(vorlagen.map((v) => v.id));
+  for (const id of seiten) assert.ok(alleIds.has(id), `Seitenleisten-Kasten nennt eine unbekannte Vorlage: ${id}`);
+  assert.ok(/renderSeitenleisteKasten\(/.test(alles), "Seitenleisten-Kasten fehlt");
   const weitere = [];
   for (const v of vorlagen) {
     const paket = (/\bpaket:\s*"([^"]+)"/.exec(v.block) || [])[1];
@@ -495,6 +520,229 @@ pruefe("Info-Dialog mit Hintergrundbild: Pfade mit fuehrendem $", () => {
     if (!zeile.trim() || /^"\$ /.test(zeile)) continue;
     assert.ok(/^ {2}/.test(zeile), `nicht eingerueckt: ${JSON.stringify(zeile)}`);
   }
+});
+
+pruefe("Kein Pfad enthaelt $$ und der Schalter geht ueber ::part", () => {
+  // Am 2026-09-26 mit UIX 8.3.1 an einer laufenden Instanz gemessen: ein
+  // einziger Pfad mit $$ legte JEDES -yaml-Feld still - alle Karten-Knoten
+  // leer, kein Knoten in ha-button oder ha-switch, kein more-info-Knoten.
+  // js-yaml las die Karten dabei fehlerfrei, die Konsole meldete nichts.
+  for (const v of mitCss) {
+    const ziel = feld(v.block, "ziel") || "";
+    if (!/-yaml$/.test(ziel)) continue;
+    for (const zeile of String(css(v.block) || "").split("\n")) {
+      const m = /^\s*"?([^"\n:]+)"?:\s*\|\s*$/.exec(zeile);
+      if (!m) continue;
+      assert.ok(!m[1].includes("$$"), `${v.id}: Pfad mit $$ -> ${m[1]}`);
+    }
+  }
+
+  // ha-switch spiegelt "checked" nicht als Attribut - [checked] trifft nie.
+  // Web Awesome meldet den Zustand als Custom State, und das Element gibt
+  // control und thumb als CSS-Teile nach aussen. Beides nachgemessen.
+  const schalter = vorlage("schalter-verlauf");
+  assert.equal(feld(schalter.block, "ziel"), "uix-card", "kein -yaml noetig, ::part reicht durch");
+  assert.match(schalter.css, /ha-switch:state\(checked\)::part\(control\)/);
+  assert.match(schalter.css, /ha-switch:state\(checked\)::part\(thumb\)/);
+  assert.ok(!/ha-switch\[checked\]/.test(schalter.css), "das Attribut wird nicht gespiegelt");
+  assert.ok(!/\bha-switch \$/.test(schalter.css), "kein Pfad - der trifft nichts, sobald der Schalter tiefer liegt");
+});
+
+// UI eXtension liest das Theme-Feld uix-<typ> mit genau seinem eigenen
+// Typnamen. Ein Ziel unter abweichendem Namen wird von nichts gelesen und
+// faellt stumm aus - keine Konsolenmeldung, kein YAML-Fehler.
+// Die Liste stammt aus uix.js 8.3.1 (Registrierungen und das Set der
+// Einzelziele), am 2026-09-27 gelesen und an einer laufenden Instanz belegt.
+const UIX_TYPEN = new Set([
+  "app", "assist-chip", "badge", "calendar", "card", "config", "dialog", "drawer",
+  "element", "entity-marker", "glance", "grid-section", "heading-badge", "history",
+  "more-info", "panel-custom", "persistent-notification-item", "profile", "root",
+  "row", "section-background", "sidebar", "state-history-charts", "toast", "todo",
+  "top-app-bar-fixed", "view", "view-background",
+]);
+
+pruefe("Jedes Stilziel traegt einen Typnamen, den UI eXtension kennt", () => {
+  const ziele = ausschnitt("const HATG_STILZIELE = [", "\n];");
+  const ids = [...ziele.matchAll(/\{\s*id:\s*"([a-z-]+)"/g)].map((m) => m[1]);
+  assert.ok(ids.length >= 25, `nur ${ids.length} Stilziele gefunden`);
+  const fremd = ids.filter((id) => !UIX_TYPEN.has(id));
+  assert.deepEqual(fremd, [], "Stilziel ohne Gegenstueck in UI eXtension");
+  // Der Plural war der Fehler: bis 1.3.2b3 hiess das Ziel states-history-charts.
+  assert.ok(ids.includes("state-history-charts"), "Verlaufs-Diagramme fehlen");
+  assert.ok(!ids.includes("states-history-charts"), "der alte Plural ist wieder da");
+});
+
+pruefe("Schalter-Vorlagen decken alle drei Stellen ab, ohne einen Schritt zu viel", () => {
+  // Am 2026-09-27 an einer laufenden Instanz gemessen: der Schalter sitzt an
+  // drei verschiedenen Stellen, und jede braucht ihren eigenen Weg.
+  // In einem Pfadschritt muss der ERSTE Teil des Selektors direktes Kind der
+  // aktuellen Wurzel sein, der Rest darf Nachfahre sein. ha-entity-toggle ist
+  // ein Licht-DOM-Kind von hui-generic-entity-row und liegt nicht in dessen
+  // Shadow Root - mit "$" davor steigt der Pfad einmal zu viel ab und trifft
+  // nichts.
+  const zeilen = vorlage("schalter-verlauf-zeilen");
+  assert.equal(feld(zeilen.block, "ziel"), "uix-row-yaml");
+  assert.match(zeilen.css, /^hui-generic-entity-row ha-entity-toggle \$:/m);
+  assert.ok(
+    !/hui-generic-entity-row \$ ha-entity-toggle/.test(zeilen.css),
+    "ha-entity-toggle liegt im Licht-DOM, nicht im Shadow Root der Zeile"
+  );
+
+  const kopf = vorlage("schalter-verlauf-kopf");
+  assert.equal(feld(kopf.block, "ziel"), "uix-card-yaml");
+  assert.match(kopf.css, /^ha-card hui-entities-toggle \$:/m);
+  assert.ok(
+    !/^hui-entities-toggle \$:/m.test(kopf.css),
+    "hui-entities-toggle ist kein direktes Kind der Kartenwurzel"
+  );
+
+  for (const v of [zeilen, kopf]) {
+    assert.match(v.css, /ha-switch:state\(checked\)::part\(control\)/);
+    assert.ok(!/ha-switch\[checked\]/.test(v.css), `${v.id}: das Attribut wird nicht gespiegelt`);
+  }
+});
+
+pruefe("RGB-Hilfswerte werden beim Import auf drei Zahlen gebracht", () => {
+  const vm = require("node:vm");
+  const ctx = {
+    console: { log() {}, warn() {}, error() {} }, window: {},
+    document: { createElement: () => ({}), addEventListener() {}, querySelector: () => null },
+    customElements: { define() {}, get() {} }, HTMLElement: class {},
+    localStorage: { getItem() {}, setItem() {} }, navigator: {}, setTimeout, clearTimeout,
+  };
+  vm.createContext(ctx);
+  vm.runInContext(
+    quelle.slice(0, quelle.indexOf("\nclass ")) +
+      ";this.f=hatgRgbTripletAusFarbe;this.n=hatgNormalizeRgbTriplet;this.fmt=hatgGetKeyFormats;",
+    ctx
+  );
+
+  // Mushroom setzt diese Werte selbst in rgb()/rgba() ein - ein Hex ergaebe
+  // dort "rgba(#34C759, 0.2)" und damit ungueltiges CSS.
+  assert.equal(ctx.f("#34C759"), "52, 199, 89");
+  assert.equal(ctx.f("#FF9F0A"), "255, 159, 10");
+  assert.equal(ctx.f("#abc"), "170, 187, 204");
+  // Der Alphawert entfaellt: die Deckkraft steckt schon in Mushrooms Regel.
+  assert.equal(ctx.f("rgba(120, 120, 128, 0.2)"), "120, 120, 128");
+  // rgb() mit drei Werten muss auch gehen - hatgParseRgba liefert dort still Schwarz.
+  assert.equal(ctx.f("rgb(1,2,3)"), "1, 2, 3");
+  // Was schon passt oder sich nicht eindeutig umrechnen laesst, bleibt stehen.
+  for (const unveraendert of ["120, 120, 128", "var(--x)", "quatsch", ""]) {
+    assert.equal(ctx.f(unveraendert), null, `haette ${JSON.stringify(unveraendert)} nicht anfassen duerfen`);
+  }
+
+  // Nur Felder vom Typ rgb_triplet, nichts anderes.
+  const werte = {
+    "mush-rgb-success": "#34C759",
+    "mush-rgb-state-switch": "rgba(120, 120, 128, 0.2)",
+    "primary-color": "#34C759",
+    "rgb-primary-color": "1, 2, 3",
+  };
+  const geaendert = [...ctx.n(werte)];
+  assert.deepEqual(geaendert.sort(), ["mush-rgb-state-switch", "mush-rgb-success"]);
+  assert.equal(werte["mush-rgb-success"], "52, 199, 89");
+  assert.equal(werte["mush-rgb-state-switch"], "120, 120, 128");
+  assert.equal(werte["primary-color"], "#34C759", "eine Farbe bleibt eine Farbe");
+  assert.equal(werte["rgb-primary-color"], "1, 2, 3");
+  assert.equal(ctx.fmt()["mush-rgb-success"], "rgb_triplet");
+});
+
+pruefe("Verlaufsfarben duerfen jeder CSS-Farbwert sein, auch mit Alpha", () => {
+  const vm = require("node:vm");
+  const ctx = {
+    console, window: {}, document: { createElement: () => ({}), addEventListener() {}, querySelector: () => null },
+    customElements: { define() {}, get() {} }, HTMLElement: class {},
+    localStorage: { getItem() {}, setItem() {} }, navigator: {}, setTimeout, clearTimeout,
+  };
+  vm.createContext(ctx);
+  vm.runInContext(
+    quelle.slice(0, quelle.indexOf("\nclass ")) +
+      ";this.css=hatgVerlaufCss;this.lese=hatgLeseVerlauf;this.ausCss=hatgVerlaufAusCss;this.ausLese=hatgLeseVerlaufAus;" +
+      "this.an=hatgHaengeVorlagenBlockAn;this.norm=hatgVerlaufNormal;",
+    ctx
+  );
+
+  // Genau der Wert, den Home Assistant fuer den Himmel der Widget-Karte
+  // ausrechnet - ein input type=color kann den Alphaanteil nicht darstellen,
+  // ueber das Textfeld muss er durchkommen.
+  const werte = {
+    von: "color(srgb 0.0392157 0.517647 1 / 0.18)",
+    bis: "color(srgb 0.921569 0.921569 0.960784 / 0.108)",
+    vorn: "rgba(235, 235, 245, 0.6)",
+    winkel: 170,
+  };
+  const feld = ctx.an("", "verlauf-akzent", ctx.css("uix-card", werte));
+  assert.deepEqual({ ...ctx.lese(feld) }, werte);
+
+  // Auch beim Aus-Verlauf, und dort auch var() und color-mix() - beide
+  // enthalten Kommas und Klammern, an denen ein naives Zerlegen scheitert.
+  const ausWerte = {
+    von: "var(--info-color)",
+    bis: "color-mix(in srgb, var(--secondary-text-color) 26%, transparent)",
+    vorn: "#EBEBF5",
+    winkel: 170,
+  };
+  const ausFeld = ctx.an("", "verlauf-inaktiv", ctx.ausCss("uix-card", ausWerte));
+  assert.deepEqual({ ...ctx.ausLese(ausFeld) }, ausWerte);
+
+  // Beide Bloecke nebeneinander duerfen sich nicht gegenseitig lesen.
+  const zusammen = ctx.an(feld, "verlauf-inaktiv", ctx.ausCss("uix-card", ausWerte));
+  assert.deepEqual({ ...ctx.lese(zusammen) }, werte);
+  assert.deepEqual({ ...ctx.ausLese(zusammen) }, ausWerte);
+
+  // Unsinn faellt auf den Standard zurueck statt kaputtes CSS zu schreiben.
+  const standard = { ...ctx.norm({ von: "blau", bis: "#zzz", vorn: "", winkel: "x" }) };
+  assert.equal(standard.von, "#4FE3C8");
+  assert.equal(standard.winkel, 135);
+  // Ein angehaengtes Semikolon wuerde die naechste Deklaration abschneiden.
+  assert.equal({ ...ctx.norm({ ...werte, vorn: "#112233;" }) }.vorn, "#112233");
+});
+
+pruefe("Verlauf fuer ausgeschaltete Flaechen: eigene Farben, Aus-Zustand getroffen", () => {
+  const vm = require("node:vm");
+  const ctx = {
+    console, window: {}, document: { createElement: () => ({}), addEventListener() {}, querySelector: () => null },
+    customElements: { define() {}, get() {} }, HTMLElement: class {},
+    localStorage: { getItem() {}, setItem() {} }, navigator: {}, setTimeout, clearTimeout,
+  };
+  vm.createContext(ctx);
+  vm.runInContext(
+    quelle.slice(0, quelle.indexOf("\nclass ")) +
+      ";this.css=hatgVerlaufAusCss;this.lese=hatgLeseVerlaufAus;this.an=hatgHaengeVorlagenBlockAn;" +
+      "this.weg=hatgEntferneVorlagenBlock;this.norm=hatgVerlaufAusNormal;this.ZIELE=HATG_VERLAUF_AUS_ZIELE;",
+    ctx
+  );
+  const werte = { von: "#112233", bis: "#445566", vorn: "#FFEEDD", winkel: 200 };
+
+  for (const ziel of ctx.ZIELE) {
+    const css = ctx.css(ziel, werte);
+    assert.match(css, /--verlauf-inaktiv:\s*linear-gradient\(200deg, #112233 0%, #445566 100%\)/);
+    assert.match(css, /--verlauf-inaktiv-vorn:\s*#FFEEDD/);
+    // Die eingeschalteten Flaechen gehoeren dem aktiven Verlauf.
+    assert.ok(!/--verlauf-akzent/.test(css), `${ziel}: darf den aktiven Verlauf nicht anfassen`);
+  }
+
+  const karte = ctx.css("uix-card", werte);
+  assert.match(karte, /ha-card:not\(:has\(\.bubble-background\[style\*="opacity: 1"\]\)\)/);
+  assert.match(karte, /\.bubble-sub-button:not\(\.background-on\)/);
+  assert.ok(!/\.bubble-sub-button\.background-on[^:]/.test(karte), "background-on gehoert dem aktiven Verlauf");
+  const seite = ctx.css("uix-sidebar", werte);
+  assert.match(seite, /ha-list-item-button:not\(\.selected\)::before/);
+  assert.ok(!/ha-list-item-button\.selected/.test(seite), "der gewaehlte Eintrag gehoert dem aktiven Verlauf");
+
+  // Schreiben, lesen, entfernen - ohne Rest im Feld.
+  const vorher = "ha-card { color: red; }";
+  const mit = ctx.an(vorher, "verlauf-inaktiv", karte);
+  // Der vm hat eigene Prototypen - erst in ein hiesiges Objekt kopieren.
+  assert.deepEqual({ ...ctx.lese(mit) }, { von: "#112233", bis: "#445566", vorn: "#FFEEDD", winkel: 200 });
+  assert.equal(ctx.weg(mit, "verlauf-inaktiv").trim(), vorher);
+  assert.equal(ctx.lese(vorher), null);
+
+  // Der Aus-Verlauf darf den aktiven Block nicht mitlesen und umgekehrt.
+  const beide = ctx.an(mit, "verlauf-akzent", "\n:host { --verlauf-akzent: linear-gradient(10deg, #AAAAAA 0%, #BBBBBB 100%); }\n");
+  assert.deepEqual({ ...ctx.lese(beide) }, { von: "#112233", bis: "#445566", vorn: "#FFEEDD", winkel: 200 });
+
+  assert.deepEqual({ ...ctx.norm({ ...werte, winkel: 560 }) }, { ...werte, winkel: 200 });
 });
 
 console.log(fehler === 0 ? "\nAlle Tests bestanden." : `\n${fehler} Test(s) fehlgeschlagen.`);

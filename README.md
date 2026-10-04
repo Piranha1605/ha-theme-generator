@@ -5,7 +5,7 @@
 <p align="center">
   <img src="https://img.shields.io/github/v/release/Piranha1605/ha-theme-generator?include_prereleases&label=Version&color=2F80ED" alt="Version" />
   <img src="https://img.shields.io/badge/HACS-Custom%20Repository-2F80ED?logo=home-assistant&logoColor=white" alt="HACS" />
-  <img src="https://img.shields.io/badge/Variablen-608%20gepr%C3%BCft-2F80ED" alt="608 geprüfte Variablen" />
+  <img src="https://img.shields.io/badge/Variablen-625%20gepr%C3%BCft-2F80ED" alt="625 geprüfte Variablen" />
   <img src="https://img.shields.io/github/stars/Piranha1605/ha-theme-generator?color=2F80ED" alt="Stars" />
   <img src="https://img.shields.io/github/issues/Piranha1605/ha-theme-generator?color=2F80ED" alt="Issues" />
 </p>
@@ -24,7 +24,7 @@
 
 HATG ist ein eigenes Panel in deiner Home-Assistant-Seitenleiste, mit dem du komplette Themes visuell aufbaust — für Home Assistant selbst, für **Bubble Card**, für **Mushroom** und für globale Anpassungen per **UI eXtension (UIX)**. Kein Springen zwischen YAML-Dateien, kein Raten, welche Variable welche Karte trifft: Du stellst Farben, Formen und Zustände an einer Stelle ein, HATG verteilt sie an alle drei Welten und zeigt dir das Ergebnis live — auf Wunsch direkt in deinem echten Dashboard.
 
-Jedes der 608 Felder wurde gegen den echten Quellcode von Home Assistant, Bubble Card und Mushroom beziehungsweise gegen die UIX-Dokumentation geprüft. Es sind ausschließlich real existierende Variablen enthalten — was du einstellst, kommt auch an.
+Jedes der 625 Felder wurde gegen den echten Quellcode von Home Assistant, Bubble Card und Mushroom beziehungsweise gegen die UIX-Dokumentation geprüft. Es sind ausschließlich real existierende Variablen enthalten — was du einstellst, kommt auch an.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/unified-theme-demo.png" alt="Ein Theme, gleichzeitig angewendet auf HA-Karten, Mushroom und Bubble Card" width="70%" />
@@ -137,7 +137,7 @@ Neben Verläufen (Sonnenaufgang, Nachthimmel, Radial) kannst du ein **eigenes Bi
 
 ## Alle Bereiche im Überblick
 
-Die Seitenleiste gliedert alle 608 Felder in thematische Sektionen — Bubble Card mit eigenen Unterseiten pro Kartentyp, die UIX-Vorlagen mit einer Unterseite pro Stilziel:
+Die Seitenleiste gliedert alle 625 Felder in thematische Sektionen — Bubble Card mit eigenen Unterseiten pro Kartentyp, die UIX-Vorlagen mit einer Unterseite pro Stilziel:
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-navigation.png" alt="Die Navigation des Panels mit allen Bereichen" width="22%" />
@@ -159,7 +159,7 @@ Die Seitenleiste gliedert alle 608 Felder in thematische Sektionen — Bubble Ca
 
 ### Alle Felder — finden statt suchen
 
-Der **Wortbaustein-Filter** kombiniert Bausteine wie `color`, `background` oder `button` mit einschränkenden Zusatz-Tags (`bubble`, `climate`, `stack`) — so ist auch unter 608 Variablen die richtige in Sekunden gefunden. Mit der Mehrfachauswahl bekommen ganze Feldgruppen in einem Schritt denselben Wert.
+Der **Wortbaustein-Filter** kombiniert Bausteine wie `color`, `background` oder `button` mit einschränkenden Zusatz-Tags (`bubble`, `climate`, `stack`) — so ist auch unter 625 Variablen die richtige in Sekunden gefunden. Mit der Mehrfachauswahl bekommen ganze Feldgruppen in einem Schritt denselben Wert.
 
 ### Code-Editor
 
@@ -194,7 +194,7 @@ Alle 25 hängen an denselben **Glaswerten**, die über der Liste stehen. Die Reg
   <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-glaswerte.jpg" alt="Die Glaswerte über der Vorlagenliste, daneben die Live-Vorschau" width="62%" />
 </p>
 
-**Verlauf für aktive Flächen** füllt eingeschaltete Bubble-Karten, Sub-Buttons mit Hintergrund, Schieberfüllungen, das Gewählte der HA-Karten und den aktiven Eintrag der Seitenleiste mit einem Farbverlauf – zwei Farben, Richtung und Schriftfarbe, für Light und Dark gleich. Knöpfe von Home Assistant selbst nehmen nur Farben an und bleiben in der Primärfarbe.
+**Verlauf für aktive Flächen** füllt eingeschaltete Bubble-Karten, Sub-Buttons mit Hintergrund, Schieberfüllungen, das Gewählte der Horizon-Cards und den aktiven Eintrag der Seitenleiste mit einem Farbverlauf – zwei Farben, Richtung und Schriftfarbe, für Light und Dark gleich. Knöpfe von Home Assistant selbst nehmen nur Farben an und bleiben in der Primärfarbe.
 
 ### Was außerhalb der Karten möglich ist
 
@@ -291,7 +291,7 @@ Ja. Über den Import liest HATG jedes Theme ein. Unbekannte Felder gehen nicht v
 Die drei häufigsten Gründe: (1) Unter **Einstellungen → Profil** ist ein anderes Theme aktiv. (2) Du hast im anderen Modus (Light/Dark) eingestellt als dem, den dein Gerät verwendet. (3) Der Browser hält eine alte Version im Cache — einmal hart neu laden.
 
 **Was passiert bei einem HATG-Update mit meinen Themes?**
-Nichts — Themes liegen in `config/themes/`, eigene UIX-Vorlagen in `config/themes/hatg/hatg-uix-vorlagen.json`, Hintergrundbilder in `config/themes/Wallpaper/`. Alles außerhalb des Integrationsordners, alles update-sicher, alles im Backup.
+Nichts — Themes liegen in `config/themes/`, eigene UIX-Vorlagen in `config/themes/hatg/hatg-uix-vorlagen.json`, Hintergrundbilder in `config/www/hatg/` (erreichbar unter `/local/hatg/`). Alles außerhalb des Integrationsordners, alles update-sicher, alles im Backup.
 
 **Die UIX-Vorlagen zeigen keine Wirkung.**
 Dafür muss [UI eXtension](https://github.com/Lint-Free-Technology/uix) installiert **und als Gerät hinzugefügt** sein. Außerdem muss das aktive Theme das von HATG gespeicherte sein — das CSS steht in der Theme-Datei.

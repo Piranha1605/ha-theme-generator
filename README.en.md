@@ -5,7 +5,7 @@
 <p align="center">
   <img src="https://img.shields.io/github/v/release/Piranha1605/ha-theme-generator?include_prereleases&label=Version&color=2F80ED" alt="Version" />
   <img src="https://img.shields.io/badge/HACS-Custom%20Repository-2F80ED?logo=home-assistant&logoColor=white" alt="HACS" />
-  <img src="https://img.shields.io/badge/Variables-608%20verified-2F80ED" alt="608 verified variables" />
+  <img src="https://img.shields.io/badge/Variables-625%20verified-2F80ED" alt="625 verified variables" />
   <img src="https://img.shields.io/github/stars/Piranha1605/ha-theme-generator?color=2F80ED" alt="Stars" />
   <img src="https://img.shields.io/github/issues/Piranha1605/ha-theme-generator?color=2F80ED" alt="Issues" />
 </p>
@@ -24,7 +24,7 @@
 
 HATG is a dedicated panel in your Home Assistant sidebar for building complete themes visually — for Home Assistant itself, for **Bubble Card**, for **Mushroom** and for global tweaks via **UI eXtension (UIX)**. No jumping between YAML files, no guessing which variable hits which card: you set colours, shapes and states in one place, HATG distributes them across all three worlds and shows you the result live — optionally right inside your real dashboard.
 
-Every one of the 608 fields was verified against the actual source code of Home Assistant, Bubble Card and Mushroom, or against the UIX documentation. Only variables that genuinely exist are included — what you set is what arrives.
+Every one of the 625 fields was verified against the actual source code of Home Assistant, Bubble Card and Mushroom, or against the UIX documentation. Only variables that genuinely exist are included — what you set is what arrives.
 
 > **Language:** HATG speaks English and German. The interface follows your Home Assistant language automatically and can be switched at any time under the gear icon.
 
@@ -139,7 +139,7 @@ Besides gradients (sunrise, night sky, radial) you can set your **own image**. T
 
 ## All sections at a glance
 
-The sidebar organises all 608 fields into thematic sections — Bubble Card with its own subpage per card type, the UIX presets with one subpage per style target:
+The sidebar organises all 625 fields into thematic sections — Bubble Card with its own subpage per card type, the UIX presets with one subpage per style target:
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-navigation.png" alt="Navigation with all sections" width="22%" />
@@ -161,7 +161,7 @@ The sidebar organises all 608 fields into thematic sections — Bubble Card with
 
 ### All fields — finding instead of searching
 
-The **word-fragment filter** combines building blocks such as `color`, `background` or `button` with narrowing tags (`bubble`, `climate`, `stack`) — so even among 608 variables the right one is found in seconds. With multi-select, entire groups of fields get the same value in a single step.
+The **word-fragment filter** combines building blocks such as `color`, `background` or `button` with narrowing tags (`bubble`, `climate`, `stack`) — so even among 625 variables the right one is found in seconds. With multi-select, entire groups of fields get the same value in a single step.
 
 ### Code editor
 
@@ -196,7 +196,7 @@ All 25 hang on the same **glass values** shown above the list. The sliders write
   <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-glaswerte.jpg" alt="The glass values above the preset list, with the live preview beside them" width="62%" />
 </p>
 
-**Gradient for active surfaces** fills Bubble cards that are on, sub-buttons with a background, slider fills, the selected items of HA-Karten cards and the active sidebar entry with a colour gradient – two colours, direction and text colour, the same for light and dark. Home Assistant's own buttons only take colours and keep the primary colour.
+**Gradient for active surfaces** fills Bubble cards that are on, sub-buttons with a background, slider fills, the selected items of Horizon-Cards and the active sidebar entry with a colour gradient – two colours, direction and text colour, the same for light and dark. Home Assistant's own buttons only take colours and keep the primary colour.
 
 ### What is possible beyond cards
 
@@ -293,7 +293,7 @@ Yes. HATG reads any theme via import. Unknown fields aren't lost; they're re-att
 The three most common reasons: (1) a different theme is active under **Settings → Profile**. (2) You edited the other mode (light/dark) than the one your device uses. (3) The browser is holding an old version in cache — do one hard reload.
 
 **What happens to my themes during a HATG update?**
-Nothing — themes live in `config/themes/`, custom UIX presets in `config/themes/hatg/hatg-uix-vorlagen.json`, background images in `config/themes/Wallpaper/`. All outside the integration folder, all update-safe, all covered by your backup.
+Nothing — themes live in `config/themes/`, custom UIX presets in `config/themes/hatg/hatg-uix-vorlagen.json`, background images in `config/www/hatg/` (served at `/local/hatg/`). All outside the integration folder, all update-safe, all covered by your backup.
 
 **The UIX presets have no effect.**
 [UI eXtension](https://github.com/Lint-Free-Technology/uix) needs to be installed **and added as a device** for that. The active theme also has to be the one saved by HATG — the CSS lives in the theme file.

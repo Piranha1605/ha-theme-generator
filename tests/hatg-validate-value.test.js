@@ -87,6 +87,28 @@ pruefe("bubble-event-background-image mit Gradienten und Hex-Farbe ist gueltig",
   assert.equal(hatgValidateValue("hex", MEHRSCHICHTIG, "bubble-event-background-image"), "ok");
 });
 
+// ha-card faerbt seine Flaeche mit der Kurzform background, nicht mit
+// background-color - dort kommt ein Bild oder eine zweite Ebene also an.
+pruefe("ha-card-background nimmt Bild, Verlauf und Ebenen an", () => {
+  assert.equal(hatgValidateValue("hex", "url(/local/textur.jpg) center/cover", "ha-card-background"), "ok");
+  assert.equal(hatgValidateValue("hex", MEHRSCHICHTIG, "ha-card-background"), "ok");
+  assert.equal(
+    hatgValidateValue(
+      "hex",
+      "linear-gradient(170deg, color-mix(in srgb, var(--info-color) 30%, transparent) 0%, color-mix(in srgb, var(--secondary-text-color) 26%, transparent) 100%), var(--card-background-color)",
+      "ha-card-background"
+    ),
+    "ok"
+  );
+  assert.equal(hatgValidateValue("hex", "quatsch", "ha-card-background"), "invalid");
+});
+
+// Die Dialogflaeche faerbt Home Assistant nur ueber background-color - ein Bild
+// braucht dort eine eigene Regel und gehoert deshalb nicht ins Feld.
+pruefe("ha-dialog-surface-background bleibt eine Farbe", () => {
+  assert.equal(hatgValidateValue("hex", "url(/local/textur.jpg)", "ha-dialog-surface-background"), "invalid");
+});
+
 // Keys ausserhalb von HATG_CSS_BACKGROUND_KEYS erwarten weiterhin eine Farbe.
 pruefe("primary-color nimmt keinen mehrschichtigen Hintergrund an", () => {
   assert.equal(hatgValidateValue("hex", MEHRSCHICHTIG, "primary-color"), "invalid");
@@ -99,6 +121,43 @@ pruefe("einfache Werte werden weiterhin geprueft", () => {
   assert.equal(hatgValidateValue("hex", "", "lovelace-background"), "empty");
   assert.equal(hatgValidateValue("rgba", "rgba(1, 2, 3, 0.5)", "ha-card-background"), "ok");
   assert.equal(hatgValidateValue("rgb_triplet", "1, 2, 3", "rgb-primary-color"), "ok");
+});
+
+// Eine Ebene der Kurzform background ist nicht nur das Bild: Dahinter duerfen
+// Position, Groesse, Wiederholung und Anheftung stehen. Bis 1.3.2b19 galt eine
+// Ebene nur dann als gueltig, wenn sie GENAU ein url() oder ein Verlauf war -
+// beim Speichern meldete HATG deshalb "1 ungueltiger Wert" fuer gueltiges CSS.
+// Am 2026-10-01 aus einer echten Theme gemeldet, der Wert war
+// "linear-gradient(145deg, #777775 0%, #B8B8B5 100%) fixed".
+[
+  "linear-gradient(145deg, #777775 0%, #B8B8B5 100%) fixed",
+  "url(/local/hatg/x.png) center / cover no-repeat fixed",
+  "url(/local/hatg/x.png) no-repeat",
+  "url(/x.png) calc(50% + 10px) 0 / cover",
+  'url("a(1).png") no-repeat',
+].forEach((wert) => {
+  pruefe(`Hintergrund-Ebene mit Position und Anheftung: ${wert.slice(0, 52)}`, () => {
+    assert.equal(hatgIsCssBackground(wert), true);
+    for (const k of ["lovelace-background", "popup-custom-wallpaper", "ha-card-background"])
+      assert.equal(hatgValidateValue("hex", wert, k), "ok", `${k} lehnte den Wert ab`);
+  });
+});
+
+// Die Gegenrichtung, sonst waere "alles ist ein Hintergrund" die Loesung.
+// Absichtlich NICHT dabei: alles, was mit url( beginnt. hatgIstBildEbene prueft
+// dort nur den Anfang, "url(/x.png) center / cover quatsch" geht also durch.
+// Das ist seit jeher so und bleibt: Ein falsches "ungueltig" nervt bei
+// gueltigem CSS mehr, als ein durchgerutschter Tippfehler kostet - die Meldung
+// ist ein Hinweis, kein Tor, und genau sie hat am 2026-10-01 bei gueltigem CSS
+// angeschlagen. Verlaeufe werden geprueft, weil sie eine geschlossene Form
+// haben; eine URL kann alles sein.
+[
+  "linear-gradient(145deg, #777775 0%, #B8B8B5 100%) wackelpudding",
+  "linear-gradient(145deg, #777",
+].forEach((wert) => {
+  pruefe(`Unsinn hinter dem Bild faellt durch: ${wert.slice(0, 52)}`, () => {
+    assert.equal(hatgIsCssBackground(wert), false);
+  });
 });
 
 if (fehler) {

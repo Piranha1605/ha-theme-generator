@@ -22,10 +22,15 @@ function ladeHelfer() {
   const start = quelle.indexOf("function hatgMergeStilzielYaml");
   const ende = quelle.indexOf("function hatgParseThemeYaml");
   assert.ok(start !== -1 && ende > start, "Stilziel-Helfer in hatg-panel.js nicht gefunden");
-  // hatgIstYamlZiel haengt an der Stilziel-Tabelle aus dem Manifest. Fuer
-  // diesen Test genuegt die Namensregel - geprueft wird das Auftrennen.
+  // Die Erkennung haengt an der Stilziel-Tabelle aus dem Manifest. Fuer diesen
+  // Test genuegt die Namensregel - geprueft wird das Auftrennen.
+  // hatgIstYamlStilzielFeld loest seit 1.3.2b12 hatgIstYamlZiel ab: Ueber die
+  // Schreibweise entscheidet allein die Endung, damit auch ein eigenes
+  // Panel-Ziel (uix-knx-frontend-yaml) als YAML behandelt wird.
+  const namensregel = (key) => /-yaml$/.test(String(key || "")) && /^(?:uix|card-mod)-[a-z0-9-]+$/.test(String(key || ""));
   const kontext = {
-    hatgIstYamlZiel: (key) => /^uix-[a-z-]+-yaml$/.test(String(key || "")),
+    hatgIstYamlStilzielFeld: namensregel,
+    hatgIstYamlZiel: namensregel,
   };
   vm.runInNewContext(
     `${quelle.slice(start, ende)}
@@ -127,10 +132,21 @@ pruefe("Bleibt nach dem Auftrennen nichts uebrig, faellt das -yaml-Feld weg", ()
   assert.ok(!("uix-card-yaml" in bag), "leeres -yaml-Feld blieb stehen");
 });
 
-pruefe("Ein bereits belegtes einfaches Feld wird nicht ueberschrieben", () => {
+// Diese Pruefung hielt bis zum 2026-10-01 das Gegenteil fest: Sie verlangte,
+// dass im einfachen Feld NUR der Handeintrag steht - also dass der "."-Eintrag
+// verworfen wird. Der Name sagte "wird nicht ueberschrieben", die Behauptung
+// sagte "wird weggeworfen", und damit war ein stiller Verlust festgeschrieben.
+// Nachgestellt: docs/beispiele/glas-basis.yaml plus zwei von Hand ergaenzte
+// Zeilen "uix-card:" - beim naechsten Import waren die Vorlagen glas-ebene,
+// glas-bubble und glas-buttons-karten weg, ohne eine Zeile im Bericht.
+pruefe("Ein bereits belegtes einfaches Feld bekommt den \".\"-Eintrag angehaengt", () => {
   const bag = { "uix-card": "/* von Hand */", "uix-card-yaml": hatgMergeStilzielYaml(EINFACH, KARTE) };
   hatgEntflechteStilzieleImBag(bag);
-  assert.equal(bag["uix-card"], "/* von Hand */");
+  assert.ok(
+    bag["uix-card"].startsWith("/* von Hand */"),
+    `der Handeintrag steht nicht mehr vorn: ${bag["uix-card"].slice(0, 40)}`
+  );
+  assert.ok(bag["uix-card"].includes(EINFACH), "der \".\"-Eintrag ist verloren gegangen");
 });
 
 pruefe("Unquotierter Punkt-Schluessel wird ebenfalls erkannt", () => {
@@ -161,6 +177,26 @@ pruefe("Doppelte Pfade werden zu einem zusammengefasst", () => {
   assert.ok(/\.button \{ color: blue; \}\n  \.button \{ color: green; \}/.test(neu), neu);
   assert.ok(neu.includes("# HATG:UIX:glas-buttons-glanz:START"), "Marker duerfen nicht verschwinden");
   assert.equal(hatgYamlPfadeZusammenfuehren(KARTE), KARTE, "ohne Dubletten unveraendert");
+});
+
+pruefe("Unbekannte uix-Felder bleiben auf Theme-Ebene", () => {
+  // Welche Stilziel-Typen UIX kennt, haengt an der Installation: Mit der Option
+  // "Style custom panels" bedient UIX auch eigene Panels und bildet den Typ aus
+  // deren Wurzelelement (uix-hacs-frontend-yaml, uix-knx-frontend-yaml). Eine
+  // feste Liste kann das nicht abdecken. Bis 1.3.2b9 landeten solche Felder als
+  // "Zusatzwerte" doppelt unter modes.light und modes.dark - dort liest UIX sie
+  // nie. Am 2026-09-27 an der Theme eines Nutzers nachgestellt.
+  const quelle = fs.readFileSync(PANEL, "utf8");
+  const m = /const istFlach = \(key\) => ([^;]+);/.exec(quelle);
+  assert.ok(m, "istFlach nicht gefunden");
+  const istFlach = new Function("key", "hatgIstStilzielKey", `return ${m[1]};`);
+  const kenntNicht = () => false;
+  for (const k of ["uix-hacs-frontend-yaml", "uix-knx-frontend-yaml", "uix-irgendein-panel", "card-mod-card"]) {
+    assert.ok(istFlach(k, kenntNicht), `${k} muesste auf Theme-Ebene stehen`);
+  }
+  for (const k of ["primary-color", "ha-card-background", "bubble-icon-color"]) {
+    assert.ok(!istFlach(k, kenntNicht), `${k} gehoert unter modes, nicht nach oben`);
+  }
 });
 
 console.log(fehler === 0 ? "\nAlle Tests bestanden." : `\n${fehler} Test(s) fehlgeschlagen.`);

@@ -1,0 +1,215 @@
+// Der Import wirft ungenutzte Felder raus.
+// Ausfuehren: node tests/hatg-ausmisten.test.js
+//
+// Import removes fields nothing refers to.
+//
+// Warum: Die Ausgabe haengt unbekannte Felder immer wieder an. Ein Feld aus
+// einer aelteren Fassung des Themes, auf das nichts mehr zeigt, wird damit bei
+// jedem Import treu weitergereicht - man wird es nie wieder los. In der Theme
+// eines Nutzers waren das am 2026-09-30 vierzehn Felder (liquid-*,
+// bubble-menu-bar-main-background-color), jedes zweimal geschrieben, also 28
+// Zeilen Ballast.
+//
+// Die Grenze: Was noch jemand ueber var() liest, bleibt stehen - auch ueber
+// mehrere Stufen. Ein Feld kann allerdings von ausserhalb der Theme gelesen
+// werden, etwa aus der Konfiguration einer einzelnen Karte; das sieht HATG
+// nicht, deshalb nennt der Bericht jedes entfernte Feld beim Namen.
+
+const assert = require("node:assert/strict");
+const { panelBauen } = require("../werkzeuge/kopflos.js");
+
+let fehler = 0;
+function pruefe(name, fn) {
+  try { fn(); console.log("  ok   " + name); }
+  catch (error) {
+    fehler++;
+    console.log("  FEHL " + name);
+    console.log("       " + String(error.message).split("\n").slice(0, 8).join("\n       "));
+  }
+}
+
+function importiere(zeilen, themeEbene = []) {
+  const { panel, ctx } = panelBauen();
+  const theme = [
+    "meintest:",
+    ...themeEbene,
+    "  modes:",
+    "    light:",
+    ...zeilen,
+    "    dark:",
+    ...zeilen,
+    "",
+  ].join("\n");
+  const bekannt = new Set(Object.keys(panel._state.values.light));
+  const geparst = ctx.hatgParseThemeYaml(theme, bekannt);
+  assert.ok(!geparst.error, `Import fehlgeschlagen: ${geparst.error}`);
+  panel.applyImportedTheme(geparst);
+  return panel;
+}
+
+const extras = (p) => [...new Set([
+  ...Object.keys(p._state.extraValues.light || {}),
+  ...Object.keys(p._state.extraValues.dark || {}),
+])].sort();
+// Der Kopf der Datei traegt den Import-Bericht, und der nennt die entfernten
+// Felder beim Namen. Geprueft wird deshalb nur, was unter den Kommentaren steht.
+const ohneKopf = (p) => p.buildYamlText().split("\n").filter((z) => !z.trim().startsWith("#")).join("\n");
+
+pruefe("Ein unbekanntes Feld, auf das nichts zeigt, fliegt raus", () => {
+  const p = importiere([
+    '      liquid-accent-aqua: "#00e5ff"',
+    '      liquid-dauer-schnell: "120ms"',
+    '      primary-color: "#0277BD"',
+  ]);
+  assert.deepEqual(extras(p), [], `es blieb etwas uebrig: ${extras(p).join(", ")}`);
+  assert.ok(!ohneKopf(p).includes("liquid-accent-aqua"), "das Feld steht noch in der Ausgabe");
+  assert.ok(!ohneKopf(p).includes("liquid-dauer-schnell"), "das zweite Feld steht noch in der Ausgabe");
+});
+
+// Ein benutztes Hilfsfeld wird nicht aufbewahrt, sondern AUFGELOEST: Der Wert
+// tritt an die Stelle des Verweises, danach braucht niemand mehr das Feld.
+// Entscheidend ist deshalb nicht, ob das Feld bleibt, sondern dass kein
+// Verweis ins Leere zeigt.
+pruefe("Ein benutztes Hilfsfeld wird aufgeloest, nicht abgeschnitten", () => {
+  const p = importiere([
+    '      liquid-accent-aqua: "#00e5ff"',
+    '      primary-color: "var(--liquid-accent-aqua)"',
+  ]);
+  assert.equal(p._state.values.light["primary-color"], "#00e5ff", "der Wert ist nicht eingetreten");
+  assert.ok(!ohneKopf(p).includes("--liquid-accent-aqua"), "es zeigt noch ein Verweis auf das entfernte Feld");
+});
+
+pruefe("Auch eine Kette ueber mehrere Stufen loest sich auf", () => {
+  const p = importiere([
+    '      liquid-a: "#111111"',
+    '      liquid-b: "var(--liquid-a)"',
+    '      primary-color: "var(--liquid-b)"',
+  ]);
+  assert.equal(p._state.values.light["primary-color"], "#111111", "die Kette wurde nicht bis zum Wert verfolgt");
+  assert.ok(!ohneKopf(p).includes("--liquid-a"), "liquid-a wird noch referenziert");
+  assert.ok(!ohneKopf(p).includes("--liquid-b"), "liquid-b wird noch referenziert");
+});
+
+pruefe("Ein Verweis aus einem Stilziel laesst nichts ins Leere zeigen", () => {
+  const p = importiere(
+    ['      liquid-glanz: "rgba(255,255,255,0.4)"'],
+    ["  uix-card: |", "    ha-card { border-color: var(--liquid-glanz); }"]
+  );
+  const text = ohneKopf(p);
+  const zeigtNochHin = /var\(\s*--liquid-glanz/.test(text);
+  const istDefiniert = /^\s+liquid-glanz\s*:/m.test(text);
+  assert.ok(!zeigtNochHin || istDefiniert, "der Verweis steht noch da, das Feld aber nicht mehr");
+});
+
+pruefe("Der Bericht nennt die entfernten Felder beim Namen", () => {
+  const p = importiere([
+    '      liquid-accent-aqua: "#00e5ff"',
+    '      bubble-menu-bar-main-background-color: "#123456"',
+  ]);
+  const zeilen = (p._state.importBericht && p._state.importBericht.zeilen) || [];
+  const zeile = zeilen.find((z) => z.includes("ungenutzte"));
+  assert.ok(zeile, `keine Zeile zum Ausmisten: ${zeilen.join(" | ")}`);
+  assert.ok(zeile.includes("liquid-accent-aqua"), `das Feld wird nicht genannt: ${zeile}`);
+  assert.ok(zeile.includes("bubble-menu-bar"), `das Feld wird nicht genannt: ${zeile}`);
+});
+
+pruefe("Ohne Ballast gibt es keine Meldung", () => {
+  const p = importiere(['      primary-color: "#0277BD"']);
+  const zeilen = (p._state.importBericht && p._state.importBericht.zeilen) || [];
+  assert.ok(!zeilen.some((z) => z.includes("ungenutzte")), "es wurde gemeldet, obwohl nichts zu tun war");
+});
+
+pruefe("Bekannte Felder werden nie angefasst", () => {
+  const p = importiere(['      primary-color: "#0277BD"', '      accent-color: "#FF0000"']);
+  assert.equal(p._state.values.light["primary-color"], "#0277BD");
+  assert.equal(p._state.values.light["accent-color"], "#FF0000");
+});
+
+// Der wichtigste Fall: Ein eigenes Panel-Ziel ist HATG unbekannt, und es zeigt
+// kein var() darauf - nach der reinen Ballast-Regel floege es raus und naehme
+// das CSS einer Vorlage mit. Genau das hat der Durchlauf-Test am 2026-09-30
+// gefangen, bevor es jemanden getroffen hat.
+pruefe("Ein eigenes Panel-Ziel wird NICHT ausgemistet", () => {
+  const p = importiere(
+    ['      liquid-tot: "#000000"'],
+    ["  uix-knx-frontend-yaml: |", "    knx-frontend $: |", "      :host { background: red; }"]
+  );
+  const text = ohneKopf(p);
+  assert.ok(text.includes("uix-knx-frontend-yaml"), "das eigene Panel-Ziel wurde entfernt");
+  assert.ok(text.includes("knx-frontend $:"), "der Pfad des eigenen Ziels ist verloren");
+  assert.ok(!text.includes("liquid-tot"), "der echte Ballast blieb liegen");
+});
+
+pruefe("Ein Vorlagenblock ueberlebt das Ausmisten", () => {
+  const p = importiere(
+    ['      liquid-tot: "#000000"'],
+    ["  uix-card: |", "    /* HATG:UIX:glas-ebene:START */", "    ha-card { color: red; }", "    /* HATG:UIX:glas-ebene:END */"]
+  );
+  const text = p.buildYamlText();
+  assert.ok(text.includes("HATG:UIX:glas-ebene:START"), "der Vorlagenblock ist verschwunden");
+  assert.ok(!ohneKopf(p).includes("liquid-tot"), "das ungenutzte Feld steht noch da");
+});
+
+// Die Gegenrichtung, und sie fehlte: Alle Pruefungen oben fuettern Ballast ein
+// und schauen, ob er fliegt. Keine schaut, ob NUR Ballast fliegt. Deshalb konnte
+// 1.3.2b14 unbemerkt Felder loeschen, die Home Assistant selbst liest - HA liest
+// seine Variablen aus seinem eigenen Stylesheet, nicht per var() aus der Theme,
+// also sah jede HA-Variable ohne HATG-Feld wie Ballast aus. Am 2026-10-01
+// gemessen: elf von zwoelf echten Namen waren nach dem Import weg.
+//
+// Die Namen unten sind nicht geraten. Sie stammen aus den Quellen der beiden
+// Systeme (HA frontend src/resources/theme/*, Bubble Card dist/bubble-card.js)
+// und waren alle elf beziehungsweise zwei nachweislich betroffen.
+pruefe("Felder, die Home Assistant selbst liest, bleiben stehen", () => {
+  const namen = [
+    "ha-space-4", "ha-border-radius-md", "scrollbar-thumb-color", "clear-background-color",
+    "markdown-code-background-color", "data-table-background-color", "codemirror-keyword",
+    "rgb-error-color", "shadow-color", "label-badge-grey", "text-light-primary-color",
+  ];
+  const p = importiere([...namen.map((n) => `      ${n}: "#123456"`), '      primary-color: "#0277BD"']);
+  const text = ohneKopf(p);
+  const weg = namen.filter((n) => !new RegExp("^\\s+" + n + ":", "m").test(text));
+  assert.deepEqual(weg, [], `geloescht, obwohl Home Assistant sie liest: ${weg.join(", ")}`);
+});
+
+pruefe("Felder, die Bubble Card selbst liest, bleiben stehen", () => {
+  // Die ganze Familie bubble-card-type-* und die Pop-up-Masse kennt HATG nicht:
+  // 1.3.2b15 hat geprueft, welche von HATGs Bubble-Feldern Bubble nicht mehr
+  // liest - nicht, welche Namen Bubble zusaetzlich liest. Das sind 60.
+  const namen = ["bubble-card-type-main-background-color", "bubble-pop-up-gap", "bubble-sub-button-height"];
+  const p = importiere([...namen.map((n) => `      ${n}: "12px"`), '      primary-color: "#0277BD"']);
+  const text = ohneKopf(p);
+  const weg = namen.filter((n) => !new RegExp("^\\s+" + n + ":", "m").test(text));
+  assert.deepEqual(weg, [], `geloescht, obwohl Bubble Card sie liest: ${weg.join(", ")}`);
+});
+
+// Und die Gegenprobe zur Gegenprobe: Die Schutzliste darf nicht so weit greifen,
+// dass nichts mehr fliegt. Diese Namen stehen in keiner der beiden Quellen -
+// die 61 Felder aus 1.3.2b15 sind genau daran erkennbar.
+pruefe("Nachweislich tote Felder fliegen weiter, auch mit fremder Vorsilbe", () => {
+  const namen = [
+    "bubble-climate-main-background-color", "bubble-cover-box-shadow",
+    "bubble-menu-bar-main-background-color", "popup-border-radius", "more-info-header-color",
+  ];
+  const p = importiere([...namen.map((n) => `      ${n}: "#123456"`), '      primary-color: "#0277BD"']);
+  const text = ohneKopf(p);
+  const geblieben = namen.filter((n) => new RegExp("^\\s+" + n + ":", "m").test(text));
+  assert.deepEqual(geblieben, [], `Ballast blieb liegen: ${geblieben.join(", ")}`);
+});
+
+// Ein entferntes Feld laesst sich nur wiederherstellen, wenn man seinen Namen
+// kennt. Der Bericht kuerzte ab fuenf Namen auf drei - bei 48 geloeschten
+// Feldern stand dort "+45 weitere", und damit war das Versprechen aus CLAUDE.md
+// ("der Bericht nennt jedes entfernte Feld beim Namen") gebrochen.
+pruefe("Der Bericht nennt ALLE entfernten Felder, nicht nur drei", () => {
+  const namen = ["liquid-a1", "liquid-b2", "liquid-c3", "liquid-d4", "liquid-e5", "liquid-f6"];
+  const p = importiere(namen.map((n) => `      ${n}: "#123456"`));
+  const zeilen = (p._state.importBericht && p._state.importBericht.zeilen) || [];
+  const zeile = zeilen.find((z) => z.includes("ungenutzte")) || "";
+  const fehlend = namen.filter((n) => !zeile.includes(n));
+  assert.deepEqual(fehlend, [], `nicht genannt: ${fehlend.join(", ")} - Zeile war: ${zeile}`);
+  assert.ok(!/\+\d+ weitere/.test(zeile), `immer noch abgekuerzt: ${zeile}`);
+});
+
+console.log(fehler ? `\n${fehler} Test(s) fehlgeschlagen.` : "\nAlle Tests bestanden.");
+process.exit(fehler ? 1 : 0);

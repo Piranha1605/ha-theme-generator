@@ -4,6 +4,7 @@ import base64
 import binascii
 import hashlib
 import json
+import logging
 import re
 from pathlib import Path
 
@@ -23,16 +24,43 @@ from .const import (
     PANEL_TITLE,
     PANEL_URL,
     STATIC_PATH,
+    WALLPAPER_LOCAL_PATH,
     WALLPAPER_STATIC_PATH,
 )
+
+_LOGGER = logging.getLogger(__name__)
 
 THEMES_SUBDIR = "themes"
 WORK_FILE_PREFIX = "hatg-work-"
 _WS_REGISTERED_FLAG = f"{DOMAIN}_ws_registered"
 
+# Hintergrundbilder liegen seit 1.3.2b13 in config/www/hatg und werden von Home
+# Assistant selbst unter /local/hatg ausgeliefert. Davor lagen sie in
+# config/themes/Wallpaper hinter der HATG-eigenen Route /hatg_wallpaper - und
+# damit stand in jeder weitergegebenen Theme eine Adresse, die es ohne HATG
+# nicht gibt. Der alte Ordner wird beim Start einmal geleert (die Dateien
+# wandern mit), die alte Route bleibt und zeigt auf den neuen Ordner, damit
+# bestehende Themes weiter funktionieren.
+WWW_SUBDIR = "www"
 WALLPAPER_SUBDIR = "Wallpaper"
+WALLPAPER_WWW_SUBDIR = "hatg"
 _WALLPAPER_ALLOWED_EXT = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
 _WALLPAPER_SAFE_NAME_RE = re.compile(r"[^A-Za-z0-9._-]+")
+
+
+def _wallpaper_dir(hass: HomeAssistant) -> Path:
+    """Der Ordner, in dem die Hintergrundbilder liegen."""
+    return Path(hass.config.path(WWW_SUBDIR, WALLPAPER_WWW_SUBDIR))
+
+
+def _wallpaper_dir_alt(hass: HomeAssistant) -> Path:
+    """Der Ordner bis 1.3.2b12."""
+    return Path(hass.config.path(THEMES_SUBDIR, WALLPAPER_SUBDIR))
+
+
+def _wallpaper_url(name: str) -> str:
+    return f"{WALLPAPER_LOCAL_PATH}/{name}"
+
 
 VORLAGEN_SUBDIR = "hatg"
 VORLAGEN_FILE = "hatg-uix-vorlagen.json"
@@ -40,7 +68,11 @@ VORLAGEN_FILE = "hatg-uix-vorlagen.json"
 VORLAGEN_FILE_ALT = "hatg-cardmod-vorlagen.json"
 _VORLAGEN_ID_RE = re.compile(r"[A-Za-z0-9_-]{1,64}")
 # Stilziel einer Vorlage, z.B. uix-card. Ohne Angabe gilt uix-card.
-_VORLAGEN_ZIEL_RE = re.compile(r"uix-[a-z-]{1,48}")
+# Zeichengleich mit HATG_VORLAGEN_ZIEL_RE in hatg-panel.js. Ziffern sind
+# erlaubt: Ein eigenes Panel-Ziel heisst nach dem Wurzelelement des Panels, und
+# ein Custom-Element-Name darf Ziffern tragen. Waere der Server strenger als der
+# Client, scheiterte das Speichern der ganzen Liste an einem einzigen Eintrag.
+_VORLAGEN_ZIEL_RE = re.compile(r"uix-[a-z][a-z0-9-]{0,47}")
 
 
 def _is_safe_theme_name(name: str) -> bool:
@@ -360,7 +392,7 @@ async def ws_upload_wallpaper(hass: HomeAssistant, connection, msg):
         connection.send_error(msg["id"], "invalid_data", "Die Bilddatei ist leer.")
         return
 
-    wallpaper_dir = Path(hass.config.path(THEMES_SUBDIR, WALLPAPER_SUBDIR))
+    wallpaper_dir = _wallpaper_dir(hass)
 
     def _write():
         wallpaper_dir.mkdir(parents=True, exist_ok=True)
@@ -383,7 +415,7 @@ async def ws_upload_wallpaper(hass: HomeAssistant, connection, msg):
         {
             "uploaded": True,
             "filename": final_name,
-            "url": f"{WALLPAPER_STATIC_PATH}/{final_name}",
+            "url": _wallpaper_url(final_name),
             "duplicate": war_schon_da,
         },
     )
@@ -397,7 +429,7 @@ async def ws_upload_wallpaper(hass: HomeAssistant, connection, msg):
 @websocket_api.async_response
 async def ws_list_wallpapers(hass: HomeAssistant, connection, msg):
     """Listet alle Bilder im Wallpaper-Ordner auf."""
-    wallpaper_dir = Path(hass.config.path(THEMES_SUBDIR, WALLPAPER_SUBDIR))
+    wallpaper_dir = _wallpaper_dir(hass)
 
     def _list():
         if not wallpaper_dir.exists():
@@ -417,7 +449,7 @@ async def ws_list_wallpapers(hass: HomeAssistant, connection, msg):
             items.append(
                 {
                     "filename": entry.name,
-                    "url": f"{WALLPAPER_STATIC_PATH}/{entry.name}",
+                    "url": _wallpaper_url(entry.name),
                     "modified": stat.st_mtime,
                     "size": stat.st_size,
                     "hash": digest,
@@ -499,16 +531,29 @@ async def ws_save_uix_templates(hass: HomeAssistant, connection, msg):
     eintraege = []
     for eintrag in msg["templates"]:
         kennung = str(eintrag.get("id") or "").strip()
+        # Die Meldung nennt Name und Kennung: Ein einziger schlechter Eintrag
+        # laesst den ganzen Stapel scheitern, und ohne Namen war aus der
+        # Fehlermeldung nicht zu erkennen, welche der Vorlagen gemeint ist.
+        name = str(eintrag.get("label") or kennung or "ohne Namen")
         if not kennung or not _VORLAGEN_ID_RE.fullmatch(kennung):
-            connection.send_error(msg["id"], "invalid_id", f"Ungültige Vorlagen-Kennung: {kennung!r}")
+            connection.send_error(
+                msg["id"],
+                "invalid_id",
+                f"Vorlage {name!r} hat die ungültige Kennung {kennung!r}. "
+                "Erlaubt sind Buchstaben ohne Umlaute, Ziffern, - und _, höchstens 64 Zeichen.",
+            )
             return
         css = eintrag.get("css")
         if not isinstance(css, str):
-            connection.send_error(msg["id"], "invalid_css", f"Vorlage {kennung} enthält kein CSS.")
+            connection.send_error(msg["id"], "invalid_css", f"Vorlage {name!r} ({kennung}) enthält kein CSS.")
             return
         ziel = str(eintrag.get("ziel") or "uix-card")
         if not _VORLAGEN_ZIEL_RE.fullmatch(ziel):
-            connection.send_error(msg["id"], "invalid_target", f"Ungültiges Stilziel: {ziel!r}")
+            connection.send_error(
+                msg["id"],
+                "invalid_target",
+                f"Vorlage {name!r} ({kennung}) zeigt auf das ungültige Stilziel {ziel!r}.",
+            )
             return
         eintraege.append(
             {
@@ -522,7 +567,10 @@ async def ws_save_uix_templates(hass: HomeAssistant, connection, msg):
 
     kennungen = [e["id"] for e in eintraege]
     if len(kennungen) != len(set(kennungen)):
-        connection.send_error(msg["id"], "duplicate_id", "Zwei Vorlagen haben dieselbe Kennung.")
+        doppelt = sorted({k for k in kennungen if kennungen.count(k) > 1})
+        connection.send_error(
+            msg["id"], "duplicate_id", f"Diese Kennung kommt mehrfach vor: {', '.join(doppelt)}."
+        )
         return
 
     vorlagen_dir = Path(hass.config.path(THEMES_SUBDIR, VORLAGEN_SUBDIR))
@@ -563,7 +611,7 @@ async def ws_delete_wallpaper(hass: HomeAssistant, connection, msg):
             return
         namen.append(sauber)
 
-    wallpaper_dir = Path(hass.config.path(THEMES_SUBDIR, WALLPAPER_SUBDIR))
+    wallpaper_dir = _wallpaper_dir(hass)
 
     def _delete():
         geloescht = []
@@ -603,12 +651,83 @@ def _register_websocket_commands(hass: HomeAssistant) -> None:
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     www_path = Path(__file__).parent / "www"
-    wallpaper_path = Path(hass.config.path(THEMES_SUBDIR, WALLPAPER_SUBDIR))
+    wallpaper_path = _wallpaper_dir(hass)
 
-    def _ensure_wallpaper_dir():
+    # Einmalige Umstellung: Die Bilder ziehen von config/themes/Wallpaper nach
+    # config/www/hatg um. Erst dort liefert Home Assistant sie selbst aus, unter
+    # /local/hatg - und erst damit laesst sich eine Theme weitergeben, ohne dass
+    # der Empfaenger HATG installieren muss. Verschoben statt kopiert, sonst
+    # liegt jedes Bild doppelt auf der Platte; die alte Route zeigt danach auf
+    # den neuen Ordner, also funktionieren bestehende Themes weiter.
+    def _wallpaper_umziehen() -> dict:
+        eltern = Path(hass.config.path(WWW_SUBDIR))
+        # Home Assistant registriert /local nur, wenn config/www beim Start
+        # schon da war. Legen wir den Ordner gerade erst an, bleibt /local bis
+        # zum naechsten Neustart tot - das muss gesagt werden, sonst sucht man
+        # den Fehler in der Theme.
+        www_fehlte = not eltern.is_dir()
         wallpaper_path.mkdir(parents=True, exist_ok=True)
+        alt = _wallpaper_dir_alt(hass)
+        verschoben = 0
+        liegengeblieben = []
+        if alt.is_dir() and alt.resolve() != wallpaper_path.resolve():
+            for eintrag in sorted(alt.iterdir()):
+                if not eintrag.is_file() or eintrag.suffix.lower() not in _WALLPAPER_ALLOWED_EXT:
+                    continue
+                ziel = wallpaper_path / eintrag.name
+                if ziel.exists():
+                    liegengeblieben.append(eintrag.name)
+                    continue
+                try:
+                    eintrag.replace(ziel)
+                    verschoben += 1
+                except OSError:
+                    # Anderes Dateisystem oder keine Rechte: kopieren reicht auch.
+                    try:
+                        ziel.write_bytes(eintrag.read_bytes())
+                        eintrag.unlink()
+                        verschoben += 1
+                    except OSError:
+                        liegengeblieben.append(eintrag.name)
+        return {"verschoben": verschoben, "liegengeblieben": liegengeblieben, "www_fehlte": www_fehlte}
 
-    await hass.async_add_executor_job(_ensure_wallpaper_dir)
+    umzug = await hass.async_add_executor_job(_wallpaper_umziehen)
+    if umzug["verschoben"]:
+        _LOGGER.info(
+            "HATG: %s Hintergrundbild(er) nach %s verschoben, erreichbar unter %s",
+            umzug["verschoben"],
+            wallpaper_path,
+            WALLPAPER_LOCAL_PATH,
+        )
+    if umzug["liegengeblieben"]:
+        _LOGGER.warning(
+            "HATG: diese Hintergrundbilder blieben in %s liegen: %s",
+            _wallpaper_dir_alt(hass),
+            ", ".join(umzug["liegengeblieben"]),
+        )
+    if umzug["www_fehlte"]:
+        _LOGGER.warning(
+            "HATG: %s wurde gerade erst angelegt. Home Assistant bedient %s erst nach einem Neustart - "
+            "bis dahin bleiben Hintergrundbilder aus einer neu gespeicherten Theme leer.",
+            Path(hass.config.path(WWW_SUBDIR)),
+            WALLPAPER_LOCAL_PATH,
+        )
+
+    # Der Cache-Buster haengt am Inhalt, nicht nur an der Versionsnummer.
+    # Home Assistant liefert /hatg_static mit max-age=2678400 aus: Wer die
+    # Panel-Datei innerhalb derselben Version austauscht - beim Entwickeln die
+    # Regel, nicht die Ausnahme -, bekommt im Browser 31 Tage lang den alten
+    # Stand, obwohl die Kopfzeile die neue Version zeigt. Am 2026-09-27
+    # genau so passiert. Faellt das Lesen aus, bleibt es bei der Version.
+    def _modul_url() -> str:
+        datei = www_path / "hatg-panel.js"
+        try:
+            kurz = hashlib.md5(datei.read_bytes()).hexdigest()[:8]
+        except OSError:
+            return FRONTEND_MODULE
+        return f"{FRONTEND_MODULE}.{kurz}"
+
+    module_url = await hass.async_add_executor_job(_modul_url)
 
     await hass.http.async_register_static_paths(
         [
@@ -631,7 +750,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         sidebar_title=PANEL_TITLE,
         sidebar_icon=PANEL_ICON,
         frontend_url_path=PANEL_URL,
-        module_url=FRONTEND_MODULE,
+        module_url=module_url,
         require_admin=True,
     )
 
