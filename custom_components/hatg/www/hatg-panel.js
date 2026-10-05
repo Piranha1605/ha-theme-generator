@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.3.2b21";
+const HATG_VERSION = "1.3.2b22";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -5806,7 +5806,7 @@ function hatgIsColorValue(value) {
 
 // Was in einer Ebene der Kurzform background HINTER dem Bild stehen darf:
 // Anheftung, Wiederholung, Ursprung und Beschnitt, die Position und - nach
-// einem Schraegstrich - die Groesse. Bis 1.3.2b21 galt eine Ebene nur dann als
+// einem Schraegstrich - die Groesse. Bis 1.3.2b22 galt eine Ebene nur dann als
 // gueltig, wenn sie genau ein url() oder ein Verlauf war; alles dahinter liess
 // den Wert durchfallen. Beim Speichern stand dann "1 ungueltiger Wert" fuer
 // etwas, das gueltiges CSS ist - am 2026-10-01 an

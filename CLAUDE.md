@@ -11,7 +11,7 @@ custom_components/hatg/
 ├── __init__.py           Einstiegspunkt der Integration
 ├── config_flow.py        Einrichtung über die Oberfläche
 ├── const.py              Konstanten
-├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b21
+├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b22
 ├── translations/         de.json und en.json
 ├── brand/                Icons für den HACS-Store
 └── www/
@@ -34,7 +34,7 @@ Die Versionsnummer steht an vier Stellen und muss überall gleich sein: `manifes
 
 - **Startseite** — Grundfarben, Basis-Einstellungen, Zustände, Hintergründe
 - **Thematische Bereiche** — HA-Grundgerüst, Bubble Card mit Unterseiten, Mushroom, Button Card (nur ihre eigenen Variablen für Klick-Effekt, Ladeanzeige, Tooltip; gegen button-card v7.0.1 `src/styles.ts` geprüft)
-- **Alle Felder** — Volltext- und Filtersuche über sämtliche 666 verifizierten Variablen
+- **Alle Felder** — Volltext- und Filtersuche über sämtliche 763 verifizierten Variablen
 - **Verlauf für aktive Flächen** — im Glas-Bereich: zwei Farben, Richtung, Schriftfarbe; Block `verlauf-akzent` in `uix-card` und `uix-sidebar`. Horizon-Cards (frueher HA-Karten) lesen ihn seit Sammlung v2.6.1 über die gemeinsame Kette `--karten-gewaehlt`, `-vorn`, `-schatten` (Kurzform `background`), die Kante kommt aus `neumorph-tiefe`/`neumorph-hell`; HA-eigene Knöpfe nehmen keinen Verlauf an (nur Farbvariablen)
 - **Code-Editor** — textbasierte Bearbeitung mit Syntax-Highlighting
 - **Vorlagen** — vorgefertigte CSS-Effekte, eine Unterseite je Stilziel; feste Werte sind über `werte: [...]` einstellbar (im CSS `[[id]]`, im Theme zwischen `/*HATG:WERT:id*/…/*HATG:WERT*/`, nur im Vorlagenblock, keine Theme-Felder, bleiben beim Auffrischen)
@@ -122,7 +122,7 @@ Kein einziges `--input-*` als Farbe, und kein `--mdc-select-*`/`--mdc-text-field
 
 **Gemeldet hat es ein Nutzer, nicht die Prüfwerkzeuge.** Er schrieb, die Felder von `input-background-color` bis `input-outlined-disabled-border-color` änderten nichts, und hatte die richtigen Namen schon selbst gefunden. In der Oberfläche standen beide Sorten im selben Ordner „Eingaben & Auswahlfelder": zuerst elf tote `input-*`, dann fünf tote `mdc-*`, und die vier, die wirken, auf den Plätzen 18 bis 21. Wer von oben liest, gibt vorher auf.
 
-Seit 1.3.2b21 sind die Altlasten deshalb in einem eigenen Ordner **„Eingaben: Material (bis HA 2025)"**. Gelöscht werden sie **nicht**: Wer eine ältere HA-Version fährt, braucht sie, und gemessen sind acht Dateien, nicht das ganze Frontend — ältere Material-Reste können anderswo noch lesen. Drei Felder, die die heutigen Komponenten lesen, sind neu dazugekommen: `ha-color-border-neutral-quiet`, `-normal` und `ha-color-border-danger-normal`.
+Seit 1.3.2b22 sind die Altlasten deshalb in einem eigenen Ordner **„Eingaben: Material (bis HA 2025)"**. Gelöscht werden sie **nicht**: Wer eine ältere HA-Version fährt, braucht sie, und gemessen sind acht Dateien, nicht das ganze Frontend — ältere Material-Reste können anderswo noch lesen. Drei Felder, die die heutigen Komponenten lesen, sind neu dazugekommen: `ha-color-border-neutral-quiet`, `-normal` und `ha-color-border-danger-normal`.
 
 **Die Abstufung muss in beiden Modi monoton sein.** Die drei neuen Werte sind auf die iOS-Basis abgestimmt, mit dem vorhandenen `loud` als Anker: hell `#E5E5EA` > `#D1D1D6` > `#C6C6C8` (dunkler ist kräftiger), dunkel `#2E2E30` < `#343436` < `#38383A` (heller ist kräftiger). Zwei naheliegende Werte sind dabei ausgeschieden: `#2C2C2E` ist im Dunkeln `ha-color-form-background` — ein Rahmen in der Farbe seiner eigenen Fläche ist unsichtbar; und `#3A3A3C` wäre heller als `loud`, die Abstufung stünde auf dem Kopf. `danger` nimmt HATGs eigenes `error-color` (`#FF3B30`/`#FF453A`), kein neuer Ton.
 
@@ -189,7 +189,7 @@ Die Maschinerie dafür gab es schon (`hatgEntferneVerwaisteEigenfelder`), sie wu
 - **Die Grenze, die HATG nicht sieht:** Ein Feld kann von außerhalb der Theme gelesen werden, etwa aus der Konfiguration einer einzelnen Karte. Deshalb nennt der Bericht **jedes** entfernte Feld beim Namen, und der Bericht steht auch im Kopf der Datei.
 - Ein Test hält beides fest (`tests/hatg-ausmisten.test.js`): dass Ballast fliegt und dass nach dem Import kein `var()` mehr ins Leere zeigt.
 
-**Die Regel "unbekannt und unreferenziert" war falsch, und zwar teuer (1.3.2b21).** Home Assistant liest seine Variablen aus seinem **eigenen Stylesheet**, nicht per `var()` aus der Theme. Für den Cleaner sah damit jede HA-Variable, die HATG nicht als Feld anbietet, wie Ballast aus. Am 2026-10-01 gemessen: Von zwölf echten Namen (`scrollbar-thumb-color`, `mush-chip-height`, `ha-space-4`, `rgb-error-color`, `codemirror-keyword` und weiteren) löschte der Import **elf**. Nur `ha-animation-duration-fast` blieb, weil HATG genau dieses Feld kennt. Das steckte in b14 und damit in der veröffentlichten b15.
+**Die Regel "unbekannt und unreferenziert" war falsch, und zwar teuer (1.3.2b22).** Home Assistant liest seine Variablen aus seinem **eigenen Stylesheet**, nicht per `var()` aus der Theme. Für den Cleaner sah damit jede HA-Variable, die HATG nicht als Feld anbietet, wie Ballast aus. Am 2026-10-01 gemessen: Von zwölf echten Namen (`scrollbar-thumb-color`, `mush-chip-height`, `ha-space-4`, `rgb-error-color`, `codemirror-keyword` und weiteren) löschte der Import **elf**. Nur `ha-animation-duration-fast` blieb, weil HATG genau dieses Feld kennt. Das steckte in b14 und damit in der veröffentlichten b15.
 
 `hatgIstFremdesFeld()` entscheidet jetzt, was der Cleaner nicht anfassen darf — und **dieselbe** Funktion benutzt auch die Verweisprüfung, die vorher eine eigene, engere Regel hatte (ein Verweis auf `--rgb-error-color` galt damit als tot).
 
@@ -203,7 +203,7 @@ Die Maschinerie dafür gab es schon (`hatgEntferneVerwaisteEigenfelder`), sie wu
 
 ### Bubble Card: 61 Felder raus (1.3.2b15)
 
-Bubble Card **3.2.0 liest 61 der 124 Felder in HATGs Bubble-Abschnitt nicht** — die Namen kommen im ganzen Quelltext nicht vor, weder bei Bubble noch bei HA noch bei Mushroom. Damit sind 683 Felder auf **666** geschrumpft.
+Bubble Card **3.2.0 liest 61 der 124 Felder in HATGs Bubble-Abschnitt nicht** — die Namen kommen im ganzen Quelltext nicht vor, weder bei Bubble noch bei HA noch bei Mushroom. Damit sind 683 Felder auf **763** geschrumpft.
 
 Der Grund ist ein Schemawechsel: Bubble Card 3.x hat die Variablen **pro Kartentyp** durch eine gemeinsame Familie ersetzt. `.bubble-container` liest `var(--bubble-card-type-main-background-color, var(--bubble-main-background-color, …))` — statt `bubble-climate-…`, `bubble-cover-…`, `bubble-media-player-…` je einzeln. **Umbenennen geht deshalb nicht:** fünf alte Felder zeigen auf ein neues, eine Zuordnung würde die Einstellung eines Kartentyps auf alle anderen ausschütten. Sie sind ohnehin wirkungslos — Entfernen ändert nichts am Aussehen.
 
@@ -216,11 +216,11 @@ Der Grund ist ein Schemawechsel: Bubble Card 3.x hat die Variablen **pro Kartent
 
 Bleiben in HATG, obwohl Bubble Card sie nicht liest: `ha-dialog-surface-background`, `ha-dialog-scrim-color` und `mdc-dialog-scrim-color` — das sind HA-Variablen im Bubble-Abschnitt, Bubbles Pop-up nutzt HAs Dialog.
 
-### Die Maß-Ebene von HA 2026 (1.3.2b21)
+### Die Maß-Ebene von HA 2026 (1.3.2b22)
 
 Aus der Sitzung „HA Karten" kam am 05.10.2026 eine Erhebung aus der laufenden Instanz: 25 `ha-*`-Bauteile, jedes `var(--x, fallback)` aus ihren `adoptedStyleSheets` und `<style>`-Knoten ausgelesen. 1021 Variablen gefunden, 450 davon als Theme-Feld vorgeschlagen. Der Abgleich gegen HATGs Katalog: 224 kannte HATG schon, 226 fehlten.
 
-Ergänzt sind davon zunächst **41 Felder der Maß-Ebene**, mit den Vorgabewerten aus HAs eigenen Quellen (`src/resources/theme/core.globals.ts` und `semantic.globals.ts`, Zweig dev): 20 `ha-space-1`…`-20`, 12 `ha-border-radius-*`, 3 `ha-border-width-*`, 3 `ha-box-shadow-s/m/l` und 4 `ha-animation-duration-*`. Damit 625 → 666.
+Ergänzt sind davon zunächst **41 Felder der Maß-Ebene**, mit den Vorgabewerten aus HAs eigenen Quellen (`src/resources/theme/core.globals.ts` und `semantic.globals.ts`, Zweig dev): 20 `ha-space-1`…`-20`, 12 `ha-border-radius-*`, 3 `ha-border-width-*`, 3 `ha-box-shadow-s/m/l` und 4 `ha-animation-duration-*`. Damit 625 → 763.
 
 Diese Ebene lohnt besonders, weil sie als Ausweichwert in Dutzenden Bauteilfeldern steht — `--ha-tooltip-box-shadow` fällt auf `--ha-box-shadow-m` zurück, `--ha-tooltip-border-radius` auf `--ha-border-radius-md`. Ein Wert verschiebt die halbe Oberfläche.
 
@@ -249,7 +249,7 @@ Zwei Fallen, beide selbst hineingetappt: HA baut Zustandsfarben als `--state-${d
 
 ## Werte schreiben: der Backslash ist das Fluchtzeichen
 
-`hatgQuoteYamlValue` schreibt einzeilige Werte doppelt gequotet. In einem doppelt gequoteten YAML-Skalar ist der **Backslash** das Fluchtzeichen, er muss deshalb **vor** dem Anführungszeichen verdoppelt werden. Bis 1.3.2b21 wurde nur das Anführungszeichen escaped. Am 2026-10-01 gemessen und mit PyYAML gegengeprüft, also mit dem Parser, den Home Assistant benutzt:
+`hatgQuoteYamlValue` schreibt einzeilige Werte doppelt gequotet. In einem doppelt gequoteten YAML-Skalar ist der **Backslash** das Fluchtzeichen, er muss deshalb **vor** dem Anführungszeichen verdoppelt werden. Bis 1.3.2b22 wurde nur das Anführungszeichen escaped. Am 2026-10-01 gemessen und mit PyYAML gegengeprüft, also mit dem Parser, den Home Assistant benutzt:
 
     Eingabe   uix-card: 'ha-card::before { content: "\201C"; }'    liest PyYAML
     Ausgabe   uix-card: "ha-card::before { content: \"\201C\"; }"    ScannerError
@@ -258,7 +258,7 @@ Zwei Fallen, beide selbst hineingetappt: HA baut Zustandsfarben als `--state-${d
 
 ## Ein "."-Eintrag gehört der Vorlage, in der er steht
 
-Zwei Fehler an derselben Stelle, beide in 1.3.2b21 behoben.
+Zwei Fehler an derselben Stelle, beide in 1.3.2b22 behoben.
 
 **Der `"."`-Eintrag wurde verworfen, wenn das einfache Feld schon belegt war.** `hatgEntflechteStilzieleImBag` schrieb ihn nur dorthin, wenn dort nichts stand — sonst fiel er ersatzlos weg, ohne eine Zeile im Bericht. Der Weg dorthin ist alltäglich: `docs/beispiele/glas-basis.yaml` nehmen und von Hand zwei Zeilen `uix-card:` aus einem Forenbeitrag ergänzen. Beim nächsten Import sind `glas-ebene`, `glas-bubble` und `glas-buttons-karten` weg. Jetzt wird angehängt, Vorhandenes zuerst, wie in `hatgRepariereAlteStilziele`. **Ein Test hielt genau das kaputte Verhalten fest** — er hieß "Ein bereits belegtes einfaches Feld wird nicht ueberschrieben" und behauptete, danach stehe dort *nur* der Handeintrag.
 
@@ -268,7 +268,7 @@ Zwei Fehler an derselben Stelle, beide in 1.3.2b21 behoben.
 
 ## Idempotenz ist die Prüfung, die gefehlt hat
 
-Ein Durchlauf Import → Export muss beim **zweiten** Mal dasselbe liefern wie beim ersten. Fast jede Durchlaufprüfung fragte bis 1.3.2b21 nur "ist etwas verloren gegangen?", keine "ist etwas dazugekommen?" — und die Hilfsfunktionen in `kopflos.js` konnten Dubletten gar nicht zählen, weil `vorlagenMarken` ein `Set` zurückgibt. Die Größe stand nur als Info da.
+Ein Durchlauf Import → Export muss beim **zweiten** Mal dasselbe liefern wie beim ersten. Fast jede Durchlaufprüfung fragte bis 1.3.2b22 nur "ist etwas verloren gegangen?", keine "ist etwas dazugekommen?" — und die Hilfsfunktionen in `kopflos.js` konnten Dubletten gar nicht zählen, weil `vorlagenMarken` ein `Set` zurückgibt. Die Größe stand nur als Info da.
 
 Die richtige Erwartung ist nicht "Pass 0 == Pass 1": Der erste Durchlauf normiert (Vorlagen auffrischen, Standards nachfüllen, Ballast entfernen) und darf viel ändern. Ab dem zweiten darf sich nichts mehr ändern.
 
@@ -301,7 +301,7 @@ Läuft alles durch, was ohne laufende Instanz prüfbar ist: Syntax von Panel, Py
 
 Das führende `v` einer Marke wird abgestreift, wie `ci.yml` es tut: Stabile Releases tragen eins (`v1.3.0`), die Version im Manifest nicht. Vorher war das Tor mit dem echten Markennamen eines stabilen Release nicht laufbar.
 
-**Vier Stellen konnten grün melden, ohne geprüft zu haben (bis 1.3.2b21).** Am 2026-10-01 gefunden, die erste nachgestellt:
+**Vier Stellen konnten grün melden, ohne geprüft zu haben (bis 1.3.2b22).** Am 2026-10-01 gefunden, die erste nachgestellt:
 
 1. `git status` wurde an der **Ausgabe** geprüft, nicht am Rückgabewert. Ein scheiterndes git liefert eine leere Ausgabe — und die galt als "nichts Uncommittetes". Mit Rückgabewert 128 war der Schritt grün.
 2. Die Version wurde mit `2>/dev/null` gelesen, danach stand ein **bedingungsloses** `ok "manifest.json sagt $VERSION"`. War die Datei nicht lesbar, meldete das Tor "ok manifest.json sagt " und lief weiter.
