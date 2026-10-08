@@ -11,7 +11,7 @@ custom_components/hatg/
 ├── __init__.py           Einstiegspunkt der Integration
 ├── config_flow.py        Einrichtung über die Oberfläche
 ├── const.py              Konstanten
-├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b22
+├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b23
 ├── translations/         de.json und en.json
 ├── brand/                Icons für den HACS-Store
 └── www/
@@ -122,7 +122,7 @@ Kein einziges `--input-*` als Farbe, und kein `--mdc-select-*`/`--mdc-text-field
 
 **Gemeldet hat es ein Nutzer, nicht die Prüfwerkzeuge.** Er schrieb, die Felder von `input-background-color` bis `input-outlined-disabled-border-color` änderten nichts, und hatte die richtigen Namen schon selbst gefunden. In der Oberfläche standen beide Sorten im selben Ordner „Eingaben & Auswahlfelder": zuerst elf tote `input-*`, dann fünf tote `mdc-*`, und die vier, die wirken, auf den Plätzen 18 bis 21. Wer von oben liest, gibt vorher auf.
 
-Seit 1.3.2b22 sind die Altlasten deshalb in einem eigenen Ordner **„Eingaben: Material (bis HA 2025)"**. Gelöscht werden sie **nicht**: Wer eine ältere HA-Version fährt, braucht sie, und gemessen sind acht Dateien, nicht das ganze Frontend — ältere Material-Reste können anderswo noch lesen. Drei Felder, die die heutigen Komponenten lesen, sind neu dazugekommen: `ha-color-border-neutral-quiet`, `-normal` und `ha-color-border-danger-normal`.
+Seit 1.3.2b23 sind die Altlasten deshalb in einem eigenen Ordner **„Eingaben: Material (bis HA 2025)"**. Gelöscht werden sie **nicht**: Wer eine ältere HA-Version fährt, braucht sie, und gemessen sind acht Dateien, nicht das ganze Frontend — ältere Material-Reste können anderswo noch lesen. Drei Felder, die die heutigen Komponenten lesen, sind neu dazugekommen: `ha-color-border-neutral-quiet`, `-normal` und `ha-color-border-danger-normal`.
 
 **Die Abstufung muss in beiden Modi monoton sein.** Die drei neuen Werte sind auf die iOS-Basis abgestimmt, mit dem vorhandenen `loud` als Anker: hell `#E5E5EA` > `#D1D1D6` > `#C6C6C8` (dunkler ist kräftiger), dunkel `#2E2E30` < `#343436` < `#38383A` (heller ist kräftiger). Zwei naheliegende Werte sind dabei ausgeschieden: `#2C2C2E` ist im Dunkeln `ha-color-form-background` — ein Rahmen in der Farbe seiner eigenen Fläche ist unsichtbar; und `#3A3A3C` wäre heller als `loud`, die Abstufung stünde auf dem Kopf. `danger` nimmt HATGs eigenes `error-color` (`#FF3B30`/`#FF453A`), kein neuer Ton.
 
@@ -189,7 +189,7 @@ Die Maschinerie dafür gab es schon (`hatgEntferneVerwaisteEigenfelder`), sie wu
 - **Die Grenze, die HATG nicht sieht:** Ein Feld kann von außerhalb der Theme gelesen werden, etwa aus der Konfiguration einer einzelnen Karte. Deshalb nennt der Bericht **jedes** entfernte Feld beim Namen, und der Bericht steht auch im Kopf der Datei.
 - Ein Test hält beides fest (`tests/hatg-ausmisten.test.js`): dass Ballast fliegt und dass nach dem Import kein `var()` mehr ins Leere zeigt.
 
-**Die Regel "unbekannt und unreferenziert" war falsch, und zwar teuer (1.3.2b22).** Home Assistant liest seine Variablen aus seinem **eigenen Stylesheet**, nicht per `var()` aus der Theme. Für den Cleaner sah damit jede HA-Variable, die HATG nicht als Feld anbietet, wie Ballast aus. Am 2026-10-01 gemessen: Von zwölf echten Namen (`scrollbar-thumb-color`, `mush-chip-height`, `ha-space-4`, `rgb-error-color`, `codemirror-keyword` und weiteren) löschte der Import **elf**. Nur `ha-animation-duration-fast` blieb, weil HATG genau dieses Feld kennt. Das steckte in b14 und damit in der veröffentlichten b15.
+**Die Regel "unbekannt und unreferenziert" war falsch, und zwar teuer (1.3.2b23).** Home Assistant liest seine Variablen aus seinem **eigenen Stylesheet**, nicht per `var()` aus der Theme. Für den Cleaner sah damit jede HA-Variable, die HATG nicht als Feld anbietet, wie Ballast aus. Am 2026-10-01 gemessen: Von zwölf echten Namen (`scrollbar-thumb-color`, `mush-chip-height`, `ha-space-4`, `rgb-error-color`, `codemirror-keyword` und weiteren) löschte der Import **elf**. Nur `ha-animation-duration-fast` blieb, weil HATG genau dieses Feld kennt. Das steckte in b14 und damit in der veröffentlichten b15.
 
 `hatgIstFremdesFeld()` entscheidet jetzt, was der Cleaner nicht anfassen darf — und **dieselbe** Funktion benutzt auch die Verweisprüfung, die vorher eine eigene, engere Regel hatte (ein Verweis auf `--rgb-error-color` galt damit als tot).
 
@@ -216,7 +216,7 @@ Der Grund ist ein Schemawechsel: Bubble Card 3.x hat die Variablen **pro Kartent
 
 Bleiben in HATG, obwohl Bubble Card sie nicht liest: `ha-dialog-surface-background`, `ha-dialog-scrim-color` und `mdc-dialog-scrim-color` — das sind HA-Variablen im Bubble-Abschnitt, Bubbles Pop-up nutzt HAs Dialog.
 
-### Die Maß-Ebene von HA 2026 (1.3.2b22)
+### Die Maß-Ebene von HA 2026 (1.3.2b23)
 
 Aus der Sitzung „HA Karten" kam am 05.10.2026 eine Erhebung aus der laufenden Instanz: 25 `ha-*`-Bauteile, jedes `var(--x, fallback)` aus ihren `adoptedStyleSheets` und `<style>`-Knoten ausgelesen. 1021 Variablen gefunden, 450 davon als Theme-Feld vorgeschlagen. Der Abgleich gegen HATGs Katalog: 224 kannte HATG schon, 226 fehlten.
 
@@ -227,6 +227,33 @@ Diese Ebene lohnt besonders, weil sie als Ausweichwert in Dutzenden Bauteilfelde
 **Nur `ha-box-shadow-s/m/l` unterscheiden sich zwischen Hell und Dunkel**, alles übrige ist in beiden Modi gleich. Die Schattenwerte stehen deshalb in `semantic.globals.ts` zweimal, die Maße in `core.globals.ts` einmal.
 
 **Falle beim Auslesen:** `core.globals.ts` setzt alle `--ha-animation-duration-*` am Ende noch einmal auf `1ms`, in einem `@media (prefers-reduced-motion: reduce)`-Block. Wer die Datei mit einer Regex nach dem **letzten** Treffer durchsucht, bekommt für alle vier Stufen `1ms`. Die echten Werte sind 1/75/150/250/350 ms.
+
+### Ein bedingter Ausweichwert ist keine Vorgabe (1.3.2b23)
+
+Gemeldet von einem Nutzer an b22: **Alle Dialoge öffneten in voller Fensterhöhe.** Ursache war das neue Feld `ha-dialog-min-height` mit der Vorgabe `100vh`. In `src/components/ha-dialog.ts` steht der allgemeine Fall **ohne** Ausweichwert:
+
+    min-height: var(--ha-dialog-min-height);
+
+und vierzig Zeilen tiefer, in einem bedingten Block:
+
+    :host([type="standard"]) wa-dialog::part(dialog) {
+      /* Make the dialog fill the whole screen height and not the safe height */
+      min-height: var(--ha-dialog-min-height, 100vh);
+
+Der Auswerter, der die 97 Vorgaben aus den Quellen zog, nahm den **ersten Treffer mit Ausweichwert** — also den Sonderfall — und machte ihn zur Vorgabe für alle.
+
+**Die Regel:** Wer einen solchen Wert ins Theme schreibt, pinnt **jeden** Zusammenhang darauf fest. Home Assistant kann dann nicht mehr zwischen Dialogtyp, Knopfgröße oder Bildschirmbreite unterscheiden. Ein Feld mit **leerer** Vorgabe wird gar nicht erst in die Datei geschrieben (das kann HATG seit jeher, 96 Felder nutzen es) — einstellbar bleibt es trotzdem.
+
+**Zwei Prüfungen finden diese Fehlerklasse**, beide am 2026-10-08 über alle 97 Felder der b22-Charge gelaufen:
+
+1. Wird die Variable **irgendwo ohne** Ausweichwert gelesen (`var(--x)` blank)? Dann ist jeder gefundene Ausweichwert ein Sonderfall. Traf auf genau ein Feld zu: `ha-dialog-min-height`.
+2. Hat die Variable **mehrere verschiedene** Ausweichwerte? Dann hängt der Wert am Zusammenhang. Traf auf 13 Felder zu — `button-height` etwa steht je nach `size`-Attribut auf 24, 32, 40 oder 48px.
+
+Geleert sind daraufhin zwölf: `ha-dialog-min-height`, `-max-height`, `-width-full`, `-border-radius`, `ha-bottom-sheet-content-padding`, `dialog-content-padding`, `button-height`, `ha-button-height`, `ha-checkbox-border-color`, `ha-tooltip-border-radius`, `-font-size`, `-font-weight`. Nicht geleert: `ha-bottom-sheet-max-height` — dort sind `90vh` und `90dvh` dieselbe Angabe, nur mit Rückfall für ältere Browser.
+
+`tests/hatg-bedingte-vorgaben.test.js` hält es fest, mit Gegenprobe: Ein Feld **mit** Vorgabe muss sehr wohl in der Ausgabe stehen, sonst sagt der Test nichts aus.
+
+**Was daraus für künftige Erhebungen folgt:** Ein Ausweichwert aus dem Quelltext ist nur dann eine Vorgabe, wenn er der **einzige** ist und die Variable nirgends blank gelesen wird. Sonst gehört das Feld leer angelegt. Dieselbe Falle wie bei `--ha-animation-duration-*`, wo der `prefers-reduced-motion`-Block alle vier Stufen auf 1ms setzt — nur dass sie dort beim Auslesen auffiel und hier erst beim Nutzer.
 
 ### Kurze und lange Namensform: nur die lange ist ein Theme-Feld
 
@@ -249,7 +276,7 @@ Zwei Fallen, beide selbst hineingetappt: HA baut Zustandsfarben als `--state-${d
 
 ## Werte schreiben: der Backslash ist das Fluchtzeichen
 
-`hatgQuoteYamlValue` schreibt einzeilige Werte doppelt gequotet. In einem doppelt gequoteten YAML-Skalar ist der **Backslash** das Fluchtzeichen, er muss deshalb **vor** dem Anführungszeichen verdoppelt werden. Bis 1.3.2b22 wurde nur das Anführungszeichen escaped. Am 2026-10-01 gemessen und mit PyYAML gegengeprüft, also mit dem Parser, den Home Assistant benutzt:
+`hatgQuoteYamlValue` schreibt einzeilige Werte doppelt gequotet. In einem doppelt gequoteten YAML-Skalar ist der **Backslash** das Fluchtzeichen, er muss deshalb **vor** dem Anführungszeichen verdoppelt werden. Bis 1.3.2b23 wurde nur das Anführungszeichen escaped. Am 2026-10-01 gemessen und mit PyYAML gegengeprüft, also mit dem Parser, den Home Assistant benutzt:
 
     Eingabe   uix-card: 'ha-card::before { content: "\201C"; }'    liest PyYAML
     Ausgabe   uix-card: "ha-card::before { content: \"\201C\"; }"    ScannerError
@@ -258,7 +285,7 @@ Zwei Fallen, beide selbst hineingetappt: HA baut Zustandsfarben als `--state-${d
 
 ## Ein "."-Eintrag gehört der Vorlage, in der er steht
 
-Zwei Fehler an derselben Stelle, beide in 1.3.2b22 behoben.
+Zwei Fehler an derselben Stelle, beide in 1.3.2b23 behoben.
 
 **Der `"."`-Eintrag wurde verworfen, wenn das einfache Feld schon belegt war.** `hatgEntflechteStilzieleImBag` schrieb ihn nur dorthin, wenn dort nichts stand — sonst fiel er ersatzlos weg, ohne eine Zeile im Bericht. Der Weg dorthin ist alltäglich: `docs/beispiele/glas-basis.yaml` nehmen und von Hand zwei Zeilen `uix-card:` aus einem Forenbeitrag ergänzen. Beim nächsten Import sind `glas-ebene`, `glas-bubble` und `glas-buttons-karten` weg. Jetzt wird angehängt, Vorhandenes zuerst, wie in `hatgRepariereAlteStilziele`. **Ein Test hielt genau das kaputte Verhalten fest** — er hieß "Ein bereits belegtes einfaches Feld wird nicht ueberschrieben" und behauptete, danach stehe dort *nur* der Handeintrag.
 
@@ -268,7 +295,7 @@ Zwei Fehler an derselben Stelle, beide in 1.3.2b22 behoben.
 
 ## Idempotenz ist die Prüfung, die gefehlt hat
 
-Ein Durchlauf Import → Export muss beim **zweiten** Mal dasselbe liefern wie beim ersten. Fast jede Durchlaufprüfung fragte bis 1.3.2b22 nur "ist etwas verloren gegangen?", keine "ist etwas dazugekommen?" — und die Hilfsfunktionen in `kopflos.js` konnten Dubletten gar nicht zählen, weil `vorlagenMarken` ein `Set` zurückgibt. Die Größe stand nur als Info da.
+Ein Durchlauf Import → Export muss beim **zweiten** Mal dasselbe liefern wie beim ersten. Fast jede Durchlaufprüfung fragte bis 1.3.2b23 nur "ist etwas verloren gegangen?", keine "ist etwas dazugekommen?" — und die Hilfsfunktionen in `kopflos.js` konnten Dubletten gar nicht zählen, weil `vorlagenMarken` ein `Set` zurückgibt. Die Größe stand nur als Info da.
 
 Die richtige Erwartung ist nicht "Pass 0 == Pass 1": Der erste Durchlauf normiert (Vorlagen auffrischen, Standards nachfüllen, Ballast entfernen) und darf viel ändern. Ab dem zweiten darf sich nichts mehr ändern.
 
@@ -301,7 +328,7 @@ Läuft alles durch, was ohne laufende Instanz prüfbar ist: Syntax von Panel, Py
 
 Das führende `v` einer Marke wird abgestreift, wie `ci.yml` es tut: Stabile Releases tragen eins (`v1.3.0`), die Version im Manifest nicht. Vorher war das Tor mit dem echten Markennamen eines stabilen Release nicht laufbar.
 
-**Vier Stellen konnten grün melden, ohne geprüft zu haben (bis 1.3.2b22).** Am 2026-10-01 gefunden, die erste nachgestellt:
+**Vier Stellen konnten grün melden, ohne geprüft zu haben (bis 1.3.2b23).** Am 2026-10-01 gefunden, die erste nachgestellt:
 
 1. `git status` wurde an der **Ausgabe** geprüft, nicht am Rückgabewert. Ein scheiterndes git liefert eine leere Ausgabe — und die galt als "nichts Uncommittetes". Mit Rückgabewert 128 war der Schritt grün.
 2. Die Version wurde mit `2>/dev/null` gelesen, danach stand ein **bedingungsloses** `ok "manifest.json sagt $VERSION"`. War die Datei nicht lesbar, meldete das Tor "ok manifest.json sagt " und lief weiter.
