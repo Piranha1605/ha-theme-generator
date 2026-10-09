@@ -154,5 +154,35 @@ pruefe("Ein einfaches Feld neben dem \".\"-Eintrag kostet kein CSS", () => {
     assert.ok(r.ausgabe.includes(stueck), `verloren: ${stueck}`);
 });
 
+// Das einfache uix-root neben dem neuen uix-root-yaml. Genau die Lage, in der
+// symbole-kachel gewachsen ist: Ein -yaml-Feld verdeckt sein einfaches Feld,
+// HATG rettet das einfache CSS deshalb als "."-Eintrag in dieselbe Karte - und
+// beim naechsten Import muss es wieder sauber herauskommen, samt Markern.
+//
+// knopfglas-kopfleiste ist seit dem 2026-10-09 die erste Vorlage mit Pfad auf
+// uix-root; davor gab es dort nur einfache Vorlagen und die Frage stellte sich
+// nicht.
+pruefe("uix-root: Pfad-Vorlage neben einfacher Vorlage bleibt stabil", () => {
+  const { panelBauen } = require("../werkzeuge/kopflos.js");
+  const { panel } = panelBauen();
+  panel.schalteVorlage("glas-buttons-rahmen");   // einfaches uix-root
+  panel.schalteVorlage("knopfglas-kopfleiste");  // uix-root-yaml mit zwei Pfaden
+  const eins = durchlauf(panel.buildYamlText());
+  assert.ok(!eins.fehler, `Import fehlgeschlagen: ${eins.fehler}`);
+  const zwei = durchlauf(eins.ausgabe);
+  assert.ok(!zwei.fehler, `zweiter Import fehlgeschlagen: ${zwei.fehler}`);
+  const zaehl = (s, re) => (s.match(re) || []).length;
+  for (const [name, re] of [
+    ["der Marker der Pfad-Vorlage", /HATG:UIX:knopfglas-kopfleiste:START/g],
+    ["der Marker der einfachen Vorlage", /HATG:UIX:glas-buttons-rahmen:START/g],
+    ['der "."-Eintrag', /^\s*"\.":\s*\|$/gm],
+  ]) {
+    assert.equal(zaehl(eins.ausgabe, re), 1, `${name} steht nach dem ersten Durchlauf nicht genau einmal da`);
+    assert.equal(zaehl(zwei.ausgabe, re), 1, `${name} hat sich beim zweiten Durchlauf vermehrt`);
+  }
+  assert.equal(zwei.ausgabe.length, eins.ausgabe.length, "die Datei ist beim zweiten Durchlauf gewachsen");
+  assert.equal(zwei.ausgabe, eins.ausgabe, "der zweite Durchlauf liefert etwas anderes");
+});
+
 console.log(fehler ? `\n${fehler} Test(s) fehlgeschlagen.` : "\nAlle Tests bestanden.");
 process.exit(fehler ? 1 : 0);

@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.3.2b25";
+const HATG_VERSION = "1.3.2b26";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -304,14 +304,18 @@ const HATG_TEXTE = {
   "Bedienelemente in Glas: Kopfleiste und Rahmen": "Glass controls: top bar and frame",
   "Bedienelemente in Glas: Dialoge": "Glass controls: dialogs",
   "Bedienelemente in Glas: Einstellungsseiten": "Glass controls: settings pages",
-  "Bedienelemente in Glas: Glanz": "Glass controls: sheen",
   "Gauge in Glas": "Gauge in glass",
   "Der graue Ring hinter dem Wertbogen wird durchscheinend, der Hintergrund kommt durch. Der Bogen bekommt einen Schein in seiner eigenen Farbe - auch in der Schwellenfarbe, wenn die Karte Segmente hat.": "The grey track behind the value arc becomes translucent, so the background shows through. The arc gets a glow in its own colour - including the severity colour when the card has segments.",
   "Knöpfe, Regler und Chips in Karten mit kleiner Rundung und weichem Schatten.": "Buttons, sliders and chips in cards with a small radius and soft shadow.",
   "Die Knöpfe der Dashboard-Kopfleiste mit kleiner Rundung und weichem Schatten. Nicht im Glas-Paket enthalten - die Symbole der Ansichtsleiste stehen eng beieinander und wirken damit schnell gedrängt.": "The buttons of the dashboard top bar with a small radius and soft shadow. Not part of the glass package - the view bar icons sit close together and quickly look crowded with it.",
   "Die Knöpfe in Dialogen mit kleiner Rundung und weichem Schatten.": "The buttons in dialogs with a small radius and soft shadow.",
   "Gibt Schaltflächen den Aufbau der Knöpfe eigener Karten: kleine Rundung, feine Lichtkante oben und ein kleiner weicher Schatten. Betrifft die Schaltflächen auf den Einstellungsseiten, inklusive der Aktionsknöpfe in den Listen. Setzt ausschließlich Variablen, die Home Assistant selbst vorsieht - kommt also ohne Shadow-DOM-Pfade aus.": "Gives buttons the build of the buttons in custom cards: a small corner radius, a fine light edge at the top and a small soft shadow. Applies to the buttons on the settings pages, including the action buttons in the lists. It only sets variables Home Assistant provides itself, so it needs no shadow DOM paths.",
-  "Weichzeichnung auf der Fläche der Knöpfe in Karten. Wirkt nur zusammen mit der Vorlage für Knöpfe in Karten.": "Blur on the surface of buttons in cards. Works only together with the preset for buttons in cards.",
+  "Fläche unter Symbolknöpfen: Karten": "Surface behind icon buttons: cards",
+  "Fläche unter Symbolknöpfen: Kopfleiste": "Surface behind icon buttons: header",
+  "Fläche unter Symbolknöpfen: Einstellungsseiten": "Surface behind icon buttons: settings pages",
+  "Legt den Symbolknöpfen in Karten eine gläserne Fläche unter und gibt dem Schimmer beim Zeigen die Form des Knopfes. Nicht im Glas-Paket, einzeln zuschaltbar.": "Puts a glass surface behind the icon buttons in cards and gives the hover highlight the shape of the button. Not part of the glass package, switch it on separately.",
+  "Dasselbe für die Knöpfe der Dashboard-Kopfleiste, den Menüknopf eingeschlossen.": "The same for the buttons in the dashboard header, including the menu button.",
+  "Dasselbe für die Knöpfe auf Einstellungsseiten, etwa den Zurück-Pfeil. Seiten, deren Inhalt noch eine Ebene tiefer liegt, erreicht die Vorlage nicht.": "The same for the buttons on settings pages, the back arrow for instance. Pages whose content sits one level deeper are not reached.",
   "Info-Dialog in Glas": "More-info dialog in glass",
   "Der Dialog, der beim Antippen einer Entität aufgeht, als Glasfläche.": "The dialog that opens when you tap an entity, as a glass surface.",
   "Dialoge in Glas": "Dialogs in glass",
@@ -3084,6 +3088,15 @@ const HATG_VORLAGEN_GRUPPEN = [
     ids: ["glow-aktiv-karten", "glow-aktiv-seitenleiste"],
   },
   {
+    // Die drei Knopf-Vorlagen stehen bewusst nicht im Glas-Paket, sondern in
+    // einer eigenen Gruppe - jede einzeln schaltbar (Ansage vom 2026-10-09).
+    id: "knoepfe",
+    icon: "mdi:gesture-tap-button",
+    label: "Knöpfe",
+    labelEn: "Buttons",
+    ids: ["knopfglas-karten", "knopfglas-kopfleiste", "knopfglas-einstellungen"],
+  },
+  {
     id: "schalter",
     icon: "mdi:toggle-switch-outline",
     label: "Schalter",
@@ -3926,20 +3939,134 @@ ha-control-slider {
   --control-button-background-opacity: [[deckkraft]];
 }`,
   },
+  // --- Flaeche unter Symbolknoepfen -------------------------------------
+  //
+  // Drei Vorlagen, eine je Ort, bewusst NICHT im Glas-Paket: Der Nutzer hat
+  // am 2026-10-09 ausdruecklich verlangt, jede einzeln schalten zu koennen.
+  //
+  // Sie machen genau das, was ueber Theme-Felder nicht geht. Rundung, Groesse
+  // und Schatten eines Knopfes liegen als Variablen bereit (--ha-button-*,
+  // --ha-icon-button-*), die Flaeche selbst nicht. Am 2026-10-09 an einer
+  // laufenden Instanz mit UIX 8.4.0 und HA 2026.10 nachgemessen:
+  //
+  //   ha-button::part(base)   ha-icon-button gibt das innere .button von
+  //                           ha-button als CSS-Teil "base" nach aussen. Nur
+  //                           dort ist die Flaeche zu fassen; ein Pfad eine
+  //                           Ebene tiefer ginge nicht, weil Zwischenschritte
+  //                           nur den ersten Treffer nehmen.
+  //   background-color        braucht !important. ha-button steht auf
+  //                           appearance="plain", und
+  //                           :host([appearance~="plain"]) .button setzt ein
+  //                           hartes background-color: rgba(0,0,0,0) - ohne
+  //                           Variable davor. Ohne !important bleibt die
+  //                           Flaeche durchsichtig.
+  //   ha-button::after        der Schimmer fuer Zeigen und Druecken. Sein
+  //                           border-radius: 50% steht fest im Stylesheet von
+  //                           ha-icon-button; erst mit !important nimmt er die
+  //                           Form des Knopfes an.
+  //
+  // Warum !important hier die Regel ist und nicht die Ausnahme:
+  // adoptedStyleSheets werden NACH den <style>-Knoten desselben Shadow Roots
+  // angewendet. UIX spritzt ein <style> ein und verliert damit jeden
+  // Gleichstand gegen das Bauteil selbst - unabhaengig davon, an welche Stelle
+  // im Shadow Root es den Knoten haengt.
+  //
+  // Die Deckkraft von ::after bleibt unangetastet: Sie traegt die Rueckmeldung
+  // beim Zeigen und Druecken (0 -> 0.1), ein !important darauf legt sie still.
+  // Der Schimmer liegt auf z-index: -1, also hinter der Flaeche - mit einer
+  // durchscheinenden Fuellung bleibt er sichtbar, mit einer deckenden nicht.
   {
-    id: "glas-buttons-glanz",
-    paket: "glas",
-    label: "Bedienelemente in Glas: Glanz",
-    desc: "Weichzeichnung auf der Fläche der Knöpfe in Karten. Wirkt nur zusammen mit der Vorlage für Knöpfe in Karten.",
+    id: "knopfglas-karten",
+    label: "Fläche unter Symbolknöpfen: Karten",
+    desc: "Legt den Symbolknöpfen in Karten eine gläserne Fläche unter und gibt dem Schimmer beim Zeigen die Form des Knopfes. Nicht im Glas-Paket, einzeln zuschaltbar.",
     werte: [
+      { id: "fuellung", label: "Fläche", labelEn: "Surface", standard: "var(--ha-card-background, var(--card-background-color))" },
       { id: "weichzeichnung", label: "Weichzeichnung", labelEn: "Blur", standard: "8px" },
+      { id: "rundung", label: "Rundung", labelEn: "Rounding", standard: "var(--ha-button-border-radius, calc(var(--ha-card-border-radius, 14px) - 7px))" },
     ],
     ziel: "uix-card-yaml",
-    css: `ha-button $: |
-  .button {
-    background-image: none;
+    // Ein Schritt, deshalb zaehlt jeder Treffer: der Pfad erreicht alle
+    // Symbolknoepfe im Shadow Root der Karte. Am 2026-10-09 an frisch
+    // erzeugten Karten gemessen - media-control 3, light 2, todo-list 1.
+    // Knoepfe, die noch einen Shadow Root tiefer liegen (Entitaetenzeilen),
+    // bleiben draussen; die gehoeren zu uix-row.
+    css: `"ha-icon-button $": |
+  ha-button::part(base) {
+    background-color: [[fuellung]] !important;
     backdrop-filter: blur([[weichzeichnung]]);
     -webkit-backdrop-filter: blur([[weichzeichnung]]);
+  }
+  ha-button::after {
+    border-radius: [[rundung]] !important;
+  }`,
+  },
+  {
+    id: "knopfglas-kopfleiste",
+    label: "Fläche unter Symbolknöpfen: Kopfleiste",
+    desc: "Dasselbe für die Knöpfe der Dashboard-Kopfleiste, den Menüknopf eingeschlossen.",
+    werte: [
+      { id: "fuellung", label: "Fläche", labelEn: "Surface", standard: "var(--ha-card-background, var(--card-background-color))" },
+      { id: "weichzeichnung", label: "Weichzeichnung", labelEn: "Blur", standard: "8px" },
+      { id: "rundung", label: "Rundung", labelEn: "Rounding", standard: "var(--ha-button-border-radius, calc(var(--ha-card-border-radius, 14px) - 7px))" },
+    ],
+    ziel: "uix-root-yaml",
+    // Zwei Pfade, weil der Menueknopf eine Shadow-Ebene tiefer sitzt. Am
+    // 2026-10-09 gemessen: die Knoepfe rechts in der Leiste liegen im selben
+    // Baum wie hui-root, der Hamburger im Shadow Root von ha-menu-button.
+    css: `"ha-icon-button $": |
+  ha-button::part(base) {
+    background-color: [[fuellung]] !important;
+    backdrop-filter: blur([[weichzeichnung]]);
+    -webkit-backdrop-filter: blur([[weichzeichnung]]);
+  }
+  ha-button::after {
+    border-radius: [[rundung]] !important;
+  }
+"ha-menu-button $ ha-icon-button $": |
+  ha-button::part(base) {
+    background-color: [[fuellung]] !important;
+    backdrop-filter: blur([[weichzeichnung]]);
+    -webkit-backdrop-filter: blur([[weichzeichnung]]);
+  }
+  ha-button::after {
+    border-radius: [[rundung]] !important;
+  }`,
+  },
+  {
+    id: "knopfglas-einstellungen",
+    label: "Fläche unter Symbolknöpfen: Einstellungsseiten",
+    desc: "Dasselbe für die Knöpfe auf Einstellungsseiten, etwa den Zurück-Pfeil. Seiten, deren Inhalt noch eine Ebene tiefer liegt, erreicht die Vorlage nicht.",
+    werte: [
+      { id: "fuellung", label: "Fläche", labelEn: "Surface", standard: "var(--ha-card-background, var(--card-background-color))" },
+      { id: "weichzeichnung", label: "Weichzeichnung", labelEn: "Blur", standard: "8px" },
+      { id: "rundung", label: "Rundung", labelEn: "Rounding", standard: "var(--ha-button-border-radius, calc(var(--ha-card-border-radius, 14px) - 7px))" },
+    ],
+    ziel: "uix-config-yaml",
+    // ha-panel-config hat keinen Shadow Root; seine direkten Kinder im
+    // Licht-DOM sind der uix-node, ein <style> von UIX und das Wurzelelement
+    // der aktuellen Seite. Das Wurzelelement heisst auf jeder Unterseite
+    // anders - 52 Routen laut ha-panel-config.routerOptions -, deshalb zwei
+    // Pfade mit :not() statt einer Namensliste. Seiten mit eigenem Router
+    // (Integrationen, Automationen) rendern ohne Shadow Root ins Licht-DOM;
+    // dort liegt die Seite eine Ebene tiefer, dafuer ist der zweite Pfad da.
+    // Am 2026-10-09 an /config/system und /config/integrations nachgemessen.
+    css: `":not(uix-node,style) $ ha-icon-button $": |
+  ha-button::part(base) {
+    background-color: [[fuellung]] !important;
+    backdrop-filter: blur([[weichzeichnung]]);
+    -webkit-backdrop-filter: blur([[weichzeichnung]]);
+  }
+  ha-button::after {
+    border-radius: [[rundung]] !important;
+  }
+":not(uix-node,style) :not(uix-node,style) $ ha-icon-button $": |
+  ha-button::part(base) {
+    background-color: [[fuellung]] !important;
+    backdrop-filter: blur([[weichzeichnung]]);
+    -webkit-backdrop-filter: blur([[weichzeichnung]]);
+  }
+  ha-button::after {
+    border-radius: [[rundung]] !important;
   }`,
   },
   {
@@ -9327,7 +9454,7 @@ uix:
   renderVorlagenGruppen(vorlagen, istAktiv, zeichne, alsListe) {
     const en = this._sprache === "en";
     // Angezeigt wird in dieser Reihenfolge.
-    const reihenfolge = ["oberflaeche", "schalter", "symbole", "licht", "weitere"];
+    const reihenfolge = ["oberflaeche", "knoepfe", "schalter", "symbole", "licht", "weitere"];
     return reihenfolge.map((id) => HATG_VORLAGEN_GRUPPEN.find((x) => x.id === id)).map((g) => {
       const liste = vorlagen.filter(
         (t) => hatgVorlagenGruppeVon(t) === g.id && !HATG_SEITENLEISTE_VORLAGEN.includes(t.id) && !HATG_KOPFLEISTE_VORLAGEN.includes(t.id)

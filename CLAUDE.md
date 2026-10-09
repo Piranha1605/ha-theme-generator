@@ -11,7 +11,7 @@ custom_components/hatg/
 ├── __init__.py           Einstiegspunkt der Integration
 ├── config_flow.py        Einrichtung über die Oberfläche
 ├── const.py              Konstanten
-├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b25
+├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b26
 ├── translations/         de.json und en.json
 ├── brand/                Icons für den HACS-Store
 └── www/
@@ -77,18 +77,39 @@ Seit v1.2.0 schreibt HATG `uix-*`-Felder statt `card-mod-*`. card-mod lädt seit
 - `uix-more-info`: UIX patcht nicht `ha-more-info-dialog`, sondern hängt die Styles an **`ha-adaptive-dialog`**. Pfade in `uix-more-info-yaml` brauchen deshalb ein führendes `$`: `"$ ha-dialog $"` für den Desktop-Dialog, `"$ ha-bottom-sheet $"` für Tablet und Handy – ohne das `$` greift nichts. Das `"."`-CSS landet im Shadow Root von `ha-more-info-dialog`, `:host` ist dort dieser Dialog. Die Dialogfläche färbt HA nur über `background-color`; ein Bild braucht eine Regel auf `wa-dialog::part(dialog)` beziehungsweise `wa-drawer::part(dialog)`. Am 2026-09-14 mit Markierungen an einer laufenden Instanz geprüft.
 - **Gar kein `$$` in Pfaden — auch nicht in der Mitte.** `$$` ist die rekursive, Shadow-DOM-durchdringende Suche. Ein einziger Pfad damit legt **jedes** `-yaml`-Feld still, im ganzen Theme. Am 2026-09-26 mit UIX 8.3.1 an einer laufenden Instanz gemessen: solange `"ha-config-dashboard $$ ha-config-navigation-list $"` im Theme stand, waren alle 17 Karten-Knoten leer, kein Knoten in `ha-button` oder `ha-switch`, kein `more-info`-Knoten — obwohl `js-yaml` jede Karte fehlerfrei las und die Konsole nichts meldete. Nach dem Entfernen dieses einen Pfades füllten sich die Karten-Knoten sofort. Am 2026-09-20 war unter 8.2.0 noch notiert, `$$` sei in der Mitte in Ordnung; das gilt nicht. `HATG_EINSTELLUNGEN_PFADE` kommt deshalb ohne die Übersichtsseite der Einstellungen aus, und ein Test verbietet `$$` in jedem Vorlagenpfad.
 - **Der Fehler ist stumm.** Weder Konsole noch YAML-Prüfung zeigen ihn. Ob die `-yaml`-Felder ankommen, sieht man nur an den `uix-node`-Elementen: Sind die einfachen Ziele (`drawer`, `sidebar`, `root`) gefüllt und die `card`-Knoten leer, stimmt etwas mit dem `-yaml`-Feld nicht.
-- **Wie ein Pfadschritt auflöst.** Am 2026-09-27 mit UIX 8.3.1 an drei Varianten desselben Ziels nachgemessen:
-  - Der **erste Teil** des Selektors eines Schritts muss **direktes Kind** der aktuellen Wurzel sein, der Rest darf Nachfahre sein. Auf der Einstellungs-Übersicht traf `ha-config-dashboard $ ha-top-app-bar-fixed ha-config-navigation $` alle drei Karten; `ha-config-dashboard $ ha-config-navigation $` traf nichts, obwohl `ha-config-navigation` ein Nachfahre ist, und `ha-config-dashboard $ ha-config-section ha-card ha-config-navigation $` ebenfalls nichts, weil `ha-config-section` kein direktes Kind ist.
+- **Wie ein Pfadschritt auflöst.** Am 09.10.2026 im Auflöser der installierten `uix.js` 8.4.0 nachgelesen, nachdem die Messungen vom 2026-09-27 nur beschrieben, nicht erklärt waren. Der Tokenizer trennt an `$` **und an jedem Leerzeichen**; die Schleife darüber lautet sinngemäß:
+
+```js
+for (const s of tokens) {
+  if (s === "$")  { r = r.map(l => l.shadowRoot); continue; }
+  const a = r[0];                       // nur der ERSTE Treffer geht weiter
+  if (!a) return null;
+  r = a.querySelectorAll(s);
+}
+```
+
+Daraus folgt alles Weitere:
+
+  - **Jedes Wort ist ein eigener Schritt.** `ha-card ha-icon-button $` ist kein CSS-Nachfahrenselektor, sondern: alle `ha-card` suchen, **die erste** nehmen, darin alle `ha-icon-button` suchen, in deren Shadow Root steigen. Wo mehrere Treffer zählen sollen, gehört das Element in den **letzten** Schritt — `ha-icon-button $` erreicht alle, `ha-card ha-icon-button $` nur die der ersten Karte.
+  - **Gesucht wird mit `querySelectorAll`**, also unter allen Nachfahren im selben Baum, nicht nur unter den direkten Kindern. Die ältere Notiz „der erste Teil muss direktes Kind sein" beschrieb eine Beobachtung, nicht den Code.
   - Ein `$` steigt in den **Shadow Root** ab. Liegt das Element im Licht-DOM, ist das ein Schritt zu viel: `hui-generic-entity-row $ ha-entity-toggle $` traf nichts, `hui-generic-entity-row ha-entity-toggle $` sofort beide Zeilenschalter.
-  - **Zwischenschritte nehmen nur den ersten Treffer**, der letzte Schritt alle. Derselbe Pfad eine Ebene tiefer (`… ha-config-navigation $ ha-config-navigation-list $`) kam deshalb nur bei der ersten von drei Karten an.
-- **`::part()` statt Pfad, wo es geht.** `"ha-switch $"` findet nichts, sobald das Element tiefer hängt — in eigenen Karten sitzt der Schalter unter `button > div > div > ha-card`. Wo ein Web-Awesome-Element CSS-Teile nach außen gibt, greift `::part()` durch die Shadow-Grenze, unabhängig von der Tiefe, und braucht kein `-yaml`-Feld. `ha-switch` bietet `base`, `control` und `thumb`. Es reicht aber nur durch **eine** Grenze: Der Schalter einer Entitätenzeile (`hui-toggle-entity-row $ hui-generic-entity-row > ha-entity-toggle $ ha-switch`) und der Sammelschalter im Kartenkopf (`ha-card > h1 > hui-entities-toggle $ ha-switch`) brauchen deshalb je einen eigenen Pfad — drei Vorlagen für drei Stellen.
-- **Stilziele sind nicht auf die feste Liste begrenzt.** Mit der UIX-Option **Style custom panels** (`style_custom_panels`, Vorgabe aus) spritzt UIX `uixCustomPanel.js` in den iframe eines eigenen Panels und bildet den Typ aus dessen Wurzelelement — `uix-hacs-frontend-yaml`, `uix-knx-frontend-yaml`. Welche Namen es gibt, hängt also an der Installation; eine feste Liste kann das nicht abdecken. `istFlach` in `buildYamlText` lässt deshalb seit 1.3.2b10 **jedes** `uix-*`-Feld auf Theme-Ebene stehen. Davor landeten unbekannte `uix-`Felder als „Zusatzwerte" **doppelt** unter `modes.light` und `modes.dark` — dort liest UIX sie nie, die Vorlage fiel stumm aus. Am 2026-09-27 an der Theme `Awesome-Metal-Shadows-UIX` eines Nutzers nachgestellt und behoben; ein Test in `hatg-stilziel-yaml.test.js` hält es fest. Offen bleibt, dass sich solche Ziele in der Oberfläche nicht anlegen lassen — der Nutzer musste den Block von Hand schreiben.
-- **Der Zielname muss UIX' eigener Typname sein.** UIX liest `uix-<typ>` beziehungsweise `uix-<typ>-yaml` mit genau dem Namen, unter dem es das Element registriert hat. HATG schrieb bis 1.3.2b3 `uix-states-history-charts`; UIX kennt den Typ als `state-history-charts`, im Singular. Das Feld wurde von nichts gelesen — am 2026-09-27 gemessen: der `uix-node` am Element `state-history-charts` war leer, mit dem richtigen Namen kamen sofort 662 Zeichen an. Ein Test vergleicht `HATG_STILZIELE` jetzt gegen die Typliste aus `uix.js`. Drei Typen von UIX 8.3.1 fehlten ganz und sind seit 1.3.2b4 dabei: `app`, `profile`, `section-background`.
-- **`section-background` hängt an der Karte, nicht am Theme.** UIX patcht `hui-section-background` nur, wenn der Abschnitt selbst `background: { uix: … }` trägt (`uix.js`: `c && k(this, "section-background", …)`). Ohne diesen Schlüssel entsteht kein Knoten, und das Theme-Feld bleibt wirkungslos — stumm. Alle anderen Ziele mit Konfiguration (`grid-section`, `entity-marker`, `assist-chip`) patchen ohne Bedingung. Am 2026-09-27 an einer laufenden Instanz beides gemessen.
-- **Symbolbehälter haben überall eine Rundungs-Variable.** Am 2026-09-27 an einer laufenden Instanz aus `elementStyles` gelesen: `ha-tile-icon` nimmt `--ha-tile-icon-border-radius` (Vorgabe Pille), `state-badge` nimmt `--state-badge-border-radius` (Vorgabe 50 %), `mushroom-shape-icon` nimmt `--mush-icon-border-radius` (Vorgabe 50 %). Für die Kachelform braucht es deshalb keinen Pfad — Variablen erben durch jede Shadow-Grenze, ein `:host`-Block auf `uix-card` erreicht Kacheln, Mushroom, Zeilen, Glance und Picture-Elements zugleich. **Bei Mushroom muss es `--mush-icon-border-radius` sein**, nicht `--icon-border-radius`: Mushroom setzt letzteres selbst weiter unten im Baum (`--icon-border-radius: var(--mush-icon-border-radius, 50%)`), ein Wert von außen trägt dort nur mit `!important`. UIX hängt seinen Knoten als **erstes** Kind des Shadow Roots ein; seine `:host`-Regeln verlieren deshalb gegen gleich spezifische `:host`-Regeln des Elements selbst.
+  - Ein Schritt darf jeden Selektor tragen, den `querySelectorAll` kennt — `:not(uix-node,style)` etwa trifft auf `ha-panel-config` genau das Wurzelelement der gerade offenen Seite, ohne dass man seinen Namen kennen muss.
+
+  **Offen geblieben:** Nach diesem Code hätte `ha-config-dashboard $ ha-config-navigation $` am 2026-09-27 treffen müssen, es traf aber nichts, während `ha-config-dashboard $ ha-top-app-bar-fixed ha-config-navigation $` alle drei Karten traf. Der wahrscheinliche Grund ist Zeit: Der Auflöser wartet je Schritt nur auf das Update des Schrittelements, und der zusätzliche Schritt verschafft dem Baum eine Runde mehr. Wer einen Pfad baut, der nichts trifft, obwohl der Code ihn hergibt, probiert deshalb einen Zwischenschritt mehr.
+
+- **Symbolbehälter haben überall eine Rundungs-Variable.** Am 2026-09-27 an einer laufenden Instanz aus `elementStyles` gelesen: `ha-tile-icon` nimmt `--ha-tile-icon-border-radius` (Vorgabe Pille), `state-badge` nimmt `--state-badge-border-radius` (Vorgabe 50 %), `mushroom-shape-icon` nimmt `--mush-icon-border-radius` (Vorgabe 50 %). Für die Kachelform braucht es deshalb keinen Pfad — Variablen erben durch jede Shadow-Grenze, ein `:host`-Block auf `uix-card` erreicht Kacheln, Mushroom, Zeilen, Glance und Picture-Elements zugleich. **Bei Mushroom muss es `--mush-icon-border-radius` sein**, nicht `--icon-border-radius`: Mushroom setzt letzteres selbst weiter unten im Baum (`--icon-border-radius: var(--mush-icon-border-radius, 50%)`), ein Wert von außen trägt dort nur mit `!important`. UIX' Regeln verlieren generell gegen gleich spezifische Regeln des Elements selbst - warum, steht im nächsten Punkt.
 - **`state-badge` bringt keine Fläche mit.** Der Wirt ist 40 × 40 und durchsichtig, die Zustandsfarbe steht **inline am inneren `ha-state-icon`**, nicht am Wirt (der trägt immer `--state-inactive-color`). Eine Tönung aus `currentColor` am Wirt wäre bei jedem Zustand grau — die Kachel gehört deshalb ans `ha-state-icon` darin, erreichbar über einen Pfad. Die Wege dorthin: `uix-row` → `hui-generic-entity-row $ div.row state-badge $`, `uix-glance` → `state-badge $` (UIX hängt je Eintrag an `div.entity`), `uix-element` → `state-badge $`. Die Symbolfarbe lässt sich dort nicht überschreiben, weil Home Assistant sie inline setzt.
 - **Bubble nimmt Verläufe nur über Regeln, nicht über Variablen.** `--bubble-*` sind Farbvariablen; ein Verlauf passt dort nicht hinein. `glas-bubble` schrieb deshalb `background-image: none !important` auf die Container — und räumte damit den Verlauf für ruhende Flächen ab, den HA-, Mushroom- und Horizon-Karten bekamen. Seit 1.3.2b4 steht dort `var(--verlauf-inaktiv, none)` und auf der Zustandsschicht `var(--verlauf-akzent, none)`; ohne gesetzten Verlauf fällt beides auf `none` zurück. Die Ausnahme für Separatoren behält `none`, sonst bekämen Überschriftenzeilen eine Kachelfläche.
-- **Der runde Hintergrund unter einem Icon-Knopf ist nicht erreichbar.** `ha-icon-button` schreibt ihn fest in sein eigenes Stylesheet: `ha-button::after { background-color: currentColor; border-radius: 50%; opacity: 0 }` und `:host(:hover:not([disabled])) ha-button::after { opacity: .1 }`. Radius und Deckkraft haben keine Variable. Am 2026-09-27 mit fünf Pfadvarianten aus `uix-more-info` versucht (`$ ha-dialog-header ha-icon-button $`, `ha-more-info-info $ … ha-icon-button $` und drei weitere): Ein `more-info-child`-Knoten entstand zwar an einem `ha-icon-button`, die Regel kam trotzdem nicht an — alle Kreise blieben bei 50 % und Deckkraft 0. Eine Vorlage dafür ist deshalb wieder entfernt worden. Was **über Felder geht**: Größe (`ha-icon-button-size`), Innenabstand (`ha-icon-button-padding-inline`), Dauer (`ha-animation-duration-fast`, `wa-transition-fast`, `wa-transition-easing`) und die Klick-Welle (`ha-ripple-color`, `-hover-opacity`, `-pressed-opacity`) — seit 1.3.2b9 alle als Feld. Die Farbe folgt `currentColor`, also der Symbolfarbe.
+- **UIX verliert jeden Gleichstand - `adoptedStyleSheets` kommen zuletzt.** Ein Shadow Root wendet seine `<style>`-Knoten an und **danach** seine `adoptedStyleSheets`. Lit legt die Styles eines Bauteils genau dort ab; UIX spritzt dagegen ein `<style>` ein. Bei gleicher Spezifität gewinnt deshalb **immer das Bauteil**, egal an welcher Stelle im Shadow Root der Knoten hängt. Am 09.10.2026 an einem Icon-Knopf gegengeprüft: `ha-button::after { border-radius: 9px }` blieb wirkungslos, dieselbe Zeile mit `!important` setzte sich durch. Wer aus einer Vorlage heraus etwas überschreibt, das das Bauteil selbst setzt, braucht `!important` oder mehr Spezifität. Was das Bauteil **nicht** setzt, kommt ohne weiteres an.
+- **Der runde Hintergrund unter einem Icon-Knopf ist doch erreichbar - mit `!important`.** (Korrigiert am 09.10.2026; bis dahin stand hier das Gegenteil.) `ha-icon-button` schreibt ihn in sein eigenes Stylesheet: `ha-button::after { background-color: currentColor; border-radius: 50%; opacity: 0 }`, dazu `:host(:hover:not([disabled])) ha-button::after { opacity: .1 }`. Eine Variable gibt es dafür nicht, wohl aber den Weg über einen Pfad in den Shadow Root von `ha-icon-button`. Der Versuch vom 2026-09-27 scheiterte an zwei Dingen zugleich: Er lief über `uix-more-info` mit Pfaden, die dort nichts trafen, **und** ohne `!important`. Was am 09.10.2026 an einer laufenden Instanz gemessen ist:
+
+      ha-button::part(base)   Rundung, Schatten, Rahmen, backdrop-filter   ohne !important
+      ha-button::part(base)   background-color                             nur mit !important
+      ha-button::after        Form des Schimmers                           nur mit !important
+
+  `::part(base)` ist das innere `.button` von `ha-button` - `ha-icon-button` gibt es als CSS-Teil nach außen, und ein Teil reicht durch die Shadow-Grenze. Die **Füllung** braucht `!important`, weil `ha-button` auf `appearance="plain"` steht und `:host([appearance~="plain"]) .button` ein hartes `background-color: rgba(0, 0, 0, 0)` setzt, ohne Variable davor. Die **Deckkraft** von `::after` bleibt in Ruhe: Sie trägt die Rückmeldung beim Zeigen und Drücken (0 -> 0.1), ein `!important` darauf legt sie still. `::after` liegt auf `z-index: -1`, also hinter der Fläche - mit einer durchscheinenden Füllung bleibt der Schimmer sichtbar, mit einer deckenden nicht.
+
+  Was **über Felder geht** und keinen Pfad braucht: Größe (`ha-icon-button-size`), Innenabstand (`ha-icon-button-padding-inline`), Rundung und Schatten (`ha-button-border-radius`, `ha-button-box-shadow`), Dauer (`ha-animation-duration-fast`, `wa-transition-fast`, `wa-transition-easing`) und die Klick-Welle (`ha-ripple-color`, `-hover-opacity`, `-pressed-opacity`). Die Symbolfarbe folgt `currentColor`.
 - **`ha-switch` spiegelt `checked` nicht als Attribut.** `ha-switch[checked]` trifft nie. Web Awesome meldet den Zustand als Custom State: `ha-switch:state(checked)::part(control)`. Am 2026-09-26 an einem eigens erzeugten Schalter geprüft — Attribut-Selektor griff nicht, State-Selektor griff.
 - **Ein doppelter Pfad legt ein ganzes `-yaml`-Feld still.** UIX liest die Karte mit einem strengen YAML-Parser (Fehler `duplicated mapping key`) und verwirft sie komplett – keine Vorlage des Stilziels kommt an, auch nicht der `"."`-Eintrag. Am 2026-09-16 stand `ha-button $:` zweimal in `uix-card-yaml` (eine Vorlage doppelt, einmal mit fremder Marke); alle 48 Karten-Knoten waren leer, Bubble-Karten ohne Rahmen und Pop-ups ohne Hintergrundbild. PyYAML nimmt so eine Datei klaglos hin, geprüft wird deshalb mit `js-yaml`. Die Ausgabe fasst doppelte Pfade zusammen (`hatgYamlPfadeZusammenfuehren`).
 - **Keine Weichzeichnung auf der Dialogfläche.** Ein `backdrop-filter` auf `.mdc-dialog__surface` bzw. `wa-dialog::part(dialog)` macht den Dialog zum Bezugsrahmen für `position: fixed`. Die Auswahllisten darin sind `fixed`: Sie landen neben dem sichtbaren Bereich, die Liste bleibt leer. Am 2026-09-20 an der Versionsauswahl von HACS (eingebettetes Panel, erreicht HATG nur über Theme-Variablen) und am Info-Dialog von Home Assistant gemessen; eine Weichzeichnung auf einem `::before` der Fläche hilft nicht. Das Glas-Paket schreibt deshalb `ha-dialog-surface-backdrop-filter: none`, die Vorlagen haben keinen Ausweichwert mehr, und der Import nimmt einen vorhandenen Wert zurück.
@@ -143,6 +164,70 @@ Erlaubt sind je Eintrag genau drei Schlüssel: `family`, `source`, `descriptors`
 **HATG braucht dafür kein neues Feld.** Am 09.10.2026 geprüft: Ein Theme mit `uix-fonts` läuft unverändert und idempotent durch Import und Export — `istFlach` lässt jedes `uix-`Feld auf Theme-Ebene stehen, und der Cleaner fasst es nicht an, weil `hatgIstStilzielFeld` greift. Der Bericht nennt es nur „unbekanntes Feld aufbewahrt".
 
 **Was dagegen nötig war: es vor Vorlagen schützen.** `hatgVorlagenZielGueltig` nahm sowohl `uix-fonts` als auch `uix-theme` als Vorlagenziel an. Bei `uix-theme` fiel es erst in `hatgVorlagenZiel` still auf `uix-card` zurück — der Dialog nahm es an, die Vorlage lag woanders, gesagt hat es niemand. Bei `uix-fonts` wäre CSS in der Schriftentabelle gelandet. `HATG_UIX_KEINE_ZIELE` weist beide jetzt schon bei der Prüfung ab, mit Begründung im Dialog.
+
+## Flächen unter Symbolknöpfen: drei Vorlagen, einzeln schaltbar
+
+Seit dem 09.10.2026 gibt es `knopfglas-karten`, `knopfglas-kopfleiste` und
+`knopfglas-einstellungen` — je eine Vorlage für Karten, Dashboard-Kopfleiste und
+Einstellungsseiten. Sie legen einem Symbolknopf eine gläserne Fläche unter und
+geben dem Schimmer beim Zeigen die Form des Knopfes.
+
+**Sie stehen bewusst nicht im Glas-Paket.** Auf Ansage: jede einzeln schaltbar.
+Dieselbe Entscheidung wie am 01.10. bei `glas-buttons-rahmen`. In der Oberfläche
+stehen sie in einer eigenen Gruppe „Knöpfe".
+
+**Die Arbeitsteilung mit den `glas-buttons-*`-Vorlagen:**
+
+| | Weg | Was |
+|---|---|---|
+| `glas-buttons-*` | Variablen, kein Pfad | Größe, Rundung, Schatten — überall, auch dort, wo kein Pfad hinkommt |
+| `knopfglas-*` | Pfad ins Innere | Füllung, Weichzeichnung, Form des Schimmers — nur über `::part(base)` und `::after` erreichbar |
+
+Die Rundung der `knopfglas-*` liest `var(--ha-button-border-radius, …)` und
+folgt damit dem, was die Variablen-Vorlage gesetzt hat; beide zusammen bleiben
+stimmig.
+
+**Die Pfade, alle am 09.10.2026 nachgemessen:**
+
+    uix-card-yaml     "ha-icon-button $"
+    uix-root-yaml     "ha-icon-button $"
+                      "ha-menu-button $ ha-icon-button $"
+    uix-config-yaml   ":not(uix-node,style) $ ha-icon-button $"
+                      ":not(uix-node,style) :not(uix-node,style) $ ha-icon-button $"
+
+- **Karten:** ein Schritt, deshalb zählt jeder Treffer. An frisch erzeugten
+  Karten gemessen — media-control 3 Knöpfe, light 2, todo-list 1, tile 0.
+  Knöpfe, die noch einen Shadow Root tiefer liegen (Entitätenzeilen), bleiben
+  draußen; die gehören zu `uix-row`.
+- **Kopfleiste:** zwei Pfade, weil der Menüknopf eine Shadow-Ebene tiefer sitzt.
+  Die Knöpfe rechts in der Leiste liegen im selben Baum wie `hui-root`, der
+  Hamburger im Shadow Root von `ha-menu-button`.
+- **Einstellungen:** `ha-panel-config` hat keinen Shadow Root; seine direkten
+  Kinder im Licht-DOM sind der `uix-node`, ein `<style>` von UIX und das
+  Wurzelelement der offenen Seite. Das heißt auf jeder Unterseite anders —
+  **52 Routen** laut `ha-panel-config.routerOptions` —, deshalb `:not()` statt
+  einer Namensliste. Seiten mit eigenem Router (Integrationen, Automationen)
+  rendern ohne Shadow Root ins Licht-DOM; dort liegt die Seite eine Ebene
+  tiefer, dafür ist der zweite Pfad da. An `/config/system` und
+  `/config/integrations` geprüft.
+
+**`glas-buttons-glanz` ist dafür entfallen.** Die Vorlage war doppelt tot: Ihr
+Pfad `ha-button $` auf `uix-card-yaml` trifft nichts, weil `ha-button` in keiner
+Karte ein Kind des Shadow Roots ist — es steckt im Shadow Root von
+`ha-icon-button` —, und ohne `!important` wäre die Fläche ohnehin durchsichtig
+geblieben. Wer sie eingeschaltet hatte, bekommt beim nächsten Import einmalig
+den Balken „verwaiste Blöcke" mit dem Knopf zum Aufräumen. Ein Test verbietet
+den Pfad `ha-button $` jetzt für alle Vorlagen.
+
+**Zum ersten Mal trägt `uix-root` ein `-yaml`-Feld.** Damit rückt das einfache
+`uix-root` in den `"."`-Eintrag derselben Karte — die Lage, in der
+`symbole-kachel` am 01.10. gewachsen ist. `tests/hatg-durchlauf.test.js` hält
+jetzt auch diesen Fall fest: einfache und Pfad-Vorlage zusammen, zweimal durch
+Import und Export, Marker und `"."`-Eintrag je genau einmal.
+
+**Noch offen:** Die Pfade sind mit dem Auflöser aus `uix.js` nachgebaut, nicht
+mit UIX selbst gefahren. Der letzte Beweis ist ein Dev-Build auf der Instanz,
+die drei Vorlagen einschalten und `uix-node`-Knoten zählen.
 
 ## HA 2026: Knöpfe und Links hängen nicht mehr an `primary-color`
 

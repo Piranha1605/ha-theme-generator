@@ -745,5 +745,93 @@ pruefe("Verlauf fuer ausgeschaltete Flaechen: eigene Farben, Aus-Zustand getroff
   assert.deepEqual({ ...ctx.norm({ ...werte, winkel: 560 }) }, { ...werte, winkel: 200 });
 });
 
+// --- Flaeche unter Symbolknoepfen ---------------------------------------
+//
+// Alles hier ist am 2026-10-09 an einer laufenden Instanz nachgemessen
+// (HA 2026.10, UIX 8.4.0). Die Vorlagen stehen und fallen mit zwei Dingen,
+// die beide stumm scheitern, wenn sie jemand wegnimmt:
+//
+//   ohne !important auf der Fuellung bleibt der Knopf durchsichtig, weil
+//   :host([appearance~="plain"]) .button in ha-button ein hartes
+//   background-color: rgba(0,0,0,0) setzt - und adoptedStyleSheets nach den
+//   <style>-Knoten desselben Shadow Roots greifen, UIX also jeden
+//   Gleichstand verliert;
+//
+//   mit !important auf der Deckkraft von ::after faellt die Rueckmeldung
+//   beim Zeigen und Druecken aus, weil HAs Hover-Regel dagegen verliert.
+const KNOPF_VORLAGEN = ["knopfglas-karten", "knopfglas-kopfleiste", "knopfglas-einstellungen"];
+
+pruefe("Knopf-Vorlagen: drei Stueck, einzeln schaltbar, in der Gruppe Knoepfe", () => {
+  const alles = fs.readFileSync(PANEL, "utf8");
+  for (const id of KNOPF_VORLAGEN) {
+    const v = vorlagen.find((x) => x.id === id);
+    assert.ok(v, `Vorlage fehlt: ${id}`);
+    // Der Nutzer hat am 2026-10-09 ausdruecklich verlangt, jede einzeln
+    // schalten zu koennen - keine darf ins Glas-Paket rutschen.
+    assert.ok(!/\bpaket:\s*"glas"/.test(v.block), `${id} ist ins Glas-Paket gewandert`);
+  }
+  const start = alles.indexOf("const HATG_VORLAGEN_GRUPPEN");
+  const ende = alles.indexOf("const HATG_VORLAGEN = [");
+  const ctx = {};
+  require("node:vm").runInNewContext(`${alles.slice(start, ende)}\nthis.von = hatgVorlagenGruppeVon;`, ctx);
+  for (const id of KNOPF_VORLAGEN) assert.equal(ctx.von({ id }), "knoepfe", `${id} liegt in der falschen Gruppe`);
+  assert.ok(/const reihenfolge = \[[^\]]*"knoepfe"/.test(alles), "die Gruppe Knoepfe wird nicht gezeichnet");
+});
+
+pruefe("Knopf-Vorlagen: Fuellung mit !important, Deckkraft des Schimmers ohne", () => {
+  for (const id of KNOPF_VORLAGEN) {
+    const c = ohneKommentare(css(vorlagen.find((x) => x.id === id).block));
+    const regeln = [...c.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map((m) => ({ sel: m[1].trim().split("\n").pop().trim(), body: m[2] }));
+
+    const flaechen = regeln.filter((r) => r.sel === "ha-button::part(base)");
+    assert.ok(flaechen.length, `${id}: keine Regel auf ha-button::part(base)`);
+    for (const r of flaechen) {
+      assert.match(r.body, /background-color:[^;]*!important/, `${id}: Fuellung ohne !important kommt nicht an`);
+      assert.match(r.body, /backdrop-filter:\s*blur\(/, `${id}: keine Weichzeichnung`);
+      assert.match(r.body, /-webkit-backdrop-filter:\s*blur\(/, `${id}: Weichzeichnung ohne Webkit-Schreibweise`);
+    }
+
+    const schimmer = regeln.filter((r) => r.sel === "ha-button::after");
+    assert.ok(schimmer.length, `${id}: keine Regel auf ha-button::after`);
+    for (const r of schimmer) {
+      assert.match(r.body, /border-radius:[^;]*!important/, `${id}: der Schimmer bleibt rund`);
+      assert.ok(!/opacity:/.test(r.body), `${id}: Deckkraft des Schimmers angefasst - das legt die Rueckmeldung still`);
+    }
+  }
+});
+
+pruefe("Knopf-Vorlagen: dieselben Pfade wie gemessen, alle drei mit demselben CSS", () => {
+  const soll = {
+    "knopfglas-karten": ["ha-icon-button $"],
+    "knopfglas-kopfleiste": ["ha-icon-button $", "ha-menu-button $ ha-icon-button $"],
+    "knopfglas-einstellungen": [
+      ":not(uix-node,style) $ ha-icon-button $",
+      ":not(uix-node,style) :not(uix-node,style) $ ha-icon-button $",
+    ],
+  };
+  const koerper = new Set();
+  for (const id of KNOPF_VORLAGEN) {
+    const c = css(vorlagen.find((x) => x.id === id).block);
+    const pfade = [...c.matchAll(/^"([^"]+)":\s*\|$/gm)].map((m) => m[1]);
+    assert.deepEqual(pfade, soll[id], `${id}: andere Pfade als gemessen`);
+    // Jeder Pfad traegt denselben Block - sonst laeuft eine Korrektur an einer
+    // Stelle den anderen davon.
+    for (const teil of c.split(/^"[^"]+":\s*\|$/m).slice(1)) koerper.add(teil.trim());
+  }
+  assert.equal(koerper.size, 1, `die Bloecke sind auseinandergelaufen:\n${[...koerper].join("\n---\n")}`);
+});
+
+pruefe("Kein Pfad steigt in den Shadow Root von ha-button ab", () => {
+  // glas-buttons-glanz hatte "ha-button $" auf uix-card-yaml. Der Schritt
+  // trifft nichts: In keiner Karte ist ha-button ein Kind des Shadow Roots,
+  // es steckt im Shadow Root von ha-icon-button. Die Vorlage war damit tot,
+  // ohne dass es jemand gemerkt haette.
+  const treffer = [];
+  for (const v of mitCss) {
+    for (const m of css(v.block).matchAll(/^"?([^"\n]*ha-button\s+\$[^"\n]*)"?:\s*\|$/gm)) treffer.push(`${v.id}: ${m[1]}`);
+  }
+  assert.deepEqual(treffer, [], `Pfad in den Shadow Root von ha-button: ${treffer.join(", ")}`);
+});
+
 console.log(fehler === 0 ? "\nAlle Tests bestanden." : `\n${fehler} Test(s) fehlgeschlagen.`);
 process.exit(fehler === 0 ? 0 : 1);
