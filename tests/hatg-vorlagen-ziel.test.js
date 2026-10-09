@@ -124,5 +124,36 @@ pruefe('Der doppelte Untereintrag "Alle Vorlagen" ist weg', () => {
   assert.ok(!/"All presets"/.test(js), 'der Navigationseintrag "Alle Vorlagen" steht noch im Code');
 });
 
+// Das Zielfeld im Dialog ist bei einer NEUEN Vorlage leer, "uix-card" steht nur
+// als Platzhalter. Vorbelegt war es bis 1.3.2b23 - wer etwas anderes wollte,
+// musste es erst loeschen. Von einem Nutzer am 2026-10-08 gemeldet.
+//
+// Leer darf es nur bleiben, solange der Speicherweg daraus uix-card macht.
+// Genau das sichert diese Pruefung: Faellt der Rueckfall weg, landet eine
+// Vorlage ohne Ziel irgendwo - oder nirgends.
+pruefe("Ein leeres Ziel wird beim Speichern zu uix-card", () => {
+  for (const leer of ["", "   ", undefined, null]) {
+    assert.equal(
+      zielVon(leer),
+      "uix-card",
+      `aus ${JSON.stringify(leer)} wurde nicht uix-card`
+    );
+  }
+});
+
+pruefe("Das Zielfeld im Dialog ist nicht mehr vorbelegt", () => {
+  const quelle = require("node:fs").readFileSync(
+    require("node:path").join(__dirname, "..", "custom_components", "hatg", "www", "hatg-panel.js"),
+    "utf8"
+  );
+  const zeile = /data-eigene-vorlage-ziel[\s\S]{0,200}?placeholder="uix-card"/.exec(quelle);
+  assert.ok(zeile, "das Zielfeld wurde nicht gefunden");
+  assert.ok(
+    !/value="\$\{hatgEscape\(hatgVorlagenZiel\(dialog\)\)\}"/.test(zeile[0]),
+    "das Feld ist wieder mit hatgVorlagenZiel(dialog) vorbelegt"
+  );
+  assert.match(zeile[0], /placeholder="uix-card"/, "der Platzhalter fehlt");
+});
+
 console.log(fehler ? `\n${fehler} Test(s) fehlgeschlagen.` : "\nAlle Tests bestanden.");
 process.exit(fehler ? 1 : 0);

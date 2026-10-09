@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.3.2b23";
+const HATG_VERSION = "1.3.2b24";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -5806,7 +5806,7 @@ function hatgIsColorValue(value) {
 
 // Was in einer Ebene der Kurzform background HINTER dem Bild stehen darf:
 // Anheftung, Wiederholung, Ursprung und Beschnitt, die Position und - nach
-// einem Schraegstrich - die Groesse. Bis 1.3.2b23 galt eine Ebene nur dann als
+// einem Schraegstrich - die Groesse. Bis 1.3.2b24 galt eine Ebene nur dann als
 // gueltig, wenn sie genau ein url() oder ein Verlauf war; alles dahinter liess
 // den Wert durchfallen. Beim Speichern stand dann "1 ungueltiger Wert" fuer
 // etwas, das gueltiges CSS ist - am 2026-10-01 an
@@ -8197,10 +8197,16 @@ class HATGPanel extends HTMLElement {
         <label class="eigene-vorlage-label">Beschreibung <small>(optional)</small>
           <textarea class="text-input eigene-vorlage-desc" spellcheck="false" rows="3" data-eigene-vorlage-desc placeholder="Wofür ist die Vorlage gut?">${hatgEscape(dialog.desc || "")}</textarea>
         </label>
+        <!-- Bei einer NEUEN Vorlage bleibt das Feld leer; "uix-card" steht nur
+             als Platzhalter da. Vorbelegt war es bis 1.3.2b24, und wer etwas
+             anderes wollte, musste es erst loeschen - von einem Nutzer am
+             2026-10-08 gemeldet. Leer bleibt es gefahrlos: Der Speicherweg
+             macht aus einem leeren Ziel ohnehin uix-card
+             (String(dialog.ziel || HATG_VORLAGEN_STANDARDZIEL)). -->
         <label class="eigene-vorlage-label">Wirkt auf
           <input class="text-input" type="text" spellcheck="false" autocapitalize="off" autocomplete="off"
                  list="hatg-vorlagen-ziele" data-eigene-vorlage-ziel
-                 value="${hatgEscape(hatgVorlagenZiel(dialog))}" placeholder="uix-card" />
+                 value="${hatgEscape(String(dialog.ziel ?? ""))}" placeholder="uix-card" />
           <datalist id="hatg-vorlagen-ziele">
             ${["", "-yaml"]
               .map((suffix) =>
