@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.3.2b24";
+const HATG_VERSION = "1.3.2b25";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -2915,9 +2915,25 @@ function hatgVorlageSoll(tpl, vorhanden) {
 // ablehnt, scheitert das Speichern der ganzen Liste - derselbe Fehler wie bei
 // den Kennungen. Ziffern sind erlaubt, weil ein eigenes Panel nach seinem
 // Wurzelelement heisst und ein Custom-Element-Name Ziffern tragen darf.
-const HATG_VORLAGEN_ZIEL_RE = /^uix-[a-z][a-z0-9-]{0,47}$/;
+const HATG_VORLAGEN_ZIEL_RE = /^uix-[a-z0-9][a-z0-9_-]{0,47}$/;
+// Nicht jedes uix-Feld ist ein Stilziel. Zwei tragen auf Theme-Ebene etwas
+// voellig anderes, und eine Vorlage dorthin zu richten zerstoert den Inhalt:
+//
+//   uix-theme   der Theme-Name, nach dem UIX seine Einstellungen sucht
+//   uix-fonts   seit UIX 8.4.0 eine YAML-Abbildung von Schriften
+//               (family, source, descriptors), die UIX ueber die CSS Font
+//               Loading API laedt. CSS hineinzuschreiben macht sie unlesbar,
+//               und UIX meldet das nur als Warnung in der Konsole.
+//
+// uix-theme kam vorher bis in hatgVorlagenZiel durch und fiel dort still auf
+// uix-card zurueck - der Dialog nahm es an, die Vorlage landete woanders, ohne
+// dass irgendwo etwas stand. Jetzt wird es schon bei der Pruefung abgewiesen
+// und der Nutzer bekommt den Grund zu lesen.
+const HATG_UIX_KEINE_ZIELE = new Set(["uix-theme", "uix-fonts"]);
 function hatgVorlagenZielGueltig(key) {
-  return HATG_VORLAGEN_ZIEL_RE.test(String(key || ""));
+  const k = String(key || "");
+  if (HATG_UIX_KEINE_ZIELE.has(k.replace(/-yaml$/, ""))) return false;
+  return HATG_VORLAGEN_ZIEL_RE.test(k);
 }
 // Das Ziel einer Vorlage darf auch ein eigenes Panel sein. Bis 1.3.2b11 stand
 // hier hatgIstStilzielKey, das nur die feste Liste kennt - eine Vorlage fuer
@@ -5806,7 +5822,7 @@ function hatgIsColorValue(value) {
 
 // Was in einer Ebene der Kurzform background HINTER dem Bild stehen darf:
 // Anheftung, Wiederholung, Ursprung und Beschnitt, die Position und - nach
-// einem Schraegstrich - die Groesse. Bis 1.3.2b24 galt eine Ebene nur dann als
+// einem Schraegstrich - die Groesse. Bis 1.3.2b25 galt eine Ebene nur dann als
 // gueltig, wenn sie genau ein url() oder ein Verlauf war; alles dahinter liess
 // den Wert durchfallen. Beim Speichern stand dann "1 ungueltiger Wert" fuer
 // etwas, das gueltiges CSS ist - am 2026-10-01 an
@@ -8198,7 +8214,7 @@ class HATGPanel extends HTMLElement {
           <textarea class="text-input eigene-vorlage-desc" spellcheck="false" rows="3" data-eigene-vorlage-desc placeholder="Wofür ist die Vorlage gut?">${hatgEscape(dialog.desc || "")}</textarea>
         </label>
         <!-- Bei einer NEUEN Vorlage bleibt das Feld leer; "uix-card" steht nur
-             als Platzhalter da. Vorbelegt war es bis 1.3.2b24, und wer etwas
+             als Platzhalter da. Vorbelegt war es bis 1.3.2b25, und wer etwas
              anderes wollte, musste es erst loeschen - von einem Nutzer am
              2026-10-08 gemeldet. Leer bleibt es gefahrlos: Der Speicherweg
              macht aus einem leeren Ziel ohnehin uix-card

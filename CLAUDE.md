@@ -11,7 +11,7 @@ custom_components/hatg/
 ├── __init__.py           Einstiegspunkt der Integration
 ├── config_flow.py        Einrichtung über die Oberfläche
 ├── const.py              Konstanten
-├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b24
+├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b25
 ├── translations/         de.json und en.json
 ├── brand/                Icons für den HACS-Store
 └── www/
@@ -96,6 +96,54 @@ Seit v1.2.0 schreibt HATG `uix-*`-Felder statt `card-mod-*`. card-mod lädt seit
 - Ein `uix-sidebar-yaml`-Block lässt UIX 8.1.0 beim Laden mit `TypeError … toLowerCase` aussteigen. Danach wendet UIX für den Rest der Sitzung überhaupt keine Vorlage mehr an. Das Benutzer-Icon kommt deshalb ohne Pfad aus.
 - UIX stylt nur, was nach ihm entsteht. Ein hartes Neuladen direkt auf einer `/config`-Seite lässt die schon vorhandenen Elemente unberührt.
 
+## UIX 8.4.0 (seit 1.3.2b25)
+
+Erschienen am 07.10.2026, verlangt **Home Assistant 2026.10.0** als Minimum (`hacs.json`: `2026.10.0.dev0`, bei 8.3.1 stand dort `2026.8.0.dev0`).
+
+**Die Typliste ist unverändert geblieben.** Am 09.10.2026 aus der installierten `uix.js` geprüft, per Prüfsumme gegen die Instanz bestätigt: 32 Typen, davon kennt HATG 28. Die vier übrigen — `broker-tile-icon`, `uix-broker-badge`, `-button`, `-lock` — gehören zum Broker, sind also keine allgemeinen Stilziele. **Kein Typ fehlt HATG, keiner ist weggefallen.**
+
+**Wie man die Typen aus der minifizierten Datei holt.** Zwei naheliegende Muster liefern Unsinn: `"type-<name>"` findet nur einen Teil, und `X(this,"name"` verfehlt die Hälfte, weil UIX die Registrierung auch mit `this._element` aufruft (`await S(this._element,"heading-badge",…)`). Der erste Lauf meldete deshalb `exact`, `mark` und `tags` als Typen und gleichzeitig `badge`, `dialog` und `row` als unbekannt — letzteres offensichtlich falsch. Tragfähig ist das zweite Argument der Registrierungsfunktion, unabhängig vom ersten:
+
+```
+S(<beliebig>, "<typ>", …)
+```
+
+### Add-on-Panels als Stilziel
+
+UIX 8.4.0 ersetzt den `custom-panel`-Lader durch eine Frame-Laufzeit (`src/frame/`) und erreicht damit nicht mehr nur `ha-panel-custom`, sondern auch **`ha-panel-app`** — also Add-on-Oberflächen wie Terminal oder VS Code. Den Typnamen bildet es aus dem Add-on-Slug (`src/patch/ha-panel-app.ts`):
+
+    export function appThemeTypes(slug) {
+      const independent = slug.replace(/^(?:core|local|[0-9a-f]{8})_/, "");
+      return independent === slug ? [slug] : [slug, independent];
+    }
+
+**Add-on-Slugs tragen Unterstriche und beginnen teils mit einer Ziffer.** HATGs Regel war `uix-[a-z][a-z0-9-]{0,47}` und wies damit jedes Add-on ab. Am 09.10.2026 an einer laufenden Instanz nachgesehen — alle drei dort installierten fielen durch:
+
+    core_matter_server    gekürzt: matter_server    (Unterstrich bleibt)
+    a0d7b954_vscode       gekürzt: vscode
+    cb646a50_get          gekürzt: get
+
+Die Regel lautet seit 1.3.2b25 `uix-[a-z0-9][a-z0-9_-]{0,47}`, auf beiden Seiten zeichengleich. Die führende Ziffer ist nötig, weil die Hex-Vorsilbe mit einer anfangen darf (`5c53de3b_esphome`); bis dahin stand im Test ausdrücklich, `uix-9start` müsse abgewiesen werden — das galt für Custom-Element-Namen, für Add-on-Slugs nicht.
+
+### `uix-fonts`: Schriften über das Theme
+
+Neu in 8.4.0. Ein Schlüssel auf **Theme-Ebene** wie `uix-theme`, kein Feld unter `modes`. Sein Wert ist eine mehrzeilige YAML-Abbildung, die UIX über die CSS Font Loading API lädt:
+
+```yaml
+uix-fonts: |
+  Inter:
+    family: Inter
+    source: url(/local/fonts/inter.woff2)
+    descriptors:
+      weight: 400
+```
+
+Erlaubt sind je Eintrag genau drei Schlüssel: `family`, `source`, `descriptors` (`src/helpers/theme-fonts.ts`, `parseFont`). Alles andere wirft eine Konsolenwarnung.
+
+**HATG braucht dafür kein neues Feld.** Am 09.10.2026 geprüft: Ein Theme mit `uix-fonts` läuft unverändert und idempotent durch Import und Export — `istFlach` lässt jedes `uix-`Feld auf Theme-Ebene stehen, und der Cleaner fasst es nicht an, weil `hatgIstStilzielFeld` greift. Der Bericht nennt es nur „unbekanntes Feld aufbewahrt".
+
+**Was dagegen nötig war: es vor Vorlagen schützen.** `hatgVorlagenZielGueltig` nahm sowohl `uix-fonts` als auch `uix-theme` als Vorlagenziel an. Bei `uix-theme` fiel es erst in `hatgVorlagenZiel` still auf `uix-card` zurück — der Dialog nahm es an, die Vorlage lag woanders, gesagt hat es niemand. Bei `uix-fonts` wäre CSS in der Schriftentabelle gelandet. `HATG_UIX_KEINE_ZIELE` weist beide jetzt schon bei der Prüfung ab, mit Begründung im Dialog.
+
 ## HA 2026: Knöpfe und Links hängen nicht mehr an `primary-color`
 
 Seit Home Assistant 2026 definiert das Frontend eine eigene Farbebene auf `html` (`--ha-color-*`) und spiegelt sie für Web Awesome (`--wa-color-*`). Knöpfe, Chips und Links auf den Einstellungsseiten lesen daraus und **nicht** mehr aus `--primary-color`.
@@ -122,7 +170,7 @@ Kein einziges `--input-*` als Farbe, und kein `--mdc-select-*`/`--mdc-text-field
 
 **Gemeldet hat es ein Nutzer, nicht die Prüfwerkzeuge.** Er schrieb, die Felder von `input-background-color` bis `input-outlined-disabled-border-color` änderten nichts, und hatte die richtigen Namen schon selbst gefunden. In der Oberfläche standen beide Sorten im selben Ordner „Eingaben & Auswahlfelder": zuerst elf tote `input-*`, dann fünf tote `mdc-*`, und die vier, die wirken, auf den Plätzen 18 bis 21. Wer von oben liest, gibt vorher auf.
 
-Seit 1.3.2b24 sind die Altlasten deshalb in einem eigenen Ordner **„Eingaben: Material (bis HA 2025)"**. Gelöscht werden sie **nicht**: Wer eine ältere HA-Version fährt, braucht sie, und gemessen sind acht Dateien, nicht das ganze Frontend — ältere Material-Reste können anderswo noch lesen. Drei Felder, die die heutigen Komponenten lesen, sind neu dazugekommen: `ha-color-border-neutral-quiet`, `-normal` und `ha-color-border-danger-normal`.
+Seit 1.3.2b25 sind die Altlasten deshalb in einem eigenen Ordner **„Eingaben: Material (bis HA 2025)"**. Gelöscht werden sie **nicht**: Wer eine ältere HA-Version fährt, braucht sie, und gemessen sind acht Dateien, nicht das ganze Frontend — ältere Material-Reste können anderswo noch lesen. Drei Felder, die die heutigen Komponenten lesen, sind neu dazugekommen: `ha-color-border-neutral-quiet`, `-normal` und `ha-color-border-danger-normal`.
 
 **Die Abstufung muss in beiden Modi monoton sein.** Die drei neuen Werte sind auf die iOS-Basis abgestimmt, mit dem vorhandenen `loud` als Anker: hell `#E5E5EA` > `#D1D1D6` > `#C6C6C8` (dunkler ist kräftiger), dunkel `#2E2E30` < `#343436` < `#38383A` (heller ist kräftiger). Zwei naheliegende Werte sind dabei ausgeschieden: `#2C2C2E` ist im Dunkeln `ha-color-form-background` — ein Rahmen in der Farbe seiner eigenen Fläche ist unsichtbar; und `#3A3A3C` wäre heller als `loud`, die Abstufung stünde auf dem Kopf. `danger` nimmt HATGs eigenes `error-color` (`#FF3B30`/`#FF453A`), kein neuer Ton.
 
@@ -189,7 +237,7 @@ Die Maschinerie dafür gab es schon (`hatgEntferneVerwaisteEigenfelder`), sie wu
 - **Die Grenze, die HATG nicht sieht:** Ein Feld kann von außerhalb der Theme gelesen werden, etwa aus der Konfiguration einer einzelnen Karte. Deshalb nennt der Bericht **jedes** entfernte Feld beim Namen, und der Bericht steht auch im Kopf der Datei.
 - Ein Test hält beides fest (`tests/hatg-ausmisten.test.js`): dass Ballast fliegt und dass nach dem Import kein `var()` mehr ins Leere zeigt.
 
-**Die Regel "unbekannt und unreferenziert" war falsch, und zwar teuer (1.3.2b24).** Home Assistant liest seine Variablen aus seinem **eigenen Stylesheet**, nicht per `var()` aus der Theme. Für den Cleaner sah damit jede HA-Variable, die HATG nicht als Feld anbietet, wie Ballast aus. Am 2026-10-01 gemessen: Von zwölf echten Namen (`scrollbar-thumb-color`, `mush-chip-height`, `ha-space-4`, `rgb-error-color`, `codemirror-keyword` und weiteren) löschte der Import **elf**. Nur `ha-animation-duration-fast` blieb, weil HATG genau dieses Feld kennt. Das steckte in b14 und damit in der veröffentlichten b15.
+**Die Regel "unbekannt und unreferenziert" war falsch, und zwar teuer (1.3.2b25).** Home Assistant liest seine Variablen aus seinem **eigenen Stylesheet**, nicht per `var()` aus der Theme. Für den Cleaner sah damit jede HA-Variable, die HATG nicht als Feld anbietet, wie Ballast aus. Am 2026-10-01 gemessen: Von zwölf echten Namen (`scrollbar-thumb-color`, `mush-chip-height`, `ha-space-4`, `rgb-error-color`, `codemirror-keyword` und weiteren) löschte der Import **elf**. Nur `ha-animation-duration-fast` blieb, weil HATG genau dieses Feld kennt. Das steckte in b14 und damit in der veröffentlichten b15.
 
 `hatgIstFremdesFeld()` entscheidet jetzt, was der Cleaner nicht anfassen darf — und **dieselbe** Funktion benutzt auch die Verweisprüfung, die vorher eine eigene, engere Regel hatte (ein Verweis auf `--rgb-error-color` galt damit als tot).
 
@@ -216,7 +264,7 @@ Der Grund ist ein Schemawechsel: Bubble Card 3.x hat die Variablen **pro Kartent
 
 Bleiben in HATG, obwohl Bubble Card sie nicht liest: `ha-dialog-surface-background`, `ha-dialog-scrim-color` und `mdc-dialog-scrim-color` — das sind HA-Variablen im Bubble-Abschnitt, Bubbles Pop-up nutzt HAs Dialog.
 
-### Die Maß-Ebene von HA 2026 (1.3.2b24)
+### Die Maß-Ebene von HA 2026 (1.3.2b25)
 
 Aus der Sitzung „HA Karten" kam am 05.10.2026 eine Erhebung aus der laufenden Instanz: 25 `ha-*`-Bauteile, jedes `var(--x, fallback)` aus ihren `adoptedStyleSheets` und `<style>`-Knoten ausgelesen. 1021 Variablen gefunden, 450 davon als Theme-Feld vorgeschlagen. Der Abgleich gegen HATGs Katalog: 224 kannte HATG schon, 226 fehlten.
 
@@ -228,7 +276,7 @@ Diese Ebene lohnt besonders, weil sie als Ausweichwert in Dutzenden Bauteilfelde
 
 **Falle beim Auslesen:** `core.globals.ts` setzt alle `--ha-animation-duration-*` am Ende noch einmal auf `1ms`, in einem `@media (prefers-reduced-motion: reduce)`-Block. Wer die Datei mit einer Regex nach dem **letzten** Treffer durchsucht, bekommt für alle vier Stufen `1ms`. Die echten Werte sind 1/75/150/250/350 ms.
 
-### Ein bedingter Ausweichwert ist keine Vorgabe (1.3.2b24)
+### Ein bedingter Ausweichwert ist keine Vorgabe (1.3.2b25)
 
 Gemeldet von einem Nutzer an b22: **Alle Dialoge öffneten in voller Fensterhöhe.** Ursache war das neue Feld `ha-dialog-min-height` mit der Vorgabe `100vh`. In `src/components/ha-dialog.ts` steht der allgemeine Fall **ohne** Ausweichwert:
 
@@ -276,7 +324,7 @@ Zwei Fallen, beide selbst hineingetappt: HA baut Zustandsfarben als `--state-${d
 
 ## Werte schreiben: der Backslash ist das Fluchtzeichen
 
-`hatgQuoteYamlValue` schreibt einzeilige Werte doppelt gequotet. In einem doppelt gequoteten YAML-Skalar ist der **Backslash** das Fluchtzeichen, er muss deshalb **vor** dem Anführungszeichen verdoppelt werden. Bis 1.3.2b24 wurde nur das Anführungszeichen escaped. Am 2026-10-01 gemessen und mit PyYAML gegengeprüft, also mit dem Parser, den Home Assistant benutzt:
+`hatgQuoteYamlValue` schreibt einzeilige Werte doppelt gequotet. In einem doppelt gequoteten YAML-Skalar ist der **Backslash** das Fluchtzeichen, er muss deshalb **vor** dem Anführungszeichen verdoppelt werden. Bis 1.3.2b25 wurde nur das Anführungszeichen escaped. Am 2026-10-01 gemessen und mit PyYAML gegengeprüft, also mit dem Parser, den Home Assistant benutzt:
 
     Eingabe   uix-card: 'ha-card::before { content: "\201C"; }'    liest PyYAML
     Ausgabe   uix-card: "ha-card::before { content: \"\201C\"; }"    ScannerError
@@ -285,7 +333,7 @@ Zwei Fallen, beide selbst hineingetappt: HA baut Zustandsfarben als `--state-${d
 
 ## Ein "."-Eintrag gehört der Vorlage, in der er steht
 
-Zwei Fehler an derselben Stelle, beide in 1.3.2b24 behoben.
+Zwei Fehler an derselben Stelle, beide in 1.3.2b25 behoben.
 
 **Der `"."`-Eintrag wurde verworfen, wenn das einfache Feld schon belegt war.** `hatgEntflechteStilzieleImBag` schrieb ihn nur dorthin, wenn dort nichts stand — sonst fiel er ersatzlos weg, ohne eine Zeile im Bericht. Der Weg dorthin ist alltäglich: `docs/beispiele/glas-basis.yaml` nehmen und von Hand zwei Zeilen `uix-card:` aus einem Forenbeitrag ergänzen. Beim nächsten Import sind `glas-ebene`, `glas-bubble` und `glas-buttons-karten` weg. Jetzt wird angehängt, Vorhandenes zuerst, wie in `hatgRepariereAlteStilziele`. **Ein Test hielt genau das kaputte Verhalten fest** — er hieß "Ein bereits belegtes einfaches Feld wird nicht ueberschrieben" und behauptete, danach stehe dort *nur* der Handeintrag.
 
@@ -295,7 +343,7 @@ Zwei Fehler an derselben Stelle, beide in 1.3.2b24 behoben.
 
 ## Idempotenz ist die Prüfung, die gefehlt hat
 
-Ein Durchlauf Import → Export muss beim **zweiten** Mal dasselbe liefern wie beim ersten. Fast jede Durchlaufprüfung fragte bis 1.3.2b24 nur "ist etwas verloren gegangen?", keine "ist etwas dazugekommen?" — und die Hilfsfunktionen in `kopflos.js` konnten Dubletten gar nicht zählen, weil `vorlagenMarken` ein `Set` zurückgibt. Die Größe stand nur als Info da.
+Ein Durchlauf Import → Export muss beim **zweiten** Mal dasselbe liefern wie beim ersten. Fast jede Durchlaufprüfung fragte bis 1.3.2b25 nur "ist etwas verloren gegangen?", keine "ist etwas dazugekommen?" — und die Hilfsfunktionen in `kopflos.js` konnten Dubletten gar nicht zählen, weil `vorlagenMarken` ein `Set` zurückgibt. Die Größe stand nur als Info da.
 
 Die richtige Erwartung ist nicht "Pass 0 == Pass 1": Der erste Durchlauf normiert (Vorlagen auffrischen, Standards nachfüllen, Ballast entfernen) und darf viel ändern. Ab dem zweiten darf sich nichts mehr ändern.
 
@@ -328,7 +376,7 @@ Läuft alles durch, was ohne laufende Instanz prüfbar ist: Syntax von Panel, Py
 
 Das führende `v` einer Marke wird abgestreift, wie `ci.yml` es tut: Stabile Releases tragen eins (`v1.3.0`), die Version im Manifest nicht. Vorher war das Tor mit dem echten Markennamen eines stabilen Release nicht laufbar.
 
-**Vier Stellen konnten grün melden, ohne geprüft zu haben (bis 1.3.2b24).** Am 2026-10-01 gefunden, die erste nachgestellt:
+**Vier Stellen konnten grün melden, ohne geprüft zu haben (bis 1.3.2b25).** Am 2026-10-01 gefunden, die erste nachgestellt:
 
 1. `git status` wurde an der **Ausgabe** geprüft, nicht am Rückgabewert. Ein scheiterndes git liefert eine leere Ausgabe — und die galt als "nichts Uncommittetes". Mit Rückgabewert 128 war der Schritt grün.
 2. Die Version wurde mit `2>/dev/null` gelesen, danach stand ein **bedingungsloses** `ok "manifest.json sagt $VERSION"`. War die Datei nicht lesbar, meldete das Tor "ok manifest.json sagt " und lief weiter.
