@@ -5,7 +5,7 @@
 <p align="center">
   <img src="https://img.shields.io/github/v/release/Piranha1605/ha-theme-generator?include_prereleases&label=Version&color=2F80ED" alt="Version" />
   <img src="https://img.shields.io/badge/HACS-Custom%20Repository-2F80ED?logo=home-assistant&logoColor=white" alt="HACS" />
-  <img src="https://img.shields.io/badge/Variables-763%20verified-2F80ED" alt="763 verified variables" />
+  <img src="https://img.shields.io/badge/Variables-777%20verified-2F80ED" alt="777 verified variables" />
   <img src="https://img.shields.io/github/stars/Piranha1605/ha-theme-generator?color=2F80ED" alt="Stars" />
   <img src="https://img.shields.io/github/issues/Piranha1605/ha-theme-generator?color=2F80ED" alt="Issues" />
 </p>
@@ -24,7 +24,7 @@
 
 HATG is a dedicated panel in your Home Assistant sidebar for building complete themes visually — for Home Assistant itself, for **Bubble Card**, for **Mushroom** and for global tweaks via **UI eXtension (UIX)**. No jumping between YAML files, no guessing which variable hits which card: you set colours, shapes and states in one place, HATG distributes them across all three worlds and shows you the result live — optionally right inside your real dashboard.
 
-Every one of the 763 fields was verified against the actual source code of Home Assistant, Bubble Card and Mushroom, or against the UIX documentation. Only variables that genuinely exist are included — what you set is what arrives.
+Every one of the 777 fields was verified against the actual source code of Home Assistant, Bubble Card and Mushroom, or against the UIX documentation. Only variables that genuinely exist are included — what you set is what arrives.
 
 > **Language:** HATG speaks English and German. The interface follows your Home Assistant language automatically and can be switched at any time under the gear icon.
 
@@ -60,7 +60,7 @@ HATG then appears as its own entry in the sidebar. That's it — no further conf
 
 ### Optional but recommended: UI eXtension (UIX)
 
-The **UIX presets** page and the style targets (`uix-card`, `uix-root`, `uix-view` and 22 more) only take effect with [UI eXtension](https://github.com/Lint-Free-Technology/uix) installed (also available through HACS). HATG works fully without UIX — those building blocks simply stay silent.
+The **UIX presets** page and the style targets (`uix-card`, `uix-root`, `uix-view` and 25 more) only take effect with [UI eXtension](https://github.com/Lint-Free-Technology/uix) installed (also available through HACS). HATG works fully without UIX — those building blocks simply stay silent.
 
 After downloading, UIX has to be **added as a device**: **Settings → Devices & Services → Add integration → UI eXtension**. This is the step most people miss.
 
@@ -139,7 +139,7 @@ Besides gradients (sunrise, night sky, radial) you can set your **own image**. T
 
 ## All sections at a glance
 
-The sidebar organises all 763 fields into thematic sections — Bubble Card with its own subpage per card type, the UIX presets with one subpage per style target:
+The sidebar organises all 777 fields into thematic sections — Bubble Card with its own subpage per card type, the UIX presets with one subpage per style target:
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-navigation.png" alt="Navigation with all sections" width="22%" />
@@ -154,14 +154,14 @@ The sidebar organises all 763 fields into thematic sections — Bubble Card with
 | **Button Card** | Click effect, loading spinner, tooltip – surface, radius and shadow come from the HA framework, icon colours from the states |
 | **All fields** | The complete list with full-text search, colour, type and word-fragment filters plus multi-select for bulk changes |
 | **Code editor** | Every value as text — type instead of click, changes apply instantly |
-| **UIX & generator** | The 25 style targets including their shadow DOM variants, the glass values and a free field for your own theme entries |
+| **UIX & generator** | The 28 style targets including their shadow DOM variants, the glass values and a free field for your own theme entries |
 | **UIX presets** | Global UIX building blocks in one click, split into one subpage per style target — the number beside it names that target's presets |
 | **Plugins** | Copy-and-paste snippets for individual cards (Bubble slider, glass effects, state-dependent design) |
 | **UIX help** | Migrating from card-mod, every style target at a glance, common pitfalls |
 
 ### All fields — finding instead of searching
 
-The **word-fragment filter** combines building blocks such as `color`, `background` or `button` with narrowing tags (`bubble`, `climate`, `stack`) — so even among 763 variables the right one is found in seconds. With multi-select, entire groups of fields get the same value in a single step.
+The **word-fragment filter** combines building blocks such as `color`, `background` or `button` with narrowing tags (`bubble`, `climate`, `stack`) — so even among 777 variables the right one is found in seconds. With multi-select, entire groups of fields get the same value in a single step.
 
 ### Code editor
 
@@ -212,7 +212,7 @@ A few presets you would not expect at first glance:
 
 Via "New preset" you can create your own CSS blocks — with a name, a description, a style target and bracket validation on save. They are stored in `config/themes/hatg/hatg-uix-vorlagen.json`, so they survive theme and browser changes and are part of your backup. Activating, combining and the refresh detection all work just like the built-in ones.
 
-Every one of the 25 style targets can be addressed, each in two forms: as plain CSS (`uix-card`) and as YAML with shadow DOM paths (`uix-card-yaml`) when a building block sits deep inside a component.
+Every one of the 28 style targets can be addressed, each in two forms: as plain CSS (`uix-card`) and as YAML with shadow DOM paths (`uix-card-yaml`) when a building block sits deep inside a component.
 
 ### Warnings that save you time
 
@@ -302,7 +302,7 @@ Nothing — themes live in `config/themes/`, custom UIX presets in `config/theme
 Not every style target reaches every surface. `ha-panel-config`, for instance, has no shadow root at all, so a `:host` block never arrives there — presets like that sit on the app drawer instead or work with shadow DOM paths. When building your own: in the browser console, `uix_style_path($0)` prints the path UIX expects for the selected element.
 
 **I am still on card-mod. Can I keep using HATG?**
-Yes. The gear menu lets you set the output format to `card-mod`, and HATG writes the old field names. Ten of the 25 style targets do not exist in card-mod though; if they are filled, HATG points that out in the **UIX & generator** section. In the long run there is no way around UIX.
+Yes. The gear menu lets you set the output format to `card-mod`, and HATG writes the old field names. Thirteen of the 28 style targets do not exist in card-mod though; if they are filled, HATG points that out in the **UIX & generator** section. In the long run there is no way around UIX.
 
 **Can I remove HATG again?**
 Any time. The generated themes are ordinary YAML files and keep working without HATG.

@@ -11,7 +11,7 @@ custom_components/hatg/
 ├── __init__.py           Einstiegspunkt der Integration
 ├── config_flow.py        Einrichtung über die Oberfläche
 ├── const.py              Konstanten
-├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b27
+├── manifest.json         Domain hatg, aktuell v1.3.2, im Test 1.3.2
 ├── translations/         de.json und en.json
 ├── brand/                Icons für den HACS-Store
 └── www/
@@ -651,7 +651,7 @@ Dependabot ist für dieses Repository aktiviert.
 
 ## Zielgruppe
 
-Fortgeschrittene. Wer rund 620 Theme-Variablen anfasst, kennt sein System, nutzt vermutlich schon Bubble Card oder Mushroom und will bis ins Detail gestalten. Das unterscheidet HATG von HA-OS, das sich an Einsteiger richtet.
+Fortgeschrittene. Wer rund 780 Theme-Variablen anfasst, kennt sein System, nutzt vermutlich schon Bubble Card oder Mushroom und will bis ins Detail gestalten. Das unterscheidet HATG von HA-OS, das sich an Einsteiger richtet.
 
 ## Schreibstil
 
