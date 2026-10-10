@@ -207,6 +207,67 @@ ein Alphawert in die Farbe; jede mitgelieferte Palette trägt dort `…cc`.
 Erlaubt sind `#hex` (3/4/6/8 Stellen), `rgb()`, `rgba()`, `color(srgb …)` und —
 über einen Mess-Span im Frontend — auch benannte Farben und `var()`-Verweise.
 
+### Für welche Karte das gilt: für jede
+
+Es gibt in Home Assistant nur **ein** Kartenbauteil, `ha-map`. Am 10.10.2026 an
+der laufenden Instanz gesucht — fünf Stellen binden es ein:
+
+    hui-map-card / hui-map-overview   die Karten-Karte auf dem Dashboard
+    ha-panel-map                      das Karten-Panel in der Seitenleiste
+    ha-locations-editor               der Zonen- und Standort-Editor
+    more-info-person                  der Info-Dialog einer Person
+    Einstellungen -> Allgemein        die Standortwahl
+
+`ha-map` wählt seine Maschine selbst:
+
+```js
+async _createEngine() {
+  if (this._forceLeaflet || !(0, f.jV)()) return new LeafletMapEngine();
+  return new MapLibreMapEngine();
+}
+```
+
+Normalfall ist die **Vektorkarte über MapLibre**; Leaflet ist der Rückfall, wenn
+die Prüfung scheitert oder das Aufsetzen einen Fehler wirft (`_forceLeaflet`
+wird dann gesetzt und neu geladen). Nachgemessen an einer erzeugten Karte:
+`_forceLeaflet: false`, Klassen `maplibregl-map`, `maplibregl-canvas` — also
+Vektor. Die Tokens greifen nur dort; für den Rasterrückfall dreht HA lediglich
+`--map-filter` auf.
+
+**Und `map_style` auf der Karte schließt die Tokens nicht aus.** Es wählt den
+Grundstil, die Theme-Farben überschreiben darin einzelne Ebenen
+(`_resolveMapStyle(this.mapStyle, this._darkMode, this._themeColors)`).
+
+### Die Falle: `theme_mode` auf der Karte schaltet die Tokens ab
+
+```js
+_readThemeColors() {
+  const t = Boolean(this._ui?.themes?.darkMode);          // Modus des Dashboards
+  const e = this._darkMode === t ? tokensLesen(this) : void 0;
+  …
+}
+```
+
+Die Tokens werden **nur gelesen, wenn der Modus der Karte dem des Dashboards
+entspricht**. Am 10.10.2026 an drei Karten auf einem hellen Dashboard gemessen:
+
+    theme_mode: auto    Karte hell  == Dashboard hell   ->  4 Slots gefärbt
+    theme_mode: light   Karte hell  == Dashboard hell   ->  4 Slots gefärbt
+    theme_mode: dark    Karte dunkel != Dashboard hell  ->  nichts gelesen
+
+Der Grund liegt auf der Hand, sobald man es sieht: Die Werte kommen aus
+`getComputedStyle` der Seite, und dort stehen die Farben des *gerade geltenden*
+Modus. Eine Karte, die gegen das Dashboard auf Dunkel gezwungen wird, bekäme
+sonst die hellen Theme-Werte — HA lässt sie deshalb lieber seine eigene dunkle
+Kartografie nehmen.
+
+**Für HATG heißt das:** Wer eine dunkle Karte in einem hellen Theme will, trägt
+die dunkle Palette in die **Hell**-Felder ein und lässt `theme_mode` auf `auto`.
+Genau dafür füllt die Schnellwahl beide Modi getrennt.
+
+Ein Token deckt mehrere Slots ab: `ha-color-map-land` färbt `background` und
+`land`, drei gesetzte Tokens ergaben deshalb vier gefärbte Slots.
+
 ### Die automatische Zuordnung: vier Stellen, nicht eine
 
 Die Felder nur ins Manifest zu schreiben, hätte an drei Stellen stumm
@@ -570,7 +631,21 @@ Was das Tor **nicht** abdeckt: ob Home Assistant oder UIX eine Variable oder ein
 
 Vier Stück: `ci`, `hacs`, `hassfest`, `validate`. Der Validate-Lauf geht täglich durch.
 
-**Ein roter Lauf bei `hacs` oder `hassfest` ist dringend** — er gefährdet die Aufnahme in den Store. Die Einreichung läuft als [PR #9706](https://github.com/hacs/default/pull/9706) bei `hacs/default`, eingereicht am 03.08.2026, mit mehreren hundert älteren PRs davor. Dort ist eher mit Monaten als Wochen zu rechnen.
+**Ein roter Lauf bei `hacs` oder `hassfest` ist dringend** — er gefährdet die Aufnahme in den Store.
+
+**Stand der Einreichung, am 10.10.2026 nachgesehen.** [PR #9706](https://github.com/hacs/default/pull/9706) bei `hacs/default`, eingereicht am 03.08.2026, **offen**, Zustand `REVIEW_REQUIRED` — es ist nichts von uns verlangt worden. Alle Einzelprüfungen grün (Hassfest, HACS action, Owner, Releases, Preflight und die übrigen).
+
+**Die eine rote Zeile täuscht.** `Action checks completed` steht zweimal in der Liste: einmal `FAILURE` um 12:43:47, einmal `SUCCESS` um 12:45:10. Der erste Lauf fiel, während die Einzelprüfungen noch abgebrochen und neu gestartet wurden; 83 Sekunden später war alles grün. Wer nur auf den Rollup schaut, hält die Einreichung für kaputt.
+
+**Die Warteschlange ist kürzer als gedacht, dafür steht sie.** 1857 offene PRs, davon 414 mit `CHANGES_REQUESTED` (die hängen an ihren Einreichern) und 1442 ohne Review. Älter als unserer und noch ohne Review: **107**. Der Durchsatz dagegen:
+
+    Juni 282   Juli 263   August 477   September 20   Oktober 0
+
+Die letzte Charge neuer Integrationen wurde am **02.09.2026** gemergt, fünfzehn auf einmal. Seitdem nichts mehr. Geschlossen wird weiter — am 10.10.2026 noch vier Stück —, das Repository ist also nicht tot.
+
+**Es geht nicht der Reihe nach.** In jener Charge lagen #8389 bis #10542 nebeneinander, also auch PRs, die nach unserem eingereicht wurden. Aus der Position in der Schlange lässt sich kein Termin ableiten.
+
+**Nichts am PR-Branch anfassen.** Bei #10550 hat ein Push den PR automatisch geschlossen, der Einreicher musste neu einreichen und stand damit hinten. Solange nichts verlangt wird, ist Warten die richtige Handlung.
 
 Dependabot ist für dieses Repository aktiviert.
 
