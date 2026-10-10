@@ -11,7 +11,7 @@ custom_components/hatg/
 ├── __init__.py           Einstiegspunkt der Integration
 ├── config_flow.py        Einrichtung über die Oberfläche
 ├── const.py              Konstanten
-├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b26
+├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b27
 ├── translations/         de.json und en.json
 ├── brand/                Icons für den HACS-Store
 └── www/
@@ -34,7 +34,7 @@ Die Versionsnummer steht an vier Stellen und muss überall gleich sein: `manifes
 
 - **Startseite** — Grundfarben, Basis-Einstellungen, Zustände, Hintergründe
 - **Thematische Bereiche** — HA-Grundgerüst, Bubble Card mit Unterseiten, Mushroom, Button Card (nur ihre eigenen Variablen für Klick-Effekt, Ladeanzeige, Tooltip; gegen button-card v7.0.1 `src/styles.ts` geprüft)
-- **Alle Felder** — Volltext- und Filtersuche über sämtliche 763 verifizierten Variablen
+- **Alle Felder** — Volltext- und Filtersuche über sämtliche 777 verifizierten Variablen
 - **Verlauf für aktive Flächen** — im Glas-Bereich: zwei Farben, Richtung, Schriftfarbe; Block `verlauf-akzent` in `uix-card` und `uix-sidebar`. Horizon-Cards (frueher HA-Karten) lesen ihn seit Sammlung v2.6.1 über die gemeinsame Kette `--karten-gewaehlt`, `-vorn`, `-schatten` (Kurzform `background`), die Kante kommt aus `neumorph-tiefe`/`neumorph-hell`; HA-eigene Knöpfe nehmen keinen Verlauf an (nur Farbvariablen)
 - **Code-Editor** — textbasierte Bearbeitung mit Syntax-Highlighting
 - **Vorlagen** — vorgefertigte CSS-Effekte, eine Unterseite je Stilziel; feste Werte sind über `werte: [...]` einstellbar (im CSS `[[id]]`, im Theme zwischen `/*HATG:WERT:id*/…/*HATG:WERT*/`, nur im Vorlagenblock, keine Theme-Felder, bleiben beim Auffrischen)
@@ -164,6 +164,98 @@ Erlaubt sind je Eintrag genau drei Schlüssel: `family`, `source`, `descriptors`
 **HATG braucht dafür kein neues Feld.** Am 09.10.2026 geprüft: Ein Theme mit `uix-fonts` läuft unverändert und idempotent durch Import und Export — `istFlach` lässt jedes `uix-`Feld auf Theme-Ebene stehen, und der Cleaner fasst es nicht an, weil `hatgIstStilzielFeld` greift. Der Bericht nennt es nur „unbekanntes Feld aufbewahrt".
 
 **Was dagegen nötig war: es vor Vorlagen schützen.** `hatgVorlagenZielGueltig` nahm sowohl `uix-fonts` als auch `uix-theme` als Vorlagenziel an. Bei `uix-theme` fiel es erst in `hatgVorlagenZiel` still auf `uix-card` zurück — der Dialog nahm es an, die Vorlage lag woanders, gesagt hat es niemand. Bei `uix-fonts` wäre CSS in der Schriftentabelle gelandet. `HATG_UIX_KEINE_ZIELE` weist beide jetzt schon bei der Prüfung ab, mit Begründung im Dialog.
+
+## Die Kartenfarben von HA 2026.10
+
+Seit dem 10.10.2026 kennt HATG die vierzehn Tokens, mit denen Home Assistant
+2026.10.0 die Vektorkarte einfärbt — unabhängig davon, ob das Dashboard hell
+oder dunkel steht. Eigener Ordner **„Karte"** im HA-Grundgerüst, damit 763 → 777.
+
+    ha-color-map-land        -water      -green            -area
+    ha-color-map-building    -building-outline
+    ha-color-map-road        -road-major -road-outline
+    ha-color-map-transit     -boundary
+    ha-color-map-label       -label-halo -label-secondary
+
+**Belegt, nicht geglaubt.** Die Namen stammen aus einem Beitrag der UIX-Guides;
+geprüft sind sie an der laufenden Instanz. Alle **1089 Frontend-Chunks** von
+HA 2026.10.0 durchsucht — sie stehen in genau einem (`49854.…js`), zusammen mit
+der Zuordnung auf die Kartenebenen:
+
+```js
+"--ha-color-map-land":  ["background","land"]
+"--ha-color-map-green": ["naturePark","natureWood","natureGrass",
+                         "natureLeisure","natureWetland","siteSports"]
+```
+
+Vierzehn Tokens decken 45 Farbslots ab. Jede Palette ist deshalb eine Näherung,
+keine Kopie des Originalstils.
+
+**Alle vierzehn Felder haben eine leere Vorgabe.** So liest HA sie:
+
+```js
+const a = getComputedStyle(t).getPropertyValue(r).trim();
+if (!a) continue;        // nicht gesetzt -> HA behaelt seine eigene Palette
+```
+
+Ein Wert in der Vorgabe nagelte jede von HATG erzeugte Theme auf eine
+Kartenfarbe fest — dieselbe Falle wie `ha-dialog-min-height: 100vh` in b22.
+
+**Das Alpha wird je Slot skaliert**: `siteSports` 15 %, `labelHalo` 80 %,
+POI-Label 40 %, Hausnummern 30 %. Bei `ha-color-map-label-halo` gehört deshalb
+ein Alphawert in die Farbe; jede mitgelieferte Palette trägt dort `…cc`.
+Erlaubt sind `#hex` (3/4/6/8 Stellen), `rgb()`, `rgba()`, `color(srgb …)` und —
+über einen Mess-Span im Frontend — auch benannte Farben und `var()`-Verweise.
+
+### Die automatische Zuordnung: vier Stellen, nicht eine
+
+Die Felder nur ins Manifest zu schreiben, hätte an drei Stellen stumm
+danebengegriffen. Wer die nächste Feldfamilie ergänzt, geht dieselbe Liste
+durch:
+
+1. **Der Farbwähler.** `hatgGetKeyFormats` erkannte Farbfelder ohne Vorgabe
+   allein an der Endung `-color`. **Kein** Kartenname endet so; alle vierzehn
+   wären auf `other` gefallen und hätten ein nacktes Textfeld bekommen, obwohl
+   sie Farben sind. Die Regel prüft jetzt zusätzlich gegen
+   `HATG_KARTENFARBEN_KEYS`. Format ist `rgba`, nicht `hex` — `label-halo`
+   braucht die Deckkraft.
+2. **Der Ordner.** Neue Gruppe `hintergruende-karten__karte` im Abschnitt,
+   dazu die vierzehn Namen in dessen `keys`. Nur die Gruppe anzulegen reicht
+   nicht, nur die `keys` auch nicht.
+3. **Keine Ableitungsregel.** Bewusst kein Eintrag in `HATG_DERIVE_RULES`:
+   `propagateDerivation` schreibt in jedes Ziel, sobald die Quelle sich ändert.
+   Die Kartenfelder bekämen damit bei jedem Farbwechsel Werte — und wären nie
+   wieder leer. Die Schnellwahl unten ersetzt das.
+4. **Der Import-Cleaner** fasst sie nicht an; `ha-` ist eine geschützte
+   Vorsilbe in `hatgIstFremdesFeld`. Geprüft, nicht angenommen.
+
+### Die Paletten füllen beide Modi auf einmal
+
+Sechs Stile (Standard, Bunt, Natur, Gedämpft, Grau, Kontrast) je hell und
+dunkel, als Chips über den Feldern. `setzeKartenPalette` schreibt Light und
+Dark in einem Zug, „Home Assistant" leert alle vierzehn wieder.
+
+**Wiedererkannt wird über Farbe und Deckkraft, nicht über die Schreibweise.**
+Der Import schreibt Farbfelder im rgba-Format zurück: aus `#faf8f5cc` wird
+`rgba(250, 248, 245, 0.8)`. Ein Zeichenvergleich hätte die Palette nach dem
+ersten Speichern nicht mehr erkannt.
+
+### Dabei gefunden: der Import warf Alphawerte weg
+
+`hatgNormalizeRgbaLegacyHex` setzte den Alphawert fest auf 1. `HATG_HEX_RE`
+nimmt aber auch Hex mit vier und acht Stellen an, und die tragen ihr Alpha in
+den letzten Stellen:
+
+    vorher    #000000cc  ->  rgba(0, 0, 0, 1)     Durchsichtigkeit weg
+    jetzt     #000000cc  ->  rgba(0, 0, 0, 0.8)
+
+Ein alter Fehler, der erst mit den Kartenfarben auffiel — dort trägt jede
+Palette bei `label-halo` ein `…cc`, die Lichthöfe hinter den Beschriftungen
+wären deckend geworden. Betroffen war jedes Farbfeld im rgba-Format, in das
+jemand ein Hex mit Alphaanteil schreibt. `hatgHexAlpha` liest den Wert jetzt
+aus; ohne Alphaanteil kommt weiterhin 1 zurück.
+
+`tests/hatg-karte.test.js` hält alles fest, elf Prüfungen mit Gegenproben.
 
 ## Flächen unter Symbolknöpfen: drei Vorlagen, einzeln schaltbar
 

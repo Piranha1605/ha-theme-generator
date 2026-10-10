@@ -12,12 +12,12 @@ Rendern mit Chrome, danach auf 1600 px Breite rechnen:
 sips -Z 1600 roh.png --out ../banner.png
 ```
 
-Die Werte im Banner (763 Variablen, 57 Vorlagen, 28 Stilziele) stehen im HTML und
+Die Werte im Banner (777 Variablen, 57 Vorlagen, 28 Stilziele) stehen im HTML und
 muessen bei groesseren Aenderungen am Panel nachgezogen werden.
 
 ---
 
 `banner-de.html` and `banner-en.html` produce `docs/banner.png` and `docs/banner-en.png`.
 Render them with Chrome as shown above, then scale to 1600 px width. The figures in the
-banner (763 variables, 57 presets, 28 style targets) live in the HTML and need updating
+banner (777 variables, 57 presets, 28 style targets) live in the HTML and need updating
 when the panel changes substantially.
