@@ -45,8 +45,14 @@ pruefe("Bekannte Ziele bleiben unveraendert", () => {
   assert.equal(zielVon("uix-more-info-yaml"), "uix-more-info-yaml");
 });
 
+// "uix-9start" stand hier bis 1.3.2b25 mit in der Liste - die Regel verlangte
+// damals einen Buchstaben am Anfang, weil ein Panel-Ziel nach dem Wurzelelement
+// heisst und ein Custom-Element-Name mit einem Buchstaben beginnen muss. Fuer
+// Add-on-Panels gilt das nicht: Dort bildet UIX 8.4.0 den Typnamen aus dem
+// Add-on-Slug, und dessen Hex-Vorsilbe darf mit einer Ziffer anfangen
+// (5c53de3b_esphome). Eine fuehrende Ziffer ist seitdem gueltig.
 pruefe("Unsinn faellt weiterhin auf uix-card zurueck", () => {
-  for (const z of ["", null, undefined, "uix-theme", "card-mod-card", "ha-card", "UIX-CARD", "uix-", "uix-9start", "uix-mit leerzeichen", "uix-Gross"]) {
+  for (const z of ["", null, undefined, "uix-theme", "card-mod-card", "ha-card", "UIX-CARD", "uix-", "uix-mit leerzeichen", "uix-Gross"]) {
     assert.equal(zielVon(z), "uix-card", `${JSON.stringify(z)} haette nicht durchgehen duerfen`);
   }
 });
@@ -122,6 +128,82 @@ pruefe("Das eigene Ziel ueberlebt Import und Export", () => {
 pruefe('Der doppelte Untereintrag "Alle Vorlagen" ist weg', () => {
   const js = fs.readFileSync(path.join(__dirname, "..", "custom_components", "hatg", "www", "hatg-panel.js"), "utf8");
   assert.ok(!/"All presets"/.test(js), 'der Navigationseintrag "Alle Vorlagen" steht noch im Code');
+});
+
+// Das Zielfeld im Dialog ist bei einer NEUEN Vorlage leer, "uix-card" steht nur
+// als Platzhalter. Vorbelegt war es bis 1.3.2b23 - wer etwas anderes wollte,
+// musste es erst loeschen. Von einem Nutzer am 2026-10-08 gemeldet.
+//
+// Leer darf es nur bleiben, solange der Speicherweg daraus uix-card macht.
+// Genau das sichert diese Pruefung: Faellt der Rueckfall weg, landet eine
+// Vorlage ohne Ziel irgendwo - oder nirgends.
+pruefe("Ein leeres Ziel wird beim Speichern zu uix-card", () => {
+  for (const leer of ["", "   ", undefined, null]) {
+    assert.equal(
+      zielVon(leer),
+      "uix-card",
+      `aus ${JSON.stringify(leer)} wurde nicht uix-card`
+    );
+  }
+});
+
+pruefe("Das Zielfeld im Dialog ist nicht mehr vorbelegt", () => {
+  const quelle = require("node:fs").readFileSync(
+    require("node:path").join(__dirname, "..", "custom_components", "hatg", "www", "hatg-panel.js"),
+    "utf8"
+  );
+  const zeile = /data-eigene-vorlage-ziel[\s\S]{0,200}?placeholder="uix-card"/.exec(quelle);
+  assert.ok(zeile, "das Zielfeld wurde nicht gefunden");
+  assert.ok(
+    !/value="\$\{hatgEscape\(hatgVorlagenZiel\(dialog\)\)\}"/.test(zeile[0]),
+    "das Feld ist wieder mit hatgVorlagenZiel(dialog) vorbelegt"
+  );
+  assert.match(zeile[0], /placeholder="uix-card"/, "der Platzhalter fehlt");
+});
+
+// UIX 8.4.0 bildet das Stilziel eines Add-on-Panels aus dessen Slug
+// (src/patch/ha-panel-app.ts, appThemeTypes). Slugs tragen Unterstriche und
+// koennen mit einer Ziffer beginnen - die alte Regel uix-[a-z][a-z0-9-]* wies
+// sie alle ab. Am 2026-10-09 an einer laufenden Instanz nachgesehen: Von den
+// drei dort installierten Add-ons fiel JEDES durch.
+//
+// Auch die von UIX zusaetzlich angebotene gekuerzte Form rettet nicht immer:
+// Aus core_matter_server wird matter_server - der Unterstrich bleibt.
+pruefe("Add-on-Panels sind gueltige Ziele", () => {
+  for (const slug of [
+    "uix-core_matter_server", "uix-a0d7b954_vscode", "uix-cb646a50_get",
+    "uix-matter_server", "uix-5c53de3b_esphome", "uix-vscode",
+  ]) {
+    assert.equal(zielVon(slug), slug, `${slug} wurde abgewiesen`);
+  }
+});
+
+// Die Gegenrichtung: Die Regel darf nicht alles durchlassen.
+pruefe("Unsinn bleibt abgewiesen", () => {
+  for (const schlecht of ["uix-Gross", "uix--doppelt", "uix-", "uix", "card", "uix-mit punkt"]) {
+    assert.equal(zielVon(schlecht), "uix-card", `${schlecht} haette abgewiesen werden muessen`);
+  }
+});
+
+// Nicht jedes uix-Feld ist ein Stilziel. uix-theme traegt den Theme-Namen,
+// uix-fonts seit UIX 8.4.0 eine YAML-Abbildung von Schriften. Eine Vorlage
+// dorthin zu richten zerstoert den Inhalt - bei uix-fonts landete CSS in der
+// Schriftentabelle, und UIX meldet das nur als Konsolenwarnung.
+//
+// uix-theme kam bis 1.3.2b24 durch die Pruefung und fiel erst in
+// hatgVorlagenZiel still auf uix-card zurueck: Der Dialog nahm es an, die
+// Vorlage lag woanders, gesagt hat es niemand.
+pruefe("uix-theme und uix-fonts sind keine Stilziele", () => {
+  for (const k of ["uix-theme", "uix-fonts", "uix-fonts-yaml"]) {
+    assert.equal(zielVon(k), "uix-card", `${k} wurde als Ziel angenommen`);
+  }
+});
+
+// Gegenprobe: ein echtes Ziel mit aehnlichem Namen muss weiter durchgehen.
+pruefe("Aehnlich benannte echte Ziele bleiben gueltig", () => {
+  for (const k of ["uix-todo", "uix-toast", "uix-top-app-bar-fixed"]) {
+    assert.equal(zielVon(k), k, `${k} wurde faelschlich abgewiesen`);
+  }
 });
 
 console.log(fehler ? `\n${fehler} Test(s) fehlgeschlagen.` : "\nAlle Tests bestanden.");

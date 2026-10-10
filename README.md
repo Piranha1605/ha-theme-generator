@@ -5,7 +5,7 @@
 <p align="center">
   <img src="https://img.shields.io/github/v/release/Piranha1605/ha-theme-generator?include_prereleases&label=Version&color=2F80ED" alt="Version" />
   <img src="https://img.shields.io/badge/HACS-Custom%20Repository-2F80ED?logo=home-assistant&logoColor=white" alt="HACS" />
-  <img src="https://img.shields.io/badge/Variablen-625%20gepr%C3%BCft-2F80ED" alt="625 geprüfte Variablen" />
+  <img src="https://img.shields.io/badge/Variablen-777%20gepr%C3%BCft-2F80ED" alt="777 geprüfte Variablen" />
   <img src="https://img.shields.io/github/stars/Piranha1605/ha-theme-generator?color=2F80ED" alt="Stars" />
   <img src="https://img.shields.io/github/issues/Piranha1605/ha-theme-generator?color=2F80ED" alt="Issues" />
 </p>
@@ -24,7 +24,7 @@
 
 HATG ist ein eigenes Panel in deiner Home-Assistant-Seitenleiste, mit dem du komplette Themes visuell aufbaust — für Home Assistant selbst, für **Bubble Card**, für **Mushroom** und für globale Anpassungen per **UI eXtension (UIX)**. Kein Springen zwischen YAML-Dateien, kein Raten, welche Variable welche Karte trifft: Du stellst Farben, Formen und Zustände an einer Stelle ein, HATG verteilt sie an alle drei Welten und zeigt dir das Ergebnis live — auf Wunsch direkt in deinem echten Dashboard.
 
-Jedes der 625 Felder wurde gegen den echten Quellcode von Home Assistant, Bubble Card und Mushroom beziehungsweise gegen die UIX-Dokumentation geprüft. Es sind ausschließlich real existierende Variablen enthalten — was du einstellst, kommt auch an.
+Jedes der 777 Felder wurde gegen den echten Quellcode von Home Assistant, Bubble Card und Mushroom beziehungsweise gegen die UIX-Dokumentation geprüft. Es sind ausschließlich real existierende Variablen enthalten — was du einstellst, kommt auch an.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/unified-theme-demo.png" alt="Ein Theme, gleichzeitig angewendet auf HA-Karten, Mushroom und Bubble Card" width="70%" />
@@ -58,7 +58,7 @@ HATG erscheint danach als eigener Eintrag in der Seitenleiste. Fertig — weiter
 
 ### Optional, aber empfohlen: UI eXtension (UIX)
 
-Die Seite **UIX-Vorlagen** und die Stilziele (`uix-card`, `uix-root`, `uix-view` und 22 weitere) entfalten ihre Wirkung erst mit installiertem [UI eXtension](https://github.com/Lint-Free-Technology/uix) (ebenfalls über HACS erhältlich). Ohne UIX funktioniert HATG vollständig — nur diese Bausteine bleiben dann stumm.
+Die Seite **UIX-Vorlagen** und die Stilziele (`uix-card`, `uix-root`, `uix-view` und 25 weitere) entfalten ihre Wirkung erst mit installiertem [UI eXtension](https://github.com/Lint-Free-Technology/uix) (ebenfalls über HACS erhältlich). Ohne UIX funktioniert HATG vollständig — nur diese Bausteine bleiben dann stumm.
 
 UIX muss nach dem Download **als Gerät hinzugefügt** werden: **Einstellungen → Geräte & Dienste → Integration hinzufügen → UI eXtension**. Dieser Schritt wird am häufigsten übersehen.
 
@@ -137,7 +137,7 @@ Neben Verläufen (Sonnenaufgang, Nachthimmel, Radial) kannst du ein **eigenes Bi
 
 ## Alle Bereiche im Überblick
 
-Die Seitenleiste gliedert alle 625 Felder in thematische Sektionen — Bubble Card mit eigenen Unterseiten pro Kartentyp, die UIX-Vorlagen mit einer Unterseite pro Stilziel:
+Die Seitenleiste gliedert alle 777 Felder in thematische Sektionen — Bubble Card mit eigenen Unterseiten pro Kartentyp, die UIX-Vorlagen mit einer Unterseite pro Stilziel:
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Piranha1605/ha-theme-generator/main/docs/screenshots/panel-navigation.png" alt="Die Navigation des Panels mit allen Bereichen" width="22%" />
@@ -152,14 +152,14 @@ Die Seitenleiste gliedert alle 625 Felder in thematische Sektionen — Bubble Ca
 | **Button Card** | Klick-Effekt, Ladeanzeige, Tooltip – Fläche, Rundung und Schatten kommen aus dem HA-Grundgerüst, die Icon-Farben aus den Zuständen |
 | **Alle Felder** | Die komplette Liste mit Volltextsuche, Farb-, Typ- und Wortbaustein-Filtern sowie Mehrfachauswahl für Sammel-Änderungen |
 | **Code-Editor** | Alle Werte als Text — tippen statt klicken, Änderungen greifen sofort |
-| **UIX & Generator** | Die 25 Stilziele samt ihrer Shadow-DOM-Varianten, die Glaslook-Werte und ein Freifeld für eigene Theme-Einträge |
+| **UIX & Generator** | Die 28 Stilziele samt ihrer Shadow-DOM-Varianten, die Glaslook-Werte und ein Freifeld für eigene Theme-Einträge |
 | **UIX-Vorlagen** | Globale UIX-Bausteine per Klick, aufgeteilt in eine Unterseite je Stilziel — die Zahl daneben nennt die Vorlagen dieses Ziels |
 | **Plugins** | Kopiervorlagen für einzelne Karten (Bubble-Slider, Glas-Effekte, zustandsabhängiges Design) |
 | **UIX-Hilfe** | Umstieg von card-mod, alle Stilziele im Überblick, häufige Fehlerquellen |
 
 ### Alle Felder — finden statt suchen
 
-Der **Wortbaustein-Filter** kombiniert Bausteine wie `color`, `background` oder `button` mit einschränkenden Zusatz-Tags (`bubble`, `climate`, `stack`) — so ist auch unter 625 Variablen die richtige in Sekunden gefunden. Mit der Mehrfachauswahl bekommen ganze Feldgruppen in einem Schritt denselben Wert.
+Der **Wortbaustein-Filter** kombiniert Bausteine wie `color`, `background` oder `button` mit einschränkenden Zusatz-Tags (`bubble`, `climate`, `stack`) — so ist auch unter 777 Variablen die richtige in Sekunden gefunden. Mit der Mehrfachauswahl bekommen ganze Feldgruppen in einem Schritt denselben Wert.
 
 ### Code-Editor
 
@@ -210,7 +210,7 @@ Ein paar Vorlagen, die man auf den ersten Blick nicht erwartet:
 
 Über „Neue Vorlage" legst du eigene CSS-Bausteine an — mit Name, Beschreibung, Stilziel und Klammer-Prüfung beim Speichern. Sie landen in `config/themes/hatg/hatg-uix-vorlagen.json`, überleben also Theme- und Browserwechsel und liegen in deinem Backup. Aktivieren, Kombinieren und die Auffrisch-Erkennung funktionieren wie bei den Werksvorlagen.
 
-Jedes der 25 Stilziele lässt sich ansteuern, jeweils in zwei Formen: als reines CSS (`uix-card`) und als YAML mit Shadow-DOM-Pfaden (`uix-card-yaml`), wenn ein Baustein tief im Inneren einer Komponente sitzt.
+Jedes der 28 Stilziele lässt sich ansteuern, jeweils in zwei Formen: als reines CSS (`uix-card`) und als YAML mit Shadow-DOM-Pfaden (`uix-card-yaml`), wenn ein Baustein tief im Inneren einer Komponente sitzt.
 
 ### Warnungen, die dir Arbeit ersparen
 
@@ -300,7 +300,7 @@ Dafür muss [UI eXtension](https://github.com/Lint-Free-Technology/uix) installi
 Nicht jedes Stilziel erreicht jede Fläche. `ha-panel-config` etwa hat gar keinen Shadow Root, dort kommt ein `:host`-Block nie an — solche Vorlagen sitzen deshalb am App Drawer oder arbeiten mit Shadow-DOM-Pfaden. Wenn du eigene Vorlagen baust: In der Browser-Konsole zeigt `uix_style_path($0)` für ein ausgewähltes Element den Pfad, den UIX dafür erwartet.
 
 **Ich nutze noch card-mod. Kann ich HATG weiter verwenden?**
-Ja. Im Zahnrad-Menü lässt sich das Ausgabeformat auf `card-mod` stellen, dann schreibt HATG die alten Feldnamen. Zehn der 25 Stilziele kennt card-mod allerdings nicht; sind sie belegt, weist HATG im Bereich **UIX & Generator** darauf hin. Auf Dauer führt kein Weg an UIX vorbei.
+Ja. Im Zahnrad-Menü lässt sich das Ausgabeformat auf `card-mod` stellen, dann schreibt HATG die alten Feldnamen. Dreizehn der 28 Stilziele kennt card-mod allerdings nicht; sind sie belegt, weist HATG im Bereich **UIX & Generator** darauf hin. Auf Dauer führt kein Weg an UIX vorbei.
 
 **Kann ich HATG wieder entfernen?**
 Jederzeit. Die erzeugten Themes sind normale YAML-Dateien und funktionieren ohne HATG weiter.

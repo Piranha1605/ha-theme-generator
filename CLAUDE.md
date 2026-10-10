@@ -11,7 +11,7 @@ custom_components/hatg/
 ├── __init__.py           Einstiegspunkt der Integration
 ├── config_flow.py        Einrichtung über die Oberfläche
 ├── const.py              Konstanten
-├── manifest.json         Domain hatg, aktuell v1.3.1, im Test 1.3.2b20
+├── manifest.json         Domain hatg, aktuell v1.3.2, im Test 1.3.2
 ├── translations/         de.json und en.json
 ├── brand/                Icons für den HACS-Store
 └── www/
@@ -34,7 +34,7 @@ Die Versionsnummer steht an vier Stellen und muss überall gleich sein: `manifes
 
 - **Startseite** — Grundfarben, Basis-Einstellungen, Zustände, Hintergründe
 - **Thematische Bereiche** — HA-Grundgerüst, Bubble Card mit Unterseiten, Mushroom, Button Card (nur ihre eigenen Variablen für Klick-Effekt, Ladeanzeige, Tooltip; gegen button-card v7.0.1 `src/styles.ts` geprüft)
-- **Alle Felder** — Volltext- und Filtersuche über sämtliche 625 verifizierten Variablen
+- **Alle Felder** — Volltext- und Filtersuche über sämtliche 777 verifizierten Variablen
 - **Verlauf für aktive Flächen** — im Glas-Bereich: zwei Farben, Richtung, Schriftfarbe; Block `verlauf-akzent` in `uix-card` und `uix-sidebar`. Horizon-Cards (frueher HA-Karten) lesen ihn seit Sammlung v2.6.1 über die gemeinsame Kette `--karten-gewaehlt`, `-vorn`, `-schatten` (Kurzform `background`), die Kante kommt aus `neumorph-tiefe`/`neumorph-hell`; HA-eigene Knöpfe nehmen keinen Verlauf an (nur Farbvariablen)
 - **Code-Editor** — textbasierte Bearbeitung mit Syntax-Highlighting
 - **Vorlagen** — vorgefertigte CSS-Effekte, eine Unterseite je Stilziel; feste Werte sind über `werte: [...]` einstellbar (im CSS `[[id]]`, im Theme zwischen `/*HATG:WERT:id*/…/*HATG:WERT*/`, nur im Vorlagenblock, keine Theme-Felder, bleiben beim Auffrischen)
@@ -77,24 +77,310 @@ Seit v1.2.0 schreibt HATG `uix-*`-Felder statt `card-mod-*`. card-mod lädt seit
 - `uix-more-info`: UIX patcht nicht `ha-more-info-dialog`, sondern hängt die Styles an **`ha-adaptive-dialog`**. Pfade in `uix-more-info-yaml` brauchen deshalb ein führendes `$`: `"$ ha-dialog $"` für den Desktop-Dialog, `"$ ha-bottom-sheet $"` für Tablet und Handy – ohne das `$` greift nichts. Das `"."`-CSS landet im Shadow Root von `ha-more-info-dialog`, `:host` ist dort dieser Dialog. Die Dialogfläche färbt HA nur über `background-color`; ein Bild braucht eine Regel auf `wa-dialog::part(dialog)` beziehungsweise `wa-drawer::part(dialog)`. Am 2026-09-14 mit Markierungen an einer laufenden Instanz geprüft.
 - **Gar kein `$$` in Pfaden — auch nicht in der Mitte.** `$$` ist die rekursive, Shadow-DOM-durchdringende Suche. Ein einziger Pfad damit legt **jedes** `-yaml`-Feld still, im ganzen Theme. Am 2026-09-26 mit UIX 8.3.1 an einer laufenden Instanz gemessen: solange `"ha-config-dashboard $$ ha-config-navigation-list $"` im Theme stand, waren alle 17 Karten-Knoten leer, kein Knoten in `ha-button` oder `ha-switch`, kein `more-info`-Knoten — obwohl `js-yaml` jede Karte fehlerfrei las und die Konsole nichts meldete. Nach dem Entfernen dieses einen Pfades füllten sich die Karten-Knoten sofort. Am 2026-09-20 war unter 8.2.0 noch notiert, `$$` sei in der Mitte in Ordnung; das gilt nicht. `HATG_EINSTELLUNGEN_PFADE` kommt deshalb ohne die Übersichtsseite der Einstellungen aus, und ein Test verbietet `$$` in jedem Vorlagenpfad.
 - **Der Fehler ist stumm.** Weder Konsole noch YAML-Prüfung zeigen ihn. Ob die `-yaml`-Felder ankommen, sieht man nur an den `uix-node`-Elementen: Sind die einfachen Ziele (`drawer`, `sidebar`, `root`) gefüllt und die `card`-Knoten leer, stimmt etwas mit dem `-yaml`-Feld nicht.
-- **Wie ein Pfadschritt auflöst.** Am 2026-09-27 mit UIX 8.3.1 an drei Varianten desselben Ziels nachgemessen:
-  - Der **erste Teil** des Selektors eines Schritts muss **direktes Kind** der aktuellen Wurzel sein, der Rest darf Nachfahre sein. Auf der Einstellungs-Übersicht traf `ha-config-dashboard $ ha-top-app-bar-fixed ha-config-navigation $` alle drei Karten; `ha-config-dashboard $ ha-config-navigation $` traf nichts, obwohl `ha-config-navigation` ein Nachfahre ist, und `ha-config-dashboard $ ha-config-section ha-card ha-config-navigation $` ebenfalls nichts, weil `ha-config-section` kein direktes Kind ist.
+- **Wie ein Pfadschritt auflöst.** Am 09.10.2026 im Auflöser der installierten `uix.js` 8.4.0 nachgelesen, nachdem die Messungen vom 2026-09-27 nur beschrieben, nicht erklärt waren. Der Tokenizer trennt an `$` **und an jedem Leerzeichen**; die Schleife darüber lautet sinngemäß:
+
+```js
+for (const s of tokens) {
+  if (s === "$")  { r = r.map(l => l.shadowRoot); continue; }
+  const a = r[0];                       // nur der ERSTE Treffer geht weiter
+  if (!a) return null;
+  r = a.querySelectorAll(s);
+}
+```
+
+Daraus folgt alles Weitere:
+
+  - **Jedes Wort ist ein eigener Schritt.** `ha-card ha-icon-button $` ist kein CSS-Nachfahrenselektor, sondern: alle `ha-card` suchen, **die erste** nehmen, darin alle `ha-icon-button` suchen, in deren Shadow Root steigen. Wo mehrere Treffer zählen sollen, gehört das Element in den **letzten** Schritt — `ha-icon-button $` erreicht alle, `ha-card ha-icon-button $` nur die der ersten Karte.
+  - **Gesucht wird mit `querySelectorAll`**, also unter allen Nachfahren im selben Baum, nicht nur unter den direkten Kindern. Die ältere Notiz „der erste Teil muss direktes Kind sein" beschrieb eine Beobachtung, nicht den Code.
   - Ein `$` steigt in den **Shadow Root** ab. Liegt das Element im Licht-DOM, ist das ein Schritt zu viel: `hui-generic-entity-row $ ha-entity-toggle $` traf nichts, `hui-generic-entity-row ha-entity-toggle $` sofort beide Zeilenschalter.
-  - **Zwischenschritte nehmen nur den ersten Treffer**, der letzte Schritt alle. Derselbe Pfad eine Ebene tiefer (`… ha-config-navigation $ ha-config-navigation-list $`) kam deshalb nur bei der ersten von drei Karten an.
-- **`::part()` statt Pfad, wo es geht.** `"ha-switch $"` findet nichts, sobald das Element tiefer hängt — in eigenen Karten sitzt der Schalter unter `button > div > div > ha-card`. Wo ein Web-Awesome-Element CSS-Teile nach außen gibt, greift `::part()` durch die Shadow-Grenze, unabhängig von der Tiefe, und braucht kein `-yaml`-Feld. `ha-switch` bietet `base`, `control` und `thumb`. Es reicht aber nur durch **eine** Grenze: Der Schalter einer Entitätenzeile (`hui-toggle-entity-row $ hui-generic-entity-row > ha-entity-toggle $ ha-switch`) und der Sammelschalter im Kartenkopf (`ha-card > h1 > hui-entities-toggle $ ha-switch`) brauchen deshalb je einen eigenen Pfad — drei Vorlagen für drei Stellen.
-- **Stilziele sind nicht auf die feste Liste begrenzt.** Mit der UIX-Option **Style custom panels** (`style_custom_panels`, Vorgabe aus) spritzt UIX `uixCustomPanel.js` in den iframe eines eigenen Panels und bildet den Typ aus dessen Wurzelelement — `uix-hacs-frontend-yaml`, `uix-knx-frontend-yaml`. Welche Namen es gibt, hängt also an der Installation; eine feste Liste kann das nicht abdecken. `istFlach` in `buildYamlText` lässt deshalb seit 1.3.2b10 **jedes** `uix-*`-Feld auf Theme-Ebene stehen. Davor landeten unbekannte `uix-`Felder als „Zusatzwerte" **doppelt** unter `modes.light` und `modes.dark` — dort liest UIX sie nie, die Vorlage fiel stumm aus. Am 2026-09-27 an der Theme `Awesome-Metal-Shadows-UIX` eines Nutzers nachgestellt und behoben; ein Test in `hatg-stilziel-yaml.test.js` hält es fest. Offen bleibt, dass sich solche Ziele in der Oberfläche nicht anlegen lassen — der Nutzer musste den Block von Hand schreiben.
-- **Der Zielname muss UIX' eigener Typname sein.** UIX liest `uix-<typ>` beziehungsweise `uix-<typ>-yaml` mit genau dem Namen, unter dem es das Element registriert hat. HATG schrieb bis 1.3.2b3 `uix-states-history-charts`; UIX kennt den Typ als `state-history-charts`, im Singular. Das Feld wurde von nichts gelesen — am 2026-09-27 gemessen: der `uix-node` am Element `state-history-charts` war leer, mit dem richtigen Namen kamen sofort 662 Zeichen an. Ein Test vergleicht `HATG_STILZIELE` jetzt gegen die Typliste aus `uix.js`. Drei Typen von UIX 8.3.1 fehlten ganz und sind seit 1.3.2b4 dabei: `app`, `profile`, `section-background`.
-- **`section-background` hängt an der Karte, nicht am Theme.** UIX patcht `hui-section-background` nur, wenn der Abschnitt selbst `background: { uix: … }` trägt (`uix.js`: `c && k(this, "section-background", …)`). Ohne diesen Schlüssel entsteht kein Knoten, und das Theme-Feld bleibt wirkungslos — stumm. Alle anderen Ziele mit Konfiguration (`grid-section`, `entity-marker`, `assist-chip`) patchen ohne Bedingung. Am 2026-09-27 an einer laufenden Instanz beides gemessen.
-- **Symbolbehälter haben überall eine Rundungs-Variable.** Am 2026-09-27 an einer laufenden Instanz aus `elementStyles` gelesen: `ha-tile-icon` nimmt `--ha-tile-icon-border-radius` (Vorgabe Pille), `state-badge` nimmt `--state-badge-border-radius` (Vorgabe 50 %), `mushroom-shape-icon` nimmt `--mush-icon-border-radius` (Vorgabe 50 %). Für die Kachelform braucht es deshalb keinen Pfad — Variablen erben durch jede Shadow-Grenze, ein `:host`-Block auf `uix-card` erreicht Kacheln, Mushroom, Zeilen, Glance und Picture-Elements zugleich. **Bei Mushroom muss es `--mush-icon-border-radius` sein**, nicht `--icon-border-radius`: Mushroom setzt letzteres selbst weiter unten im Baum (`--icon-border-radius: var(--mush-icon-border-radius, 50%)`), ein Wert von außen trägt dort nur mit `!important`. UIX hängt seinen Knoten als **erstes** Kind des Shadow Roots ein; seine `:host`-Regeln verlieren deshalb gegen gleich spezifische `:host`-Regeln des Elements selbst.
+  - Ein Schritt darf jeden Selektor tragen, den `querySelectorAll` kennt — `:not(uix-node,style)` etwa trifft auf `ha-panel-config` genau das Wurzelelement der gerade offenen Seite, ohne dass man seinen Namen kennen muss.
+
+  **Offen geblieben:** Nach diesem Code hätte `ha-config-dashboard $ ha-config-navigation $` am 2026-09-27 treffen müssen, es traf aber nichts, während `ha-config-dashboard $ ha-top-app-bar-fixed ha-config-navigation $` alle drei Karten traf. Der wahrscheinliche Grund ist Zeit: Der Auflöser wartet je Schritt nur auf das Update des Schrittelements, und der zusätzliche Schritt verschafft dem Baum eine Runde mehr. Wer einen Pfad baut, der nichts trifft, obwohl der Code ihn hergibt, probiert deshalb einen Zwischenschritt mehr.
+
+- **Symbolbehälter haben überall eine Rundungs-Variable.** Am 2026-09-27 an einer laufenden Instanz aus `elementStyles` gelesen: `ha-tile-icon` nimmt `--ha-tile-icon-border-radius` (Vorgabe Pille), `state-badge` nimmt `--state-badge-border-radius` (Vorgabe 50 %), `mushroom-shape-icon` nimmt `--mush-icon-border-radius` (Vorgabe 50 %). Für die Kachelform braucht es deshalb keinen Pfad — Variablen erben durch jede Shadow-Grenze, ein `:host`-Block auf `uix-card` erreicht Kacheln, Mushroom, Zeilen, Glance und Picture-Elements zugleich. **Bei Mushroom muss es `--mush-icon-border-radius` sein**, nicht `--icon-border-radius`: Mushroom setzt letzteres selbst weiter unten im Baum (`--icon-border-radius: var(--mush-icon-border-radius, 50%)`), ein Wert von außen trägt dort nur mit `!important`. UIX' Regeln verlieren generell gegen gleich spezifische Regeln des Elements selbst - warum, steht im nächsten Punkt.
 - **`state-badge` bringt keine Fläche mit.** Der Wirt ist 40 × 40 und durchsichtig, die Zustandsfarbe steht **inline am inneren `ha-state-icon`**, nicht am Wirt (der trägt immer `--state-inactive-color`). Eine Tönung aus `currentColor` am Wirt wäre bei jedem Zustand grau — die Kachel gehört deshalb ans `ha-state-icon` darin, erreichbar über einen Pfad. Die Wege dorthin: `uix-row` → `hui-generic-entity-row $ div.row state-badge $`, `uix-glance` → `state-badge $` (UIX hängt je Eintrag an `div.entity`), `uix-element` → `state-badge $`. Die Symbolfarbe lässt sich dort nicht überschreiben, weil Home Assistant sie inline setzt.
 - **Bubble nimmt Verläufe nur über Regeln, nicht über Variablen.** `--bubble-*` sind Farbvariablen; ein Verlauf passt dort nicht hinein. `glas-bubble` schrieb deshalb `background-image: none !important` auf die Container — und räumte damit den Verlauf für ruhende Flächen ab, den HA-, Mushroom- und Horizon-Karten bekamen. Seit 1.3.2b4 steht dort `var(--verlauf-inaktiv, none)` und auf der Zustandsschicht `var(--verlauf-akzent, none)`; ohne gesetzten Verlauf fällt beides auf `none` zurück. Die Ausnahme für Separatoren behält `none`, sonst bekämen Überschriftenzeilen eine Kachelfläche.
-- **Der runde Hintergrund unter einem Icon-Knopf ist nicht erreichbar.** `ha-icon-button` schreibt ihn fest in sein eigenes Stylesheet: `ha-button::after { background-color: currentColor; border-radius: 50%; opacity: 0 }` und `:host(:hover:not([disabled])) ha-button::after { opacity: .1 }`. Radius und Deckkraft haben keine Variable. Am 2026-09-27 mit fünf Pfadvarianten aus `uix-more-info` versucht (`$ ha-dialog-header ha-icon-button $`, `ha-more-info-info $ … ha-icon-button $` und drei weitere): Ein `more-info-child`-Knoten entstand zwar an einem `ha-icon-button`, die Regel kam trotzdem nicht an — alle Kreise blieben bei 50 % und Deckkraft 0. Eine Vorlage dafür ist deshalb wieder entfernt worden. Was **über Felder geht**: Größe (`ha-icon-button-size`), Innenabstand (`ha-icon-button-padding-inline`), Dauer (`ha-animation-duration-fast`, `wa-transition-fast`, `wa-transition-easing`) und die Klick-Welle (`ha-ripple-color`, `-hover-opacity`, `-pressed-opacity`) — seit 1.3.2b9 alle als Feld. Die Farbe folgt `currentColor`, also der Symbolfarbe.
+- **UIX verliert jeden Gleichstand - `adoptedStyleSheets` kommen zuletzt.** Ein Shadow Root wendet seine `<style>`-Knoten an und **danach** seine `adoptedStyleSheets`. Lit legt die Styles eines Bauteils genau dort ab; UIX spritzt dagegen ein `<style>` ein. Bei gleicher Spezifität gewinnt deshalb **immer das Bauteil**, egal an welcher Stelle im Shadow Root der Knoten hängt. Am 09.10.2026 an einem Icon-Knopf gegengeprüft: `ha-button::after { border-radius: 9px }` blieb wirkungslos, dieselbe Zeile mit `!important` setzte sich durch. Wer aus einer Vorlage heraus etwas überschreibt, das das Bauteil selbst setzt, braucht `!important` oder mehr Spezifität. Was das Bauteil **nicht** setzt, kommt ohne weiteres an.
+- **Der runde Hintergrund unter einem Icon-Knopf ist doch erreichbar - mit `!important`.** (Korrigiert am 09.10.2026; bis dahin stand hier das Gegenteil.) `ha-icon-button` schreibt ihn in sein eigenes Stylesheet: `ha-button::after { background-color: currentColor; border-radius: 50%; opacity: 0 }`, dazu `:host(:hover:not([disabled])) ha-button::after { opacity: .1 }`. Eine Variable gibt es dafür nicht, wohl aber den Weg über einen Pfad in den Shadow Root von `ha-icon-button`. Der Versuch vom 2026-09-27 scheiterte an zwei Dingen zugleich: Er lief über `uix-more-info` mit Pfaden, die dort nichts trafen, **und** ohne `!important`. Was am 09.10.2026 an einer laufenden Instanz gemessen ist:
+
+      ha-button::part(base)   Rundung, Schatten, Rahmen, backdrop-filter   ohne !important
+      ha-button::part(base)   background-color                             nur mit !important
+      ha-button::after        Form des Schimmers                           nur mit !important
+
+  `::part(base)` ist das innere `.button` von `ha-button` - `ha-icon-button` gibt es als CSS-Teil nach außen, und ein Teil reicht durch die Shadow-Grenze. Die **Füllung** braucht `!important`, weil `ha-button` auf `appearance="plain"` steht und `:host([appearance~="plain"]) .button` ein hartes `background-color: rgba(0, 0, 0, 0)` setzt, ohne Variable davor. Die **Deckkraft** von `::after` bleibt in Ruhe: Sie trägt die Rückmeldung beim Zeigen und Drücken (0 -> 0.1), ein `!important` darauf legt sie still. `::after` liegt auf `z-index: -1`, also hinter der Fläche - mit einer durchscheinenden Füllung bleibt der Schimmer sichtbar, mit einer deckenden nicht.
+
+  Was **über Felder geht** und keinen Pfad braucht: Größe (`ha-icon-button-size`), Innenabstand (`ha-icon-button-padding-inline`), Rundung und Schatten (`ha-button-border-radius`, `ha-button-box-shadow`), Dauer (`ha-animation-duration-fast`, `wa-transition-fast`, `wa-transition-easing`) und die Klick-Welle (`ha-ripple-color`, `-hover-opacity`, `-pressed-opacity`). Die Symbolfarbe folgt `currentColor`.
 - **`ha-switch` spiegelt `checked` nicht als Attribut.** `ha-switch[checked]` trifft nie. Web Awesome meldet den Zustand als Custom State: `ha-switch:state(checked)::part(control)`. Am 2026-09-26 an einem eigens erzeugten Schalter geprüft — Attribut-Selektor griff nicht, State-Selektor griff.
 - **Ein doppelter Pfad legt ein ganzes `-yaml`-Feld still.** UIX liest die Karte mit einem strengen YAML-Parser (Fehler `duplicated mapping key`) und verwirft sie komplett – keine Vorlage des Stilziels kommt an, auch nicht der `"."`-Eintrag. Am 2026-09-16 stand `ha-button $:` zweimal in `uix-card-yaml` (eine Vorlage doppelt, einmal mit fremder Marke); alle 48 Karten-Knoten waren leer, Bubble-Karten ohne Rahmen und Pop-ups ohne Hintergrundbild. PyYAML nimmt so eine Datei klaglos hin, geprüft wird deshalb mit `js-yaml`. Die Ausgabe fasst doppelte Pfade zusammen (`hatgYamlPfadeZusammenfuehren`).
 - **Keine Weichzeichnung auf der Dialogfläche.** Ein `backdrop-filter` auf `.mdc-dialog__surface` bzw. `wa-dialog::part(dialog)` macht den Dialog zum Bezugsrahmen für `position: fixed`. Die Auswahllisten darin sind `fixed`: Sie landen neben dem sichtbaren Bereich, die Liste bleibt leer. Am 2026-09-20 an der Versionsauswahl von HACS (eingebettetes Panel, erreicht HATG nur über Theme-Variablen) und am Info-Dialog von Home Assistant gemessen; eine Weichzeichnung auf einem `::before` der Fläche hilft nicht. Das Glas-Paket schreibt deshalb `ha-dialog-surface-backdrop-filter: none`, die Vorlagen haben keinen Ausweichwert mehr, und der Import nimmt einen vorhandenen Wert zurück.
 - `--uix-view-background` gehört zu `ha-panel-lovelace` bzw. `hui-root`, nicht zum Drawer.
 - Ein `uix-sidebar-yaml`-Block lässt UIX 8.1.0 beim Laden mit `TypeError … toLowerCase` aussteigen. Danach wendet UIX für den Rest der Sitzung überhaupt keine Vorlage mehr an. Das Benutzer-Icon kommt deshalb ohne Pfad aus.
 - UIX stylt nur, was nach ihm entsteht. Ein hartes Neuladen direkt auf einer `/config`-Seite lässt die schon vorhandenen Elemente unberührt.
+
+## UIX 8.4.0 (seit 1.3.2b25)
+
+Erschienen am 07.10.2026, verlangt **Home Assistant 2026.10.0** als Minimum (`hacs.json`: `2026.10.0.dev0`, bei 8.3.1 stand dort `2026.8.0.dev0`).
+
+**Die Typliste ist unverändert geblieben.** Am 09.10.2026 aus der installierten `uix.js` geprüft, per Prüfsumme gegen die Instanz bestätigt: 32 Typen, davon kennt HATG 28. Die vier übrigen — `broker-tile-icon`, `uix-broker-badge`, `-button`, `-lock` — gehören zum Broker, sind also keine allgemeinen Stilziele. **Kein Typ fehlt HATG, keiner ist weggefallen.**
+
+**Wie man die Typen aus der minifizierten Datei holt.** Zwei naheliegende Muster liefern Unsinn: `"type-<name>"` findet nur einen Teil, und `X(this,"name"` verfehlt die Hälfte, weil UIX die Registrierung auch mit `this._element` aufruft (`await S(this._element,"heading-badge",…)`). Der erste Lauf meldete deshalb `exact`, `mark` und `tags` als Typen und gleichzeitig `badge`, `dialog` und `row` als unbekannt — letzteres offensichtlich falsch. Tragfähig ist das zweite Argument der Registrierungsfunktion, unabhängig vom ersten:
+
+```
+S(<beliebig>, "<typ>", …)
+```
+
+### Add-on-Panels als Stilziel
+
+UIX 8.4.0 ersetzt den `custom-panel`-Lader durch eine Frame-Laufzeit (`src/frame/`) und erreicht damit nicht mehr nur `ha-panel-custom`, sondern auch **`ha-panel-app`** — also Add-on-Oberflächen wie Terminal oder VS Code. Den Typnamen bildet es aus dem Add-on-Slug (`src/patch/ha-panel-app.ts`):
+
+    export function appThemeTypes(slug) {
+      const independent = slug.replace(/^(?:core|local|[0-9a-f]{8})_/, "");
+      return independent === slug ? [slug] : [slug, independent];
+    }
+
+**Add-on-Slugs tragen Unterstriche und beginnen teils mit einer Ziffer.** HATGs Regel war `uix-[a-z][a-z0-9-]{0,47}` und wies damit jedes Add-on ab. Am 09.10.2026 an einer laufenden Instanz nachgesehen — alle drei dort installierten fielen durch:
+
+    core_matter_server    gekürzt: matter_server    (Unterstrich bleibt)
+    a0d7b954_vscode       gekürzt: vscode
+    cb646a50_get          gekürzt: get
+
+Die Regel lautet seit 1.3.2b25 `uix-[a-z0-9][a-z0-9_-]{0,47}`, auf beiden Seiten zeichengleich. Die führende Ziffer ist nötig, weil die Hex-Vorsilbe mit einer anfangen darf (`5c53de3b_esphome`); bis dahin stand im Test ausdrücklich, `uix-9start` müsse abgewiesen werden — das galt für Custom-Element-Namen, für Add-on-Slugs nicht.
+
+### `uix-fonts`: Schriften über das Theme
+
+Neu in 8.4.0. Ein Schlüssel auf **Theme-Ebene** wie `uix-theme`, kein Feld unter `modes`. Sein Wert ist eine mehrzeilige YAML-Abbildung, die UIX über die CSS Font Loading API lädt:
+
+```yaml
+uix-fonts: |
+  Inter:
+    family: Inter
+    source: url(/local/fonts/inter.woff2)
+    descriptors:
+      weight: 400
+```
+
+Erlaubt sind je Eintrag genau drei Schlüssel: `family`, `source`, `descriptors` (`src/helpers/theme-fonts.ts`, `parseFont`). Alles andere wirft eine Konsolenwarnung.
+
+**HATG braucht dafür kein neues Feld.** Am 09.10.2026 geprüft: Ein Theme mit `uix-fonts` läuft unverändert und idempotent durch Import und Export — `istFlach` lässt jedes `uix-`Feld auf Theme-Ebene stehen, und der Cleaner fasst es nicht an, weil `hatgIstStilzielFeld` greift. Der Bericht nennt es nur „unbekanntes Feld aufbewahrt".
+
+**Was dagegen nötig war: es vor Vorlagen schützen.** `hatgVorlagenZielGueltig` nahm sowohl `uix-fonts` als auch `uix-theme` als Vorlagenziel an. Bei `uix-theme` fiel es erst in `hatgVorlagenZiel` still auf `uix-card` zurück — der Dialog nahm es an, die Vorlage lag woanders, gesagt hat es niemand. Bei `uix-fonts` wäre CSS in der Schriftentabelle gelandet. `HATG_UIX_KEINE_ZIELE` weist beide jetzt schon bei der Prüfung ab, mit Begründung im Dialog.
+
+## Die Kartenfarben von HA 2026.10
+
+Seit dem 10.10.2026 kennt HATG die vierzehn Tokens, mit denen Home Assistant
+2026.10.0 die Vektorkarte einfärbt — unabhängig davon, ob das Dashboard hell
+oder dunkel steht. Eigener Ordner **„Karte"** im HA-Grundgerüst, damit 763 → 777.
+
+    ha-color-map-land        -water      -green            -area
+    ha-color-map-building    -building-outline
+    ha-color-map-road        -road-major -road-outline
+    ha-color-map-transit     -boundary
+    ha-color-map-label       -label-halo -label-secondary
+
+**Belegt, nicht geglaubt.** Die Namen stammen aus einem Beitrag der UIX-Guides;
+geprüft sind sie an der laufenden Instanz. Alle **1089 Frontend-Chunks** von
+HA 2026.10.0 durchsucht — sie stehen in genau einem (`49854.…js`), zusammen mit
+der Zuordnung auf die Kartenebenen:
+
+```js
+"--ha-color-map-land":  ["background","land"]
+"--ha-color-map-green": ["naturePark","natureWood","natureGrass",
+                         "natureLeisure","natureWetland","siteSports"]
+```
+
+Vierzehn Tokens decken 45 Farbslots ab. Jede Palette ist deshalb eine Näherung,
+keine Kopie des Originalstils.
+
+**Alle vierzehn Felder haben eine leere Vorgabe.** So liest HA sie:
+
+```js
+const a = getComputedStyle(t).getPropertyValue(r).trim();
+if (!a) continue;        // nicht gesetzt -> HA behaelt seine eigene Palette
+```
+
+Ein Wert in der Vorgabe nagelte jede von HATG erzeugte Theme auf eine
+Kartenfarbe fest — dieselbe Falle wie `ha-dialog-min-height: 100vh` in b22.
+
+**Das Alpha wird je Slot skaliert**: `siteSports` 15 %, `labelHalo` 80 %,
+POI-Label 40 %, Hausnummern 30 %. Bei `ha-color-map-label-halo` gehört deshalb
+ein Alphawert in die Farbe; jede mitgelieferte Palette trägt dort `…cc`.
+Erlaubt sind `#hex` (3/4/6/8 Stellen), `rgb()`, `rgba()`, `color(srgb …)` und —
+über einen Mess-Span im Frontend — auch benannte Farben und `var()`-Verweise.
+
+### Für welche Karte das gilt: für jede
+
+Es gibt in Home Assistant nur **ein** Kartenbauteil, `ha-map`. Am 10.10.2026 an
+der laufenden Instanz gesucht — fünf Stellen binden es ein:
+
+    hui-map-card / hui-map-overview   die Karten-Karte auf dem Dashboard
+    ha-panel-map                      das Karten-Panel in der Seitenleiste
+    ha-locations-editor               der Zonen- und Standort-Editor
+    more-info-person                  der Info-Dialog einer Person
+    Einstellungen -> Allgemein        die Standortwahl
+
+`ha-map` wählt seine Maschine selbst:
+
+```js
+async _createEngine() {
+  if (this._forceLeaflet || !(0, f.jV)()) return new LeafletMapEngine();
+  return new MapLibreMapEngine();
+}
+```
+
+Normalfall ist die **Vektorkarte über MapLibre**; Leaflet ist der Rückfall, wenn
+die Prüfung scheitert oder das Aufsetzen einen Fehler wirft (`_forceLeaflet`
+wird dann gesetzt und neu geladen). Nachgemessen an einer erzeugten Karte:
+`_forceLeaflet: false`, Klassen `maplibregl-map`, `maplibregl-canvas` — also
+Vektor. Die Tokens greifen nur dort; für den Rasterrückfall dreht HA lediglich
+`--map-filter` auf.
+
+**Und `map_style` auf der Karte schließt die Tokens nicht aus.** Es wählt den
+Grundstil, die Theme-Farben überschreiben darin einzelne Ebenen
+(`_resolveMapStyle(this.mapStyle, this._darkMode, this._themeColors)`).
+
+### Die Falle: `theme_mode` auf der Karte schaltet die Tokens ab
+
+```js
+_readThemeColors() {
+  const t = Boolean(this._ui?.themes?.darkMode);          // Modus des Dashboards
+  const e = this._darkMode === t ? tokensLesen(this) : void 0;
+  …
+}
+```
+
+Die Tokens werden **nur gelesen, wenn der Modus der Karte dem des Dashboards
+entspricht**. Am 10.10.2026 an drei Karten auf einem hellen Dashboard gemessen:
+
+    theme_mode: auto    Karte hell  == Dashboard hell   ->  4 Slots gefärbt
+    theme_mode: light   Karte hell  == Dashboard hell   ->  4 Slots gefärbt
+    theme_mode: dark    Karte dunkel != Dashboard hell  ->  nichts gelesen
+
+Der Grund liegt auf der Hand, sobald man es sieht: Die Werte kommen aus
+`getComputedStyle` der Seite, und dort stehen die Farben des *gerade geltenden*
+Modus. Eine Karte, die gegen das Dashboard auf Dunkel gezwungen wird, bekäme
+sonst die hellen Theme-Werte — HA lässt sie deshalb lieber seine eigene dunkle
+Kartografie nehmen.
+
+**Für HATG heißt das:** Wer eine dunkle Karte in einem hellen Theme will, trägt
+die dunkle Palette in die **Hell**-Felder ein und lässt `theme_mode` auf `auto`.
+Genau dafür füllt die Schnellwahl beide Modi getrennt.
+
+Ein Token deckt mehrere Slots ab: `ha-color-map-land` färbt `background` und
+`land`, drei gesetzte Tokens ergaben deshalb vier gefärbte Slots.
+
+### Die automatische Zuordnung: vier Stellen, nicht eine
+
+Die Felder nur ins Manifest zu schreiben, hätte an drei Stellen stumm
+danebengegriffen. Wer die nächste Feldfamilie ergänzt, geht dieselbe Liste
+durch:
+
+1. **Der Farbwähler.** `hatgGetKeyFormats` erkannte Farbfelder ohne Vorgabe
+   allein an der Endung `-color`. **Kein** Kartenname endet so; alle vierzehn
+   wären auf `other` gefallen und hätten ein nacktes Textfeld bekommen, obwohl
+   sie Farben sind. Die Regel prüft jetzt zusätzlich gegen
+   `HATG_KARTENFARBEN_KEYS`. Format ist `rgba`, nicht `hex` — `label-halo`
+   braucht die Deckkraft.
+2. **Der Ordner.** Neue Gruppe `hintergruende-karten__karte` im Abschnitt,
+   dazu die vierzehn Namen in dessen `keys`. Nur die Gruppe anzulegen reicht
+   nicht, nur die `keys` auch nicht.
+3. **Keine Ableitungsregel.** Bewusst kein Eintrag in `HATG_DERIVE_RULES`:
+   `propagateDerivation` schreibt in jedes Ziel, sobald die Quelle sich ändert.
+   Die Kartenfelder bekämen damit bei jedem Farbwechsel Werte — und wären nie
+   wieder leer. Die Schnellwahl unten ersetzt das.
+4. **Der Import-Cleaner** fasst sie nicht an; `ha-` ist eine geschützte
+   Vorsilbe in `hatgIstFremdesFeld`. Geprüft, nicht angenommen.
+
+### Die Paletten füllen beide Modi auf einmal
+
+Sechs Stile (Standard, Bunt, Natur, Gedämpft, Grau, Kontrast) je hell und
+dunkel, als Chips über den Feldern. `setzeKartenPalette` schreibt Light und
+Dark in einem Zug, „Home Assistant" leert alle vierzehn wieder.
+
+**Wiedererkannt wird über Farbe und Deckkraft, nicht über die Schreibweise.**
+Der Import schreibt Farbfelder im rgba-Format zurück: aus `#faf8f5cc` wird
+`rgba(250, 248, 245, 0.8)`. Ein Zeichenvergleich hätte die Palette nach dem
+ersten Speichern nicht mehr erkannt.
+
+### Dabei gefunden: der Import warf Alphawerte weg
+
+`hatgNormalizeRgbaLegacyHex` setzte den Alphawert fest auf 1. `HATG_HEX_RE`
+nimmt aber auch Hex mit vier und acht Stellen an, und die tragen ihr Alpha in
+den letzten Stellen:
+
+    vorher    #000000cc  ->  rgba(0, 0, 0, 1)     Durchsichtigkeit weg
+    jetzt     #000000cc  ->  rgba(0, 0, 0, 0.8)
+
+Ein alter Fehler, der erst mit den Kartenfarben auffiel — dort trägt jede
+Palette bei `label-halo` ein `…cc`, die Lichthöfe hinter den Beschriftungen
+wären deckend geworden. Betroffen war jedes Farbfeld im rgba-Format, in das
+jemand ein Hex mit Alphaanteil schreibt. `hatgHexAlpha` liest den Wert jetzt
+aus; ohne Alphaanteil kommt weiterhin 1 zurück.
+
+`tests/hatg-karte.test.js` hält alles fest, elf Prüfungen mit Gegenproben.
+
+## Flächen unter Symbolknöpfen: drei Vorlagen, einzeln schaltbar
+
+Seit dem 09.10.2026 gibt es `knopfglas-karten`, `knopfglas-kopfleiste` und
+`knopfglas-einstellungen` — je eine Vorlage für Karten, Dashboard-Kopfleiste und
+Einstellungsseiten. Sie legen einem Symbolknopf eine gläserne Fläche unter und
+geben dem Schimmer beim Zeigen die Form des Knopfes.
+
+**Sie stehen bewusst nicht im Glas-Paket.** Auf Ansage: jede einzeln schaltbar.
+Dieselbe Entscheidung wie am 01.10. bei `glas-buttons-rahmen`. In der Oberfläche
+stehen sie in einer eigenen Gruppe „Knöpfe".
+
+**Die Arbeitsteilung mit den `glas-buttons-*`-Vorlagen:**
+
+| | Weg | Was |
+|---|---|---|
+| `glas-buttons-*` | Variablen, kein Pfad | Größe, Rundung, Schatten — überall, auch dort, wo kein Pfad hinkommt |
+| `knopfglas-*` | Pfad ins Innere | Füllung, Weichzeichnung, Form des Schimmers — nur über `::part(base)` und `::after` erreichbar |
+
+Die Rundung der `knopfglas-*` liest `var(--ha-button-border-radius, …)` und
+folgt damit dem, was die Variablen-Vorlage gesetzt hat; beide zusammen bleiben
+stimmig.
+
+**Die Pfade, alle am 09.10.2026 nachgemessen:**
+
+    uix-card-yaml     "ha-icon-button $"
+    uix-root-yaml     "ha-icon-button $"
+                      "ha-menu-button $ ha-icon-button $"
+    uix-config-yaml   ":not(uix-node,style) $ ha-icon-button $"
+                      ":not(uix-node,style) :not(uix-node,style) $ ha-icon-button $"
+
+- **Karten:** ein Schritt, deshalb zählt jeder Treffer. An frisch erzeugten
+  Karten gemessen — media-control 3 Knöpfe, light 2, todo-list 1, tile 0.
+  Knöpfe, die noch einen Shadow Root tiefer liegen (Entitätenzeilen), bleiben
+  draußen; die gehören zu `uix-row`.
+- **Kopfleiste:** zwei Pfade, weil der Menüknopf eine Shadow-Ebene tiefer sitzt.
+  Die Knöpfe rechts in der Leiste liegen im selben Baum wie `hui-root`, der
+  Hamburger im Shadow Root von `ha-menu-button`.
+- **Einstellungen:** `ha-panel-config` hat keinen Shadow Root; seine direkten
+  Kinder im Licht-DOM sind der `uix-node`, ein `<style>` von UIX und das
+  Wurzelelement der offenen Seite. Das heißt auf jeder Unterseite anders —
+  **52 Routen** laut `ha-panel-config.routerOptions` —, deshalb `:not()` statt
+  einer Namensliste. Seiten mit eigenem Router (Integrationen, Automationen)
+  rendern ohne Shadow Root ins Licht-DOM; dort liegt die Seite eine Ebene
+  tiefer, dafür ist der zweite Pfad da. An `/config/system` und
+  `/config/integrations` geprüft.
+
+**`glas-buttons-glanz` ist dafür entfallen.** Die Vorlage war doppelt tot: Ihr
+Pfad `ha-button $` auf `uix-card-yaml` trifft nichts, weil `ha-button` in keiner
+Karte ein Kind des Shadow Roots ist — es steckt im Shadow Root von
+`ha-icon-button` —, und ohne `!important` wäre die Fläche ohnehin durchsichtig
+geblieben. Wer sie eingeschaltet hatte, bekommt beim nächsten Import einmalig
+den Balken „verwaiste Blöcke" mit dem Knopf zum Aufräumen. Ein Test verbietet
+den Pfad `ha-button $` jetzt für alle Vorlagen.
+
+**Zum ersten Mal trägt `uix-root` ein `-yaml`-Feld.** Damit rückt das einfache
+`uix-root` in den `"."`-Eintrag derselben Karte — die Lage, in der
+`symbole-kachel` am 01.10. gewachsen ist. `tests/hatg-durchlauf.test.js` hält
+jetzt auch diesen Fall fest: einfache und Pfad-Vorlage zusammen, zweimal durch
+Import und Export, Marker und `"."`-Eintrag je genau einmal.
+
+**Noch offen:** Die Pfade sind mit dem Auflöser aus `uix.js` nachgebaut, nicht
+mit UIX selbst gefahren. Der letzte Beweis ist ein Dev-Build auf der Instanz,
+die drei Vorlagen einschalten und `uix-node`-Knoten zählen.
 
 ## HA 2026: Knöpfe und Links hängen nicht mehr an `primary-color`
 
@@ -122,7 +408,7 @@ Kein einziges `--input-*` als Farbe, und kein `--mdc-select-*`/`--mdc-text-field
 
 **Gemeldet hat es ein Nutzer, nicht die Prüfwerkzeuge.** Er schrieb, die Felder von `input-background-color` bis `input-outlined-disabled-border-color` änderten nichts, und hatte die richtigen Namen schon selbst gefunden. In der Oberfläche standen beide Sorten im selben Ordner „Eingaben & Auswahlfelder": zuerst elf tote `input-*`, dann fünf tote `mdc-*`, und die vier, die wirken, auf den Plätzen 18 bis 21. Wer von oben liest, gibt vorher auf.
 
-Seit 1.3.2b20 sind die Altlasten deshalb in einem eigenen Ordner **„Eingaben: Material (bis HA 2025)"**. Gelöscht werden sie **nicht**: Wer eine ältere HA-Version fährt, braucht sie, und gemessen sind acht Dateien, nicht das ganze Frontend — ältere Material-Reste können anderswo noch lesen. Drei Felder, die die heutigen Komponenten lesen, sind neu dazugekommen: `ha-color-border-neutral-quiet`, `-normal` und `ha-color-border-danger-normal`.
+Seit 1.3.2b25 sind die Altlasten deshalb in einem eigenen Ordner **„Eingaben: Material (bis HA 2025)"**. Gelöscht werden sie **nicht**: Wer eine ältere HA-Version fährt, braucht sie, und gemessen sind acht Dateien, nicht das ganze Frontend — ältere Material-Reste können anderswo noch lesen. Drei Felder, die die heutigen Komponenten lesen, sind neu dazugekommen: `ha-color-border-neutral-quiet`, `-normal` und `ha-color-border-danger-normal`.
 
 **Die Abstufung muss in beiden Modi monoton sein.** Die drei neuen Werte sind auf die iOS-Basis abgestimmt, mit dem vorhandenen `loud` als Anker: hell `#E5E5EA` > `#D1D1D6` > `#C6C6C8` (dunkler ist kräftiger), dunkel `#2E2E30` < `#343436` < `#38383A` (heller ist kräftiger). Zwei naheliegende Werte sind dabei ausgeschieden: `#2C2C2E` ist im Dunkeln `ha-color-form-background` — ein Rahmen in der Farbe seiner eigenen Fläche ist unsichtbar; und `#3A3A3C` wäre heller als `loud`, die Abstufung stünde auf dem Kopf. `danger` nimmt HATGs eigenes `error-color` (`#FF3B30`/`#FF453A`), kein neuer Ton.
 
@@ -189,7 +475,7 @@ Die Maschinerie dafür gab es schon (`hatgEntferneVerwaisteEigenfelder`), sie wu
 - **Die Grenze, die HATG nicht sieht:** Ein Feld kann von außerhalb der Theme gelesen werden, etwa aus der Konfiguration einer einzelnen Karte. Deshalb nennt der Bericht **jedes** entfernte Feld beim Namen, und der Bericht steht auch im Kopf der Datei.
 - Ein Test hält beides fest (`tests/hatg-ausmisten.test.js`): dass Ballast fliegt und dass nach dem Import kein `var()` mehr ins Leere zeigt.
 
-**Die Regel "unbekannt und unreferenziert" war falsch, und zwar teuer (1.3.2b20).** Home Assistant liest seine Variablen aus seinem **eigenen Stylesheet**, nicht per `var()` aus der Theme. Für den Cleaner sah damit jede HA-Variable, die HATG nicht als Feld anbietet, wie Ballast aus. Am 2026-10-01 gemessen: Von zwölf echten Namen (`scrollbar-thumb-color`, `mush-chip-height`, `ha-space-4`, `rgb-error-color`, `codemirror-keyword` und weiteren) löschte der Import **elf**. Nur `ha-animation-duration-fast` blieb, weil HATG genau dieses Feld kennt. Das steckte in b14 und damit in der veröffentlichten b15.
+**Die Regel "unbekannt und unreferenziert" war falsch, und zwar teuer (1.3.2b25).** Home Assistant liest seine Variablen aus seinem **eigenen Stylesheet**, nicht per `var()` aus der Theme. Für den Cleaner sah damit jede HA-Variable, die HATG nicht als Feld anbietet, wie Ballast aus. Am 2026-10-01 gemessen: Von zwölf echten Namen (`scrollbar-thumb-color`, `mush-chip-height`, `ha-space-4`, `rgb-error-color`, `codemirror-keyword` und weiteren) löschte der Import **elf**. Nur `ha-animation-duration-fast` blieb, weil HATG genau dieses Feld kennt. Das steckte in b14 und damit in der veröffentlichten b15.
 
 `hatgIstFremdesFeld()` entscheidet jetzt, was der Cleaner nicht anfassen darf — und **dieselbe** Funktion benutzt auch die Verweisprüfung, die vorher eine eigene, engere Regel hatte (ein Verweis auf `--rgb-error-color` galt damit als tot).
 
@@ -203,7 +489,7 @@ Die Maschinerie dafür gab es schon (`hatgEntferneVerwaisteEigenfelder`), sie wu
 
 ### Bubble Card: 61 Felder raus (1.3.2b15)
 
-Bubble Card **3.2.0 liest 61 der 124 Felder in HATGs Bubble-Abschnitt nicht** — die Namen kommen im ganzen Quelltext nicht vor, weder bei Bubble noch bei HA noch bei Mushroom. Damit sind 683 Felder auf **625** geschrumpft.
+Bubble Card **3.2.0 liest 61 der 124 Felder in HATGs Bubble-Abschnitt nicht** — die Namen kommen im ganzen Quelltext nicht vor, weder bei Bubble noch bei HA noch bei Mushroom. Damit sind 683 Felder auf **763** geschrumpft.
 
 Der Grund ist ein Schemawechsel: Bubble Card 3.x hat die Variablen **pro Kartentyp** durch eine gemeinsame Familie ersetzt. `.bubble-container` liest `var(--bubble-card-type-main-background-color, var(--bubble-main-background-color, …))` — statt `bubble-climate-…`, `bubble-cover-…`, `bubble-media-player-…` je einzeln. **Umbenennen geht deshalb nicht:** fünf alte Felder zeigen auf ein neues, eine Zuordnung würde die Einstellung eines Kartentyps auf alle anderen ausschütten. Sie sind ohnehin wirkungslos — Entfernen ändert nichts am Aussehen.
 
@@ -216,6 +502,58 @@ Der Grund ist ein Schemawechsel: Bubble Card 3.x hat die Variablen **pro Kartent
 
 Bleiben in HATG, obwohl Bubble Card sie nicht liest: `ha-dialog-surface-background`, `ha-dialog-scrim-color` und `mdc-dialog-scrim-color` — das sind HA-Variablen im Bubble-Abschnitt, Bubbles Pop-up nutzt HAs Dialog.
 
+### Die Maß-Ebene von HA 2026 (1.3.2b25)
+
+Aus der Sitzung „HA Karten" kam am 05.10.2026 eine Erhebung aus der laufenden Instanz: 25 `ha-*`-Bauteile, jedes `var(--x, fallback)` aus ihren `adoptedStyleSheets` und `<style>`-Knoten ausgelesen. 1021 Variablen gefunden, 450 davon als Theme-Feld vorgeschlagen. Der Abgleich gegen HATGs Katalog: 224 kannte HATG schon, 226 fehlten.
+
+Ergänzt sind davon zunächst **41 Felder der Maß-Ebene**, mit den Vorgabewerten aus HAs eigenen Quellen (`src/resources/theme/core.globals.ts` und `semantic.globals.ts`, Zweig dev): 20 `ha-space-1`…`-20`, 12 `ha-border-radius-*`, 3 `ha-border-width-*`, 3 `ha-box-shadow-s/m/l` und 4 `ha-animation-duration-*`. Damit 625 → 763.
+
+Diese Ebene lohnt besonders, weil sie als Ausweichwert in Dutzenden Bauteilfeldern steht — `--ha-tooltip-box-shadow` fällt auf `--ha-box-shadow-m` zurück, `--ha-tooltip-border-radius` auf `--ha-border-radius-md`. Ein Wert verschiebt die halbe Oberfläche.
+
+**Nur `ha-box-shadow-s/m/l` unterscheiden sich zwischen Hell und Dunkel**, alles übrige ist in beiden Modi gleich. Die Schattenwerte stehen deshalb in `semantic.globals.ts` zweimal, die Maße in `core.globals.ts` einmal.
+
+**Falle beim Auslesen:** `core.globals.ts` setzt alle `--ha-animation-duration-*` am Ende noch einmal auf `1ms`, in einem `@media (prefers-reduced-motion: reduce)`-Block. Wer die Datei mit einer Regex nach dem **letzten** Treffer durchsucht, bekommt für alle vier Stufen `1ms`. Die echten Werte sind 1/75/150/250/350 ms.
+
+### Ein bedingter Ausweichwert ist keine Vorgabe (1.3.2b25)
+
+Gemeldet von einem Nutzer an b22: **Alle Dialoge öffneten in voller Fensterhöhe.** Ursache war das neue Feld `ha-dialog-min-height` mit der Vorgabe `100vh`. In `src/components/ha-dialog.ts` steht der allgemeine Fall **ohne** Ausweichwert:
+
+    min-height: var(--ha-dialog-min-height);
+
+und vierzig Zeilen tiefer, in einem bedingten Block:
+
+    :host([type="standard"]) wa-dialog::part(dialog) {
+      /* Make the dialog fill the whole screen height and not the safe height */
+      min-height: var(--ha-dialog-min-height, 100vh);
+
+Der Auswerter, der die 97 Vorgaben aus den Quellen zog, nahm den **ersten Treffer mit Ausweichwert** — also den Sonderfall — und machte ihn zur Vorgabe für alle.
+
+**Die Regel:** Wer einen solchen Wert ins Theme schreibt, pinnt **jeden** Zusammenhang darauf fest. Home Assistant kann dann nicht mehr zwischen Dialogtyp, Knopfgröße oder Bildschirmbreite unterscheiden. Ein Feld mit **leerer** Vorgabe wird gar nicht erst in die Datei geschrieben (das kann HATG seit jeher, 96 Felder nutzen es) — einstellbar bleibt es trotzdem.
+
+**Zwei Prüfungen finden diese Fehlerklasse**, beide am 2026-10-08 über alle 97 Felder der b22-Charge gelaufen:
+
+1. Wird die Variable **irgendwo ohne** Ausweichwert gelesen (`var(--x)` blank)? Dann ist jeder gefundene Ausweichwert ein Sonderfall. Traf auf genau ein Feld zu: `ha-dialog-min-height`.
+2. Hat die Variable **mehrere verschiedene** Ausweichwerte? Dann hängt der Wert am Zusammenhang. Traf auf 13 Felder zu — `button-height` etwa steht je nach `size`-Attribut auf 24, 32, 40 oder 48px.
+
+Geleert sind daraufhin zwölf: `ha-dialog-min-height`, `-max-height`, `-width-full`, `-border-radius`, `ha-bottom-sheet-content-padding`, `dialog-content-padding`, `button-height`, `ha-button-height`, `ha-checkbox-border-color`, `ha-tooltip-border-radius`, `-font-size`, `-font-weight`. Nicht geleert: `ha-bottom-sheet-max-height` — dort sind `90vh` und `90dvh` dieselbe Angabe, nur mit Rückfall für ältere Browser.
+
+`tests/hatg-bedingte-vorgaben.test.js` hält es fest, mit Gegenprobe: Ein Feld **mit** Vorgabe muss sehr wohl in der Ausgabe stehen, sonst sagt der Test nichts aus.
+
+**Was daraus für künftige Erhebungen folgt:** Ein Ausweichwert aus dem Quelltext ist nur dann eine Vorgabe, wenn er der **einzige** ist und die Variable nirgends blank gelesen wird. Sonst gehört das Feld leer angelegt. Dieselbe Falle wie bei `--ha-animation-duration-*`, wo der `prefers-reduced-motion`-Block alle vier Stufen auf 1ms setzt — nur dass sie dort beim Auslesen auffiel und hier erst beim Nutzer.
+
+### Kurze und lange Namensform: nur die lange ist ein Theme-Feld
+
+Mehrere Bauteile lesen zwei Namen für dieselbe Wirkung, etwa `--tile-info-primary-color` und `--ha-tile-info-primary-color`. **Nur die `ha-`-Form ist ein Haken**, die kurze ist bauteilintern. Am 05.10.2026 im Quelltext nachgelesen, `src/components/tile/ha-tile-info.ts`:
+
+    --tile-info-gap: var(--ha-tile-info-gap, var(--_tile-info-fixed-gap, 0));
+    --tile-info-primary-font-size: var(--ha-tile-info-primary-font-size, …);
+
+Das Bauteil leitet die kurze Form in seinem **eigenen `:host`** aus der langen ab. Ein Theme-Wert kommt über `html` nur als Vererbung an, und die `:host`-Regel des Elements gewinnt dagegen. Dieselbe Prüfung an `ha-tile-icon.ts`: `--tile-icon-color`, `-opacity`, `-hover-opacity` und `-size` setzt es bedingungslos, nur `--ha-tile-icon-border-radius` ist als `@cssprop` dokumentiert — und genau das ist auch der einzige, den die Vorlage `symbole-kachel` benutzt.
+
+**Woran man es erkennt:** Steht der Name als `@cssprop` im Kopfkommentar des Bauteils, ist er öffentlich. Setzt das Bauteil ihn in seinem `:host` ohne vorher eine Theme-Variable zu lesen, ist er intern. 36 der 226 Kandidaten fallen so heraus, im Wesentlichen die `tile-*`- und `control-*`-Familien.
+
+**Offen und zu messen:** Bei `control-*` widersprechen sich Quelltext und eigene Erfahrung. `ha-control-button.ts` setzt `--control-button-background-color: var(--disabled-color)` im `:host` — danach wäre HATGs gleichnamiges Feld wirkungslos. Es steht aber seit Monaten im Glas-Paket, und am 2026-09-14 ist gemessen worden, dass es wirkt. Die wahrscheinliche Auflösung: Es wirkt auf **fremde Karten**, die denselben Namen lesen (Horizon-Cards), nicht auf HAs eigenen Control-Button. Das ist eine Vermutung und gehört an einer laufenden Instanz geklärt, bevor die Familie ergänzt oder HATGs vorhandenes Feld angefasst wird.
+
 ### Noch offen
 
 21 von 387 HA-Feldern, 3 Druckerfarben, Mushroom (18 Kandidaten) und Button Card (31 Felder, gegen `src/styles.ts` zu prüfen — auf der Testinstanz nicht installiert).
@@ -224,7 +562,7 @@ Zwei Fallen, beide selbst hineingetappt: HA baut Zustandsfarben als `--state-${d
 
 ## Werte schreiben: der Backslash ist das Fluchtzeichen
 
-`hatgQuoteYamlValue` schreibt einzeilige Werte doppelt gequotet. In einem doppelt gequoteten YAML-Skalar ist der **Backslash** das Fluchtzeichen, er muss deshalb **vor** dem Anführungszeichen verdoppelt werden. Bis 1.3.2b20 wurde nur das Anführungszeichen escaped. Am 2026-10-01 gemessen und mit PyYAML gegengeprüft, also mit dem Parser, den Home Assistant benutzt:
+`hatgQuoteYamlValue` schreibt einzeilige Werte doppelt gequotet. In einem doppelt gequoteten YAML-Skalar ist der **Backslash** das Fluchtzeichen, er muss deshalb **vor** dem Anführungszeichen verdoppelt werden. Bis 1.3.2b25 wurde nur das Anführungszeichen escaped. Am 2026-10-01 gemessen und mit PyYAML gegengeprüft, also mit dem Parser, den Home Assistant benutzt:
 
     Eingabe   uix-card: 'ha-card::before { content: "\201C"; }'    liest PyYAML
     Ausgabe   uix-card: "ha-card::before { content: \"\201C\"; }"    ScannerError
@@ -233,7 +571,7 @@ Zwei Fallen, beide selbst hineingetappt: HA baut Zustandsfarben als `--state-${d
 
 ## Ein "."-Eintrag gehört der Vorlage, in der er steht
 
-Zwei Fehler an derselben Stelle, beide in 1.3.2b20 behoben.
+Zwei Fehler an derselben Stelle, beide in 1.3.2b25 behoben.
 
 **Der `"."`-Eintrag wurde verworfen, wenn das einfache Feld schon belegt war.** `hatgEntflechteStilzieleImBag` schrieb ihn nur dorthin, wenn dort nichts stand — sonst fiel er ersatzlos weg, ohne eine Zeile im Bericht. Der Weg dorthin ist alltäglich: `docs/beispiele/glas-basis.yaml` nehmen und von Hand zwei Zeilen `uix-card:` aus einem Forenbeitrag ergänzen. Beim nächsten Import sind `glas-ebene`, `glas-bubble` und `glas-buttons-karten` weg. Jetzt wird angehängt, Vorhandenes zuerst, wie in `hatgRepariereAlteStilziele`. **Ein Test hielt genau das kaputte Verhalten fest** — er hieß "Ein bereits belegtes einfaches Feld wird nicht ueberschrieben" und behauptete, danach stehe dort *nur* der Handeintrag.
 
@@ -243,7 +581,7 @@ Zwei Fehler an derselben Stelle, beide in 1.3.2b20 behoben.
 
 ## Idempotenz ist die Prüfung, die gefehlt hat
 
-Ein Durchlauf Import → Export muss beim **zweiten** Mal dasselbe liefern wie beim ersten. Fast jede Durchlaufprüfung fragte bis 1.3.2b20 nur "ist etwas verloren gegangen?", keine "ist etwas dazugekommen?" — und die Hilfsfunktionen in `kopflos.js` konnten Dubletten gar nicht zählen, weil `vorlagenMarken` ein `Set` zurückgibt. Die Größe stand nur als Info da.
+Ein Durchlauf Import → Export muss beim **zweiten** Mal dasselbe liefern wie beim ersten. Fast jede Durchlaufprüfung fragte bis 1.3.2b25 nur "ist etwas verloren gegangen?", keine "ist etwas dazugekommen?" — und die Hilfsfunktionen in `kopflos.js` konnten Dubletten gar nicht zählen, weil `vorlagenMarken` ein `Set` zurückgibt. Die Größe stand nur als Info da.
 
 Die richtige Erwartung ist nicht "Pass 0 == Pass 1": Der erste Durchlauf normiert (Vorlagen auffrischen, Standards nachfüllen, Ballast entfernen) und darf viel ändern. Ab dem zweiten darf sich nichts mehr ändern.
 
@@ -276,7 +614,7 @@ Läuft alles durch, was ohne laufende Instanz prüfbar ist: Syntax von Panel, Py
 
 Das führende `v` einer Marke wird abgestreift, wie `ci.yml` es tut: Stabile Releases tragen eins (`v1.3.0`), die Version im Manifest nicht. Vorher war das Tor mit dem echten Markennamen eines stabilen Release nicht laufbar.
 
-**Vier Stellen konnten grün melden, ohne geprüft zu haben (bis 1.3.2b20).** Am 2026-10-01 gefunden, die erste nachgestellt:
+**Vier Stellen konnten grün melden, ohne geprüft zu haben (bis 1.3.2b25).** Am 2026-10-01 gefunden, die erste nachgestellt:
 
 1. `git status` wurde an der **Ausgabe** geprüft, nicht am Rückgabewert. Ein scheiterndes git liefert eine leere Ausgabe — und die galt als "nichts Uncommittetes". Mit Rückgabewert 128 war der Schritt grün.
 2. Die Version wurde mit `2>/dev/null` gelesen, danach stand ein **bedingungsloses** `ok "manifest.json sagt $VERSION"`. War die Datei nicht lesbar, meldete das Tor "ok manifest.json sagt " und lief weiter.
@@ -293,13 +631,27 @@ Was das Tor **nicht** abdeckt: ob Home Assistant oder UIX eine Variable oder ein
 
 Vier Stück: `ci`, `hacs`, `hassfest`, `validate`. Der Validate-Lauf geht täglich durch.
 
-**Ein roter Lauf bei `hacs` oder `hassfest` ist dringend** — er gefährdet die Aufnahme in den Store. Die Einreichung läuft als [PR #9706](https://github.com/hacs/default/pull/9706) bei `hacs/default`, eingereicht am 03.08.2026, mit mehreren hundert älteren PRs davor. Dort ist eher mit Monaten als Wochen zu rechnen.
+**Ein roter Lauf bei `hacs` oder `hassfest` ist dringend** — er gefährdet die Aufnahme in den Store.
+
+**Stand der Einreichung, am 10.10.2026 nachgesehen.** [PR #9706](https://github.com/hacs/default/pull/9706) bei `hacs/default`, eingereicht am 03.08.2026, **offen**, Zustand `REVIEW_REQUIRED` — es ist nichts von uns verlangt worden. Alle Einzelprüfungen grün (Hassfest, HACS action, Owner, Releases, Preflight und die übrigen).
+
+**Die eine rote Zeile täuscht.** `Action checks completed` steht zweimal in der Liste: einmal `FAILURE` um 12:43:47, einmal `SUCCESS` um 12:45:10. Der erste Lauf fiel, während die Einzelprüfungen noch abgebrochen und neu gestartet wurden; 83 Sekunden später war alles grün. Wer nur auf den Rollup schaut, hält die Einreichung für kaputt.
+
+**Die Warteschlange ist kürzer als gedacht, dafür steht sie.** 1857 offene PRs, davon 414 mit `CHANGES_REQUESTED` (die hängen an ihren Einreichern) und 1442 ohne Review. Älter als unserer und noch ohne Review: **107**. Der Durchsatz dagegen:
+
+    Juni 282   Juli 263   August 477   September 20   Oktober 0
+
+Die letzte Charge neuer Integrationen wurde am **02.09.2026** gemergt, fünfzehn auf einmal. Seitdem nichts mehr. Geschlossen wird weiter — am 10.10.2026 noch vier Stück —, das Repository ist also nicht tot.
+
+**Es geht nicht der Reihe nach.** In jener Charge lagen #8389 bis #10542 nebeneinander, also auch PRs, die nach unserem eingereicht wurden. Aus der Position in der Schlange lässt sich kein Termin ableiten.
+
+**Nichts am PR-Branch anfassen.** Bei #10550 hat ein Push den PR automatisch geschlossen, der Einreicher musste neu einreichen und stand damit hinten. Solange nichts verlangt wird, ist Warten die richtige Handlung.
 
 Dependabot ist für dieses Repository aktiviert.
 
 ## Zielgruppe
 
-Fortgeschrittene. Wer rund 620 Theme-Variablen anfasst, kennt sein System, nutzt vermutlich schon Bubble Card oder Mushroom und will bis ins Detail gestalten. Das unterscheidet HATG von HA-OS, das sich an Einsteiger richtet.
+Fortgeschrittene. Wer rund 780 Theme-Variablen anfasst, kennt sein System, nutzt vermutlich schon Bubble Card oder Mushroom und will bis ins Detail gestalten. Das unterscheidet HATG von HA-OS, das sich an Einsteiger richtet.
 
 ## Schreibstil
 

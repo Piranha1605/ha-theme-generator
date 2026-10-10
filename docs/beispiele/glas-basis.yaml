@@ -572,14 +572,6 @@ glas_basis:
         --control-button-background-opacity: 0.22;
       }
       /* HATG:UIX:glas-buttons-karten:END */
-    # HATG:UIX:glas-buttons-glanz:START
-    ha-button $: |
-      .button {
-        background-image: none;
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-      }
-    # HATG:UIX:glas-buttons-glanz:END
   uix-theme: "glas_basis"
   modes:
     light:
