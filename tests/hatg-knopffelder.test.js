@@ -88,17 +88,41 @@ pruefe("button-color-fill-* bekommt den Farbwaehler", () => {
   assert.equal(f["popup-custom-wallpaper"], "other", "die Ausnahme greift zu weit");
 });
 
-pruefe("Die Felder liegen im Ordner Buttons & Chips", () => {
-  const abschnitt = m.sections.find((s) => s.id === "hintergruende-karten");
-  const gruppe = abschnitt.groups.find((g) => g.id === "hintergruende-karten__buttons-chips");
-  assert.ok(gruppe, "Ordner fehlt");
-  const ordner = [...gruppe.keys];
-  const schluessel = [...abschnitt.keys];
+// Seit dem Abschnitt "Symbole" liegen nicht mehr alle Knopffelder im selben
+// Ordner: Was ein Symbol betrifft, ist dorthin gezogen. Geprueft wird deshalb
+// nicht der Ordnername, sondern dass jedes Feld in genau einem Ordner steht -
+// das ist die Eigenschaft, auf die es ankommt. Ein Feld in zwei Ordnern taucht
+// in der Oberflaeche doppelt auf, ein Feld in keinem ist nicht erreichbar.
+const SYMBOLE_UMGEZOGEN = ["ha-chip-icon-size", "ha-icon-button-toggle-thumb-opacity"];
+
+pruefe("Jedes Knopffeld liegt in genau einem Ordner", () => {
   const alle = [...OHNE_VORGABE, ...Object.keys(MIT_VORGABE)];
-  const nichtImOrdner = alle.filter((k) => !ordner.includes(k));
-  assert.deepEqual(nichtImOrdner, [], `nicht im Ordner: ${nichtImOrdner.join(", ")}`);
-  const nichtImAbschnitt = alle.filter((k) => !schluessel.includes(k));
-  assert.deepEqual(nichtImAbschnitt, [], `nicht im Abschnitt: ${nichtImAbschnitt.join(", ")}`);
+  for (const k of alle) {
+    const ordner = [];
+    for (const s of m.sections) for (const g of s.groups ?? []) {
+      if ((g.keys ?? []).includes(k)) ordner.push(s.id + "/" + g.id);
+    }
+    assert.equal(ordner.length, 1, `${k} liegt in ${ordner.length} Ordnern: ${ordner.join(", ") || "keinem"}`);
+    const abschnitte = m.sections.filter((s) => (s.keys ?? []).includes(k)).map((s) => s.id);
+    assert.equal(abschnitte.length, 1, `${k} steht in ${abschnitte.length} Abschnitten: ${abschnitte.join(", ")}`);
+    // Ordner und Abschnitt muessen zusammenpassen
+    assert.ok(ordner[0].startsWith(abschnitte[0] + "/"), `${k}: Ordner ${ordner[0]} passt nicht zu Abschnitt ${abschnitte[0]}`);
+  }
+});
+
+pruefe("Die beiden Symbolfelder sind im Abschnitt Symbole gelandet", () => {
+  const symbole = m.sections.find((s) => s.id === "symbole");
+  assert.ok(symbole, "Abschnitt Symbole fehlt");
+  for (const k of SYMBOLE_UMGEZOGEN) {
+    assert.ok(symbole.keys.includes(k), `${k} fehlt im Abschnitt Symbole`);
+  }
+  // Gegenprobe: die uebrigen sind weiterhin bei Buttons & Chips
+  const gruppe = m.sections.find((s) => s.id === "hintergruende-karten")
+    .groups.find((g) => g.id === "hintergruende-karten__buttons-chips");
+  assert.ok(gruppe, "Ordner Buttons & Chips fehlt");
+  const rest = [...OHNE_VORGABE, ...Object.keys(MIT_VORGABE)].filter((k) => !SYMBOLE_UMGEZOGEN.includes(k));
+  const fehlt = rest.filter((k) => !gruppe.keys.includes(k));
+  assert.deepEqual(fehlt, [], `nicht mehr im Ordner Buttons & Chips: ${fehlt.join(", ")}`);
 });
 
 pruefe("Kein weiteres control-*-Feld ist dazugekommen", () => {

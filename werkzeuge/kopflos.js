@@ -72,7 +72,7 @@ function panelBauen() {
     "HATGPanel", "HATG_MANIFEST", "HATG_VORLAGEN", "HATG_STILZIELE", "HATG_VERSION",
     "hatgParseThemeYaml", "hatgValidateValue", "hatgGetKeyFormats", "hatgIstStilzielKey",
     "hatgIstYamlZiel", "hatgTeileStilzielYaml", "hatgYamlPfadeZusammenfuehren",
-    "HATG_KARTENFARBEN_NAMEN", "HATG_KARTENFARBEN_PALETTEN",
+    "HATG_KARTENFARBEN_NAMEN", "HATG_KARTENFARBEN_PALETTEN", "HATG_NAV_ICON_COLOR",
   ];
   vm.runInContext(
     fs.readFileSync(PANEL, "utf8") +
