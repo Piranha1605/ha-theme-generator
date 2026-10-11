@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.3.3b4";
+const HATG_VERSION = "1.3.3b5";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -7513,6 +7513,8 @@ class HATGPanel extends HTMLElement {
             <p>${gm.group.keys.length} Variablen</p>
           </div>
           ${gm.parent.id === "uix-generator" ? this.renderAusgabeFormatHinweis() : ""}
+          ${gm.group.id === "symbole__form" ? this.renderSymbolKasten() : ""}
+          ${gm.group.id === "hintergruende-karten__karte" ? this.renderKartenPalette() : ""}
           ${this.renderFieldList(gm.group.keys)}
         </section>`;
     }
