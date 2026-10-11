@@ -49,7 +49,13 @@ function istPfadSchluessel(k) {
 function pfadSchluessel(block) {
   const raus = [];
   for (const zeile of String(block).split("\n")) {
-    const m = /^\s{2,6}"?([^"\n:]+?)"?:\s*\|?\s*$/.exec(zeile);
+    // Der Schluessel darf Doppelpunkte tragen. Vorher stand hier [^"\n:]+?,
+    // und damit war jeder Pfad mit einer Pseudoklasse unsichtbar - seit
+    // v1.3.2 betrifft das HATGs eigene Vorlage knopfglas-einstellungen mit
+    // ":not(uix-node,style) $". Uebersehene Pfade heisst: Die Pruefung auf
+    // doppelte Pfade, die ein ganzes -yaml-Feld stilllegen, lief dort leer.
+    // Am 10.10.2026 an einem Theme mit solchen Pfaden aufgefallen.
+    const m = /^\s{2,6}"?([^"\n]+?)"?:\s*\|?\s*$/.exec(zeile);
     if (!m) continue;
     const k = m[1].trim();
     if (!k || k.startsWith("#") || !istPfadSchluessel(k)) continue;
