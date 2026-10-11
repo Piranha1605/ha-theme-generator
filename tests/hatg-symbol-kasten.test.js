@@ -45,7 +45,7 @@ const PROBE = {
   rundung: "9px", kachel: 44, glyphe: 26,
   flaecheAn: "#C0C0C0", flaecheAus: "#404040",
   deckkraftAn: 40, deckkraftAus: 12,
-  abstand: 20, intensitaet: 14, weiche: 60, form: "flach",
+  abstand: 20, intensitaet: 14, weiche: 60, formAn: "gedrueckt", formAus: "flach",
 };
 
 console.log("Symbol-Baukasten\n");
@@ -94,7 +94,7 @@ pruefe("Der Zustand kommt als Variable von der Karte herunter", () => {
 pruefe("Unsinnige Werte werden abgefangen", () => {
   const n = ctx.hatgSymbolNormal({
     kachel: 500, glyphe: -3, deckkraftAn: 180, deckkraftAus: "abc",
-    abstand: 999, intensitaet: -5, weiche: "viel", form: "wolkig",
+    abstand: 999, intensitaet: -5, weiche: "viel", formAn: "wolkig", formAus: "eckig",
     rundung: "9px; color: red",
   });
   assert.equal(n.kachel, 96, "Kachelgroesse nicht begrenzt");
@@ -104,7 +104,8 @@ pruefe("Unsinnige Werte werden abgefangen", () => {
   assert.equal(n.abstand, 40, "Abstand nicht begrenzt");
   assert.equal(n.intensitaet, 0, "Intensitaet nicht begrenzt");
   assert.equal(n.weiche, ctx.HATG_SYMBOL_STANDARD.weiche, "unlesbare Weichzeichnung nicht ersetzt");
-  assert.equal(n.form, ctx.HATG_SYMBOL_STANDARD.form, "unbekannte Form nicht ersetzt");
+  assert.equal(n.formAn, ctx.HATG_SYMBOL_STANDARD.formAn, "unbekannte Form (ein) nicht ersetzt");
+  assert.equal(n.formAus, ctx.HATG_SYMBOL_STANDARD.formAus, "unbekannte Form (aus) nicht ersetzt");
   // Die Rundung ist das einzige freie Textfeld geblieben - ein Semikolon dort
   // wuerde die naechste Deklaration abschneiden.
   assert.equal(n.rundung, ctx.HATG_SYMBOL_STANDARD.rundung, "Semikolon in der Rundung nicht abgefangen");
@@ -124,15 +125,33 @@ pruefe("Der Schatten wird aus der Flaechenfarbe gerechnet", () => {
 });
 
 pruefe("Die Form steckt in der Fuellung, nicht im Schatten", () => {
-  const flach = ctx.hatgSymbolCss({ ...PROBE, form: "flach" });
+  const flach = ctx.hatgSymbolCss({ ...PROBE, formAus: "flach" });
   assert.ok(flach.includes("--symbol-form-aus: none"), "flach darf keine Fuellung setzen");
   for (const [form, zuerst] of [["konkav", "#000000"], ["konvex", "#ffffff"]]) {
-    const css = ctx.hatgSymbolCss({ ...PROBE, form, flaecheAus: "#e0e0e0" });
+    const css = ctx.hatgSymbolCss({ ...PROBE, formAus: form, flaecheAus: "#e0e0e0" });
     const zeile = css.split("\n").find((z) => z.includes("--symbol-form-aus"));
     assert.ok(zeile.includes("linear-gradient(145deg"), `${form}: kein Verlauf`);
     const vorn = zeile.indexOf(zuerst), hinten = zeile.indexOf(zuerst === "#000000" ? "#ffffff" : "#000000");
     assert.ok(vorn < hinten, `${form}: die Toene stehen in der falschen Reihenfolge`);
   }
+});
+
+pruefe("Gedrueckt kippt den Schatten nach innen - je Zustand einzeln", () => {
+  // Vorher hing das inset am Ein-Zustand fest, und die vierte Form tat
+  // deshalb nichts Eigenes. Jetzt entscheidet die Form, nicht der Zustand.
+  const zeile = (css, was) => css.split("\n").find((z) => z.includes(was));
+  const beideErhaben = ctx.hatgSymbolCss({ ...PROBE, formAn: "flach", formAus: "flach" });
+  assert.ok(!zeile(beideErhaben, "--symbol-schatten-an").includes("inset"), "ein: flach darf nicht inset sein");
+  assert.ok(!zeile(beideErhaben, "--symbol-schatten-aus").includes("inset"), "aus: flach darf nicht inset sein");
+
+  const beideGedrueckt = ctx.hatgSymbolCss({ ...PROBE, formAn: "gedrueckt", formAus: "gedrueckt" });
+  assert.ok(zeile(beideGedrueckt, "--symbol-schatten-an").includes("inset"), "ein: gedrueckt fehlt inset");
+  assert.ok(zeile(beideGedrueckt, "--symbol-schatten-aus").includes("inset"), "aus: gedrueckt fehlt inset");
+
+  // Und gemischt - das ist der Fall, den es vorher gar nicht geben konnte.
+  const gemischt = ctx.hatgSymbolCss({ ...PROBE, formAn: "flach", formAus: "gedrueckt" });
+  assert.ok(!zeile(gemischt, "--symbol-schatten-an").includes("inset"), "gemischt: ein sollte erhaben sein");
+  assert.ok(zeile(gemischt, "--symbol-schatten-aus").includes("inset"), "gemischt: aus sollte gedrueckt sein");
 });
 
 pruefe("Ein- und Ausschalten ueber das Panel", () => {

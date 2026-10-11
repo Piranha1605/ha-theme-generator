@@ -11,7 +11,7 @@ custom_components/hatg/
 ├── __init__.py           Einstiegspunkt der Integration
 ├── config_flow.py        Einrichtung über die Oberfläche
 ├── const.py              Konstanten
-├── manifest.json         Domain hatg, aktuell v1.3.2, im Test 1.3.3b8
+├── manifest.json         Domain hatg, aktuell v1.3.2, im Test 1.3.3b9
 ├── translations/         de.json und en.json
 ├── brand/                Icons für den HACS-Store
 └── www/

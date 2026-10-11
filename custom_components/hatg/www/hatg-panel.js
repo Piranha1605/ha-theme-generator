@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.3.3b8";
+const HATG_VERSION = "1.3.3b9";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -2574,7 +2574,12 @@ const HATG_SYMBOL_STANDARD = {
   abstand: 6,
   intensitaet: 14,
   weiche: 12,
-  form: "flach",
+  // Die Form steht je Zustand. "gedrueckt" kippt den Schatten nach innen -
+  // vorher hing das am Ein-Zustand fest, und die vierte Form tat deshalb
+  // nichts Eigenes. Die Vorgabe bildet das alte Verhalten ab: aus erhaben,
+  // ein gedrueckt.
+  formAn: "gedrueckt",
+  formAus: "flach",
 };
 const HATG_SYMBOL_FORMEN = ["flach", "konkav", "konvex", "gedrueckt"];
 // Die beiden Toene entstehen per color-mix aus der Flaeche - damit folgen sie
@@ -2583,20 +2588,20 @@ const HATG_SYMBOL_FORMEN = ["flach", "konkav", "konvex", "gedrueckt"];
 function hatgSymbolTon(flaeche, anteil, richtung) {
   return `color-mix(in srgb, ${flaeche} ${100 - anteil}%, ${richtung})`;
 }
-function hatgSymbolSchattenCss(flaeche, p, gedrueckt) {
+function hatgSymbolSchattenCss(flaeche, p, form) {
   if (!p.abstand && !p.weiche) return "none";
   const dunkel = hatgSymbolTon(flaeche, p.intensitaet, "#000000");
   const hell = hatgSymbolTon(flaeche, p.intensitaet, "#ffffff");
-  const i = gedrueckt ? "inset " : "";
+  const i = form === "gedrueckt" ? "inset " : "";
   const a = p.abstand;
   return `${i}${a}px ${a}px ${p.weiche}px ${dunkel}, ${i}-${a}px -${a}px ${p.weiche}px ${hell}`;
 }
 // Flach, konkav, konvex: Die Form steckt in der Fuellung, nicht im Schatten.
-function hatgSymbolFuellung(flaeche, p) {
+function hatgSymbolFuellung(flaeche, p, form) {
   const dunkel = hatgSymbolTon(flaeche, p.intensitaet, "#000000");
   const hell = hatgSymbolTon(flaeche, p.intensitaet, "#ffffff");
-  if (p.form === "konkav") return `linear-gradient(145deg, ${dunkel}, ${hell})`;
-  if (p.form === "konvex") return `linear-gradient(145deg, ${hell}, ${dunkel})`;
+  if (form === "konkav") return `linear-gradient(145deg, ${dunkel}, ${hell})`;
+  if (form === "konvex") return `linear-gradient(145deg, ${hell}, ${dunkel})`;
   return "none";
 }
 function hatgSymbolMass(wert, ersatz, min, max) {
@@ -2634,7 +2639,8 @@ function hatgSymbolNormal(werte) {
     abstand: hatgSymbolMass(w.abstand, d.abstand, 0, 40),
     intensitaet: hatgSymbolMass(w.intensitaet, d.intensitaet, 0, 60),
     weiche: hatgSymbolMass(w.weiche, d.weiche, 0, 80),
-    form: HATG_SYMBOL_FORMEN.includes(String(w.form)) ? String(w.form) : d.form,
+    formAn: HATG_SYMBOL_FORMEN.includes(String(w.formAn)) ? String(w.formAn) : d.formAn,
+    formAus: HATG_SYMBOL_FORMEN.includes(String(w.formAus)) ? String(w.formAus) : d.formAus,
   };
 }
 function hatgSymbolCss(werte) {
@@ -2655,15 +2661,16 @@ function hatgSymbolCss(werte) {
     --symbol-flaeche-aus: ${p.flaecheAus};
     --symbol-deckkraft-an: ${(p.deckkraftAn / 100).toFixed(2)};
     --symbol-deckkraft-aus: ${(p.deckkraftAus / 100).toFixed(2)};
-    --symbol-schatten-an: ${hatgSymbolSchattenCss(p.flaecheAn, p, true)};
-    --symbol-schatten-aus: ${hatgSymbolSchattenCss(p.flaecheAus, p, false)};
-    --symbol-form-an: ${hatgSymbolFuellung(p.flaecheAn, p)};
-    --symbol-form-aus: ${hatgSymbolFuellung(p.flaecheAus, p)};
+    --symbol-schatten-an: ${hatgSymbolSchattenCss(p.flaecheAn, p, p.formAn)};
+    --symbol-schatten-aus: ${hatgSymbolSchattenCss(p.flaecheAus, p, p.formAus)};
+    --symbol-form-an: ${hatgSymbolFuellung(p.flaecheAn, p, p.formAn)};
+    --symbol-form-aus: ${hatgSymbolFuellung(p.flaecheAus, p, p.formAus)};
     /* Nur zum Zurueckholen in die Oberflaeche - CSS liest sie nicht. */
     --symbol-abstand: ${p.abstand}px;
     --symbol-intensitaet: ${p.intensitaet}%;
     --symbol-weiche: ${p.weiche}px;
-    --symbol-formwahl: ${p.form};
+    --symbol-formwahl-an: ${p.formAn};
+    --symbol-formwahl-aus: ${p.formAus};
   }
   /* Den Ein-Zustand kennt nur die Karte. */
   ha-card ha-tile-icon {
@@ -2718,7 +2725,8 @@ function hatgLeseSymbolKasten(text) {
     abstand: Number.parseFloat(String(lies("symbol-abstand") ?? "")),
     intensitaet: Number.parseFloat(String(lies("symbol-intensitaet") ?? "")),
     weiche: Number.parseFloat(String(lies("symbol-weiche") ?? "")),
-    form: (lies("symbol-formwahl") || "").trim(),
+    formAn: (lies("symbol-formwahl-an") || "").trim(),
+    formAus: (lies("symbol-formwahl-aus") || "").trim(),
   });
 }
 
@@ -9974,6 +9982,27 @@ uix:
     return ersatz ? this.symbolVorschauFarbe(ersatz, tiefe + 1) : "transparent";
   }
 
+  // Die vier Formen als Schieber statt als Knopfreihe: Vier Knoepfe brachen
+  // in zwei Zeilen um und standen schief neben den uebrigen Reglern.
+  renderSymbolForm(zustand, wert, en) {
+    const namen = {
+      flach: en ? "Flat" : "Flach",
+      konkav: en ? "Concave" : "Konkav",
+      konvex: en ? "Convex" : "Konvex",
+      gedrueckt: en ? "Pressed" : "Gedrückt",
+    };
+    const i = Math.max(0, HATG_SYMBOL_FORMEN.indexOf(wert));
+    const titel = zustand === "an" ? (en ? "Shape on" : "Form ein") : (en ? "Shape off" : "Form aus");
+    return `
+          <div class="generator-control">
+            <label>${titel}
+              <span class="generator-zahl symbol-formname">${namen[HATG_SYMBOL_FORMEN[i]]}</span>
+            </label>
+            <input type="range" min="0" max="${HATG_SYMBOL_FORMEN.length - 1}" step="1" value="${i}"
+              data-symbol-form="${zustand}" aria-label="${titel}" />
+          </div>`;
+  }
+
   renderSymbolKasten() {
     const en = this._sprache === "en";
     const stand = this.symbolKastenStand();
@@ -10008,13 +10037,14 @@ uix:
             const ein = zustand === "an";
             const flaeche = this.symbolVorschauFarbe(ein ? p.flaecheAn : p.flaecheAus);
             const deck = (ein ? p.deckkraftAn : p.deckkraftAus) / 100;
-            const fuellung = hatgSymbolFuellung(flaeche, p);
+            const form = ein ? p.formAn : p.formAus;
+            const fuellung = hatgSymbolFuellung(flaeche, p, form);
             return `
             <div class="symbol-vorschau-feld">
               <div class="symbol-vorschau-kachel" style="
                 width:${p.kachel}px; height:${p.kachel}px;
                 border-radius:${p.rundung};
-                box-shadow:${hatgSymbolSchattenCss(flaeche, p, ein)};
+                box-shadow:${hatgSymbolSchattenCss(flaeche, p, form)};
                 background-image:${fuellung};
               "><span style="
                   position:absolute; inset:0; border-radius:inherit;
@@ -10091,20 +10121,10 @@ uix:
             <label>${en ? "Blur" : "Weichzeichnung"}${zahl("data-symbol-weiche", p.weiche, 0, 80, "px")}</label>
             <input type="range" min="0" max="80" step="1" value="${p.weiche}" data-symbol-weiche-regler />
           </div>
-          <div class="generator-control">
-            <label>${en ? "Shape" : "Form"}</label>
-            <div class="mode-toggle-group inline" role="group">
-              ${HATG_SYMBOL_FORMEN.map((f) => {
-                const namen = {
-                  flach: en ? "Flat" : "Flach",
-                  konkav: en ? "Concave" : "Konkav",
-                  konvex: en ? "Convex" : "Konvex",
-                  gedrueckt: en ? "Pressed" : "Gedrückt",
-                };
-                return `<button type="button" class="${p.form === f ? "active" : ""}" data-symbol-form="${f}">${namen[f]}</button>`;
-              }).join("")}
-            </div>
-          </div>
+          ${this.renderSymbolForm("an", p.formAn, en)}
+        </div>
+        <div class="glas-regler-reihe">
+          ${this.renderSymbolForm("aus", p.formAus, en)}
         </div>
         <div class="symbol-ausgabe" data-roh>
           <button type="button" data-symbol-kopieren>${en ? "Copy" : "Kopieren"}</button>
@@ -12808,14 +12828,6 @@ box-shadow: ${hatgEscape(hatgSymbolSchattenCss(p.flaecheAus, p, false))};</pre>
         this.showToast(this._sprache === "en" ? "CSS copied" : "CSS kopiert");
       });
     });
-    this.shadowRoot.querySelectorAll("[data-symbol-form]").forEach((el) => {
-      el.addEventListener("click", () => {
-        const stand = this.symbolKastenStand();
-        if (!stand) return;
-        this.setzeSymbolKasten({ ...stand, form: el.dataset.symbolForm });
-        this.render();
-      });
-    });
     const symbolWerte = (quelle) => ({
       kachel: symbolPaar(quelle, "[data-symbol-kachel-regler]", "[data-symbol-kachel]"),
       glyphe: symbolPaar(quelle, "[data-symbol-glyphe-regler]", "[data-symbol-glyphe]"),
@@ -12834,8 +12846,9 @@ box-shadow: ${hatgEscape(hatgSymbolSchattenCss(p.flaecheAus, p, false))};</pre>
       abstand: symbolPaar(quelle, "[data-symbol-abstand-regler]", "[data-symbol-abstand]"),
       intensitaet: symbolPaar(quelle, "[data-symbol-intensitaet-regler]", "[data-symbol-intensitaet]"),
       weiche: symbolPaar(quelle, "[data-symbol-weiche-regler]", "[data-symbol-weiche]"),
-      // Die Form steckt nicht in einem Eingabefeld, sondern im aktiven Knopf.
-      form: this.shadowRoot.querySelector("[data-symbol-form].active")?.dataset.symbolForm,
+      // Die Form steht als Stufe auf dem Schieber, nicht als Text.
+      formAn: HATG_SYMBOL_FORMEN[Number(this.shadowRoot.querySelector('[data-symbol-form="an"]')?.value ?? 0)],
+      formAus: HATG_SYMBOL_FORMEN[Number(this.shadowRoot.querySelector('[data-symbol-form="aus"]')?.value ?? 0)],
     });
     const symbolNachziehen = (quelle, reglerSel, feldSel, wert) => {
       const regler = this.shadowRoot.querySelector(reglerSel);
@@ -12860,7 +12873,8 @@ box-shadow: ${hatgEscape(hatgSymbolSchattenCss(p.flaecheAus, p, false))};</pre>
           "[data-symbol-abstand], [data-symbol-abstand-regler], " +
           "[data-symbol-intensitaet], [data-symbol-intensitaet-regler], " +
           "[data-symbol-weiche], [data-symbol-weiche-regler], " +
-          "[data-symbol-rundung-regler], [data-symbol-rundung-zahl]"
+          "[data-symbol-rundung-regler], [data-symbol-rundung-zahl], " +
+          "[data-symbol-form]"
       )
       .forEach((el) => {
         el.addEventListener("input", () => {
@@ -12876,6 +12890,20 @@ box-shadow: ${hatgEscape(hatgSymbolSchattenCss(p.flaecheAus, p, false))};</pre>
           symbolNachziehen(el, "[data-symbol-weiche-regler]", "[data-symbol-weiche]", fertig.weiche);
           const rundungFeld = this.shadowRoot.querySelector("[data-symbol-rundung]");
           if (rundungFeld && rundungFeld !== el) rundungFeld.value = fertig.rundung;
+          // Der Name steht neben dem Schieber und muss mitlaufen, ohne dass
+          // die Seite neu gezeichnet wird - sonst verliert der Schieber den
+          // Griff mitten in der Bewegung.
+          const namen = {
+            flach: this._sprache === "en" ? "Flat" : "Flach",
+            konkav: this._sprache === "en" ? "Concave" : "Konkav",
+            konvex: this._sprache === "en" ? "Convex" : "Konvex",
+            gedrueckt: this._sprache === "en" ? "Pressed" : "Gedrückt",
+          };
+          for (const [zustand, wert] of [["an", fertig.formAn], ["aus", fertig.formAus]]) {
+            const regler = this.shadowRoot.querySelector(`[data-symbol-form="${zustand}"]`);
+            const anzeige = regler?.closest(".generator-control")?.querySelector(".symbol-formname");
+            if (anzeige) anzeige.textContent = namen[wert];
+          }
           this.setzeSymbolKasten(fertig);
         });
       });
