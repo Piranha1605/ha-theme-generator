@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.3.3b6";
+const HATG_VERSION = "1.3.3b7";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -2609,6 +2609,16 @@ function hatgSymbolRundung(wert, ersatz) {
   const v = String(wert ?? "").trim().replace(/;+\s*$/, "").trim();
   if (!v || /[;{}]/.test(v)) return ersatz;
   return v;
+}
+// Steht in der Rundung eine blanke Pixelzahl, kann der Schieber sie zeigen.
+// Bei einer Formel wie calc(...) geht das nicht - dann bleibt er auf dem
+// Ausweichwert stehen und das Textfeld fuehrt.
+function hatgSymbolRundungPx(wert, ersatz) {
+  const m = /^(-?\d+(?:\.\d+)?)px$/.exec(String(wert ?? "").trim());
+  return m ? Math.min(40, Math.max(0, Math.round(Number.parseFloat(m[1])))) : ersatz;
+}
+function hatgSymbolIstFormel(wert) {
+  return !/^-?\d+(?:\.\d+)?px$/.test(String(wert ?? "").trim());
 }
 function hatgSymbolNormal(werte) {
   const w = werte || {};
@@ -9977,13 +9987,50 @@ uix:
         ${
           stand
             ? `
+        <div class="symbol-vorschau" data-roh>
+          ${["aus", "an"].map((zustand) => {
+            const ein = zustand === "an";
+            const flaeche = ein ? p.flaecheAn : p.flaecheAus;
+            const deck = (ein ? p.deckkraftAn : p.deckkraftAus) / 100;
+            const fuellung = hatgSymbolFuellung(flaeche, p);
+            return `
+            <div class="symbol-vorschau-feld">
+              <div class="symbol-vorschau-kachel" style="
+                width:${p.kachel}px; height:${p.kachel}px;
+                border-radius:${p.rundung};
+                box-shadow:${hatgSymbolSchattenCss(flaeche, p, ein)};
+                background-image:${fuellung};
+              "><span style="
+                  position:absolute; inset:0; border-radius:inherit;
+                  background-color:${flaeche}; opacity:${deck};
+                "></span><ha-icon icon="mdi:lightbulb" style="
+                  position:relative; --mdc-icon-size:${p.glyphe}px;
+                  color:${ein ? "var(--state-icon-color)" : "var(--state-inactive-color)"};
+                "></ha-icon></div>
+              <small>${ein ? (en ? "On" : "Ein") : (en ? "Off" : "Aus")}</small>
+            </div>`;
+          }).join("")}
+        </div>
         <div class="glas-regler-reihe">
           <div class="generator-control">
-            <label>${en ? "Rounding" : "Rundung"}</label>
+            <label>${en ? "Rounding" : "Rundung"}${zahl("data-symbol-rundung-zahl", hatgSymbolRundungPx(p.rundung, 11), 0, 40, "px")}</label>
+            <input type="range" min="0" max="40" step="1" value="${hatgSymbolRundungPx(p.rundung, 11)}" data-symbol-rundung-regler />
+          </div>
+          <div class="generator-control">
+            <label>${en ? "or formula" : "oder Formel"}</label>
             <input type="text" class="symbol-text" value="${hatgEscape(p.rundung)}" data-symbol-rundung
-              aria-label="${en ? "Rounding" : "Rundung"}" />
+              aria-label="${en ? "Rounding formula" : "Rundung als Formel"}" />
           </div>
         </div>
+        ${
+          hatgSymbolIstFormel(p.rundung)
+            ? `<p class="vorlage-desc" data-roh>${
+                en
+                  ? "The rounding is a formula and follows the card radius - the slider cannot show it. Moving the slider replaces it with a fixed value."
+                  : "Die Rundung ist eine Formel und folgt dem Kartenradius - der Schieber kann sie nicht abbilden. Wer ihn bewegt, ersetzt sie durch einen festen Wert."
+              }</p>`
+            : ""
+        }
         <div class="glas-regler-reihe">
           <div class="generator-control">
             <label>${en ? "Tile size" : "Kachelgröße"}${zahl("data-symbol-kachel", p.kachel, 16, 96, "px")}</label>
@@ -10042,6 +10089,11 @@ uix:
               }).join("")}
             </div>
           </div>
+        </div>
+        <div class="symbol-ausgabe" data-roh>
+          <button type="button" data-symbol-kopieren>${en ? "Copy" : "Kopieren"}</button>
+          <pre>border-radius: ${hatgEscape(p.rundung)};
+box-shadow: ${hatgEscape(hatgSymbolSchattenCss(p.flaecheAus, p, false))};</pre>
         </div>
         <p class="vorlage-desc" data-roh>${
           en
@@ -11973,6 +12025,23 @@ uix:
         .glas-regler-reihe { display: grid; grid-template-columns: 1fr 1fr auto; gap: 18px; align-items: end; }
         .glas-profile { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; margin-bottom: 12px; }
         .glas-toene { display: flex; flex-wrap: wrap; gap: 10px; }
+        /* Die Vorschau des Symbol-Baukastens: zwei Musterkacheln, aus und
+           ein, mit genau den Werten der Regler darunter. Die Flaeche liegt
+           als eigene Schicht darin, damit die Deckkraft nur sie trifft und
+           nicht Schatten oder Symbol - genauso, wie ha-tile-icon es macht. */
+        .symbol-vorschau { display: flex; gap: 22px; align-items: flex-end; justify-content: center;
+          padding: 18px 0 14px; }
+        .symbol-vorschau-feld { display: flex; flex-direction: column; align-items: center; gap: 7px; }
+        .symbol-vorschau-feld small { font-size: 11px; color: var(--secondary-text-color); letter-spacing: .3px; }
+        .symbol-vorschau-kachel { position: relative; display: flex; align-items: center;
+          justify-content: center; background-repeat: no-repeat; transition: all .18s ease-out; }
+        .symbol-ausgabe { position: relative; margin-top: 12px; border-radius: 10px;
+          background: var(--code-editor-background-color, rgba(12, 27, 46, .9)); padding: 12px 14px; overflow: auto; }
+        .symbol-ausgabe pre { margin: 0; font: 12px/1.6 ui-monospace, "SF Mono", Menlo, monospace;
+          color: #e6e9ef; white-space: pre-wrap; word-break: break-word; }
+        .symbol-ausgabe button { position: absolute; top: 8px; right: 8px; border: 0; cursor: pointer;
+          border-radius: 7px; padding: 4px 10px; font-size: 11px; font-weight: 600;
+          background: var(--hatg-green, #2CB35B); color: #fff; }
         .glas-ton { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; }
         .glas-ton span { font-size: 10px; letter-spacing: .03em; color: var(--hatg-muted); }
         .glas-ton .farb-feld { width: 132px; height: 20px; margin-top: 1px; padding: 0 4px; border: 1px solid var(--hatg-border); border-radius: 5px; background: var(--hatg-field); color: var(--hatg-text); font-size: 10.5px; font-variant-numeric: tabular-nums; text-align: center; }
@@ -12716,6 +12785,13 @@ uix:
       const el = this.shadowRoot.querySelector(sel);
       return el ? String(el.value) : undefined;
     };
+    this.shadowRoot.querySelectorAll("[data-symbol-kopieren]").forEach((el) => {
+      el.addEventListener("click", () => {
+        const text = el.parentElement?.querySelector("pre")?.textContent || "";
+        navigator.clipboard?.writeText(text);
+        this.showToast(this._sprache === "en" ? "CSS copied" : "CSS kopiert");
+      });
+    });
     this.shadowRoot.querySelectorAll("[data-symbol-form]").forEach((el) => {
       el.addEventListener("click", () => {
         const stand = this.symbolKastenStand();
@@ -12725,13 +12801,20 @@ uix:
       });
     });
     const symbolWerte = (quelle) => ({
-      rundung: symbolEinzeln("[data-symbol-rundung]"),
       kachel: symbolPaar(quelle, "[data-symbol-kachel-regler]", "[data-symbol-kachel]"),
       glyphe: symbolPaar(quelle, "[data-symbol-glyphe-regler]", "[data-symbol-glyphe]"),
       flaecheAn: symbolPaar(quelle, "[data-symbol-flaeche-an]", "[data-symbol-flaeche-an-wert]"),
       flaecheAus: symbolPaar(quelle, "[data-symbol-flaeche-aus]", "[data-symbol-flaeche-aus-wert]"),
       deckkraftAn: symbolPaar(quelle, "[data-symbol-deckkraft-an-regler]", "[data-symbol-deckkraft-an]"),
       deckkraftAus: symbolPaar(quelle, "[data-symbol-deckkraft-aus-regler]", "[data-symbol-deckkraft-aus]"),
+      // Der Schieber fuehrt nur, wenn er gerade angefasst wird - sonst gilt das
+      // Textfeld, damit eine Formel nicht bei jedem Tastendruck verlorengeht.
+      rundung: (() => {
+        const regler = this.shadowRoot.querySelector("[data-symbol-rundung-regler]");
+        const zahlfeld = this.shadowRoot.querySelector("[data-symbol-rundung-zahl]");
+        if (quelle && (quelle === regler || quelle === zahlfeld)) return `${quelle.value}px`;
+        return symbolEinzeln("[data-symbol-rundung]");
+      })(),
       abstand: symbolPaar(quelle, "[data-symbol-abstand-regler]", "[data-symbol-abstand]"),
       intensitaet: symbolPaar(quelle, "[data-symbol-intensitaet-regler]", "[data-symbol-intensitaet]"),
       weiche: symbolPaar(quelle, "[data-symbol-weiche-regler]", "[data-symbol-weiche]"),
@@ -12760,7 +12843,8 @@ uix:
           "[data-symbol-deckkraft-aus], [data-symbol-deckkraft-aus-regler], " +
           "[data-symbol-abstand], [data-symbol-abstand-regler], " +
           "[data-symbol-intensitaet], [data-symbol-intensitaet-regler], " +
-          "[data-symbol-weiche], [data-symbol-weiche-regler]"
+          "[data-symbol-weiche], [data-symbol-weiche-regler], " +
+          "[data-symbol-rundung-regler], [data-symbol-rundung-zahl]"
       )
       .forEach((el) => {
         el.addEventListener("input", () => {
@@ -12774,6 +12858,8 @@ uix:
           symbolNachziehen(el, "[data-symbol-abstand-regler]", "[data-symbol-abstand]", fertig.abstand);
           symbolNachziehen(el, "[data-symbol-intensitaet-regler]", "[data-symbol-intensitaet]", fertig.intensitaet);
           symbolNachziehen(el, "[data-symbol-weiche-regler]", "[data-symbol-weiche]", fertig.weiche);
+          const rundungFeld = this.shadowRoot.querySelector("[data-symbol-rundung]");
+          if (rundungFeld && rundungFeld !== el) rundungFeld.value = fertig.rundung;
           this.setzeSymbolKasten(fertig);
         });
       });
