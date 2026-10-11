@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.3.3b7";
+const HATG_VERSION = "1.3.3b8";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -9958,6 +9958,22 @@ uix:
     this.applyPreviewTheme();
   }
 
+  // Die Vorschau zeichnet im Panel, also unter der laufenden Theme. Ein
+  // var(--state-icon-color) loeste dort gegen den gerade aktiven Modus auf -
+  // der Editor stand auf Light und die Musterkachel kam trotzdem im
+  // Dunkel-Wert. Deshalb werden Verweise vorher gegen die Werte aufgeloest,
+  // die im Editor stehen. Hoechstens vier Glieder, damit eine Kette, die sich
+  // im Kreis dreht, die Darstellung nicht aufhaengt.
+  symbolVorschauFarbe(wert, tiefe = 0) {
+    const v = String(wert ?? "").trim();
+    const m = /^var\(\s*--([a-z0-9-]+)\s*(?:,([\s\S]*))?\)$/i.exec(v);
+    if (!m || tiefe > 3) return v;
+    const eigener = this.currentValues()[m[1]];
+    if (eigener) return this.symbolVorschauFarbe(eigener, tiefe + 1);
+    const ersatz = (m[2] || "").trim();
+    return ersatz ? this.symbolVorschauFarbe(ersatz, tiefe + 1) : "transparent";
+  }
+
   renderSymbolKasten() {
     const en = this._sprache === "en";
     const stand = this.symbolKastenStand();
@@ -9990,7 +10006,7 @@ uix:
         <div class="symbol-vorschau" data-roh>
           ${["aus", "an"].map((zustand) => {
             const ein = zustand === "an";
-            const flaeche = ein ? p.flaecheAn : p.flaecheAus;
+            const flaeche = this.symbolVorschauFarbe(ein ? p.flaecheAn : p.flaecheAus);
             const deck = (ein ? p.deckkraftAn : p.deckkraftAus) / 100;
             const fuellung = hatgSymbolFuellung(flaeche, p);
             return `
@@ -10005,7 +10021,7 @@ uix:
                   background-color:${flaeche}; opacity:${deck};
                 "></span><ha-icon icon="mdi:lightbulb" style="
                   position:relative; --mdc-icon-size:${p.glyphe}px;
-                  color:${ein ? "var(--state-icon-color)" : "var(--state-inactive-color)"};
+                  color:${this.symbolVorschauFarbe(ein ? "var(--state-icon-color)" : "var(--state-inactive-color)")};
                 "></ha-icon></div>
               <small>${ein ? (en ? "On" : "Ein") : (en ? "Off" : "Aus")}</small>
             </div>`;

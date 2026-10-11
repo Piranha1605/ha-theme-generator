@@ -190,6 +190,31 @@ pruefe("Einschalten nimmt symbole-kachel heraus", () => {
   assert.ok(ctx.hatgLeseVorlagenBlock(danach, ctx.HATG_SYMBOL_ID) !== null, "der Baukasten fehlt");
 });
 
+pruefe("Die Vorschau loest Verweise gegen den Editor auf", () => {
+  // Die Vorschau zeichnet im Panel, also unter der laufenden Theme. Ein
+  // var(--state-icon-color) loeste dort gegen den aktiven Modus auf: Der
+  // Editor stand auf Light, die Musterkachel kam im Dunkel-Wert.
+  const { panel } = panelBauen();
+  panel._state.editorMode = "light";
+  const hell = panel.symbolVorschauFarbe("var(--state-icon-color)");
+  panel._state.editorMode = "dark";
+  const dunkel = panel.symbolVorschauFarbe("var(--state-icon-color)");
+  assert.notEqual(hell, "var(--state-icon-color)", "der Verweis wurde nicht aufgeloest");
+  assert.notEqual(hell, dunkel, "beide Modi liefern denselben Wert");
+  // Ausweichwert, feste Farbe, und ein Verweis ins Leere
+  assert.equal(panel.symbolVorschauFarbe("var(--gibtesnicht, #abcdef)"), "#abcdef");
+  assert.equal(panel.symbolVorschauFarbe("#112233"), "#112233");
+  assert.equal(panel.symbolVorschauFarbe("var(--gibtesnicht)"), "transparent");
+});
+
+pruefe("Eine Kette im Kreis haengt die Vorschau nicht auf", () => {
+  const { panel } = panelBauen();
+  panel.commitField("accent-color", "var(--primary-color)");
+  panel.commitField("primary-color", "var(--accent-color)");
+  const wert = panel.symbolVorschauFarbe("var(--accent-color)");
+  assert.ok(typeof wert === "string", "kein Wert zurueckgekommen");
+});
+
 pruefe("Er schreibt in beide Modi", () => {
   const { panel } = panelBauen();
   panel.setzeSymbolKasten(PROBE);
