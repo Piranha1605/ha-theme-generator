@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.3.3b2";
+const HATG_VERSION = "1.3.3b3";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -2526,6 +2526,157 @@ function hatgMigriereAkzentVerlauf(bag) {
 //   Eine Variable, die sich selbst liest, ist in CSS ein Kreis und wird
 //   ungueltig - die Farbe aus dem Theme ging damit verloren. Die Zeile faellt
 //   weg, der Theme-Wert kommt wieder durch.
+// ---------------------------------------------------------------------------
+// Der Symbol-Baukasten.
+//
+// Gebaut nach demselben Muster wie der Verlauf fuer aktive Flaechen: eine
+// Kennung, ein Ziel, eine Funktion die den Block erzeugt, und ein Rueckleser,
+// der die Werte wieder in die Oberflaeche holt.
+//
+// Am 11.10.2026 an einer laufenden Instanz gemessen, und daraus folgt der
+// Aufbau:
+//
+//   - Die Rundung geht ueber Variablen und braucht keinen Pfad. Kachel,
+//     state-badge, Mushroom und Bubble bieten dafuer je einen Haken an;
+//     Variablen erben durch jede Shadow-Grenze.
+//   - Flaeche, Deckkraft, Groesse und Schatten der Kachel liegen in
+//     ha-tile-icon hinter .container und dessen ::before. Dorthin kommt nur
+//     ein Pfad, und das Bauteil setzt --tile-icon-color, --tile-icon-opacity
+//     und --tile-icon-size in seinem eigenen :host - die Werte brauchen
+//     deshalb !important. Gegenprobe: --tile-icon-opacity nahm eine Regel von
+//     aussen auch ohne !important an, die Farbe nicht, weil die Karte sie im
+//     selben Shadow Root noch einmal setzt und adoptedStyleSheets zuletzt
+//     greifen.
+//   - Den Zustand kennt nur die Karte: Home Assistant haengt der ha-card die
+//     Klasse "active" an. Die Kachel liegt eine Shadow-Grenze tiefer, der
+//     Zustand kommt deshalb als Variable herunter - genau wie bei
+//     symbole-kachel.
+//
+// Alle sechs Werte stehen einzeln auf :host, auch wenn sie dort nur
+// zwischengelagert werden. Das ist Absicht: Der Rueckleser findet jeden Namen
+// genau einmal. Hingen "an" und "aus" an derselben Variable, muesste er nach
+// Selektoren suchen statt nach Namen.
+const HATG_SYMBOL_ID = "symbol-baukasten";
+const HATG_SYMBOL_ZIEL = "uix-card-yaml";
+const HATG_SYMBOL_STANDARD = {
+  rundung: "calc(max(0px, var(--ha-card-border-radius, 18px) - 7px))",
+  kachel: 36,
+  glyphe: 24,
+  flaecheAn: "var(--state-icon-color)",
+  flaecheAus: "var(--state-inactive-color)",
+  deckkraftAn: 28,
+  deckkraftAus: 16,
+  schattenAn: "0 2px 10px rgba(0, 0, 0, 0.35)",
+  schattenAus: "none",
+};
+// Ein Schatten darf alles sein, was CSS als box-shadow versteht - oder "none".
+// Ein Semikolon wuerde die naechste Deklaration abschneiden, geschweifte
+// Klammern den Block sprengen.
+function hatgSymbolSchatten(wert, ersatz) {
+  const v = String(wert ?? "").trim().replace(/;+\s*$/, "").trim();
+  if (!v) return ersatz;
+  if (/[;{}]/.test(v)) return ersatz;
+  return v;
+}
+function hatgSymbolMass(wert, ersatz, min, max) {
+  const n = Number.parseFloat(String(wert ?? "").replace(",", "."));
+  if (!Number.isFinite(n)) return ersatz;
+  return Math.min(max, Math.max(min, Math.round(n)));
+}
+// Die Rundung ist ein Laengenwert und darf calc() und var() enthalten.
+function hatgSymbolRundung(wert, ersatz) {
+  const v = String(wert ?? "").trim().replace(/;+\s*$/, "").trim();
+  if (!v || /[;{}]/.test(v)) return ersatz;
+  return v;
+}
+function hatgSymbolNormal(werte) {
+  const w = werte || {};
+  const d = HATG_SYMBOL_STANDARD;
+  return {
+    rundung: hatgSymbolRundung(w.rundung, d.rundung),
+    kachel: hatgSymbolMass(w.kachel, d.kachel, 16, 96),
+    glyphe: hatgSymbolMass(w.glyphe, d.glyphe, 10, 72),
+    flaecheAn: hatgVerlaufFarbe(w.flaecheAn, d.flaecheAn),
+    flaecheAus: hatgVerlaufFarbe(w.flaecheAus, d.flaecheAus),
+    deckkraftAn: hatgSymbolMass(w.deckkraftAn, d.deckkraftAn, 0, 100),
+    deckkraftAus: hatgSymbolMass(w.deckkraftAus, d.deckkraftAus, 0, 100),
+    schattenAn: hatgSymbolSchatten(w.schattenAn, d.schattenAn),
+    schattenAus: hatgSymbolSchatten(w.schattenAus, d.schattenAus),
+  };
+}
+function hatgSymbolCss(werte) {
+  const p = hatgSymbolNormal(werte);
+  return `.: |
+  :host {
+    /* Die Rundung erreicht alle vier Familien ueber je eigene Variablen. */
+    --ha-tile-icon-border-radius: ${p.rundung};
+    --state-badge-border-radius: ${p.rundung};
+    --mush-icon-border-radius: ${p.rundung};
+    --symbol-rundung: ${p.rundung};
+    --bubble-icon-border-radius: ${p.rundung};
+    --bubble-button-icon-border-radius: ${p.rundung};
+    /* Zwischenlager, damit der Rueckleser jeden Namen genau einmal findet. */
+    --symbol-kachel: ${p.kachel}px;
+    --symbol-glyphe: ${p.glyphe}px;
+    --symbol-flaeche-an: ${p.flaecheAn};
+    --symbol-flaeche-aus: ${p.flaecheAus};
+    --symbol-deckkraft-an: ${(p.deckkraftAn / 100).toFixed(2)};
+    --symbol-deckkraft-aus: ${(p.deckkraftAus / 100).toFixed(2)};
+    --symbol-schatten-an: ${p.schattenAn};
+    --symbol-schatten-aus: ${p.schattenAus};
+  }
+  /* Den Ein-Zustand kennt nur die Karte. */
+  ha-card ha-tile-icon {
+    --symbol-flaeche: var(--symbol-flaeche-aus);
+    --symbol-deckkraft: var(--symbol-deckkraft-aus);
+    --symbol-schatten: var(--symbol-schatten-aus);
+  }
+  ha-card.active ha-tile-icon {
+    --symbol-flaeche: var(--symbol-flaeche-an);
+    --symbol-deckkraft: var(--symbol-deckkraft-an);
+    --symbol-schatten: var(--symbol-schatten-an);
+  }
+ha-card ha-tile-icon $: |
+  /* Groesse und Flaeche setzt ha-tile-icon in seinem eigenen :host - ohne
+     !important gewinnt das Bauteil. Die Glyphe nicht: --mdc-icon-size steht
+     hier naeher am Element als dort. */
+  .container {
+    width: var(--symbol-kachel) !important;
+    height: var(--symbol-kachel) !important;
+    box-shadow: var(--symbol-schatten, none);
+  }
+  .container.background::before {
+    background-color: var(--symbol-flaeche) !important;
+    opacity: var(--symbol-deckkraft) !important;
+  }
+  .container ha-icon,
+  .container ha-svg-icon,
+  .container ::slotted([slot="icon"]) {
+    --mdc-icon-size: var(--symbol-glyphe);
+  }`;
+}
+// Werte aus dem Block zurueckholen; null, wenn kein Block da ist.
+function hatgLeseSymbolKasten(text) {
+  const block = hatgLeseVorlagenBlock(text, HATG_SYMBOL_ID);
+  if (block === null) return null;
+  const lies = (name) => hatgVerlaufEigenschaft(block, name);
+  const anteil = (name, ersatz) => {
+    const v = Number.parseFloat(String(lies(name) ?? ""));
+    return Number.isFinite(v) ? Math.round(v * 100) : ersatz;
+  };
+  return hatgSymbolNormal({
+    rundung: lies("ha-tile-icon-border-radius"),
+    kachel: lies("symbol-kachel"),
+    glyphe: lies("symbol-glyphe"),
+    flaecheAn: lies("symbol-flaeche-an"),
+    flaecheAus: lies("symbol-flaeche-aus"),
+    deckkraftAn: anteil("symbol-deckkraft-an", HATG_SYMBOL_STANDARD.deckkraftAn),
+    deckkraftAus: anteil("symbol-deckkraft-aus", HATG_SYMBOL_STANDARD.deckkraftAus),
+    schattenAn: lies("symbol-schatten-an"),
+    schattenAus: lies("symbol-schatten-aus"),
+  });
+}
+
 const HATG_YAML_KOPF_RE = /^(?:"(?:[^"\\]|\\.)*"|'[^']*'|[^\s#'"/][^\n]*?):\s*[|>][-+]?\s*$/;
 function hatgIstYamlKarte(text) {
   const zeilen = String(text ?? "").split("\n");
@@ -7282,7 +7433,11 @@ class HATGPanel extends HTMLElement {
           // Die Kartenfelder tragen bewusst keine Vorgaben; ohne eine
           // Schnellwahl muesste man vierzehn Farben von Hand eintragen, je
           // Modus. Der Waehler steht deshalb ueber den Feldern.
-          const extra = g.id === "hintergruende-karten__karte" ? this.renderKartenPalette() : "";
+          let extra = g.id === "hintergruende-karten__karte" ? this.renderKartenPalette() : "";
+          // Der Baukasten steht ueber den Feldern, aus denen er liest: Form,
+          // Groesse und Flaeche gehoeren zusammen, auch wenn ein Teil davon
+          // nur ueber eine UIX-Regel erreichbar ist.
+          if (g.id === "symbole__form") extra = this.renderSymbolKasten();
           return `
             <div class="field-group">
               <div class="field-group-title">${hatgEscape(g.label)}</div>
@@ -9723,6 +9878,115 @@ uix:
     });
     this._state.editorMode = currentMode;
     this.applyPreviewTheme();
+  }
+
+  // --- Symbol-Baukasten -----------------------------------------------
+  symbolKastenStand() {
+    return hatgLeseSymbolKasten(String(this.currentValues()[HATG_SYMBOL_ZIEL] || ""));
+  }
+
+  // Schreibt den Block in beide Modi oder nimmt ihn heraus. Eine UIX-Zeile
+  // gilt fuer hell und dunkel zugleich - der Block steht trotzdem in beiden,
+  // sonst faellt er beim Moduswechsel aus der Ausgabe.
+  setzeSymbolKasten(werte) {
+    const currentMode = this._state.editorMode;
+    ["light", "dark"].forEach((mode) => {
+      this._state.editorMode = mode;
+      const text = String(this.currentValues()[HATG_SYMBOL_ZIEL] || "");
+      const neu = werte
+        ? hatgHaengeVorlagenBlockAn(text, HATG_SYMBOL_ID, hatgSymbolCss(werte), true)
+        : hatgEntferneVorlagenBlock(text, HATG_SYMBOL_ID);
+      if (neu !== text) this.commitField(HATG_SYMBOL_ZIEL, neu);
+    });
+    this._state.editorMode = currentMode;
+    this.applyPreviewTheme();
+  }
+
+  renderSymbolKasten() {
+    const en = this._sprache === "en";
+    const stand = this.symbolKastenStand();
+    const p = stand || HATG_SYMBOL_STANDARD;
+    const farbe = (attr, wert, hell, dunkel) => this.verlaufFarbfeld(attr, wert, hell, dunkel, en);
+    const zahl = (attr, wert, min, max, einheit) => `
+      <span class="generator-zahl">
+        <input type="number" min="${min}" max="${max}" step="1" value="${wert}" ${attr}
+          aria-label="${attr.replace(/^data-|\]$/g, "")}" />${einheit}
+      </span>`;
+    return `
+      <div class="glas-regler symbol-kasten" data-roh>
+        <div class="glas-regler-kopf">
+          <strong>${en ? "Icon builder" : "Symbol-Baukasten"}</strong>
+          <span>${
+            en
+              ? "Rounding, size, shadow and the surface behind the icon - with separate colours for on and off. Rounding reaches tiles, rows, Mushroom and Bubble Card at once; the rest applies to tiles. Counts for light and dark alike."
+              : "Rundung, Größe, Schatten und die Fläche hinter dem Symbol - mit getrennten Farben für ein und aus. Die Rundung erreicht Kacheln, Zeilen, Mushroom und Bubble Card zugleich; der Rest gilt für Kacheln. Gilt für Light und Dark gleich."
+          }</span>
+        </div>
+        <div class="glas-profile">
+          <div class="mode-toggle-group inline" role="group">
+            <button type="button" class="${stand ? "" : "active"}" data-symbol="aus">${en ? "Off" : "Aus"}</button>
+            <button type="button" class="${stand ? "active" : ""}" data-symbol="an">${en ? "On" : "An"}</button>
+          </div>
+        </div>
+        ${
+          stand
+            ? `
+        <div class="glas-regler-reihe">
+          <div class="generator-control">
+            <label>${en ? "Rounding" : "Rundung"}</label>
+            <input type="text" class="symbol-text" value="${hatgEscape(p.rundung)}" data-symbol-rundung
+              aria-label="${en ? "Rounding" : "Rundung"}" />
+          </div>
+        </div>
+        <div class="glas-regler-reihe">
+          <div class="generator-control">
+            <label>${en ? "Tile size" : "Kachelgröße"}${zahl("data-symbol-kachel", p.kachel, 16, 96, "px")}</label>
+            <input type="range" min="16" max="96" step="1" value="${p.kachel}" data-symbol-kachel-regler />
+          </div>
+          <div class="generator-control">
+            <label>${en ? "Icon size" : "Symbolgröße"}${zahl("data-symbol-glyphe", p.glyphe, 10, 72, "px")}</label>
+            <input type="range" min="10" max="72" step="1" value="${p.glyphe}" data-symbol-glyphe-regler />
+          </div>
+        </div>
+        <div class="glas-regler-reihe verlauf-reihe">
+          <div class="generator-control glas-regler-farbe">
+            <label>${en ? "Surface" : "Fläche"}</label>
+            <div class="glas-toene">
+              ${farbe("data-symbol-flaeche-an", p.flaecheAn, "On", "Ein")}
+              ${farbe("data-symbol-flaeche-aus", p.flaecheAus, "Off", "Aus")}
+            </div>
+          </div>
+        </div>
+        <div class="glas-regler-reihe">
+          <div class="generator-control">
+            <label>${en ? "Opacity on" : "Deckkraft ein"}${zahl("data-symbol-deckkraft-an", p.deckkraftAn, 0, 100, "%")}</label>
+            <input type="range" min="0" max="100" step="1" value="${p.deckkraftAn}" data-symbol-deckkraft-an-regler />
+          </div>
+          <div class="generator-control">
+            <label>${en ? "Opacity off" : "Deckkraft aus"}${zahl("data-symbol-deckkraft-aus", p.deckkraftAus, 0, 100, "%")}</label>
+            <input type="range" min="0" max="100" step="1" value="${p.deckkraftAus}" data-symbol-deckkraft-aus-regler />
+          </div>
+        </div>
+        <div class="glas-regler-reihe">
+          <div class="generator-control">
+            <label>${en ? "Shadow on" : "Schatten ein"}</label>
+            <input type="text" class="symbol-text" value="${hatgEscape(p.schattenAn)}" data-symbol-schatten-an
+              aria-label="${en ? "Shadow on" : "Schatten ein"}" />
+          </div>
+          <div class="generator-control">
+            <label>${en ? "Shadow off" : "Schatten aus"}</label>
+            <input type="text" class="symbol-text" value="${hatgEscape(p.schattenAus)}" data-symbol-schatten-aus
+              aria-label="${en ? "Shadow off" : "Schatten aus"}" />
+          </div>
+        </div>
+        <p class="vorlage-desc" data-roh>${
+          en
+            ? "The surface sits behind the icon at the chosen opacity; the icon itself keeps the state colour from the fields below."
+            : "Die Fläche liegt mit der gewählten Deckkraft hinter dem Symbol; das Symbol selbst behält die Zustandsfarbe aus den Feldern darunter."
+        }</p>`
+            : ""
+        }
+      </div>`;
   }
 
   // Farbtupfer plus Textfeld. Das Textfeld fuehrt: ein input type=color kennt
@@ -12366,6 +12630,73 @@ uix:
         this.resetDerivationsToAutomatic();
       });
     });
+    this.shadowRoot.querySelectorAll("[data-symbol]").forEach((el) => {
+      el.addEventListener("click", () => {
+        const an = el.dataset.symbol === "an";
+        const stand = this.symbolKastenStand();
+        if (!!stand === an) return;
+        this.setzeSymbolKasten(an ? stand || HATG_SYMBOL_STANDARD : null);
+        this.render();
+      });
+    });
+    // Wer gerade angefasst wird, gibt den Wert vor - sonst springt der
+    // Schieber beim Loslassen auf den Stand des Zahlenfelds zurueck.
+    const symbolPaar = (quelle, reglerSel, feldSel) => {
+      const regler = this.shadowRoot.querySelector(reglerSel);
+      const feld = this.shadowRoot.querySelector(feldSel);
+      if (quelle && quelle === regler) return regler.value;
+      const getippt = feld ? String(feld.value).trim() : "";
+      return getippt !== "" ? getippt : regler?.value;
+    };
+    const symbolEinzeln = (sel) => {
+      const el = this.shadowRoot.querySelector(sel);
+      return el ? String(el.value) : undefined;
+    };
+    const symbolWerte = (quelle) => ({
+      rundung: symbolEinzeln("[data-symbol-rundung]"),
+      kachel: symbolPaar(quelle, "[data-symbol-kachel-regler]", "[data-symbol-kachel]"),
+      glyphe: symbolPaar(quelle, "[data-symbol-glyphe-regler]", "[data-symbol-glyphe]"),
+      flaecheAn: symbolPaar(quelle, "[data-symbol-flaeche-an]", "[data-symbol-flaeche-an-wert]"),
+      flaecheAus: symbolPaar(quelle, "[data-symbol-flaeche-aus]", "[data-symbol-flaeche-aus-wert]"),
+      deckkraftAn: symbolPaar(quelle, "[data-symbol-deckkraft-an-regler]", "[data-symbol-deckkraft-an]"),
+      deckkraftAus: symbolPaar(quelle, "[data-symbol-deckkraft-aus-regler]", "[data-symbol-deckkraft-aus]"),
+      schattenAn: symbolEinzeln("[data-symbol-schatten-an]"),
+      schattenAus: symbolEinzeln("[data-symbol-schatten-aus]"),
+    });
+    const symbolNachziehen = (quelle, reglerSel, feldSel, wert) => {
+      const regler = this.shadowRoot.querySelector(reglerSel);
+      const feld = this.shadowRoot.querySelector(feldSel);
+      if (feld && feld !== quelle) feld.value = wert;
+      if (regler && regler !== quelle) {
+        if (regler.type === "color") {
+          if (/^#[0-9a-f]{6}$/i.test(String(wert))) regler.value = wert;
+        } else {
+          regler.value = wert;
+        }
+      }
+    };
+    this.shadowRoot
+      .querySelectorAll(
+        "[data-symbol-rundung], [data-symbol-kachel], [data-symbol-kachel-regler], " +
+          "[data-symbol-glyphe], [data-symbol-glyphe-regler], " +
+          "[data-symbol-flaeche-an], [data-symbol-flaeche-aus], " +
+          "[data-symbol-flaeche-an-wert], [data-symbol-flaeche-aus-wert], " +
+          "[data-symbol-deckkraft-an], [data-symbol-deckkraft-an-regler], " +
+          "[data-symbol-deckkraft-aus], [data-symbol-deckkraft-aus-regler], " +
+          "[data-symbol-schatten-an], [data-symbol-schatten-aus]"
+      )
+      .forEach((el) => {
+        el.addEventListener("input", () => {
+          const fertig = hatgSymbolNormal(symbolWerte(el));
+          symbolNachziehen(el, "[data-symbol-kachel-regler]", "[data-symbol-kachel]", fertig.kachel);
+          symbolNachziehen(el, "[data-symbol-glyphe-regler]", "[data-symbol-glyphe]", fertig.glyphe);
+          symbolNachziehen(el, "[data-symbol-deckkraft-an-regler]", "[data-symbol-deckkraft-an]", fertig.deckkraftAn);
+          symbolNachziehen(el, "[data-symbol-deckkraft-aus-regler]", "[data-symbol-deckkraft-aus]", fertig.deckkraftAus);
+          symbolNachziehen(el, "[data-symbol-flaeche-an]", "[data-symbol-flaeche-an-wert]", fertig.flaecheAn);
+          symbolNachziehen(el, "[data-symbol-flaeche-aus]", "[data-symbol-flaeche-aus-wert]", fertig.flaecheAus);
+          this.setzeSymbolKasten(fertig);
+        });
+      });
     this.shadowRoot.querySelectorAll("[data-verlauf]").forEach((el) => {
       el.addEventListener("click", () => {
         const an = el.dataset.verlauf === "an";
