@@ -11,7 +11,7 @@ custom_components/hatg/
 ├── __init__.py           Einstiegspunkt der Integration
 ├── config_flow.py        Einrichtung über die Oberfläche
 ├── const.py              Konstanten
-├── manifest.json         Domain hatg, aktuell v1.3.2, im Test 1.3.3b1
+├── manifest.json         Domain hatg, aktuell v1.3.2, im Test 1.3.3b2
 ├── translations/         de.json und en.json
 ├── brand/                Icons für den HACS-Store
 └── www/
@@ -143,6 +143,32 @@ Daraus folgt alles Weitere:
 - **`ha-switch` spiegelt `checked` nicht als Attribut.** `ha-switch[checked]` trifft nie. Web Awesome meldet den Zustand als Custom State: `ha-switch:state(checked)::part(control)`. Am 2026-09-26 an einem eigens erzeugten Schalter geprüft — Attribut-Selektor griff nicht, State-Selektor griff.
 - **Ein doppelter Pfad legt ein ganzes `-yaml`-Feld still.** UIX liest die Karte mit einem strengen YAML-Parser (Fehler `duplicated mapping key`) und verwirft sie komplett – keine Vorlage des Stilziels kommt an, auch nicht der `"."`-Eintrag. Am 2026-09-16 stand `ha-button $:` zweimal in `uix-card-yaml` (eine Vorlage doppelt, einmal mit fremder Marke); alle 48 Karten-Knoten waren leer, Bubble-Karten ohne Rahmen und Pop-ups ohne Hintergrundbild. PyYAML nimmt so eine Datei klaglos hin, geprüft wird deshalb mit `js-yaml`. Die Ausgabe fasst doppelte Pfade zusammen (`hatgYamlPfadeZusammenfuehren`).
 - **Keine Weichzeichnung auf der Dialogfläche.** Ein `backdrop-filter` auf `.mdc-dialog__surface` bzw. `wa-dialog::part(dialog)` macht den Dialog zum Bezugsrahmen für `position: fixed`. Die Auswahllisten darin sind `fixed`: Sie landen neben dem sichtbaren Bereich, die Liste bleibt leer. Am 2026-09-20 an der Versionsauswahl von HACS (eingebettetes Panel, erreicht HATG nur über Theme-Variablen) und am Info-Dialog von Home Assistant gemessen; eine Weichzeichnung auf einem `::before` der Fläche hilft nicht. Das Glas-Paket schreibt deshalb `ha-dialog-surface-backdrop-filter: none`, die Vorlagen haben keinen Ausweichwert mehr, und der Import nimmt einen vorhandenen Wert zurück.
+- **Die `mdc-`Klassen sind unter HA 2026 verschwunden — acht Vorlagenstellen zielen
+  ins Leere.** Am 11.10.2026 an einer laufenden Instanz gezaehlt: In 629 Elementen
+  einer Einstellungsseite kommt **keine einzige** Klasse mit der Vorsilbe `mdc-` mehr
+  vor. Stattdessen stehen dort die blanken Namen. Belegt und zugeordnet ist bisher:
+
+      .mdc-top-app-bar      ->  header.top-app-bar   in ha-top-app-bar-fixed
+      .mdc-drawer           ->  dialog.drawer        in wa-drawer (Web Awesome)
+
+  `kopfleiste-glas` war damit tot: Der UIX-Knoten kam mit seinen 464 Zeichen an, der
+  Selektor traf nichts, und die Leiste blieb ohne Weichzeichnung. Aufgefallen ist es
+  nur, weil die Flaeche durchscheinend aussah und trotzdem nichts dahinter verschwamm
+  — die Hintergrundfarbe kommt naemlich aus `--app-header-background-color`, das die
+  Leiste selbst liest, und sah deshalb richtig aus.
+
+  Betroffen sind `kopfleiste-glas` (`.mdc-top-app-bar`), `drawer-glas` (`.mdc-drawer`),
+  `glas-dialoge` (`.mdc-dialog__surface`) und die fuenf Stellen mit
+  `.mdc-menu-surface` in `glas-ebene`, `glas-more-info`, `glas-dialoge`, `glas-bubble`
+  und `glas-panels`. **Noch nicht zugeordnet** sind `.mdc-menu-surface` und
+  `.mdc-dialog__surface` — dafuer muss ein Menue beziehungsweise ein Dialog offen
+  sein, sonst existieren die Elemente gar nicht. Vor dem Umschreiben also messen,
+  nicht raten.
+
+  Die Korrektur gehoert als **zusaetzlicher** Selektor geschrieben, nicht als Ersatz:
+  `.mdc-top-app-bar, .top-app-bar { … }`. Wer eine aeltere HA faehrt, braucht den
+  alten Namen weiter.
+
 - `--uix-view-background` gehört zu `ha-panel-lovelace` bzw. `hui-root`, nicht zum Drawer.
 - Ein `uix-sidebar-yaml`-Block lässt UIX 8.1.0 beim Laden mit `TypeError … toLowerCase` aussteigen. Danach wendet UIX für den Rest der Sitzung überhaupt keine Vorlage mehr an. Das Benutzer-Icon kommt deshalb ohne Pfad aus.
 - UIX stylt nur, was nach ihm entsteht. Ein hartes Neuladen direkt auf einer `/config`-Seite lässt die schon vorhandenen Elemente unberührt.
