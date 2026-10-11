@@ -53,7 +53,7 @@ console.log("Symbol-Baukasten\n");
 pruefe("Der Block traegt beide Eintraege und kein $$", () => {
   const css = ctx.hatgSymbolCss(PROBE);
   assert.ok(css.startsWith(".: |"), "der Punkt-Eintrag fehlt");
-  assert.ok(css.includes("ha-card ha-tile-icon $:"), "der Pfad-Eintrag fehlt");
+  assert.ok(css.includes("ha-tile-icon $:"), "der Pfad-Eintrag fehlt");
   assert.ok(!/\$\$/.test(css), "ein $$ im Pfad legt jedes -yaml-Feld still");
 });
 
@@ -87,7 +87,7 @@ pruefe("Der Zustand kommt als Variable von der Karte herunter", () => {
   assert.ok(css.includes("ha-card.active ha-tile-icon {"), "der Ein-Zustand fehlt");
   // Im Shadow Root der Kachel ist die Klasse "active" nicht sichtbar - dort
   // darf nur noch die Variable stehen.
-  const pfadteil = css.slice(css.indexOf("ha-card ha-tile-icon $:"));
+  const pfadteil = css.slice(css.indexOf("ha-tile-icon $:"));
   assert.ok(!pfadteil.includes(".active"), "der Pfadteil darf die Klasse nicht kennen");
 });
 
@@ -128,6 +128,36 @@ pruefe("Der Block ueberlebt zwei Durchlaeufe unveraendert", () => {
   const bekannt = new Set(Object.keys(p2._state.values.light));
   p2.applyImportedTheme(c2.hatgParseThemeYaml(d2.ausgabe, bekannt));
   gleich(p2.symbolKastenStand(), ctx.hatgSymbolNormal(PROBE), "die Werte haben den Durchlauf nicht ueberlebt");
+});
+
+pruefe("Er teilt keinen Pfadschluessel mit symbole-kachel", () => {
+  // Die Ausgabe fasst gleiche Pfadschluessel zusammen. Dabei wandert das CSS
+  // der einen Vorlage in die Marken der anderen, und das naechste Auffrischen
+  // nimmt es mit - am 11.10.2026 nachgestellt, die Marken des Baukastens
+  // standen danach leer da. Solange das so ist, duerfen sich die Schluessel
+  // nicht ueberschneiden.
+  const kachel = ctx.HATG_VORLAGEN.find((v) => v.id === "symbole-kachel");
+  assert.ok(kachel, "die Vorlage symbole-kachel gibt es nicht mehr");
+  const schluessel = (css) =>
+    css.split("\n").filter((z) => /^\S.*:\s*\|\s*$/.test(z)).map((z) => z.replace(/:\s*\|\s*$/, ""));
+  const meine = schluessel(ctx.hatgSymbolCss(PROBE)).filter((k) => k !== ".");
+  const ihre = schluessel(String(kachel.css)).filter((k) => k !== ".");
+  const doppelt = meine.filter((k) => ihre.includes(k));
+  assert.deepEqual(doppelt, [], `gemeinsame Pfade: ${doppelt.join(", ")}`);
+});
+
+pruefe("Einschalten nimmt symbole-kachel heraus", () => {
+  // Den "."-Eintrag teilen sich beide weiterhin - deshalb koennen sie nicht
+  // gleichzeitig an sein. Der Baukasten kann alles, was die Vorlage kann.
+  const { panel } = panelBauen();
+  const tpl = ctx.HATG_VORLAGEN.find((v) => v.id === "symbole-kachel");
+  const ziel = ctx.HATG_SYMBOL_ZIEL;
+  panel.commitField(ziel, ctx.hatgHaengeVorlagenBlockAn("", tpl.id, String(tpl.css), true));
+  assert.ok(ctx.hatgLeseVorlagenBlock(String(panel.currentValues()[ziel]), tpl.id) !== null, "Vorbedingung");
+  panel.setzeSymbolKasten(PROBE);
+  const danach = String(panel.currentValues()[ziel]);
+  assert.equal(ctx.hatgLeseVorlagenBlock(danach, tpl.id), null, "symbole-kachel steht noch im Feld");
+  assert.ok(ctx.hatgLeseVorlagenBlock(danach, ctx.HATG_SYMBOL_ID) !== null, "der Baukasten fehlt");
 });
 
 pruefe("Er schreibt in beide Modi", () => {

@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.3.3b3";
+const HATG_VERSION = "1.3.3b4";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -2636,7 +2636,7 @@ function hatgSymbolCss(werte) {
     --symbol-deckkraft: var(--symbol-deckkraft-an);
     --symbol-schatten: var(--symbol-schatten-an);
   }
-ha-card ha-tile-icon $: |
+ha-tile-icon $: |
   /* Groesse und Flaeche setzt ha-tile-icon in seinem eigenen :host - ohne
      !important gewinnt das Bauteil. Die Glyphe nicht: --mdc-icon-size steht
      hier naeher am Element als dort. */
@@ -9892,11 +9892,20 @@ uix:
     const currentMode = this._state.editorMode;
     ["light", "dark"].forEach((mode) => {
       this._state.editorMode = mode;
-      const text = String(this.currentValues()[HATG_SYMBOL_ZIEL] || "");
+      const vorhanden = String(this.currentValues()[HATG_SYMBOL_ZIEL] || "");
+      // Der Baukasten und die Vorlage "Symbole als Kachel" schreiben in
+      // dasselbe Feld. Die Ausgabe fasst gleiche Pfadschluessel zusammen -
+      // dabei wandert das CSS des einen in die Marken des anderen, und beim
+      // naechsten Auffrischen nimmt die Vorlage es mit. Am 11.10.2026
+      // nachgestellt: Nach einem Durchlauf standen die Marken des Baukastens
+      // leer da, sein CSS war weg. Der Pfad ist deshalb ein anderer, und den
+      // "."-Eintrag teilen sie sich trotzdem - solange eine Vorlage nicht in
+      // zwei Feldern zugleich wohnen kann, schliessen sich beide aus.
+      const text = werte ? hatgEntferneVorlagenBlock(vorhanden, "symbole-kachel") : vorhanden;
       const neu = werte
         ? hatgHaengeVorlagenBlockAn(text, HATG_SYMBOL_ID, hatgSymbolCss(werte), true)
         : hatgEntferneVorlagenBlock(text, HATG_SYMBOL_ID);
-      if (neu !== text) this.commitField(HATG_SYMBOL_ZIEL, neu);
+      if (neu !== vorhanden) this.commitField(HATG_SYMBOL_ZIEL, neu);
     });
     this._state.editorMode = currentMode;
     this.applyPreviewTheme();
@@ -9918,8 +9927,8 @@ uix:
           <strong>${en ? "Icon builder" : "Symbol-Baukasten"}</strong>
           <span>${
             en
-              ? "Rounding, size, shadow and the surface behind the icon - with separate colours for on and off. Rounding reaches tiles, rows, Mushroom and Bubble Card at once; the rest applies to tiles. Counts for light and dark alike."
-              : "Rundung, Größe, Schatten und die Fläche hinter dem Symbol - mit getrennten Farben für ein und aus. Die Rundung erreicht Kacheln, Zeilen, Mushroom und Bubble Card zugleich; der Rest gilt für Kacheln. Gilt für Light und Dark gleich."
+              ? "Rounding, size, shadow and the surface behind the icon - with separate colours for on and off. Rounding reaches tiles, rows, Mushroom and Bubble Card at once; the rest applies to tiles. Counts for light and dark alike. It replaces the “Icons as tiles” preset and switches it off."
+              : "Rundung, Größe, Schatten und die Fläche hinter dem Symbol - mit getrennten Farben für ein und aus. Die Rundung erreicht Kacheln, Zeilen, Mushroom und Bubble Card zugleich; der Rest gilt für Kacheln. Gilt für Light und Dark gleich. Er ersetzt die Vorlage „Symbole als Kachel“ und schaltet sie beim Einschalten ab."
           }</span>
         </div>
         <div class="glas-profile">
