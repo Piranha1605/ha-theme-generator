@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8">
+<!-- Banner fuer README.md und README.en.md, 1600x520. Sprache ueber ?lang=de|en.
+     Gestaltung uebernommen vom YouTube-Thumbnail des HATG-Films: dunkler Grund,
+     kalter und warmer Schein, Chakra Petch, und als Motiv der Wischer - dieselbe
+     Seite, links im Standard-Theme, rechts mit HATG. Beide Haelften sind
+     unveraenderte Aufnahmen aus einer laufenden Instanz.
+     Bauen: ./bauen.sh -->
+<style>
+@font-face{font-family:"Chakra Petch";font-weight:600;src:url("assets/fonts/chakra-petch-600.woff2") format("woff2")}
+@font-face{font-family:"Chakra Petch";font-weight:700;src:url("assets/fonts/chakra-petch-700.woff2") format("woff2")}
+@font-face{font-family:"Roboto";font-weight:500;src:url("assets/fonts/roboto-500.woff2") format("woff2")}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1600px;height:520px;overflow:hidden;background:#040406}
+.b{position:relative;width:1600px;height:520px;overflow:hidden;background:#040406;color:#fff}
+
+/* ── Grund: kalter Schein links, warmer rechts, Tiefe und Korn ── */
+.kalt{position:absolute;inset:0;background:radial-gradient(900px 620px at 9% 16%,rgba(74,96,255,.40),transparent 64%)}
+.warm{position:absolute;inset:0;background:radial-gradient(940px 620px at 82% 96%,rgba(255,147,0,.40),transparent 64%)}
+.tiefe{position:absolute;inset:0;background:radial-gradient(1200px 660px at 54% 50%,transparent,#040406 84%)}
+.korn{position:absolute;inset:0;opacity:.4;mix-blend-mode:overlay;
+  background-image:radial-gradient(rgba(255,255,255,.09) .5px,transparent .5px);background-size:3px 3px}
+
+/* ── die schwebende Platte, schraeg im Raum ── */
+.raum{position:absolute;left:912px;top:32px;width:636px;height:444px;perspective:1900px;perspective-origin:24% 50%}
+.kipp{position:absolute;inset:0;transform:rotateY(-17deg) rotateX(5deg) rotateZ(1deg);transform-style:preserve-3d}
+.leucht{position:absolute;inset:-8%;border-radius:50%;filter:blur(66px) saturate(2.4) brightness(1.9);opacity:1;
+  -webkit-mask:radial-gradient(70% 78% at 66% 50%,#000 30%,transparent 78%);mask:radial-gradient(70% 78% at 66% 50%,#000 30%,transparent 78%)}
+.platte{position:absolute;inset:0;border-radius:20px;overflow:hidden;box-shadow:0 54px 100px rgba(0,0,0,.85)}
+.platte img,.leucht img{position:absolute;top:0;left:-50px;width:717px;height:100%;display:block}
+.nackt{clip-path:polygon(0 0,44% 0,32% 100%,0 100%)}
+.glas{position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(120deg,rgba(255,255,255,.16),transparent 28%,transparent 66%,rgba(255,255,255,.07)),
+             radial-gradient(90% 60% at 100% 100%,rgba(255,147,0,.12),transparent 60%);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.5),inset 0 -22px 44px rgba(255,255,255,.07);
+  clip-path:polygon(44% 0,100% 0,100% 100%,32% 100%)}
+.glint{position:absolute;inset:0;border-radius:inherit;pointer-events:none;mix-blend-mode:screen;
+  background:linear-gradient(115deg,transparent 60%,rgba(140,170,255,.10) 67%,rgba(255,244,228,.38) 71%,rgba(255,190,110,.12) 75%,transparent 82%);
+  clip-path:polygon(44% 0,100% 0,100% 100%,32% 100%)}
+.rand{position:absolute;inset:0;border-radius:20px;padding:2px;pointer-events:none;
+  background:linear-gradient(135deg,rgba(255,255,255,.55) 0%,rgba(255,255,255,.14) 30%,rgba(255,255,255,.10) 60%,rgba(255,214,160,.75) 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+/* die Kante des Wischers: von (44 %, oben) nach (32 %, unten) */
+.kante{position:absolute;left:38%;top:-5%;width:6px;height:110%;margin-left:-3px;transform:rotate(9.7deg);
+  background:linear-gradient(#ffe0ad,#ff9300 34%,#ff6a00);border-radius:4px;
+  box-shadow:0 0 24px rgba(255,147,0,1),0 0 64px rgba(255,147,0,.75),0 0 130px rgba(255,147,0,.4)}
+.marke{position:absolute;bottom:14px;font:600 13px "Chakra Petch";letter-spacing:.2em;text-transform:uppercase;
+  padding:7px 13px 6px;border-radius:999px;
+  background:linear-gradient(150deg,rgba(255,255,255,.22),rgba(255,255,255,.06) 46%,rgba(255,255,255,.12)),rgba(8,10,18,.62);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 0 0 1px rgba(255,255,255,.26),0 10px 24px rgba(0,0,0,.5)}
+.m1{left:14px;color:#c2c9d6}
+.m2{right:14px;color:#ff9300}
+
+/* ── Schrift links ── */
+.kopf{position:absolute;left:70px;top:44px;display:flex;align-items:center;gap:16px}
+.kopf img{width:60px;height:60px;border-radius:15px;box-shadow:0 10px 26px rgba(0,0,0,.6)}
+.kopf b{font:700 43px "Chakra Petch";letter-spacing:.04em}
+.versal{position:absolute;left:73px;top:141px;font:600 16px "Chakra Petch";letter-spacing:.26em;
+  text-transform:uppercase;color:#ff9300}
+.gross{position:absolute;left:66px;top:161px;font:700 112px "Chakra Petch";line-height:.88;letter-spacing:-.02em;
+  color:transparent;background-image:linear-gradient(104deg,#c9cfdb 0%,#f2f4f8 18%,#ffffff 34%,#eef1f6 50%,#b4bccb 66%,#f4f6fa 86%,#e4e8ef 100%);
+  -webkit-background-clip:text;background-clip:text;
+  filter:drop-shadow(0 0 52px rgba(120,150,255,.60)) drop-shadow(0 12px 26px rgba(0,0,0,.9))}
+.unter{position:absolute;left:73px;top:285px;width:752px;font:500 18px Roboto;line-height:1.55;color:#aeb6c6}
+.unter em{font-style:normal;color:#e8ebf2}
+
+.zahlen{position:absolute;left:71px;top:376px;display:flex;gap:11px}
+.zahl{padding:13px 19px 12px;border-radius:17px;
+  background:linear-gradient(150deg,rgba(255,255,255,.20),rgba(255,255,255,.05) 46%,rgba(255,255,255,.11)),rgba(8,10,18,.55);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 -14px 28px rgba(255,255,255,.06),
+             inset 0 0 0 1px rgba(255,255,255,.26),0 16px 36px rgba(0,0,0,.6)}
+.zahl b{display:block;font:700 30px "Chakra Petch";color:#ff9300;letter-spacing:-.01em;line-height:1}
+.zahl span{display:block;margin-top:5px;font:500 13px Roboto;color:#c3cad8;letter-spacing:.1px}
+.schiene{position:absolute;left:0;bottom:0;height:8px;width:40%;background:linear-gradient(90deg,#ff9300,rgba(255,147,0,0))}
+</style></head>
+<body>
+<div class="b">
+  <div class="kalt"></div><div class="warm"></div><div class="tiefe"></div>
+
+  <div class="raum"><div class="kipp">
+    <div class="leucht"><img src="assets/muster-hatg.jpg" alt=""></div>
+    <div class="platte">
+      <img src="assets/muster-hatg.jpg" alt="">
+      <img class="nackt" src="assets/muster-standard.jpg" alt="">
+      <div class="glas"></div>
+      <div class="glint"></div>
+      <div class="kante"></div>
+      <div class="marke m1" data-de="Standard" data-en="Default">Standard</div>
+      <div class="marke m2">HATG</div>
+    </div>
+    <div class="rand"></div>
+  </div></div>
+
+  <div class="kopf"><img src="../../custom_components/hatg/brand/icon@2x.png" alt=""><b>HATG</b></div>
+  <div class="versal" data-de="Home Assistant Theme Generator" data-en="Home Assistant Theme Generator">Home Assistant Theme Generator</div>
+  <div class="gross"><span data-de="OHNE" data-en="NO">OHNE</span> YAML.</div>
+  <div class="unter"
+       data-de="Farben, Formen und Zust&auml;nde f&uuml;r Home&nbsp;Assistant, Bubble&nbsp;Card und Mushroom &mdash; an einer Stelle gesetzt, im Panel sofort sichtbar, am Ende eine <em>ganz normale Theme-Datei</em>."
+       data-en="Colours, shapes and states for Home&nbsp;Assistant, Bubble&nbsp;Card and Mushroom &mdash; set in one place, previewed live, saved as <em>an ordinary theme file</em>.">
+  </div>
+
+  <div class="zahlen">
+    <div class="zahl"><b>798</b><span data-de="gepr&uuml;fte Variablen" data-en="verified variables">gepr&uuml;fte Variablen</span></div>
+    <div class="zahl"><b>57</b><span data-de="UIX-Vorlagen" data-en="UIX presets">UIX-Vorlagen</span></div>
+    <div class="zahl"><b>28</b><span data-de="Stilziele" data-en="style targets">Stilziele</span></div>
+    <div class="zahl"><b>Live</b><span data-de="echtes Dashboard" data-en="real dashboard">echtes Dashboard</span></div>
+  </div>
+
+  <div class="korn"></div><div class="schiene"></div>
+</div>
+<script>
+  var lang = new URLSearchParams(location.search).get("lang") || "de";
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-" + lang + "]").forEach(function (el) { el.innerHTML = el.dataset[lang]; });
+</script>
+</body></html>
