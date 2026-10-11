@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.3.3b5";
+const HATG_VERSION = "1.3.3b6";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -2566,17 +2566,38 @@ const HATG_SYMBOL_STANDARD = {
   flaecheAus: "var(--state-inactive-color)",
   deckkraftAn: 28,
   deckkraftAus: 16,
-  schattenAn: "0 2px 10px rgba(0, 0, 0, 0.35)",
-  schattenAus: "none",
+  // Der Schatten wird gerechnet, nicht getippt - nach dem Vorbild der
+  // Neumorphismus-Generatoren: zwei Toene, die sich um "intensitaet" vom
+  // Grundton entfernen, im Abstand "abstand" und mit "weiche" verlaufen.
+  // Eingeschaltet kippt derselbe Schatten nach innen; genau so bauen
+  // neumorphe Schalter ihren Gedrueckt-Zustand.
+  abstand: 6,
+  intensitaet: 14,
+  weiche: 12,
+  form: "flach",
 };
-// Ein Schatten darf alles sein, was CSS als box-shadow versteht - oder "none".
-// Ein Semikolon wuerde die naechste Deklaration abschneiden, geschweifte
-// Klammern den Block sprengen.
-function hatgSymbolSchatten(wert, ersatz) {
-  const v = String(wert ?? "").trim().replace(/;+\s*$/, "").trim();
-  if (!v) return ersatz;
-  if (/[;{}]/.test(v)) return ersatz;
-  return v;
+const HATG_SYMBOL_FORMEN = ["flach", "konkav", "konvex", "gedrueckt"];
+// Die beiden Toene entstehen per color-mix aus der Flaeche - damit folgen sie
+// dem Theme und stimmen in hell wie dunkel, obwohl eine UIX-Zeile fuer beide
+// Modi zugleich gilt.
+function hatgSymbolTon(flaeche, anteil, richtung) {
+  return `color-mix(in srgb, ${flaeche} ${100 - anteil}%, ${richtung})`;
+}
+function hatgSymbolSchattenCss(flaeche, p, gedrueckt) {
+  if (!p.abstand && !p.weiche) return "none";
+  const dunkel = hatgSymbolTon(flaeche, p.intensitaet, "#000000");
+  const hell = hatgSymbolTon(flaeche, p.intensitaet, "#ffffff");
+  const i = gedrueckt ? "inset " : "";
+  const a = p.abstand;
+  return `${i}${a}px ${a}px ${p.weiche}px ${dunkel}, ${i}-${a}px -${a}px ${p.weiche}px ${hell}`;
+}
+// Flach, konkav, konvex: Die Form steckt in der Fuellung, nicht im Schatten.
+function hatgSymbolFuellung(flaeche, p) {
+  const dunkel = hatgSymbolTon(flaeche, p.intensitaet, "#000000");
+  const hell = hatgSymbolTon(flaeche, p.intensitaet, "#ffffff");
+  if (p.form === "konkav") return `linear-gradient(145deg, ${dunkel}, ${hell})`;
+  if (p.form === "konvex") return `linear-gradient(145deg, ${hell}, ${dunkel})`;
+  return "none";
 }
 function hatgSymbolMass(wert, ersatz, min, max) {
   const n = Number.parseFloat(String(wert ?? "").replace(",", "."));
@@ -2600,8 +2621,10 @@ function hatgSymbolNormal(werte) {
     flaecheAus: hatgVerlaufFarbe(w.flaecheAus, d.flaecheAus),
     deckkraftAn: hatgSymbolMass(w.deckkraftAn, d.deckkraftAn, 0, 100),
     deckkraftAus: hatgSymbolMass(w.deckkraftAus, d.deckkraftAus, 0, 100),
-    schattenAn: hatgSymbolSchatten(w.schattenAn, d.schattenAn),
-    schattenAus: hatgSymbolSchatten(w.schattenAus, d.schattenAus),
+    abstand: hatgSymbolMass(w.abstand, d.abstand, 0, 40),
+    intensitaet: hatgSymbolMass(w.intensitaet, d.intensitaet, 0, 60),
+    weiche: hatgSymbolMass(w.weiche, d.weiche, 0, 80),
+    form: HATG_SYMBOL_FORMEN.includes(String(w.form)) ? String(w.form) : d.form,
   };
 }
 function hatgSymbolCss(werte) {
@@ -2622,19 +2645,28 @@ function hatgSymbolCss(werte) {
     --symbol-flaeche-aus: ${p.flaecheAus};
     --symbol-deckkraft-an: ${(p.deckkraftAn / 100).toFixed(2)};
     --symbol-deckkraft-aus: ${(p.deckkraftAus / 100).toFixed(2)};
-    --symbol-schatten-an: ${p.schattenAn};
-    --symbol-schatten-aus: ${p.schattenAus};
+    --symbol-schatten-an: ${hatgSymbolSchattenCss(p.flaecheAn, p, true)};
+    --symbol-schatten-aus: ${hatgSymbolSchattenCss(p.flaecheAus, p, false)};
+    --symbol-form-an: ${hatgSymbolFuellung(p.flaecheAn, p)};
+    --symbol-form-aus: ${hatgSymbolFuellung(p.flaecheAus, p)};
+    /* Nur zum Zurueckholen in die Oberflaeche - CSS liest sie nicht. */
+    --symbol-abstand: ${p.abstand}px;
+    --symbol-intensitaet: ${p.intensitaet}%;
+    --symbol-weiche: ${p.weiche}px;
+    --symbol-formwahl: ${p.form};
   }
   /* Den Ein-Zustand kennt nur die Karte. */
   ha-card ha-tile-icon {
     --symbol-flaeche: var(--symbol-flaeche-aus);
     --symbol-deckkraft: var(--symbol-deckkraft-aus);
     --symbol-schatten: var(--symbol-schatten-aus);
+    --symbol-form: var(--symbol-form-aus);
   }
   ha-card.active ha-tile-icon {
     --symbol-flaeche: var(--symbol-flaeche-an);
     --symbol-deckkraft: var(--symbol-deckkraft-an);
     --symbol-schatten: var(--symbol-schatten-an);
+    --symbol-form: var(--symbol-form-an);
   }
 ha-tile-icon $: |
   /* Groesse und Flaeche setzt ha-tile-icon in seinem eigenen :host - ohne
@@ -2644,6 +2676,7 @@ ha-tile-icon $: |
     width: var(--symbol-kachel) !important;
     height: var(--symbol-kachel) !important;
     box-shadow: var(--symbol-schatten, none);
+    background-image: var(--symbol-form, none);
   }
   .container.background::before {
     background-color: var(--symbol-flaeche) !important;
@@ -2672,8 +2705,10 @@ function hatgLeseSymbolKasten(text) {
     flaecheAus: lies("symbol-flaeche-aus"),
     deckkraftAn: anteil("symbol-deckkraft-an", HATG_SYMBOL_STANDARD.deckkraftAn),
     deckkraftAus: anteil("symbol-deckkraft-aus", HATG_SYMBOL_STANDARD.deckkraftAus),
-    schattenAn: lies("symbol-schatten-an"),
-    schattenAus: lies("symbol-schatten-aus"),
+    abstand: Number.parseFloat(String(lies("symbol-abstand") ?? "")),
+    intensitaet: Number.parseFloat(String(lies("symbol-intensitaet") ?? "")),
+    weiche: Number.parseFloat(String(lies("symbol-weiche") ?? "")),
+    form: (lies("symbol-formwahl") || "").trim(),
   });
 }
 
@@ -9980,20 +10015,38 @@ uix:
         </div>
         <div class="glas-regler-reihe">
           <div class="generator-control">
-            <label>${en ? "Shadow on" : "Schatten ein"}</label>
-            <input type="text" class="symbol-text" value="${hatgEscape(p.schattenAn)}" data-symbol-schatten-an
-              aria-label="${en ? "Shadow on" : "Schatten ein"}" />
+            <label>${en ? "Distance" : "Abstand"}${zahl("data-symbol-abstand", p.abstand, 0, 40, "px")}</label>
+            <input type="range" min="0" max="40" step="1" value="${p.abstand}" data-symbol-abstand-regler />
           </div>
           <div class="generator-control">
-            <label>${en ? "Shadow off" : "Schatten aus"}</label>
-            <input type="text" class="symbol-text" value="${hatgEscape(p.schattenAus)}" data-symbol-schatten-aus
-              aria-label="${en ? "Shadow off" : "Schatten aus"}" />
+            <label>${en ? "Intensity" : "Intensität"}${zahl("data-symbol-intensitaet", p.intensitaet, 0, 60, "%")}</label>
+            <input type="range" min="0" max="60" step="1" value="${p.intensitaet}" data-symbol-intensitaet-regler />
+          </div>
+        </div>
+        <div class="glas-regler-reihe">
+          <div class="generator-control">
+            <label>${en ? "Blur" : "Weichzeichnung"}${zahl("data-symbol-weiche", p.weiche, 0, 80, "px")}</label>
+            <input type="range" min="0" max="80" step="1" value="${p.weiche}" data-symbol-weiche-regler />
+          </div>
+          <div class="generator-control">
+            <label>${en ? "Shape" : "Form"}</label>
+            <div class="mode-toggle-group inline" role="group">
+              ${HATG_SYMBOL_FORMEN.map((f) => {
+                const namen = {
+                  flach: en ? "Flat" : "Flach",
+                  konkav: en ? "Concave" : "Konkav",
+                  konvex: en ? "Convex" : "Konvex",
+                  gedrueckt: en ? "Pressed" : "Gedrückt",
+                };
+                return `<button type="button" class="${p.form === f ? "active" : ""}" data-symbol-form="${f}">${namen[f]}</button>`;
+              }).join("")}
+            </div>
           </div>
         </div>
         <p class="vorlage-desc" data-roh>${
           en
-            ? "The surface sits behind the icon at the chosen opacity; the icon itself keeps the state colour from the fields below."
-            : "Die Fläche liegt mit der gewählten Deckkraft hinter dem Symbol; das Symbol selbst behält die Zustandsfarbe aus den Feldern darunter."
+            ? "The surface sits behind the icon at the chosen opacity; the icon itself keeps the state colour from the fields below. The shadow is computed from the surface colour: two tones, one darker and one lighter by the intensity. Switched on it turns inwards - that is how a pressed neumorphic control looks."
+            : "Die Fläche liegt mit der gewählten Deckkraft hinter dem Symbol; das Symbol selbst behält die Zustandsfarbe aus den Feldern darunter. Der Schatten wird aus der Flächenfarbe gerechnet: zwei Töne, einer um die Intensität dunkler, einer heller. Eingeschaltet kippt er nach innen - so sieht ein gedrücktes neumorphes Bedienelement aus."
         }</p>`
             : ""
         }
@@ -12663,6 +12716,14 @@ uix:
       const el = this.shadowRoot.querySelector(sel);
       return el ? String(el.value) : undefined;
     };
+    this.shadowRoot.querySelectorAll("[data-symbol-form]").forEach((el) => {
+      el.addEventListener("click", () => {
+        const stand = this.symbolKastenStand();
+        if (!stand) return;
+        this.setzeSymbolKasten({ ...stand, form: el.dataset.symbolForm });
+        this.render();
+      });
+    });
     const symbolWerte = (quelle) => ({
       rundung: symbolEinzeln("[data-symbol-rundung]"),
       kachel: symbolPaar(quelle, "[data-symbol-kachel-regler]", "[data-symbol-kachel]"),
@@ -12671,8 +12732,11 @@ uix:
       flaecheAus: symbolPaar(quelle, "[data-symbol-flaeche-aus]", "[data-symbol-flaeche-aus-wert]"),
       deckkraftAn: symbolPaar(quelle, "[data-symbol-deckkraft-an-regler]", "[data-symbol-deckkraft-an]"),
       deckkraftAus: symbolPaar(quelle, "[data-symbol-deckkraft-aus-regler]", "[data-symbol-deckkraft-aus]"),
-      schattenAn: symbolEinzeln("[data-symbol-schatten-an]"),
-      schattenAus: symbolEinzeln("[data-symbol-schatten-aus]"),
+      abstand: symbolPaar(quelle, "[data-symbol-abstand-regler]", "[data-symbol-abstand]"),
+      intensitaet: symbolPaar(quelle, "[data-symbol-intensitaet-regler]", "[data-symbol-intensitaet]"),
+      weiche: symbolPaar(quelle, "[data-symbol-weiche-regler]", "[data-symbol-weiche]"),
+      // Die Form steckt nicht in einem Eingabefeld, sondern im aktiven Knopf.
+      form: this.shadowRoot.querySelector("[data-symbol-form].active")?.dataset.symbolForm,
     });
     const symbolNachziehen = (quelle, reglerSel, feldSel, wert) => {
       const regler = this.shadowRoot.querySelector(reglerSel);
@@ -12694,7 +12758,9 @@ uix:
           "[data-symbol-flaeche-an-wert], [data-symbol-flaeche-aus-wert], " +
           "[data-symbol-deckkraft-an], [data-symbol-deckkraft-an-regler], " +
           "[data-symbol-deckkraft-aus], [data-symbol-deckkraft-aus-regler], " +
-          "[data-symbol-schatten-an], [data-symbol-schatten-aus]"
+          "[data-symbol-abstand], [data-symbol-abstand-regler], " +
+          "[data-symbol-intensitaet], [data-symbol-intensitaet-regler], " +
+          "[data-symbol-weiche], [data-symbol-weiche-regler]"
       )
       .forEach((el) => {
         el.addEventListener("input", () => {
@@ -12705,6 +12771,9 @@ uix:
           symbolNachziehen(el, "[data-symbol-deckkraft-aus-regler]", "[data-symbol-deckkraft-aus]", fertig.deckkraftAus);
           symbolNachziehen(el, "[data-symbol-flaeche-an]", "[data-symbol-flaeche-an-wert]", fertig.flaecheAn);
           symbolNachziehen(el, "[data-symbol-flaeche-aus]", "[data-symbol-flaeche-aus-wert]", fertig.flaecheAus);
+          symbolNachziehen(el, "[data-symbol-abstand-regler]", "[data-symbol-abstand]", fertig.abstand);
+          symbolNachziehen(el, "[data-symbol-intensitaet-regler]", "[data-symbol-intensitaet]", fertig.intensitaet);
+          symbolNachziehen(el, "[data-symbol-weiche-regler]", "[data-symbol-weiche]", fertig.weiche);
           this.setzeSymbolKasten(fertig);
         });
       });

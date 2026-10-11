@@ -45,7 +45,7 @@ const PROBE = {
   rundung: "9px", kachel: 44, glyphe: 26,
   flaecheAn: "#C0C0C0", flaecheAus: "#404040",
   deckkraftAn: 40, deckkraftAus: 12,
-  schattenAn: "0 2px 8px rgba(0,0,0,.4)", schattenAus: "none",
+  abstand: 20, intensitaet: 14, weiche: 60, form: "flach",
 };
 
 console.log("Symbol-Baukasten\n");
@@ -94,15 +94,45 @@ pruefe("Der Zustand kommt als Variable von der Karte herunter", () => {
 pruefe("Unsinnige Werte werden abgefangen", () => {
   const n = ctx.hatgSymbolNormal({
     kachel: 500, glyphe: -3, deckkraftAn: 180, deckkraftAus: "abc",
-    schattenAn: "rot; background: red", schattenAus: "x { y }", rundung: "9px; color: red",
+    abstand: 999, intensitaet: -5, weiche: "viel", form: "wolkig",
+    rundung: "9px; color: red",
   });
   assert.equal(n.kachel, 96, "Kachelgroesse nicht begrenzt");
   assert.equal(n.glyphe, 10, "Glyphengroesse nicht begrenzt");
   assert.equal(n.deckkraftAn, 100, "Deckkraft nicht begrenzt");
   assert.equal(n.deckkraftAus, ctx.HATG_SYMBOL_STANDARD.deckkraftAus, "ungueltige Zahl nicht ersetzt");
-  assert.equal(n.schattenAn, ctx.HATG_SYMBOL_STANDARD.schattenAn, "Semikolon im Schatten nicht abgefangen");
-  assert.equal(n.schattenAus, ctx.HATG_SYMBOL_STANDARD.schattenAus, "Klammer im Schatten nicht abgefangen");
+  assert.equal(n.abstand, 40, "Abstand nicht begrenzt");
+  assert.equal(n.intensitaet, 0, "Intensitaet nicht begrenzt");
+  assert.equal(n.weiche, ctx.HATG_SYMBOL_STANDARD.weiche, "unlesbare Weichzeichnung nicht ersetzt");
+  assert.equal(n.form, ctx.HATG_SYMBOL_STANDARD.form, "unbekannte Form nicht ersetzt");
+  // Die Rundung ist das einzige freie Textfeld geblieben - ein Semikolon dort
+  // wuerde die naechste Deklaration abschneiden.
   assert.equal(n.rundung, ctx.HATG_SYMBOL_STANDARD.rundung, "Semikolon in der Rundung nicht abgefangen");
+});
+
+pruefe("Der Schatten wird aus der Flaechenfarbe gerechnet", () => {
+  // Vorbild sind die Neumorphismus-Generatoren: zwei Toene, einer um die
+  // Intensitaet dunkler, einer heller, im gleichen Abstand nach beiden Seiten.
+  const css = ctx.hatgSymbolCss({ ...PROBE, flaecheAn: "#e0e0e0", flaecheAus: "#e0e0e0" });
+  const aus = css.split("\n").find((z) => z.includes("--symbol-schatten-aus"));
+  const an = css.split("\n").find((z) => z.includes("--symbol-schatten-an"));
+  assert.ok(aus.includes("20px 20px 60px"), "Abstand oder Weichzeichnung fehlen");
+  assert.ok(aus.includes("-20px -20px 60px"), "der zweite Ton fehlt");
+  assert.ok(aus.includes("#000000") && aus.includes("#ffffff"), "die beiden Richtungen fehlen");
+  assert.ok(!aus.includes("inset"), "ausgeschaltet darf der Schatten nicht nach innen gehen");
+  assert.ok(an.includes("inset"), "eingeschaltet gehoert er nach innen");
+});
+
+pruefe("Die Form steckt in der Fuellung, nicht im Schatten", () => {
+  const flach = ctx.hatgSymbolCss({ ...PROBE, form: "flach" });
+  assert.ok(flach.includes("--symbol-form-aus: none"), "flach darf keine Fuellung setzen");
+  for (const [form, zuerst] of [["konkav", "#000000"], ["konvex", "#ffffff"]]) {
+    const css = ctx.hatgSymbolCss({ ...PROBE, form, flaecheAus: "#e0e0e0" });
+    const zeile = css.split("\n").find((z) => z.includes("--symbol-form-aus"));
+    assert.ok(zeile.includes("linear-gradient(145deg"), `${form}: kein Verlauf`);
+    const vorn = zeile.indexOf(zuerst), hinten = zeile.indexOf(zuerst === "#000000" ? "#ffffff" : "#000000");
+    assert.ok(vorn < hinten, `${form}: die Toene stehen in der falschen Reihenfolge`);
+  }
 });
 
 pruefe("Ein- und Ausschalten ueber das Panel", () => {
