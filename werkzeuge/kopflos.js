@@ -75,6 +75,8 @@ function panelBauen() {
     "HATG_KARTENFARBEN_NAMEN", "HATG_KARTENFARBEN_PALETTEN", "HATG_NAV_ICON_COLOR",
     "HATG_SYMBOL_ID", "HATG_SYMBOL_ZIEL", "HATG_SYMBOL_STANDARD",
     "hatgSymbolCss", "hatgSymbolNormal", "hatgLeseSymbolKasten",
+    "HATG_SCHATTEN_FELDER", "HATG_SCHATTEN_STANDARD",
+    "hatgSchattenNormal", "hatgSchattenWert", "hatgLeseSchatten",
     "hatgHaengeVorlagenBlockAn", "hatgLeseVorlagenBlock", "hatgEntferneVorlagenBlock",
   ];
   vm.runInContext(

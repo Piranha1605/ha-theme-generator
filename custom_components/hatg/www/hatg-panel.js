@@ -1,4 +1,4 @@
-const HATG_VERSION = "1.3.3b9";
+const HATG_VERSION = "1.3.3b10";
 
 const HATG_SPRACHEN = ["de", "en"];
 const HATG_SPRACHE_SPEICHER = "hatg-sprache";
@@ -2526,6 +2526,65 @@ function hatgMigriereAkzentVerlauf(bag) {
 //   Eine Variable, die sich selbst liest, ist in CSS ein Kreis und wird
 //   ungueltig - die Farbe aus dem Theme ging damit verloren. Die Zeile faellt
 //   weg, der Theme-Wert kommt wieder durch.
+// ---------------------------------------------------------------------------
+// Der Neumorphismus-Schatten fuer die ganze Oberflaeche.
+//
+// Anders als der Symbol-Baukasten braucht er keine UIX-Vorlage: Karten,
+// Knoepfe und die drei Stufen der Schattenleiter lesen alle ein Theme-Feld.
+// Geschrieben wird deshalb direkt in die Felder - kein Marker, kein Pfad,
+// keine Kollision mit anderen Vorlagen.
+//
+// Der Grundton kommt als var(--ha-card-background) in den Wert hinein, nicht
+// als fester Farbwert. Damit stimmt derselbe Text in hell wie dunkel, und er
+// folgt der Karte, wenn der Nutzer sie spaeter umfaerbt.
+const HATG_SCHATTEN_FELDER = [
+  // Feld, Faktor fuer Abstand und Weichzeichnung
+  ["ha-card-box-shadow", 1],
+  ["ha-button-box-shadow", 0.6],
+  ["ha-box-shadow-s", 0.45],
+  ["ha-box-shadow-m", 1],
+  ["ha-box-shadow-l", 1.6],
+];
+const HATG_SCHATTEN_FLAECHE = "var(--ha-card-background, var(--card-background-color))";
+const HATG_SCHATTEN_STANDARD = { abstand: 6, intensitaet: 14, weiche: 12, gedrueckt: false };
+function hatgSchattenNormal(werte) {
+  const w = werte || {};
+  const d = HATG_SCHATTEN_STANDARD;
+  return {
+    abstand: hatgSymbolMass(w.abstand, d.abstand, 0, 40),
+    intensitaet: hatgSymbolMass(w.intensitaet, d.intensitaet, 0, 60),
+    weiche: hatgSymbolMass(w.weiche, d.weiche, 0, 80),
+    gedrueckt: !!w.gedrueckt,
+  };
+}
+function hatgSchattenWert(p, faktor) {
+  const a = Math.max(0, Math.round(p.abstand * faktor));
+  const b = Math.max(0, Math.round(p.weiche * faktor));
+  if (!a && !b) return "none";
+  const dunkel = hatgSymbolTon(HATG_SCHATTEN_FLAECHE, p.intensitaet, "#000000");
+  const hell = hatgSymbolTon(HATG_SCHATTEN_FLAECHE, p.intensitaet, "#ffffff");
+  const i = p.gedrueckt ? "inset " : "";
+  return `${i}${a}px ${a}px ${b}px ${dunkel}, ${i}-${a}px -${a}px ${b}px ${hell}`;
+}
+// Zurueckholen: Steht im Kartenfeld genau so ein Wert, ist der Kasten an.
+// Erkannt wird an der Form, nicht am Wortlaut - der Nutzer darf die
+// Leerzeichen anders setzen.
+function hatgLeseSchatten(wert) {
+  const v = String(wert ?? "");
+  if (!/color-mix\(\s*in srgb/.test(v) || !v.includes("#000000") || !v.includes("#ffffff")) return null;
+  // Die Flaeche ist selbst ein var() mit Ausweichwert und traegt deshalb
+  // Kommas - ein [^,]* bricht daran ab. Gesucht wird bis zum Prozentwert vor
+  // dem ersten #000000.
+  const m = /(inset\s+)?(-?\d+)px\s+(-?\d+)px\s+(\d+)px\s+color-mix\([\s\S]*?(\d+)%\s*,\s*#000000/.exec(v);
+  if (!m) return null;
+  return hatgSchattenNormal({
+    abstand: Math.abs(Number(m[2])),
+    weiche: Number(m[4]),
+    intensitaet: 100 - Number(m[5]),
+    gedrueckt: !!m[1],
+  });
+}
+
 // ---------------------------------------------------------------------------
 // Der Symbol-Baukasten.
 //
@@ -7491,6 +7550,7 @@ class HATGPanel extends HTMLElement {
           // Groesse und Flaeche gehoeren zusammen, auch wenn ein Teil davon
           // nur ueber eine UIX-Regel erreichbar ist.
           if (g.id === "symbole__form") extra = this.renderSymbolKasten();
+          if (g.id === "hintergruende-karten__abstaende-rundungen-schatten-rahmen") extra = this.renderSchattenKasten();
           return `
             <div class="field-group">
               <div class="field-group-title">${hatgEscape(g.label)}</div>
@@ -7567,6 +7627,7 @@ class HATGPanel extends HTMLElement {
           </div>
           ${gm.parent.id === "uix-generator" ? this.renderAusgabeFormatHinweis() : ""}
           ${gm.group.id === "symbole__form" ? this.renderSymbolKasten() : ""}
+          ${gm.group.id === "hintergruende-karten__abstaende-rundungen-schatten-rahmen" ? this.renderSchattenKasten() : ""}
           ${gm.group.id === "hintergruende-karten__karte" ? this.renderKartenPalette() : ""}
           ${this.renderFieldList(gm.group.keys)}
         </section>`;
@@ -9984,6 +10045,99 @@ uix:
 
   // Die vier Formen als Schieber statt als Knopfreihe: Vier Knoepfe brachen
   // in zwei Zeilen um und standen schief neben den uebrigen Reglern.
+  // --- Neumorphismus-Schatten fuer die ganze Oberflaeche ----------------
+  // Der Stand steht im Kartenfeld; die uebrigen vier folgen ihm.
+  schattenKastenStand() {
+    return hatgLeseSchatten(this.currentValues()["ha-card-box-shadow"]);
+  }
+
+  setzeSchattenKasten(werte) {
+    const currentMode = this._state.editorMode;
+    const p = werte ? hatgSchattenNormal(werte) : null;
+    ["light", "dark"].forEach((mode) => {
+      this._state.editorMode = mode;
+      HATG_SCHATTEN_FELDER.forEach(([feld, faktor]) => {
+        // Beim Ausschalten zurueck auf die Vorgabe des Manifests - ein leeres
+        // Feld waere etwas anderes als der Standardschatten.
+        const neu = p ? hatgSchattenWert(p, faktor) : String(HATG_MANIFEST[mode][feld] ?? "");
+        if (String(this.currentValues()[feld] ?? "") !== neu) this.commitField(feld, neu);
+      });
+    });
+    this._state.editorMode = currentMode;
+    this.applyPreviewTheme();
+  }
+
+  renderSchattenKasten() {
+    const en = this._sprache === "en";
+    const stand = this.schattenKastenStand();
+    const p = stand || HATG_SCHATTEN_STANDARD;
+    const zahl = (attr, wert, min, max, einheit) => `
+      <span class="generator-zahl">
+        <input type="number" min="${min}" max="${max}" step="1" value="${wert}" ${attr} />${einheit}
+      </span>`;
+    return `
+      <div class="glas-regler schatten-kasten" data-roh>
+        <div class="glas-regler-kopf">
+          <strong>${en ? "Neumorphic shadow" : "Neumorphismus-Schatten"}</strong>
+          <span>${
+            en
+              ? "Two tones from the card colour, one darker and one lighter - for cards, buttons and the three shadow steps that tooltips, dialogs and the add button read. Written straight into the fields, so it needs no UIX preset and collides with none."
+              : "Zwei Töne aus der Kartenfarbe, einer dunkler und einer heller - für Karten, Knöpfe und die drei Schattenstufen, aus denen Tooltips, Dialoge und der Hinzufügen-Knopf lesen. Geht direkt in die Felder, braucht also keine UIX-Vorlage und kollidiert mit keiner."
+          }</span>
+        </div>
+        <div class="glas-profile">
+          <div class="mode-toggle-group inline" role="group">
+            <button type="button" class="${stand ? "" : "active"}" data-schatten="aus">${en ? "Off" : "Aus"}</button>
+            <button type="button" class="${stand ? "active" : ""}" data-schatten="an">${en ? "On" : "An"}</button>
+          </div>
+        </div>
+        ${
+          stand
+            ? `
+        <div class="symbol-vorschau" data-roh>
+          <div class="symbol-vorschau-feld">
+            <div class="symbol-vorschau-kachel" style="
+              width:72px; height:48px;
+              border-radius:var(--ha-card-border-radius, 14px);
+              background-color:${this.symbolVorschauFarbe("var(--ha-card-background, var(--card-background-color))")};
+              box-shadow:${hatgSchattenWert(hatgSchattenNormal(p), 1)};
+            "></div>
+            <small>${en ? "Card" : "Karte"}</small>
+          </div>
+        </div>
+        <div class="glas-regler-reihe">
+          <div class="generator-control">
+            <label>${en ? "Distance" : "Abstand"}${zahl("data-schatten-abstand", p.abstand, 0, 40, "px")}</label>
+            <input type="range" min="0" max="40" step="1" value="${p.abstand}" data-schatten-abstand-regler />
+          </div>
+          <div class="generator-control">
+            <label>${en ? "Intensity" : "Intensität"}${zahl("data-schatten-intensitaet", p.intensitaet, 0, 60, "%")}</label>
+            <input type="range" min="0" max="60" step="1" value="${p.intensitaet}" data-schatten-intensitaet-regler />
+          </div>
+        </div>
+        <div class="glas-regler-reihe">
+          <div class="generator-control">
+            <label>${en ? "Blur" : "Weichzeichnung"}${zahl("data-schatten-weiche", p.weiche, 0, 80, "px")}</label>
+            <input type="range" min="0" max="80" step="1" value="${p.weiche}" data-schatten-weiche-regler />
+          </div>
+          <div class="generator-control">
+            <label>${en ? "Direction" : "Richtung"}</label>
+            <div class="mode-toggle-group inline" role="group">
+              <button type="button" class="${p.gedrueckt ? "" : "active"}" data-schatten-richtung="erhaben">${en ? "Raised" : "Erhaben"}</button>
+              <button type="button" class="${p.gedrueckt ? "active" : ""}" data-schatten-richtung="gedrueckt">${en ? "Pressed" : "Gedrückt"}</button>
+            </div>
+          </div>
+        </div>
+        <p class="vorlage-desc" data-roh>${
+          en
+            ? "The surface goes into the value as var(--ha-card-background), not as a fixed colour - the same text works in light and dark and follows the card if you recolour it later. The five fields are scaled: buttons 0.6, the small step 0.45, the large one 1.6."
+            : "Die Fläche steht als var(--ha-card-background) im Wert, nicht als feste Farbe - derselbe Text stimmt in hell und dunkel und folgt der Karte, wenn du sie später umfärbst. Die fünf Felder sind abgestuft: Knöpfe 0,6, die kleine Stufe 0,45, die große 1,6."
+        }</p>`
+            : ""
+        }
+      </div>`;
+  }
+
   renderSymbolForm(zustand, wert, en) {
     const namen = {
       flach: en ? "Flat" : "Flach",
@@ -12799,6 +12953,58 @@ box-shadow: ${hatgEscape(hatgSymbolSchattenCss(p.flaecheAus, p, false))};</pre>
         this.resetDerivationsToAutomatic();
       });
     });
+    this.shadowRoot.querySelectorAll("[data-schatten]").forEach((el) => {
+      el.addEventListener("click", () => {
+        const an = el.dataset.schatten === "an";
+        const stand = this.schattenKastenStand();
+        if (!!stand === an) return;
+        this.setzeSchattenKasten(an ? stand || HATG_SCHATTEN_STANDARD : null);
+        this.render();
+      });
+    });
+    this.shadowRoot.querySelectorAll("[data-schatten-richtung]").forEach((el) => {
+      el.addEventListener("click", () => {
+        const stand = this.schattenKastenStand();
+        if (!stand) return;
+        this.setzeSchattenKasten({ ...stand, gedrueckt: el.dataset.schattenRichtung === "gedrueckt" });
+        this.render();
+      });
+    });
+    const schattenPaar = (quelle, reglerSel, feldSel) => {
+      const regler = this.shadowRoot.querySelector(reglerSel);
+      const feld = this.shadowRoot.querySelector(feldSel);
+      if (quelle && quelle === regler) return regler.value;
+      const getippt = feld ? String(feld.value).trim() : "";
+      return getippt !== "" ? getippt : regler?.value;
+    };
+    this.shadowRoot
+      .querySelectorAll(
+        "[data-schatten-abstand], [data-schatten-abstand-regler], " +
+          "[data-schatten-intensitaet], [data-schatten-intensitaet-regler], " +
+          "[data-schatten-weiche], [data-schatten-weiche-regler]"
+      )
+      .forEach((el) => {
+        el.addEventListener("input", () => {
+          const stand = this.schattenKastenStand() || HATG_SCHATTEN_STANDARD;
+          const fertig = hatgSchattenNormal({
+            abstand: schattenPaar(el, "[data-schatten-abstand-regler]", "[data-schatten-abstand]"),
+            intensitaet: schattenPaar(el, "[data-schatten-intensitaet-regler]", "[data-schatten-intensitaet]"),
+            weiche: schattenPaar(el, "[data-schatten-weiche-regler]", "[data-schatten-weiche]"),
+            gedrueckt: stand.gedrueckt,
+          });
+          for (const [regler, feld, wert] of [
+            ["[data-schatten-abstand-regler]", "[data-schatten-abstand]", fertig.abstand],
+            ["[data-schatten-intensitaet-regler]", "[data-schatten-intensitaet]", fertig.intensitaet],
+            ["[data-schatten-weiche-regler]", "[data-schatten-weiche]", fertig.weiche],
+          ]) {
+            const r = this.shadowRoot.querySelector(regler);
+            const f = this.shadowRoot.querySelector(feld);
+            if (r && r !== el) r.value = wert;
+            if (f && f !== el) f.value = wert;
+          }
+          this.setzeSchattenKasten(fertig);
+        });
+      });
     this.shadowRoot.querySelectorAll("[data-symbol]").forEach((el) => {
       el.addEventListener("click", () => {
         const an = el.dataset.symbol === "an";
