@@ -745,6 +745,40 @@ also nichts. Für HATG heißt das: `hatgIstFremdesFeld` schützt die Vorsilbe
 `rgb-` zu Recht vor dem Cleaner, aber ein `rgb-`Feld **selbst zu schreiben** ist
 nur dort richtig, wo die Quelle in beiden Modi dieselbe ist.
 
+## Bubble ist oft schon an HA gebunden — erst die Kette lesen
+
+Am 12.10.2026 an `bubble-card.js` 3.2.0 nachgelesen, klammernzählend gesucht.
+Viele `--bubble-*`-Namen tragen HAs Variable schon als Ausweichwert:
+
+    var(--bubble-state-climate-auto-color, var(--state-climate-auto-color, …))
+    var(--bubble-climate-accent-color, var(--bubble-accent-color, var(--accent-color)))
+
+Wer so ein Feld trotzdem setzt, **überschreibt** einen richtigen Wert. In HATS
+war genau das passiert: HAs `#4caf50` wurde durch ein Fast-Schwarz ersetzt. Vor
+jedem neuen Bubble-Feld gehört die Kette im Quelltext gelesen — steht HAs Name
+schon drin, ist das Feld überflüssig.
+
+**Dazu die Verwechslung, die es teuer machte.** `--ha-color-fill-<rolle>-normal-*`
+ist eine dezent getönte **Fläche** für Überfahr-Zustände. Bubble benutzt seine
+`--bubble-*-accent-color` dagegen als **Füllfarbe** — Slider, Rahmen,
+Dropdown-Pfeil. Im Dunkeln ergab das `#090f35` auf `#1c1c1c`, Kontrast
+**1.09 : 1**. Für einen Hintergrund ist dieselbe Fläche dagegen richtig; die
+Unterscheidung macht der Name des Ziels, nicht der Wert.
+
+Bei einem **blauen** Primärton reicht auch `loud` nicht (1.68 : 1). Blau hat die
+geringste Wahrnehmungshelligkeit aller Farbtöne, und eine HSL-Rampe gleicht das
+nicht aus — gleiche Helligkeitsstufe, völlig andere Sichtbarkeit. Deshalb steht
+HAs eigenes `ha-color-primary-40` auf einem Cyan (`#009ac7`) und nicht auf Blau.
+
+**Und: ein Ausweichwert steht oft im Bauteil, nicht in der Variablen.**
+`--ha-card-background`, `--ha-dialog-surface-background` und
+`--ha-card-backdrop-filter` setzt HA **nirgends**; `ha-card` liest
+`var(--ha-card-background, var(--card-background-color))`. Ein `var()` auf diese
+Namen ohne eigenen Ausweichwert löst zu nichts auf. `--ha-dialog-scrim-color`
+gibt es gar nicht — HA liest `--mdc-dialog-scrim-color`, darunter Web Awesome
+mit `--wa-color-overlay-modal` (`#00000040`). Alles aus
+`customElements.get(tag).elementStyles` gelesen, nicht geraten.
+
 ## Werte schreiben: der Backslash ist das Fluchtzeichen
 
 `hatgQuoteYamlValue` schreibt einzeilige Werte doppelt gequotet. In einem doppelt gequoteten YAML-Skalar ist der **Backslash** das Fluchtzeichen, er muss deshalb **vor** dem Anführungszeichen verdoppelt werden. Bis 1.3.2b25 wurde nur das Anführungszeichen escaped. Am 2026-10-01 gemessen und mit PyYAML gegengeprüft, also mit dem Parser, den Home Assistant benutzt:
