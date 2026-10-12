@@ -1,0 +1,199 @@
+# Bubble Card und Mushroom auf HAs neue Farbebene
+#
+# Eigenstaendige Theme zum Ausprobieren der Zuordnung aus
+# docs/zuordnung-neue-ebene.md. Am 12.10.2026 gegen HA 2026.10.1,
+# Bubble Card 3.2.0 und Mushroom an einer laufenden Instanz gemessen.
+#
+# Zugewiesen sind 68 von 100 Bubble- und 72 von 109 Mushroom-Variablen. Nicht
+# zugewiesen bleiben absichtlich: Geometrie einzelner Bauteile (Kalenderhoehe,
+# Pop-up-Masken, Ausrichtung), Verhalten (slider-threshold, input-number-debounce)
+# und die 29 Zustandstripel von Mushroom - die verkettet Mushroom selbst auf
+# seine Palette, mit der Palette sind sie miterledigt.
+#
+# Kein UIX notwendig. CSS-Variablen erben durch jede Shadow-Grenze; am
+# 12.10.2026 nachgemessen, dass ein Wert von html zwoelf Ebenen tief ankommt
+# und rgb(var(--mush-rgb-red)) zu rgb(243, 103, 108) aufloest.
+#
+# Die Toene am Anfang sind nicht Zierde, sondern Voraussetzung: Mushroom baut
+# seine Farben aus RGB-Tripeln, und Home Assistant leitet --rgb-<name> nur aus
+# Theme-Feldern ab, deren Wert mit # beginnt. Ohne diesen Block sind
+# --rgb-cyan-color und Geschwister leer, und die Haelfte der Mushroom-Toene
+# faellt aus - ohne Fehlermeldung.
+
+zuordnung_probe:
+  # --- Voraussetzung: die klassischen Toene als Hex, damit HA Tripel ableitet ---
+  # HA fuehrt alle 19 weiter (am 12.10.2026 im inline-Stylesheet auf html
+  # gemessen). Sie sind die einzige Quelle fuer Farbvielfalt: die neue Ebene hat
+  # nur fuenf Toene (primary, neutral, red, green, orange).
+  red-color: "#f44336"
+  pink-color: "#e91e63"
+  purple-color: "#926bc7"
+  deep-purple-color: "#6e41ab"
+  indigo-color: "#3f51b5"
+  blue-color: "#2196f3"
+  light-blue-color: "#03a9f4"
+  cyan-color: "#00bcd4"
+  teal-color: "#009688"
+  green-color: "#4caf50"
+  light-green-color: "#8bc34a"
+  lime-color: "#cddc39"
+  yellow-color: "#ffeb3b"
+  amber-color: "#ffc107"
+  orange-color: "#ff9800"
+  deep-orange-color: "#ff6f22"
+  brown-color: "#795548"
+  grey-color: "#9e9e9e"
+  blue-grey-color: "#607d8b"
+
+  # --- Bubble Card (68 von 100) ---
+  bubble-accent-color: "var(--ha-color-fill-primary-normal-resting)"
+  bubble-backdrop-background-color: "var(--ha-dialog-scrim-color)"
+  bubble-backdrop-filter: "var(--ha-card-backdrop-filter)"
+  bubble-border-radius: "var(--ha-border-radius-xl)"
+  bubble-button-accent-color: "var(--ha-color-fill-primary-normal-resting)"
+  bubble-button-background-color: "var(--ha-color-fill-neutral-quiet-resting)"
+  bubble-button-border-radius: "var(--ha-border-radius-lg)"
+  bubble-button-icon-background-color: "var(--ha-color-fill-neutral-quiet-resting)"
+  bubble-button-icon-border-radius: "var(--ha-border-radius-pill)"
+  bubble-button-main-background-color: "var(--ha-card-background)"
+  bubble-calendar-border-radius: "var(--ha-border-radius-xl)"
+  bubble-card-type-border: "var(--ha-border-width-sm) solid var(--ha-color-border-neutral-quiet)"
+  bubble-card-type-border-radius: "var(--ha-border-radius-xl)"
+  bubble-card-type-box-shadow: "var(--ha-box-shadow-m)"
+  bubble-card-type-icon-background-color: "var(--ha-color-fill-neutral-quiet-resting)"
+  bubble-card-type-icon-border-radius: "var(--ha-border-radius-pill)"
+  bubble-card-type-main-background-color: "var(--ha-card-background)"
+  bubble-climate-background-color: "var(--ha-color-fill-neutral-quiet-resting)"
+  bubble-climate-button-background-color: "var(--ha-color-fill-neutral-quiet-resting)"
+  bubble-color-cursor-indicator-color: "var(--ha-color-on-surface-default)"
+  bubble-cover-button-background-color: "var(--ha-color-fill-neutral-quiet-resting)"
+  bubble-cover-buttons-border-radius: "var(--ha-border-radius-lg)"
+  bubble-event-accent-color: "var(--ha-color-fill-primary-normal-resting)"
+  bubble-event-background-color: "var(--ha-color-surface-low)"
+  bubble-footer-box-shadow: "var(--ha-box-shadow-l)"
+  bubble-horizontal-buttons-stack-background-color: "var(--ha-color-fill-neutral-quiet-resting)"
+  bubble-horizontal-buttons-stack-border-radius: "var(--ha-border-radius-xl)"
+  bubble-icon-color: "var(--ha-color-on-surface-default)"
+  bubble-light-color: "var(--ha-color-orange-60)"
+  bubble-line-background-color: "var(--ha-color-border-neutral-quiet)"
+  bubble-main-background-color: "var(--ha-card-background)"
+  bubble-main-buttons-background-color: "var(--ha-color-fill-neutral-quiet-resting)"
+  bubble-media-player-border-radius: "var(--ha-border-radius-xl)"
+  bubble-media-player-button-background-color: "var(--ha-color-fill-neutral-quiet-resting)"
+  bubble-media-player-buttons-border-radius: "var(--ha-border-radius-lg)"
+  bubble-media-player-play-pause-icon-color: "var(--ha-color-on-primary-normal)"
+  bubble-media-player-slider-background-color: "var(--ha-color-fill-neutral-quiet-resting)"
+  bubble-pop-up-border: "var(--ha-border-width-sm) solid var(--ha-color-border-neutral-quiet)"
+  bubble-pop-up-border-radius: "var(--ha-border-radius-xl)"
+  bubble-pop-up-bottom-padding: "var(--ha-space-4)"
+  bubble-pop-up-close-button-border: "var(--ha-border-width-sm) solid var(--ha-color-border-neutral-quiet)"
+  bubble-pop-up-content-border-radius: "var(--ha-border-radius-xl)"
+  bubble-pop-up-gap: "var(--ha-space-3)"
+  bubble-pop-up-header-gap: "var(--ha-space-3)"
+  bubble-pop-up-main-background-color: "var(--ha-dialog-surface-background)"
+  bubble-secondary-background-color: "var(--ha-color-surface-low)"
+  bubble-select-arrow-background-color: "var(--ha-color-fill-neutral-quiet-resting)"
+  bubble-select-border: "var(--ha-border-width-sm) solid var(--ha-color-border-neutral-quiet)"
+  bubble-select-button-border-radius: "var(--ha-border-radius-lg)"
+  bubble-select-list-background-color: "var(--ha-color-surface-low)"
+  bubble-select-list-border-radius: "var(--ha-border-radius-lg)"
+  bubble-select-list-item-accent-color: "var(--ha-color-fill-primary-normal-resting)"
+  bubble-slider-fill-color: "var(--ha-color-fill-primary-loud-resting)"
+  bubble-state-climate-auto-color: "var(--ha-color-fill-primary-normal-resting)"
+  bubble-state-climate-cool-color: "var(--light-blue-color)"
+  bubble-state-climate-dry-color: "var(--amber-color)"
+  bubble-state-climate-fan-only-color: "var(--ha-color-fill-neutral-normal-resting)"
+  bubble-state-climate-heat-color: "var(--ha-color-orange-60)"
+  bubble-state-climate-heat-cool-color: "var(--ha-color-fill-primary-normal-resting)"
+  bubble-sub-button-background-color: "var(--ha-color-fill-neutral-quiet-resting)"
+  bubble-sub-button-border-radius: "var(--ha-border-radius-lg)"
+  bubble-sub-button-dark-text-color: "var(--ha-color-text-primary-inverted)"
+  bubble-sub-button-height: "var(--ha-space-8)"
+  bubble-sub-button-highlight-font-size: "var(--ha-font-size-s)"
+  bubble-sub-button-light-background-color: "var(--ha-color-fill-neutral-quiet-resting)"
+  bubble-sub-slider-background-color: "var(--ha-color-fill-neutral-quiet-resting)"
+  bubble-sub-slider-border-radius: "var(--ha-border-radius-lg)"
+  bubble-sub-slider-height: "var(--ha-space-10)"
+
+  # --- Mushroom (72 von 109) ---
+  # Die 30 Palettentripel. Die 29 Zustandstripel fehlen absichtlich: Mushroom
+  # verkettet sie selbst hierauf (state-light -> rgb-orange, person-home ->
+  # rgb-success). Nur wo ein Zustand bewusst abweichen soll, kommt er dazu.
+  mush-rgb-red: "var(--rgb-ha-color-red-60)"
+  mush-rgb-green: "var(--rgb-ha-color-green-60)"
+  mush-rgb-orange: "var(--rgb-ha-color-orange-60)"
+  mush-rgb-blue: "var(--rgb-ha-color-primary-60)"
+  mush-rgb-grey: "var(--rgb-ha-color-neutral-60)"
+  mush-rgb-light-grey: "var(--rgb-ha-color-neutral-80)"
+  mush-rgb-dark-grey: "var(--rgb-ha-color-neutral-40)"
+  mush-rgb-black: "var(--rgb-ha-color-black)"
+  mush-rgb-white: "var(--rgb-ha-color-white)"
+  mush-rgb-disabled: "var(--rgb-ha-color-neutral-70)"
+  mush-rgb-info: "var(--rgb-ha-color-primary-60)"
+  mush-rgb-success: "var(--rgb-ha-color-green-60)"
+  mush-rgb-warning: "var(--rgb-ha-color-orange-60)"
+  mush-rgb-danger: "var(--rgb-ha-color-red-60)"
+  mush-rgb-update-installing: "var(--rgb-ha-color-primary-60)"
+  mush-rgb-update-off: "var(--rgb-ha-color-primary-60)"
+  # Diese 14 haben auf der neuen Ebene kein Gegenstueck und kommen aus dem
+  # klassischen Tonblock oben.
+  mush-rgb-pink: "var(--rgb-pink-color)"
+  mush-rgb-purple: "var(--rgb-purple-color)"
+  mush-rgb-deep-purple: "var(--rgb-deep-purple-color)"
+  mush-rgb-indigo: "var(--rgb-indigo-color)"
+  mush-rgb-light-blue: "var(--rgb-light-blue-color)"
+  mush-rgb-cyan: "var(--rgb-cyan-color)"
+  mush-rgb-teal: "var(--rgb-teal-color)"
+  mush-rgb-light-green: "var(--rgb-light-green-color)"
+  mush-rgb-lime: "var(--rgb-lime-color)"
+  mush-rgb-yellow: "var(--rgb-yellow-color)"
+  mush-rgb-amber: "var(--rgb-amber-color)"
+  mush-rgb-deep-orange: "var(--rgb-deep-orange-color)"
+  mush-rgb-brown: "var(--rgb-brown-color)"
+  mush-rgb-blue-grey: "var(--rgb-blue-grey-color)"
+  # Farben, Masse, Rundungen, Schrift
+  mush-title-color: "var(--ha-color-text-primary)"
+  mush-card-primary-color: "var(--ha-color-text-primary)"
+  mush-subtitle-color: "var(--ha-color-text-secondary)"
+  mush-card-secondary-color: "var(--ha-color-text-secondary)"
+  mush-chip-border-color: "var(--ha-color-border-neutral-quiet)"
+  mush-chip-background: "var(--ha-color-fill-neutral-quiet-resting)"
+  mush-chip-box-shadow: "var(--ha-box-shadow-s)"
+  # Achtung: mush-icon-border-radius, nicht icon-border-radius. Mushroom leitet
+  # letzteres selbst weiter unten im Baum ab; ein Wert von aussen traegt dort
+  # nur mit !important.
+  mush-icon-border-radius: "var(--ha-border-radius-circle)"
+  mush-badge-border-radius: "var(--ha-border-radius-circle)"
+  mush-chip-avatar-border-radius: "var(--ha-border-radius-circle)"
+  mush-chip-border-radius: "var(--ha-border-radius-pill)"
+  mush-control-border-radius: "var(--ha-border-radius-pill)"
+  mush-icon-size: "var(--ha-space-6)"
+  mush-control-icon-size: "var(--ha-space-6)"
+  mush-icon-symbol-size: "var(--ha-space-5)"
+  mush-badge-size: "var(--ha-space-4)"
+  mush-badge-icon-size: "var(--ha-space-3)"
+  mush-chip-icon-size: "var(--ha-space-4)"
+  mush-chip-height: "var(--ha-space-10)"
+  mush-control-height: "var(--ha-space-10)"
+  mush-spacing: "var(--ha-space-3)"
+  mush-chip-spacing: "var(--ha-space-3)"
+  mush-control-spacing: "var(--ha-space-3)"
+  mush-chip-padding: "var(--ha-space-2)"
+  mush-title-padding: "var(--ha-space-2)"
+  mush-title-spacing: "var(--ha-space-2)"
+  mush-chip-avatar-padding: "var(--ha-space-1)"
+  mush-chip-border-width: "var(--ha-border-width-sm)"
+  mush-card-primary-font-size: "var(--ha-font-size-l)"
+  mush-card-primary-font-weight: "var(--ha-font-weight-medium)"
+  mush-card-primary-line-height: "var(--ha-line-height-condensed)"
+  mush-card-secondary-font-size: "var(--ha-font-size-m)"
+  mush-card-secondary-font-weight: "var(--ha-font-weight-body)"
+  mush-card-secondary-line-height: "var(--ha-line-height-normal)"
+  mush-chip-font-size: "var(--ha-font-size-s)"
+  mush-chip-font-weight: "var(--ha-font-weight-action)"
+  mush-title-font-size: "var(--ha-font-size-xl)"
+  mush-title-font-weight: "var(--ha-font-weight-heading)"
+  mush-title-line-height: "var(--ha-line-height-condensed)"
+  mush-subtitle-font-size: "var(--ha-font-size-m)"
+  mush-subtitle-font-weight: "var(--ha-font-weight-medium)"
+  mush-subtitle-line-height: "var(--ha-line-height-normal)"

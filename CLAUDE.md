@@ -4,6 +4,39 @@ Grafisches Panel, das sich in die Seitenleiste von Home Assistant einklinkt und 
 
 Repository: https://github.com/Piranha1605/ha-theme-generator · MIT-Lizenz · Verteilung über HACS
 
+## Das Schwesterprojekt: HATS
+
+Seit dem 12.10.2026 entsteht daneben **HATS — Home Assistant Theme Studio**, ein
+zweiter, einfacherer Generator auf HAs neuer Farbebene (`--ha-color-*`). Eigenes
+Repository, eigene Integrations-Domain (`hats`), damit beide nebeneinander
+installiert sein können:
+
+    /Users/enricofischer/Projekte/ha-theme-studio
+
+**Getrennt auf Ansage des Maintainers** — ein Umbau über den Bestand wäre zu
+riskant. HATG wird weiter gepflegt und ist nicht das Altsystem; die
+HACS-Einreichung läuft noch.
+
+**Beide Projekte werden zusammen entwickelt, und HATG ist die Quelle.** Das
+gemessene Wissen in diesem CLAUDE.md gilt für HATS genauso. Zwei Dateien halten
+die Brücke:
+
+| Datei | Inhalt |
+|---|---|
+| `docs/uebergabe-neues-projekt.md` | die Regeln, die unabhängig von HATGs Code gelten, mit den Kosten ihrer Verletzung |
+| `docs/zuordnung-neue-ebene.md` | Bubble und Mushroom auf die neue Ebene, jede Zahl an der Instanz nachgemessen |
+
+**Was hier dazukommt, gehört dort geprüft** — und umgekehrt: Wird an HATS etwas
+an der laufenden Instanz gemessen, das HA, Bubble oder Mushroom betrifft, wird es
+**in beiden** CLAUDE.md notiert. Sonst zerfällt das Wissen.
+
+**Eine Theme gehört einem Werkzeug.** Am 12.10.2026 gemessen: Eine HATS-Theme
+übersteht HATGs Import unbeschadet — alle `var()`-Verweise bleiben wörtlich
+stehen, und von 57 Feldern, die HATG kennt, wurde keines überschrieben. HATG
+hängt aber seine eigenen Vorgaben an (140 → 358 Bubble- und Mushroom-Felder). Die
+Datei wird davon fett und zweideutig, nicht kaputt. Dieselbe Datei nicht in
+beiden bearbeiten.
+
 ## Aufbau
 
 ```
@@ -72,6 +105,27 @@ Seit v1.2.0 schreibt HATG `uix-*`-Felder statt `card-mod-*`. card-mod lädt seit
 - Bubble Card setzt `ha-card.is-on` auch bei Zustandskarten (etwa `button_type: state` mit Sensorwert), die farblos bleiben. Ob eine Karte wirklich eingefärbt ist, zeigt nur das inline `opacity: 1` auf `.bubble-background` (sonst `0.5`). `.bubble-background` liegt in `div.bubble-button.bubble-wrapper`, nicht direkt im Container – der Selektor lautet deshalb `ha-card:has(.bubble-background[style*="opacity: 1"])`. Am 2026-09-14 an Druckerpatronen gemessen, die an `is-on` gehängt dunkle Schrift auf dunklem Glas bekamen.
 - `ha-card` blendet Änderungen mit `transition: 0.3s ease-out` über. Direkt nach eingehängtem Test-CSS misst `getComputedStyle` Zwischenwerte (`blur(0px)`, alter Radius), und ein Screenshot zeigt den alten Stand. Vor dem Messen mindestens eine Sekunde warten.
 - Bubble Card zeichnet Flächen, Rahmen und Schatten aus eigenen `--bubble-*`-Variablen. CSS-Regeln kommen nicht über Shadow-Grenzen, Variablen schon — Vorlagen für Bubble setzen deshalb Variablen statt Regeln.
+- **Pop-ups tragen ihren Inhalt seit Bubble 3.2.0 selbst.** Das eigenständige Format ist eine gewöhnliche Karte mit `cards:` darin — so schreibt es der Editor beim Anlegen:
+
+      type: custom:bubble-card
+      card_type: pop-up
+      hash: "#licht"
+      cards: [ … ]          # der Inhalt gehoert IN die Karte
+
+  Davor musste ein Pop-up in einem `vertical-stack` stecken und nahm sich die
+  folgenden Karten des Stacks als Inhalt. Bubble erkennt das und zeigt in der
+  Ansicht den Hinweis „Deine Pop-ups müssen migriert werden"; im Quelltext ist
+  der alte Zweig daran zu sehen, dass er `getRootNode().host` verlangt und sonst
+  `editor.errors.vertical_stack` wirft.
+
+  **Der Fall dazwischen ist der stumme:** Ein Pop-up ohne `cards:` und ohne
+  `vertical-stack`, also direkt in einer Grid-Sektion, verschluckt die **ganze
+  Sektion**. Am 12.10.2026 gemessen — `separator + calendar +
+  horizontal-buttons-stack + pop-up + button` rendert gar nichts, `hui-grid-section`
+  entsteht mit Höhe 0 und **null** `hui-card`, ohne Fehlerkarte und ohne
+  Konsolenmeldung; erst mit `#hash` erscheinen alle fünf. Wer das Symptom „eine
+  Sektion fehlt komplett, nichts meldet sich" sieht, sucht sonst lange in den
+  Kartenkonfigurationen.
 - Ein `backdrop-filter` auf dem Host einer Karte macht ihn zum **Bezugsrahmen für `position: fixed`** (ebenso `filter`, `transform`, `will-change`, `contain`). Bubble-Pop-ups sind `fixed` und liegen im Shadow Root von `bubble-card`. Trägt der Host einen Filter, schrumpft das Pop-up auf dessen Größe – 0 × 0 –, landet außerhalb des Fensters, und nur die Kopfzeile schwebt über dem Dashboard. Vorlagen auf `uix-card` dürfen deshalb keinen Filter auf blankes `:host` legen: `glas-ebene` meidet den Wirt ganz, die ältere Einzelvorlage `glas-effekt` setzt ihn mit `:host(.type-custom-bubble-card) { backdrop-filter: none }` zurück; die Klasse setzt UIX. Sichtbar seit 1.3.0b1, weil `uix-card` vorher gar nicht ankam. Am 2026-09-14 gemessen: mit Filter Höhe 0, ohne Höhe 742.
 - `ha-panel-config` hat keinen Shadow Root. `uix-config` nimmt darum keinen `:host`-Block an, nur die `-yaml`-Pfade wirken. Alles für die Einstellungsseiten läuft über Pfade oder über `uix-drawer`. (Im Theme steht dort ohnehin nur `uix-config-yaml`, kein einfaches `uix-config` — mit der Verdeckung oben hat dieser Punkt also nichts zu tun, er ist separat zu prüfen.) Das Stylesheet von `uix-drawer` liegt im Shadow Root von `ha-drawer`: Ein Element-Selektor wie `ha-button` trifft dort keinen Knopf der Einstellungsseiten, die liegen mehrere Shadow Roots tiefer. Was dort ankommen soll, muss als Variable auf `:host` stehen. Vorsicht beim Vererben: Eigene Karten lesen teils dieselben Variablen – `--control-button-background-color` färbt etwa die Mulden der HA-Karten und machte sie am 2026-09-14 blau.
 - `uix-more-info`: UIX patcht nicht `ha-more-info-dialog`, sondern hängt die Styles an **`ha-adaptive-dialog`**. Pfade in `uix-more-info-yaml` brauchen deshalb ein führendes `$`: `"$ ha-dialog $"` für den Desktop-Dialog, `"$ ha-bottom-sheet $"` für Tablet und Handy – ohne das `$` greift nichts. Das `"."`-CSS landet im Shadow Root von `ha-more-info-dialog`, `:host` ist dort dieser Dialog. Die Dialogfläche färbt HA nur über `background-color`; ein Bild braucht eine Regel auf `wa-dialog::part(dialog)` beziehungsweise `wa-drawer::part(dialog)`. Am 2026-09-14 mit Markierungen an einer laufenden Instanz geprüft.

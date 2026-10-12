@@ -14817,8 +14817,8 @@ box-shadow: ${hatgEscape(hatgSymbolSchattenCss(p.flaecheAus, p, false))};</pre>
             ? "1 variable that read itself removed"
             : `${altlasten.selbstverweise} variables that read themselves removed`
           : altlasten.selbstverweise === 1
-            ? "1 Variable, die sich selbst las, entfernt"
-            : `${altlasten.selbstverweise} Variablen, die sich selbst lasen, entfernt`
+            ? "1 Variable, die sich selbst liest, entfernt"
+            : `${altlasten.selbstverweise} Variablen, die sich selbst lesen, entfernt`
       );
     if (altlasten.dialogFilter)
       parts.push(
