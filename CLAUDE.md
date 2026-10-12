@@ -712,6 +712,39 @@ Zwei Dinge daran sind der Rede wert, beide hätten stumm danebengegriffen:
 
 Zwei Fallen, beide selbst hineingetappt: HA baut Zustandsfarben als `--state-${domain}-${state}-color` zusammen, ein Literalname steht nirgends — ein erster Lauf meldete deshalb `state-switch-on-color` als tot, obwohl es nachweislich das Schalter-Icon färbt. Und ein Ähnlichkeitsvergleich schlägt Nachfolger vor, die zum Teil Unsinn sind (`input-background-color` → `chip-background-color`). Jede Zuordnung gehört gegen die echte Quelle geprüft, nicht gegen eine Heuristik.
 
+## Ein eigenes `rgb-`Feld blockiert HAs Ableitung
+
+Am 12.10.2026 an der laufenden Instanz gemessen, aufgefallen an HATS, gilt aber
+für jede Theme. Home Assistant rechnet `--rgb-<name>` selbst aus jedem Hex-Feld,
+**je Modus** — und überspringt den Namen, sobald die Theme ihn mitbringt
+(`apply_themes_on_element.ts`):
+
+```js
+if (!value.startsWith("#")) continue;
+if (combinedTheme[`rgb-${key}`] !== undefined) continue;   // ← hier
+styles[`--rgb-${key}`] = hex2rgb(value).join(",");
+```
+
+Ein flaches `rgb-primary-text-color: "33, 33, 33"` nagelt damit den Hell-Wert in
+den Dunkelmodus. Sichtbar wird das zuerst an der Seitenleiste, weil HA ihre
+Symbole daraus mischt:
+
+    --sidebar-icon-color: rgba(var(--rgb-primary-text-color), .6)
+
+Dunkelgrau auf `#1c1c1c` ergibt Kontrast **1.19 : 1** — die Symbole sind weg,
+während `--sidebar-text-color` daneben richtig auf `#e1e1e1` steht. Genau diese
+Widersprüchlichkeit ist das Erkennungsmerkmal.
+
+**Woran man eine Ableitung erkennt:** HAs eigene Werte aus dem Stylesheet tragen
+Leerzeichen (`33, 33, 33`), von HA abgeleitete nicht (`232,131,58`).
+
+**HA definiert alle zehn `rgb-`Namen selbst auf `html`** — `accent`,
+`card-background`, `error`, `info`, `primary`, `primary-text`, `secondary-text`,
+`success`, `text-primary`, `warning`. Sie aus einer Theme zu entfernen verliert
+also nichts. Für HATG heißt das: `hatgIstFremdesFeld` schützt die Vorsilbe
+`rgb-` zu Recht vor dem Cleaner, aber ein `rgb-`Feld **selbst zu schreiben** ist
+nur dort richtig, wo die Quelle in beiden Modi dieselbe ist.
+
 ## Werte schreiben: der Backslash ist das Fluchtzeichen
 
 `hatgQuoteYamlValue` schreibt einzeilige Werte doppelt gequotet. In einem doppelt gequoteten YAML-Skalar ist der **Backslash** das Fluchtzeichen, er muss deshalb **vor** dem Anführungszeichen verdoppelt werden. Bis 1.3.2b25 wurde nur das Anführungszeichen escaped. Am 2026-10-01 gemessen und mit PyYAML gegengeprüft, also mit dem Parser, den Home Assistant benutzt:
