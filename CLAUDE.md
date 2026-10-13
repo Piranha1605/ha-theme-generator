@@ -256,6 +256,24 @@ UIX 8.4.0 ersetzt den `custom-panel`-Lader durch eine Frame-Laufzeit (`src/frame
 
 Die Regel lautet seit 1.3.2b25 `uix-[a-z0-9][a-z0-9_-]{0,47}`, auf beiden Seiten zeichengleich. Die führende Ziffer ist nötig, weil die Hex-Vorsilbe mit einer anfangen darf (`5c53de3b_esphome`); bis dahin stand im Test ausdrücklich, `uix-9start` müsse abgewiesen werden — das galt für Custom-Element-Namen, für Add-on-Slugs nicht.
 
+### `uix-theme`: der Schalter, ohne den keine Vorlage ankommt
+
+Steht in HATGs Code seit jeher als `HATG_UIX_THEME_KEY` — hier war es bisher
+nur beiläufig erwähnt, und **das hat gekostet**. Beim Bau von HATS' Vorlagen
+fehlte die Zeile, und niemand kam darauf: Am 13.10.2026 waren dort 39 von 39
+`uix-node`-Knoten leer, auch `drawer`, `sidebar` und `root`. Die Felder lagen
+korrekt am `html`, UIX war geladen, die Konsole meldete nichts, und selbst eine
+triviale Regel kam nicht an. Nach dem Ergänzen von `uix-theme`: 31 von 39.
+
+```yaml
+meine_theme:
+  uix-theme: "meine_theme"      # muss dem Theme-Namen entsprechen
+```
+
+**Und es sieht fast richtig aus**, weil die Felder ja wirken — Flächen,
+Rundungen, Farben stehen. Nur die Vorlagen fehlen. Wer das Symptom „alle
+`uix-node` leer, auch die einfachen Ziele" sieht, prüft zuerst diese eine Zeile.
+
 ### `uix-fonts`: Schriften über das Theme
 
 Neu in 8.4.0. Ein Schlüssel auf **Theme-Ebene** wie `uix-theme`, kein Feld unter `modes`. Sein Wert ist eine mehrzeilige YAML-Abbildung, die UIX über die CSS Font Loading API lädt:
