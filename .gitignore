@@ -7,3 +7,6 @@ __pycache__/
 
 # HyperFrames-Videoprojekte (Renders, Mitschnitte, Zwischenstände)
 videos/
+
+# Dashboard-Sicherungen: Entitaeten, Raeume, Geraete des Nutzers - nichts fuers Repository
+werkzeuge/sicherungen/

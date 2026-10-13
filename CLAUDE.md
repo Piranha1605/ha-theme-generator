@@ -1003,6 +1003,44 @@ Die letzte Charge neuer Integrationen wurde am **02.09.2026** gemergt, fünfzehn
 
 Dependabot ist für dieses Repository aktiviert.
 
+## Ein toter Tab sieht aus wie ein lebender
+
+Am 13.10.2026 an der Instanz gemessen, aufgefallen bei HATS, gilt für jede
+Messung an einer laufenden Instanz — also für die Arbeit an HATG genauso.
+
+**Eine abgerissene WebSocket-Verbindung ist von außen nicht zu sehen.** Der Tab
+war angemeldet (`hass.user` gesetzt), die Seite vollständig gezeichnet, alle
+Karten da. Jede Anfrage scheiterte trotzdem — mit der **nackten Zahl 3**:
+
+    try { await conn.sendMessagePromise({type: "lovelace/config", url_path: "x"}) }
+    catch (e) { e.message }      // undefined
+                                 // JSON.stringify(e)  ->  "3"
+
+`3` ist `ERR_CONNECTION_LOST` aus `home-assistant-js-websocket` (1 =
+`ERR_CANNOT_CONNECT`, 2 = `ERR_INVALID_AUTH`, 4 = `ERR_HASS_HOST_REQUIRED`, 5 =
+`ERR_INVALID_HTTPS_TO_HTTP`). Wer `e.message` loggt, bekommt `undefined`.
+**Vor jeder Messung erst `conn.sendMessagePromise({type: "ping"})`** — sonst
+misst man den Tod der Leitung und hält ihn für einen Befund.
+
+Das reiht sich neben die bekannte Falle, dass ein Hintergrund-Tab nicht
+rendert und deshalb alle `uix-node` leer zeigt: **Beide Male sieht eine kaputte
+Messumgebung wie ein echtes Ergebnis aus.** Der Wachposten gegen das eine
+(`drawer`/`sidebar`/`root` tragen Regeln) sagt nichts über das andere.
+
+**Der gerenderte Zustand überlebt den Verbindungsverlust.** Ein Tab zeigt
+weiter, was beim letzten erfolgreichen Laden ankam. Zwei Tabs auf derselben
+Seite können deshalb Verschiedenes zeigen, und der, der noch etwas zeigt, ist
+nicht der mit der besseren Verbindung — nur der mit dem älteren Stand.
+
+**Dashboard-Konfigurationen vor der Arbeit sichern.** Bei HATS stand eine
+Dashboard-Konfiguration serverseitig auf `{"views":[]}`, während ein Tab sie
+noch vollständig zeigte; gerettet werden konnte sie nur, weil jedes
+`hui-card`-Element seine `config` als Eigenschaft trägt
+(`[...document.querySelectorAll("hui-card")].map(k => k.config)`). Ein Neuladen
+hätte das vernichtet. Sichern geht über `lovelace/dashboards/list` und
+`lovelace/config`; zurückgeschrieben wird mit `lovelace/config/save` und danach
+**vom Server gegengelesen**, nicht aus dem Speicher.
+
 ## Zielgruppe
 
 Fortgeschrittene. Wer rund 780 Theme-Variablen anfasst, kennt sein System, nutzt vermutlich schon Bubble Card oder Mushroom und will bis ins Detail gestalten. Das unterscheidet HATG von HA-OS, das sich an Einsteiger richtet.
