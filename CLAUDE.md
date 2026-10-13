@@ -795,15 +795,42 @@ border-radius: var(--bubble-card-type-icon-border-radius,
                        var(--bubble-border-radius, 50%)));
 ```
 
-Die **erste** Stufe setzt Bubble selbst, je Kartentyp — bei einem Separator aus
-`--bubble-separator-icon-border-radius`. Wo sie gesetzt ist, kommt die
-allgemeine Stufe nie zum Zug. Dasselbe Muster traegt die Kartenflaeche:
-`var(--bubble-card-type-border-radius, var(--bubble-border-radius, …))`.
+Die **erste** Stufe setzt Bubble selbst, je Kartentyp. Ein Wert von aussen
+kommt dort **nie** an. Am 13.10.2026 an fuenf Bubble-Karten durchprobiert, je
+Variable einzeln gesetzt und der berechnete Radius gemessen:
 
-**Fuer Vorlagen heisst das:** Wer eine Form oder Farbe bei Bubble durchsetzen
-will, setzt die `--bubble-card-type-*`-Stufe mit. Die allgemeine allein faengt
-nur die Faelle, in denen Bubble die erste nicht belegt — und welche das sind,
-sieht man der Karte nicht an.
+    --bubble-card-type-icon-border-radius   0 von 5   wirkungslos
+    --bubble-icon-border-radius             5 von 5
+    --bubble-button-icon-border-radius      3 von 5   nur card_type: button
+    --bubble-border-radius                  5 von 5   faerbt aber auch Flaechen
+
+**Fuer Vorlagen heisst das: die ALLGEMEINE Stufe setzen, und nur sie.** Sie
+erreicht alle Kartentypen und laesst Bubbles eigene Typlogik in Ruhe. Die
+typspezifischen Namen (`--bubble-button-icon-border-radius`,
+`--bubble-climate-…`) treffen genau ihren Typ — nuetzlich, wenn man einen Typ
+anders haben will, schaedlich als Holzhammer.
+
+**Die Falle beim Messen:** Ein erster Lauf ergab „2 von 5" und fuehrte zu dem
+Schluss, man muesse die card-type-Stufe mitsetzen. Gemessen wurde dabei die
+Wirkung der **laufenden Theme des Nutzers**, die genau diese Stufe belegt hatte
+— nicht die der eigenen Vorlage. Wer bei Bubble misst, legt die laufende Theme
+vorher stumm (siehe unten).
+
+**Und dasselbe gilt für die Kartenfläche.** Am 13.10.2026 an acht
+Bubble-Karten durchprobiert — je Variable einzeln gesetzt, den berechneten
+Radius an `.bubble-container` abgelesen (nicht an der `ha-card` darüber, die
+trägt `--ha-card-border-radius`):
+
+    --bubble-card-type-border-radius       0 von 8   wirkungslos
+    --bubble-border-radius                 8 von 8
+    --bubble-button-border-radius          3 von 8   genau die button-Karten
+    --bubble-separator-border-radius       3 von 8   genau die Separatoren
+    --bubble-climate-border-radius         1 von 8   genau die Klimakarte
+    --bubble-media-player-border-radius    1 von 8   genau der Player
+
+Jeder Kartentyp hat seinen eigenen Namen, und jeder trifft genau seinen Typ.
+Die allgemeine Stufe erreicht alle. Die `card-type`-Stufe ist von außen in
+beiden Fällen — Icons wie Flächen — wirkungslos.
 
 Siebzehn Namen auf `border-radius` traegt Bubble 3.2.0 insgesamt, aus der
 installierten Datei gezaehlt:
