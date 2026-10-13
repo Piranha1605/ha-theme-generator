@@ -4,6 +4,10 @@ Grafisches Panel, das sich in die Seitenleiste von Home Assistant einklinkt und 
 
 Repository: https://github.com/Piranha1605/ha-theme-generator · MIT-Lizenz · Verteilung über HACS
 
+> **Mehrere Sitzungen arbeiten hier.** Die Absprache steht in
+> `/Users/enricofischer/Projekte/TEAM.md` — wer koordiniert, wo gearbeitet wird
+> und was angemeldet gehört, bevor es losgeht. Zuerst lesen.
+
 ## Das Schwesterprojekt: HATS
 
 Seit dem 12.10.2026 entsteht daneben **HATS — Home Assistant Theme Studio**, ein
