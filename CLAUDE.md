@@ -227,7 +227,7 @@ Daraus folgt alles Weitere:
   `.mdc-top-app-bar, .top-app-bar { … }`. Wer eine aeltere HA faehrt, braucht den
   alten Namen weiter.
 
-- `--uix-view-background` gehört zu `ha-panel-lovelace` bzw. `hui-root`, nicht zum Drawer.
+- `--uix-view-background` liest in UIX 8.4.0 **`ha-drawer`**, nicht `hui-root`. (Hier stand bis zum 13.10.2026 das Gegenteil.) Aus dem Bündel gelesen und an der Testinstanz ausgelöst: `ha-drawer` liest die Variable – dazu `-image`, `-video`, `-image-entity`, `-camera-entity` und `-cover` – und legt daraus ein festes `div[uix-view-background]` vorn in `<body>`. Die Schicht liegt über `hui-view-background` und unter den Karten, und sie war die einzige, die auch hinter den Einstellungsseiten zu sehen war. Der Name ist doppelt belegt: `uix-view-background` ist zugleich das Stilziel dieser Schicht und ihr Wert.
 - Ein `uix-sidebar-yaml`-Block lässt UIX 8.1.0 beim Laden mit `TypeError … toLowerCase` aussteigen. Danach wendet UIX für den Rest der Sitzung überhaupt keine Vorlage mehr an. Das Benutzer-Icon kommt deshalb ohne Pfad aus.
 - UIX stylt nur, was nach ihm entsteht. Ein hartes Neuladen direkt auf einer `/config`-Seite lässt die schon vorhandenen Elemente unberührt.
 
@@ -974,6 +974,51 @@ Messung:
   die Ausnahmen treffen nicht, weil `:host(hui-heading-card)` in der inneren
   `ha-card` nicht mehr passt.
 - **Die Knoten der aktiven Theme stilllegen**, siehe oben.
+
+## Eine Jinja-Vorlage gilt für das ganze Stilziel
+
+Am 13.10.2026 an der Testinstanz gemessen (HA 2026.10.1, UIX 8.4.0), beim Bau
+des Hintergrunds für HATS. Es trifft HATG genauso, weil beide in dieselben
+Stilziele schreiben.
+
+**UIX schickt ein Stilziel durch `render_template`, sobald `{{` oder `{%` darin
+vorkommt** – und zwar das ganze Feld, nicht den Block mit der Vorlage. Drei
+Regeln hintereinander, die mittlere kaputt:
+
+    .probe { --davor: 1 }  .probe { --kaputt: {{ states('sun.sun' }} }  .probe { --danach: 2 }
+
+Angekommen ist **keine** der drei. Ein Tippfehler oder ein unbekannter Filter
+leert das Feld vollständig, ohne Meldung in der Oberfläche.
+
+**Und gültiges CSS wird dabei falsch.** `{#` beginnt in Jinja einen Kommentar.
+`@media (min-width: 1px) {#view { … }}` ist gewöhnliches CSS; steht irgendwo im
+selben Feld eine Vorlage, kommt davon nichts mehr an. Ohne Vorlage im Feld
+alles.
+
+Was daraus folgt:
+
+- Wer eine Vorlage mit Jinja in ein Stilziel legt, prüft vorher den Rest des
+  Feldes auf `{#`, `{{` und `{%`.
+- In der Vorlage nur `states()`, `is_state()` und `in`. Eine Entität, die es
+  nicht gibt, liefert `unknown` und keinen Fehler.
+- Hinter `{` gehört in handgeschriebenem CSS ein Leerzeichen oder ein Umbruch.
+
+Drei weitere Messungen vom selben Tag, ausführlich in der CLAUDE.md von HATS,
+Abschnitt *Der Hintergrund*:
+
+- **`hui-view-background` gibt es auch unter `ha-panel-home`.** Der Hintergrund
+  der Theme liegt also auch hinter der Home-Seite.
+- **Fest wird die Fläche durch das Wort `fixed`** im Wert von
+  `--lovelace-background`, getrennt nur am Leerzeichen
+  (`e.split(" ").includes("fixed")`). `fixed,` mit Komma dahinter zählt nicht.
+  Ohne das Wort ist die Fläche so hoch wie der ganze Inhalt.
+- **`@property` wird in einem Shadow Root nicht registriert.** Die Farben eines
+  Verlaufs lassen sich aus einem Stilziel heraus also nicht überblenden.
+
+Für `hintergrund-bewegung` heißt das: Steht die Fläche fest am Fenster, braucht
+es das `overflow: clip` am Behälter nicht – eine feste Fläche zählt nicht zum
+rollbaren Bereich. HATS stellt sie für die Bewegung deshalb selbst fest. HATG
+ist **nicht** umgestellt; die Fassung hier läuft seit dem 16.09.2026.
 
 ## Werte schreiben: der Backslash ist das Fluchtzeichen
 
