@@ -895,6 +895,32 @@ waren es nicht — aber ohne sie stillzulegen misst man einen Kampf statt eine
 Vorlage. `werkzeuge/vorschau.js` in HATS macht das (leert den Inhalt der
 `<style>`-Knoten in jedem `uix-node` und stellt ihn danach wieder her).
 
+## Der Service Worker gibt jede Seite einmal veraltet zurueck
+
+Am 13.10.2026 beim Bau der Steuerkarte in HATS bezahlt: Die Karte lief im
+eingebauten Browser der Claude-App und zeigte beim Nutzer "Custom element
+doesn't exist". Der Server lieferte alles richtig aus.
+
+Aus `sw-modern.js` von HA 2026.10.1 gelesen:
+
+    /(api|auth)/...                  nur Netz
+    manifest.json, onboarding.html   nur Netz
+    alles andere, auch jede Seite    erst Zwischenspeicher, im Hintergrund neu
+                                     ("file-cache", hoechstens einen Tag alt)
+
+Wer neu laedt, bekommt also die Seite von **vorher**; erst das zweite Neuladen
+bringt die neue. Das trifft alles, was **in der Seite** steht - etwa die Zeilen
+fuer zusaetzliche Module aus `frontend.add_extra_js_url`. Was ueber den
+Websocket kommt (Panels, Lovelace-Ressourcen, Themes), ist nie veraltet.
+
+**Im eingebauten Browser laeuft der Service Worker nicht** (`Failed to register
+a ServiceWorker` in der Konsole). Dort ist jede Seite frisch. Was dort beim
+Laden richtig aussieht, kann im Browser des Nutzers fehlen.
+
+Woran man es erkennt: `curl` zeigt, dass der Server richtig ausliefert, und
+trotzdem fehlt etwas, das in der Seite stehen muesste. Ausfuehrlich in HATS,
+CLAUDE.md, Abschnitt *Angemeldet als Ressource*.
+
 ## Eine Theme laesst sich von aussen nicht aktivieren
 
 **Nachtrag vom Abend des 13.10.2026: Die Ueberschrift stimmt nicht mehr.** Die
