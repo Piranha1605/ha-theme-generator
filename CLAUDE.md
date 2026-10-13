@@ -850,6 +850,27 @@ Jeder Kartentyp hat seinen eigenen Namen, und jeder trifft genau seinen Typ.
 Die allgemeine Stufe erreicht alle. Die `card-type`-Stufe ist von außen in
 beiden Fällen — Icons wie Flächen — wirkungslos.
 
+**Bubble hat keine Weichzeichnungs-Variable für die Kartenfläche.** Am
+13.10.2026 in `bubble-card.js` 3.4.1 nachgesehen: Es gibt genau drei Namen mit
+„backdrop", und alle drei gehören zum Abdunkel-Schleier hinter einem Pop-up
+(`.bubble-backdrop`, `position: fixed`). `.bubble-container` trägt überhaupt
+kein `backdrop-filter`. Glas für Bubble-Karten geht deshalb **nur über eine
+Regel** — und die gehört auf `.bubble-container`, nicht auf `:host`: Ein Filter
+am Wirt macht ihn zum Bezugsrahmen für `position: fixed`, und die Pop-ups
+fallen zusammen.
+
+**Jeder Kartentyp trägt seine eigene Container-Klasse**, an acht Karten
+abgelesen — damit lässt sich ein Typ ansprechen, ohne die Variablenkette zu
+bemühen:
+
+    separator      bubble-container bubble-separator separator-container
+    button         bubble-button-container bubble-container …
+    climate        bubble-climate-container bubble-container
+    media-player   bubble-media-player-container bubble-container
+
+`.bubble-separator-container` gibt es dagegen **nicht** — ein erster Versuch
+zielte darauf und traf nichts.
+
 Siebzehn Namen auf `border-radius` traegt Bubble 3.2.0 insgesamt, aus der
 installierten Datei gezaehlt:
 
