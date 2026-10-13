@@ -897,15 +897,46 @@ Vorlage. `werkzeuge/vorschau.js` in HATS macht das (leert den Inhalt der
 
 ## Eine Theme laesst sich von aussen nicht aktivieren
 
-Am 13.10.2026 alle drei Wege gemessen, keiner greift durch:
+**Nachtrag vom Abend des 13.10.2026: Die Ueberschrift stimmt nicht mehr.** Die
+zweite Zeile der Tabelle war mit dem falschen Schluessel gemessen. Beim Bau der
+Steuerkarte in HATS aus dem Buendel von HA 2026.10.1 gelesen und an der
+Testinstanz nachgemessen:
+
+- Home Assistant legt die Wahl von Theme und Modus in den Nutzerdaten ab,
+  Schluessel **`theme`** - nicht `selectedTheme`. Den zweiten liest es nie.
+- Es **abonniert** diesen Schluessel (`frontend/subscribe_user_data`). Ein
+  Schreiben ueber eine zweite Verbindung schaltete den offenen Browser von hell
+  auf dunkel, ohne Neuladen und ohne dass ihn jemand anfasste.
+- Die Wahl gilt damit fuer **jedes** Geraet des Nutzers, nicht fuer einen
+  Browser. Genau deshalb bleibt es an der Instanz im Heimnetz dabei, dass der
+  Nutzer selbst im Profil umschaltet.
+
+```js
+await hass.connection.sendMessagePromise({
+  type: "frontend/set_user_data", key: "theme",
+  value: { theme: "liquid_glass", dark: true },   // dark weglassen = automatisch
+});
+```
+
+Gemessen ist das Umschalten des Modus; dass derselbe Weg auch den Theme-Namen
+traegt, steht im selben Code, ist aber nicht nachgemessen.
+
+Dazu, ebenfalls aus dem Buendel: Ob eine Theme den Modus ueberhaupt wechseln
+kann, entscheidet `_applyTheme` - ohne `modes.dark` ist sie immer hell, nur mit
+`modes.dark` immer dunkel. Und der Kiosk-Modus haengt an einem Ereignis auf
+`window`: `hass-kiosk-mode` mit `{enable: true|false}`. Er blendet Seitenleiste
+und Kopfknoepfe aus, die Kopfzeile bleibt, gespeichert wird nichts.
+Ausfuehrlich in HATS, CLAUDE.md, Abschnitt *Die Steuerkarte*.
+
+Der Stand vom Nachmittag, damit man sieht, was sich geaendert hat:
 
 | Weg | Ergebnis |
 |---|---|
 | `frontend.set_theme` | setzt `default_theme`, aber `hass.selectedTheme` gewinnt |
-| `frontend/set_user_data`, key `selectedTheme` | wird geschrieben und beim Laden ueberschrieben |
+| `frontend/set_user_data`, key `selectedTheme` | wird geschrieben und nie gelesen - **der falsche Schluessel** |
 | `localStorage.selectedTheme` | HA schreibt seinen aufgeloesten Stand zurueck |
 
-Der einzige echte Hebel waere das `settheme`-Ereignis, und das ist tabu. Fuer
+Das `settheme`-Ereignis bleibt fuer das Messen tabu. Fuer
 eine Messung im anderen Modus oder mit einer anderen Theme muss der Nutzer
 einmal im Profil umschalten — **oder** man schreibt die Felder selbst auf
 `<html>` und haengt das `uix-`CSS von Hand in die Shadow Roots. Letzteres macht
