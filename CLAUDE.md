@@ -779,6 +779,75 @@ gibt es gar nicht — HA liest `--mdc-dialog-scrim-color`, darunter Web Awesome
 mit `--wa-color-overlay-modal` (`#00000040`). Alles aus
 `customElements.get(tag).elementStyles` gelesen, nicht geraten.
 
+## Bubble: die Kette ist dreistufig, und die erste Stufe ist typspezifisch
+
+Am 13.10.2026 an der laufenden Instanz gemessen, nachdem der Maintainer darauf
+hinwies, dass Bubble „fuer jeden Schalter eine eigene Bezeichnung" hat. Eine
+Vorlage setzte `--bubble-icon-border-radius` auf 28 %; **von fuenf
+Bubble-Icons wurden genau zwei eckig**, drei blieben rund — obwohl die Variable
+an jedem der fuenf nachweislich auf 28 % stand.
+
+Der Grund steht in `bubble-card.js` 3.2.0:
+
+```css
+border-radius: var(--bubble-card-type-icon-border-radius,
+                   var(--bubble-icon-border-radius,
+                       var(--bubble-border-radius, 50%)));
+```
+
+Die **erste** Stufe setzt Bubble selbst, je Kartentyp — bei einem Separator aus
+`--bubble-separator-icon-border-radius`. Wo sie gesetzt ist, kommt die
+allgemeine Stufe nie zum Zug. Dasselbe Muster traegt die Kartenflaeche:
+`var(--bubble-card-type-border-radius, var(--bubble-border-radius, …))`.
+
+**Fuer Vorlagen heisst das:** Wer eine Form oder Farbe bei Bubble durchsetzen
+will, setzt die `--bubble-card-type-*`-Stufe mit. Die allgemeine allein faengt
+nur die Faelle, in denen Bubble die erste nicht belegt — und welche das sind,
+sieht man der Karte nicht an.
+
+Siebzehn Namen auf `border-radius` traegt Bubble 3.2.0 insgesamt, aus der
+installierten Datei gezaehlt:
+
+    --bubble-card-type-border-radius        --bubble-border-radius
+    --bubble-card-type-icon-border-radius   --bubble-icon-border-radius
+    --bubble-button-icon-border-radius      --bubble-button-border-radius
+    --bubble-sub-button-border-radius       --bubble-sub-slider-border-radius
+    --bubble-select-list-border-radius      --bubble-select-button-border-radius
+    --bubble-pop-up-border-radius           --bubble-pop-up-content-border-radius
+    --bubble-cover-buttons-border-radius    --bubble-media-player-border-radius
+    --bubble-media-player-buttons-border-radius
+    --bubble-horizontal-buttons-stack-border-radius
+    --bubble-calendar-border-radius
+
+**Die Messung ging nur mit stillgelegter Theme.** Erst sah es so aus, als
+gewinne die aktive Theme des Nutzers: 39 `uix-node`-Knoten lagen im Baum. Die
+waren es nicht — aber ohne sie stillzulegen misst man einen Kampf statt eine
+Vorlage. `werkzeuge/vorschau.js` in HATS macht das (leert den Inhalt der
+`<style>`-Knoten in jedem `uix-node` und stellt ihn danach wieder her).
+
+## Eine Theme laesst sich von aussen nicht aktivieren
+
+Am 13.10.2026 alle drei Wege gemessen, keiner greift durch:
+
+| Weg | Ergebnis |
+|---|---|
+| `frontend.set_theme` | setzt `default_theme`, aber `hass.selectedTheme` gewinnt |
+| `frontend/set_user_data`, key `selectedTheme` | wird geschrieben und beim Laden ueberschrieben |
+| `localStorage.selectedTheme` | HA schreibt seinen aufgeloesten Stand zurueck |
+
+Der einzige echte Hebel waere das `settheme`-Ereignis, und das ist tabu. Fuer
+eine Messung im anderen Modus oder mit einer anderen Theme muss der Nutzer
+einmal im Profil umschalten — **oder** man schreibt die Felder selbst auf
+`<html>` und haengt das `uix-`CSS von Hand in die Shadow Roots. Letzteres macht
+`werkzeuge/vorschau.js` in HATS; dabei sind zwei Dinge noetig, sonst luegt die
+Messung:
+
+- **Dort einhaengen, wo UIX es taete.** Unter einer `hui-card` an das
+  Karten-Element, sonst an die `ha-card`. Wer beide nimmt, bemalt doppelt — und
+  die Ausnahmen treffen nicht, weil `:host(hui-heading-card)` in der inneren
+  `ha-card` nicht mehr passt.
+- **Die Knoten der aktiven Theme stilllegen**, siehe oben.
+
 ## Werte schreiben: der Backslash ist das Fluchtzeichen
 
 `hatgQuoteYamlValue` schreibt einzeilige Werte doppelt gequotet. In einem doppelt gequoteten YAML-Skalar ist der **Backslash** das Fluchtzeichen, er muss deshalb **vor** dem Anführungszeichen verdoppelt werden. Bis 1.3.2b25 wurde nur das Anführungszeichen escaped. Am 2026-10-01 gemessen und mit PyYAML gegengeprüft, also mit dem Parser, den Home Assistant benutzt:
