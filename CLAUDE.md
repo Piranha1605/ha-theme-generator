@@ -297,6 +297,32 @@ Erlaubt sind je Eintrag genau drei Schlüssel: `family`, `source`, `descriptors`
 
 **Was dagegen nötig war: es vor Vorlagen schützen.** `hatgVorlagenZielGueltig` nahm sowohl `uix-fonts` als auch `uix-theme` als Vorlagenziel an. Bei `uix-theme` fiel es erst in `hatgVorlagenZiel` still auf `uix-card` zurück — der Dialog nahm es an, die Vorlage lag woanders, gesagt hat es niemand. Bei `uix-fonts` wäre CSS in der Schriftentabelle gelandet. `HATG_UIX_KEINE_ZIELE` weist beide jetzt schon bei der Prüfung ab, mit Begründung im Dialog.
 
+## `ha-card` animiert jede Änderung — ein gemessener Wert kann unterwegs sein
+
+Am 15.10.2026 an der Testinstanz gemessen und aus
+`customElements.get("ha-card").elementStyles` bestätigt: Das Bauteil trägt
+
+    transition: all .3s ease-out
+
+Jede Änderung an Fläche, Weichzeichnung, Schatten und Rundung läuft damit als
+Übergang. Wer währenddessen misst, bekommt eine Zwischenstufe und hält sie für
+einen Befund:
+
+    erwartet   backdrop-filter: none
+    gemessen   backdrop-filter: blur(0.177px) saturate(1.009)
+
+Gefunden hat es die Sitzung an den Horizon-Cards, beim Gegenprüfen einer neuen
+HATS-Regel; nach rund zweieinhalb Sekunden stand sauber `none` da. Beim Laden
+einer Seite reihen sich mehrere Theme-Durchläufe aneinander, deshalb dauert es
+länger als die 0,3 Sekunden einer einzelnen Änderung. Am selben Tag las eine
+andere Messung `blur(3.97793px) saturate(1.1989)` und wurde zunächst nicht als
+Animation erkannt.
+
+**Auf den Endwert warten, nicht auf einen Zeitpunkt** — zweimal messen und
+vergleichen, bis sich nichts mehr ändert. Dieselbe Familie wie HAs
+`transition: width .25s` an der Seitenleiste, das eine Breite von außen
+auffrisst (siehe HATS' CLAUDE.md).
+
 ## Die Kartenfarben von HA 2026.10
 
 Seit dem 10.10.2026 kennt HATG die vierzehn Tokens, mit denen Home Assistant
