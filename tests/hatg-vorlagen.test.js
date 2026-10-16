@@ -394,7 +394,7 @@ pruefe("Eigener Titel gilt nicht als veraltete Vorlage", () => {
   const kontext = {};
   require("node:vm").runInNewContext(`${alles.slice(start, ende)}\nthis.soll = hatgVorlageSoll; this.mitTitel = hatgVorlageMitTitel;`, kontext);
   const tpl = { css: ".menu .title::after {\n  content: \"Home Assistant\";\n}", titel: { standard: "Home Assistant" } };
-  const block = kontext.mitTitel(tpl, "Horizon HA");
+  const block = kontext.mitTitel(tpl, "Glaswerk HA");
   assert.equal(kontext.soll(tpl, block), block, "eigener Titel wird als Abweichung gewertet");
   assert.equal(kontext.soll({ css: "a{}" }, "b{}"), "a{}");
   assert.ok(/hatgVorlageSoll\(tpl, vorhanden\)\)/.test(alles.slice(alles.indexOf("veralteteVorlagen() {"), alles.indexOf("veralteteVorlagen() {") + 1500)), "Hinweis nutzt das Soll nicht");

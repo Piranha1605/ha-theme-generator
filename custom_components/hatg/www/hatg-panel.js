@@ -16,8 +16,8 @@ const HATG_TEXTE = {
     // zeigte fuer sieben Vorlagen deutschen Text (symbole-kachel und seine
     // drei Geschwister, schalter-verlauf und seine zwei).
   "Symbole als Kachel": "Symbols as a tile",
-  "Symbole sitzen in einer abgerundeten Kachel statt im Kreis, wie die Knöpfe der Horizon-Cards. Gilt für Kacheln, Mushroom, Bubble, Entitätenzeilen, Glance und Picture-Elements. Die Rundung hat Vorrang vor der aus dem Bubble-Glas.":
-  "Symbols sit in a rounded tile instead of a circle, like the buttons of the Horizon Cards. Applies to tiles, Mushroom, Bubble, entity rows, glance and picture elements. Its rounding takes precedence over the one from the Bubble glass preset.",
+  "Symbole sitzen in einer abgerundeten Kachel statt im Kreis, wie die Knöpfe der Glaswerk Cards. Gilt für Kacheln, Mushroom, Bubble, Entitätenzeilen, Glance und Picture-Elements. Die Rundung hat Vorrang vor der aus dem Bubble-Glas.":
+  "Symbols sit in a rounded tile instead of a circle, like the buttons of the Glaswerk Cards. Applies to tiles, Mushroom, Bubble, entity rows, glance and picture elements. Its rounding takes precedence over the one from the Bubble glass preset.",
   "Symbole als Kachel: Entitätenzeilen": "Symbols as a tile: entity rows",
   "Gibt den Symbolen in Entitätenzeilen die Kachelfläche. Ohne sie stehen sie dort ohne Grund, weil Home Assistant das state-badge leer lässt.":
   "Gives the symbols in entity rows their tile surface. Without it they sit there with no backdrop, because Home Assistant leaves the state badge empty.",
@@ -297,7 +297,7 @@ const HATG_TEXTE = {
   "Einstellungsseiten im iOS-Stil: Icons als abgerundete Quadrate, kräftigere Überschriften, leisere Pfeile.": "Settings pages in iOS style: icons as rounded squares, bolder headings, quieter arrows.",
   "Glas: eigene Ebene unter der Karte": "Glass: its own layer beneath the card",
   "Glas: nur Weichzeichnung unter der Karte": "Glass: blur only beneath the card",
-  "Nur Weichzeichnung unter Karten, die ihre Fläche selbst malen, etwa Horizon-Cards oder Shelly-Karten. Nicht nötig, wenn „Glas: eigene Ebene unter der Karte“ aktiv ist.": "Blur only, beneath cards that paint their own surface, such as Horizon-Cards or Shelly cards. Not needed while the own-layer glass preset is active.",
+  "Nur Weichzeichnung unter Karten, die ihre Fläche selbst malen, etwa Glaswerk Cards oder Shelly-Karten. Nicht nötig, wenn „Glas: eigene Ebene unter der Karte“ aktiv ist.": "Blur only, beneath cards that paint their own surface, such as Glaswerk Cards or Shelly cards. Not needed while the own-layer glass preset is active.",
   "Glasfläche für alle HA-Karten aus Kartenfläche, Weichzeichnung, Rundung und Kartenschatten. Überschriften und reine Textkarten bleiben ohne Fläche.": "Glass surface for all HA cards from card surface, blur, radius and card shadow. Headings and text-only cards stay without a surface.",
   "Seitenleiste: aktiver Eintrag in der Akzentfarbe": "Sidebar: active entry in the accent colour",
   "Der aktive Eintrag der Seitenleiste deckend in der Akzentfarbe.": "The active sidebar entry solid in the accent colour.",
@@ -2253,10 +2253,10 @@ function hatgVereinheitlicheVorlagenMarken(bag) {
 }
 
 // Verlauf fuer aktive Flaechen: eingeschaltete Bubble-Karten, Sub-Buttons mit
-// Hintergrund, Schieberfuellungen, das Gewaehlte der Horizon-Cards und der aktive
+// Hintergrund, Schieberfuellungen, das Gewaehlte der Glaswerk Cards und der aktive
 // Eintrag der Seitenleiste. HA selbst faerbt seine Knoepfe nur ueber
 // Farbvariablen, die keinen Verlauf annehmen - die bleiben in der Primaerfarbe.
-// Die Horizon-Cards (frueher ha-karten) lesen ihr Gewaehltes - gewaehlte Betriebsart,
+// Die Glaswerk Cards (frueher glaswerk-cards) lesen ihr Gewaehltes - gewaehlte Betriebsart,
 // eingeschalteter Knopf, Menue-Kapsel, Schieberfuellung - aus einer
 // gemeinsamen Kette: --karten-gewaehlt, -vorn, -schatten. Die Vorlage setzt
 // diese drei einmal, statt jede Karte beim Namen anzusprechen: Bis 09/2026
@@ -3451,7 +3451,7 @@ ha-select.bubble-dropdown-select {
   {
     id: "glas-weichzeichnung-karten",
     label: "Glas: nur Weichzeichnung unter der Karte",
-    desc: "Nur Weichzeichnung unter Karten, die ihre Fläche selbst malen, etwa Horizon-Cards oder Shelly-Karten. Nicht nötig, wenn „Glas: eigene Ebene unter der Karte“ aktiv ist.",
+    desc: "Nur Weichzeichnung unter Karten, die ihre Fläche selbst malen, etwa Glaswerk Cards oder Shelly-Karten. Nicht nötig, wenn „Glas: eigene Ebene unter der Karte“ aktiv ist.",
     ziel: "uix-card",
     css: `/* Nur die Karte selbst, nicht ihr Wirt: Ein backdrop-filter auf dem Wirt
    macht ihn zum Bezugsrahmen fuer position: fixed. */
@@ -3460,15 +3460,15 @@ ha-card {
   backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
   -webkit-backdrop-filter: var(--ha-card-backdrop-filter, blur(18px));
   /* Die Weichzeichnung folgt der Rundung dieses Elements. Karten, deren
-     Flaeche tiefer liegt (Horizon-Cards), runden ihre leere ha-card sonst mit
+     Flaeche tiefer liegt (Glaswerk Cards), runden ihre leere ha-card sonst mit
      16 px, die Flaeche darin mit 24 px - die Ecken lagen dann ausserhalb. */
   border-radius: var(--ha-card-border-radius, 12px) !important;
 }
-/* Die Menueleiste der Horizon-Cards ist eine Pille. Ihre Flaeche liest keinen
+/* Die Menueleiste der Glaswerk Cards ist eine Pille. Ihre Flaeche liest keinen
    Kartenschatten und blieb neben den uebrigen Karten ohne Kontur - sie
    bekommt den des Themes, die Kapsel des aktiven Punkts die plastische
    Innenkante des Gewaehlten. Die kommt aus --karten-gewaehlt-schatten, der
-   gemeinsamen Kette der Horizon-Cards - sonst ueberstimmte diese Regel den
+   gemeinsamen Kette der Glaswerk Cards - sonst ueberstimmte diese Regel den
    Verlauf fuer aktive Flaechen. */
 ha-card:has(.menue-leiste) {
   border-radius: 9999px !important;
@@ -3779,7 +3779,7 @@ ha-badge {
      traegt keinen Verlauf: der Verlauf fuer ruhende Flaechen kam hier bis
      1.3.2b3 nie an, weil diese Zeile ihn mit "none" abgeraeumt hat. Ohne
      gesetzten Verlauf faellt var() auf none zurueck - der bisherige Stand.
-     Am 2026-09-27 gemessen: HA-, Mushroom-, Horizon- und Bubble-Karten
+     Am 2026-09-27 gemessen: HA-, Mushroom-, Glaswerk- und Bubble-Karten
      zeigen danach denselben Verlauf. */
   background-image: var(--verlauf-inaktiv, none) !important;
   border: var(--ha-card-border-width, 1px) solid var(--ha-card-border-color, var(--divider-color, transparent)) !important;
@@ -3839,7 +3839,7 @@ ha-select.bubble-dropdown-select {
    Innenkante, Schrift und Symbol in --text-primary-color. */
 ha-card:has(.bubble-background[style*="opacity: 1"]) .bubble-background {
   background-color: var(--bubble-button-background-color) !important;
-  /* Wie bei HA-, Mushroom- und Horizon-Karten: gesetzter Verlauf fuer aktive
+  /* Wie bei HA-, Mushroom- und Glaswerk-Karten: gesetzter Verlauf fuer aktive
      Flaechen liegt ueber der Farbe, ohne Verlauf bleibt die Farbe allein. */
   background-image: var(--verlauf-akzent, none) !important;
   box-shadow:
@@ -4190,7 +4190,7 @@ ha-assist-chip {
      feiner Lichtkante - ein Sechstel des Kartenschattens -, kein Ring. */
   --ha-button-box-shadow: [[schatten]];
 }
-/* Bewusst nicht auf :host: Eigene Karten wie die Horizon-Cards faerben ihre
+/* Bewusst nicht auf :host: Eigene Karten wie die Glaswerk Cards faerben ihre
    Mulden ueber --control-button-background-color. Vom App Drawer vererbt,
    wurden sie in der Markenfarbe blau. */
 ha-control-button,
@@ -5009,7 +5009,7 @@ ha-switch:state(checked)::part(thumb) {
   {
     id: "symbole-kachel",
     label: "Symbole als Kachel",
-    desc: "Symbole sitzen in einer abgerundeten Kachel statt im Kreis, wie die Knöpfe der Horizon-Cards. Gilt für Kacheln, Mushroom, Bubble, Entitätenzeilen, Glance und Picture-Elements. Die Rundung hat Vorrang vor der aus dem Bubble-Glas.",
+    desc: "Symbole sitzen in einer abgerundeten Kachel statt im Kreis, wie die Knöpfe der Glaswerk Cards. Gilt für Kacheln, Mushroom, Bubble, Entitätenzeilen, Glance und Picture-Elements. Die Rundung hat Vorrang vor der aus dem Bubble-Glas.",
     werte: [
       { id: "rundung", label: "Rundung der Kachel", labelEn: "Tile rounding", standard: "calc(max(0px, var(--ha-card-border-radius, 18px) - 7px))" },
       { id: "fuellung", label: "Füllung eingeschaltet", labelEn: "Fill when on", standard: "var(--verlauf-akzent, none)" },
@@ -10324,8 +10324,8 @@ box-shadow: ${hatgEscape(hatgSymbolSchattenCss(p.flaecheAus, p, false))};</pre>
             <strong>${en ? "Gradient for active surfaces" : "Verlauf für aktive Flächen"}</strong>
             <span>${
               en
-                ? "Fills Bubble cards that are on, sub-buttons with a background, slider fills, the selected items of Horizon-Cards and the active sidebar entry with a gradient. Home Assistant's own buttons only take colours and keep the primary colour. Applies to light and dark alike."
-                : "Füllt eingeschaltete Bubble-Karten, Sub-Buttons mit Hintergrund, Schieberfüllungen, das Gewählte der Horizon-Cards und den aktiven Eintrag der Seitenleiste mit einem Verlauf. Die Knöpfe von Home Assistant selbst nehmen nur Farben an und bleiben in der Primärfarbe. Gilt für Light und Dark gleich."
+                ? "Fills Bubble cards that are on, sub-buttons with a background, slider fills, the selected items of Glaswerk Cards and the active sidebar entry with a gradient. Home Assistant's own buttons only take colours and keep the primary colour. Applies to light and dark alike."
+                : "Füllt eingeschaltete Bubble-Karten, Sub-Buttons mit Hintergrund, Schieberfüllungen, das Gewählte der Glaswerk Cards und den aktiven Eintrag der Seitenleiste mit einem Verlauf. Die Knöpfe von Home Assistant selbst nehmen nur Farben an und bleiben in der Primärfarbe. Gilt für Light und Dark gleich."
             }</span>
           </div>
           <div class="glas-profile">

@@ -134,8 +134,8 @@ pruefe("Kein weiteres control-*-Feld ist dazugekommen", () => {
   //
   // Die vier hier sind Altbestand und stehen zur Pruefung: Sie erreichen HAs
   // eigene Bedienelemente nicht, wohl aber fremde Karten, die dieselben Namen
-  // lesen (Horizon-Cards). Vor dem Entfernen gehoert die Gegenprobe gegen HA,
-  // Bubble Card und die Horizon-Cards - der Fehler, der bei den 61 toten
+  // lesen (Glaswerk Cards). Vor dem Entfernen gehoert die Gegenprobe gegen HA,
+  // Bubble Card und die Glaswerk Cards - der Fehler, der bei den 61 toten
   // Bubble-Feldern fast passiert waere.
   const bestand = [
     "control-button-background-color",

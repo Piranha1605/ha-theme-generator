@@ -8,9 +8,9 @@ Repository: https://github.com/Piranha1605/ha-theme-generator · MIT-Lizenz · V
 > `/Users/enricofischer/Projekte/TEAM.md` — wer koordiniert, wo gearbeitet wird
 > und was angemeldet gehört, bevor es losgeht. Zuerst lesen.
 
-## Das Schwesterprojekt: HATS
+## Das Schwesterprojekt: Glaswerk Styler
 
-Seit dem 12.10.2026 entsteht daneben **HATS — Home Assistant Theme Studio**, ein
+Seit dem 12.10.2026 entsteht daneben **Glaswerk Styler — Home Assistant Theme Studio**, ein
 zweiter, einfacherer Generator auf HAs neuer Farbebene (`--ha-color-*`). Eigenes
 Repository, eigene Integrations-Domain (`hats`), damit beide nebeneinander
 installiert sein können:
@@ -22,7 +22,7 @@ riskant. HATG wird weiter gepflegt und ist nicht das Altsystem; die
 HACS-Einreichung läuft noch.
 
 **Beide Projekte werden zusammen entwickelt, und HATG ist die Quelle.** Das
-gemessene Wissen in diesem CLAUDE.md gilt für HATS genauso. Zwei Dateien halten
+gemessene Wissen in diesem CLAUDE.md gilt für Glaswerk Styler genauso. Zwei Dateien halten
 die Brücke:
 
 | Datei | Inhalt |
@@ -30,11 +30,11 @@ die Brücke:
 | `docs/uebergabe-neues-projekt.md` | die Regeln, die unabhängig von HATGs Code gelten, mit den Kosten ihrer Verletzung |
 | `docs/zuordnung-neue-ebene.md` | Bubble und Mushroom auf die neue Ebene, jede Zahl an der Instanz nachgemessen |
 
-**Was hier dazukommt, gehört dort geprüft** — und umgekehrt: Wird an HATS etwas
+**Was hier dazukommt, gehört dort geprüft** — und umgekehrt: Wird an Glaswerk Styler etwas
 an der laufenden Instanz gemessen, das HA, Bubble oder Mushroom betrifft, wird es
 **in beiden** CLAUDE.md notiert. Sonst zerfällt das Wissen.
 
-**Eine Theme gehört einem Werkzeug.** Am 12.10.2026 gemessen: Eine HATS-Theme
+**Eine Theme gehört einem Werkzeug.** Am 12.10.2026 gemessen: Eine Glaswerk Styler-Theme
 übersteht HATGs Import unbeschadet — alle `var()`-Verweise bleiben wörtlich
 stehen, und von 57 Feldern, die HATG kennt, wurde keines überschrieben. HATG
 hängt aber seine eigenen Vorgaben an (140 → 358 Bubble- und Mushroom-Felder). Die
@@ -72,7 +72,7 @@ Die Versionsnummer steht an vier Stellen und muss überall gleich sein: `manifes
 - **Startseite** — Grundfarben, Basis-Einstellungen, Zustände, Hintergründe
 - **Thematische Bereiche** — HA-Grundgerüst, Bubble Card mit Unterseiten, Mushroom, Button Card (nur ihre eigenen Variablen für Klick-Effekt, Ladeanzeige, Tooltip; gegen button-card v7.0.1 `src/styles.ts` geprüft)
 - **Alle Felder** — Volltext- und Filtersuche über sämtliche 798 verifizierten Variablen
-- **Verlauf für aktive Flächen** — im Glas-Bereich: zwei Farben, Richtung, Schriftfarbe; Block `verlauf-akzent` in `uix-card` und `uix-sidebar`. Horizon-Cards (frueher HA-Karten) lesen ihn seit Sammlung v2.6.1 über die gemeinsame Kette `--karten-gewaehlt`, `-vorn`, `-schatten` (Kurzform `background`), die Kante kommt aus `neumorph-tiefe`/`neumorph-hell`; HA-eigene Knöpfe nehmen keinen Verlauf an (nur Farbvariablen)
+- **Verlauf für aktive Flächen** — im Glas-Bereich: zwei Farben, Richtung, Schriftfarbe; Block `verlauf-akzent` in `uix-card` und `uix-sidebar`. Glaswerk Cards (frueher HA-Karten) lesen ihn seit Sammlung v2.6.1 über die gemeinsame Kette `--karten-gewaehlt`, `-vorn`, `-schatten` (Kurzform `background`), die Kante kommt aus `neumorph-tiefe`/`neumorph-hell`; HA-eigene Knöpfe nehmen keinen Verlauf an (nur Farbvariablen)
 - **Code-Editor** — textbasierte Bearbeitung mit Syntax-Highlighting
 - **Vorlagen** — vorgefertigte CSS-Effekte, eine Unterseite je Stilziel; feste Werte sind über `werte: [...]` einstellbar (im CSS `[[id]]`, im Theme zwischen `/*HATG:WERT:id*/…/*HATG:WERT*/`, nur im Vorlagenblock, keine Theme-Felder, bleiben beim Auffrischen)
 - **Hintergrundbilder** — über die ganze Oberfläche, mit eigener Galerie; Hintergrund-Bewegung mit Schalter und Geschwindigkeitsstufe (`hintergrund-bewegung` in `uix-root` und `uix-drawer`, nur `transform`, Fläche 14 % größer, `max-width: none`)
@@ -187,7 +187,7 @@ Daraus folgt alles Weitere:
 
 - **Symbolbehälter haben überall eine Rundungs-Variable.** Am 2026-09-27 an einer laufenden Instanz aus `elementStyles` gelesen: `ha-tile-icon` nimmt `--ha-tile-icon-border-radius` (Vorgabe Pille), `state-badge` nimmt `--state-badge-border-radius` (Vorgabe 50 %), `mushroom-shape-icon` nimmt `--mush-icon-border-radius` (Vorgabe 50 %). Für die Kachelform braucht es deshalb keinen Pfad — Variablen erben durch jede Shadow-Grenze, ein `:host`-Block auf `uix-card` erreicht Kacheln, Mushroom, Zeilen, Glance und Picture-Elements zugleich. **Bei Mushroom muss es `--mush-icon-border-radius` sein**, nicht `--icon-border-radius`: Mushroom setzt letzteres selbst weiter unten im Baum (`--icon-border-radius: var(--mush-icon-border-radius, 50%)`), ein Wert von außen trägt dort nur mit `!important`. UIX' Regeln verlieren generell gegen gleich spezifische Regeln des Elements selbst - warum, steht im nächsten Punkt.
 - **`state-badge` bringt keine Fläche mit.** Der Wirt ist 40 × 40 und durchsichtig, die Zustandsfarbe steht **inline am inneren `ha-state-icon`**, nicht am Wirt (der trägt immer `--state-inactive-color`). Eine Tönung aus `currentColor` am Wirt wäre bei jedem Zustand grau — die Kachel gehört deshalb ans `ha-state-icon` darin, erreichbar über einen Pfad. Die Wege dorthin: `uix-row` → `hui-generic-entity-row $ div.row state-badge $`, `uix-glance` → `state-badge $` (UIX hängt je Eintrag an `div.entity`), `uix-element` → `state-badge $`. Die Symbolfarbe lässt sich dort nicht überschreiben, weil Home Assistant sie inline setzt.
-- **Bubble nimmt Verläufe nur über Regeln, nicht über Variablen.** `--bubble-*` sind Farbvariablen; ein Verlauf passt dort nicht hinein. `glas-bubble` schrieb deshalb `background-image: none !important` auf die Container — und räumte damit den Verlauf für ruhende Flächen ab, den HA-, Mushroom- und Horizon-Karten bekamen. Seit 1.3.2b4 steht dort `var(--verlauf-inaktiv, none)` und auf der Zustandsschicht `var(--verlauf-akzent, none)`; ohne gesetzten Verlauf fällt beides auf `none` zurück. Die Ausnahme für Separatoren behält `none`, sonst bekämen Überschriftenzeilen eine Kachelfläche.
+- **Bubble nimmt Verläufe nur über Regeln, nicht über Variablen.** `--bubble-*` sind Farbvariablen; ein Verlauf passt dort nicht hinein. `glas-bubble` schrieb deshalb `background-image: none !important` auf die Container — und räumte damit den Verlauf für ruhende Flächen ab, den HA-, Mushroom- und Glaswerk-Karten bekamen. Seit 1.3.2b4 steht dort `var(--verlauf-inaktiv, none)` und auf der Zustandsschicht `var(--verlauf-akzent, none)`; ohne gesetzten Verlauf fällt beides auf `none` zurück. Die Ausnahme für Separatoren behält `none`, sonst bekämen Überschriftenzeilen eine Kachelfläche.
 - **UIX verliert jeden Gleichstand - `adoptedStyleSheets` kommen zuletzt.** Ein Shadow Root wendet seine `<style>`-Knoten an und **danach** seine `adoptedStyleSheets`. Lit legt die Styles eines Bauteils genau dort ab; UIX spritzt dagegen ein `<style>` ein. Bei gleicher Spezifität gewinnt deshalb **immer das Bauteil**, egal an welcher Stelle im Shadow Root der Knoten hängt. Am 09.10.2026 an einem Icon-Knopf gegengeprüft: `ha-button::after { border-radius: 9px }` blieb wirkungslos, dieselbe Zeile mit `!important` setzte sich durch. Wer aus einer Vorlage heraus etwas überschreibt, das das Bauteil selbst setzt, braucht `!important` oder mehr Spezifität. Was das Bauteil **nicht** setzt, kommt ohne weiteres an.
 - **Der runde Hintergrund unter einem Icon-Knopf ist doch erreichbar - mit `!important`.** (Korrigiert am 09.10.2026; bis dahin stand hier das Gegenteil.) `ha-icon-button` schreibt ihn in sein eigenes Stylesheet: `ha-button::after { background-color: currentColor; border-radius: 50%; opacity: 0 }`, dazu `:host(:hover:not([disabled])) ha-button::after { opacity: .1 }`. Eine Variable gibt es dafür nicht, wohl aber den Weg über einen Pfad in den Shadow Root von `ha-icon-button`. Der Versuch vom 2026-09-27 scheiterte an zwei Dingen zugleich: Er lief über `uix-more-info` mit Pfaden, die dort nichts trafen, **und** ohne `!important`. Was am 09.10.2026 an einer laufenden Instanz gemessen ist:
 
@@ -263,7 +263,7 @@ Die Regel lautet seit 1.3.2b25 `uix-[a-z0-9][a-z0-9_-]{0,47}`, auf beiden Seiten
 ### `uix-theme`: der Schalter, ohne den keine Vorlage ankommt
 
 Steht in HATGs Code seit jeher als `HATG_UIX_THEME_KEY` — hier war es bisher
-nur beiläufig erwähnt, und **das hat gekostet**. Beim Bau von HATS' Vorlagen
+nur beiläufig erwähnt, und **das hat gekostet**. Beim Bau von Glaswerk Styler' Vorlagen
 fehlte die Zeile, und niemand kam darauf: Am 13.10.2026 waren dort 39 von 39
 `uix-node`-Knoten leer, auch `drawer`, `sidebar` und `root`. Die Felder lagen
 korrekt am `html`, UIX war geladen, die Konsole meldete nichts, und selbst eine
@@ -311,8 +311,8 @@ einen Befund:
     erwartet   backdrop-filter: none
     gemessen   backdrop-filter: blur(0.177px) saturate(1.009)
 
-Gefunden hat es die Sitzung an den Horizon-Cards, beim Gegenprüfen einer neuen
-HATS-Regel; nach rund zweieinhalb Sekunden stand sauber `none` da. Beim Laden
+Gefunden hat es die Sitzung an den Glaswerk Cards, beim Gegenprüfen einer neuen
+Glaswerk Styler-Regel; nach rund zweieinhalb Sekunden stand sauber `none` da. Beim Laden
 einer Seite reihen sich mehrere Theme-Durchläufe aneinander, deshalb dauert es
 länger als die 0,3 Sekunden einer einzelnen Änderung. Am selben Tag las eine
 andere Messung `blur(3.97793px) saturate(1.1989)` und wurde zunächst nicht als
@@ -321,7 +321,7 @@ Animation erkannt.
 **Auf den Endwert warten, nicht auf einen Zeitpunkt** — zweimal messen und
 vergleichen, bis sich nichts mehr ändert. Dieselbe Familie wie HAs
 `transition: width .25s` an der Seitenleiste, das eine Breite von außen
-auffrisst (siehe HATS' CLAUDE.md).
+auffrisst (siehe Glaswerk Styler' CLAUDE.md).
 
 ## Die Kartenfarben von HA 2026.10
 
@@ -740,7 +740,7 @@ Der Grund steht im Bauteil: `:host { --control-slider-color: var(--primary-color
 
 **Folge für den Feldkatalog:** Die 27 Namen aus `control-select-*`, `control-switch-*`, `control-slider-*` und den übrigen `control-button-*` gehören **nicht** als Felder aufgenommen — sie stünden in der Liste und täten nichts, derselbe Fehler wie bei den toten `input-*`. Wer sie gestalten will, braucht eine Vorlage mit Pfad und `!important`.
 
-Die vier, die HATG schon hat (`control-button-background-color`, `-border-radius`, `-icon-color`, `control-slider-color`), erreichen damit nur **fremde Karten**, die dieselben Namen lesen — die Horizon-Cards. Das erklärt die Messung vom 2026-09-14. Vor dem Entfernen gehört die Gegenprobe gegen HA, Bubble Card und die Horizon-Cards; ein Test hält den Bestand fest, damit nicht versehentlich weitere dazukommen.
+Die vier, die HATG schon hat (`control-button-background-color`, `-border-radius`, `-icon-color`, `control-slider-color`), erreichen damit nur **fremde Karten**, die dieselben Namen lesen — die Glaswerk Cards. Das erklärt die Messung vom 2026-09-14. Vor dem Entfernen gehört die Gegenprobe gegen HA, Bubble Card und die Glaswerk Cards; ein Test hält den Bestand fest, damit nicht versehentlich weitere dazukommen.
 
 ### Knöpfe und Chips: 21 Felder aus der Erhebung vom 10.10.2026 (777 → 798)
 
@@ -762,7 +762,7 @@ Zwei Fallen, beide selbst hineingetappt: HA baut Zustandsfarben als `--state-${d
 
 ## Ein eigenes `rgb-`Feld blockiert HAs Ableitung
 
-Am 12.10.2026 an der laufenden Instanz gemessen, aufgefallen an HATS, gilt aber
+Am 12.10.2026 an der laufenden Instanz gemessen, aufgefallen an Glaswerk Styler, gilt aber
 für jede Theme. Home Assistant rechnet `--rgb-<name>` selbst aus jedem Hex-Feld,
 **je Modus** — und überspringt den Namen, sobald die Theme ihn mitbringt
 (`apply_themes_on_element.ts`):
@@ -801,7 +801,7 @@ Viele `--bubble-*`-Namen tragen HAs Variable schon als Ausweichwert:
     var(--bubble-state-climate-auto-color, var(--state-climate-auto-color, …))
     var(--bubble-climate-accent-color, var(--bubble-accent-color, var(--accent-color)))
 
-Wer so ein Feld trotzdem setzt, **überschreibt** einen richtigen Wert. In HATS
+Wer so ein Feld trotzdem setzt, **überschreibt** einen richtigen Wert. In Glaswerk Styler
 war genau das passiert: HAs `#4caf50` wurde durch ein Fast-Schwarz ersetzt. Vor
 jedem neuen Bubble-Feld gehört die Kette im Quelltext gelesen — steht HAs Name
 schon drin, ist das Feld überflüssig.
@@ -918,12 +918,12 @@ installierten Datei gezaehlt:
 **Die Messung ging nur mit stillgelegter Theme.** Erst sah es so aus, als
 gewinne die aktive Theme des Nutzers: 39 `uix-node`-Knoten lagen im Baum. Die
 waren es nicht — aber ohne sie stillzulegen misst man einen Kampf statt eine
-Vorlage. `werkzeuge/vorschau.js` in HATS macht das (leert den Inhalt der
+Vorlage. `werkzeuge/vorschau.js` in Glaswerk Styler macht das (leert den Inhalt der
 `<style>`-Knoten in jedem `uix-node` und stellt ihn danach wieder her).
 
 ## Der Service Worker gibt jede Seite einmal veraltet zurueck
 
-Am 13.10.2026 beim Bau der Steuerkarte in HATS bezahlt: Die Karte lief im
+Am 13.10.2026 beim Bau der Steuerkarte in Glaswerk Styler bezahlt: Die Karte lief im
 eingebauten Browser der Claude-App und zeigte beim Nutzer "Custom element
 doesn't exist". Der Server lieferte alles richtig aus.
 
@@ -944,14 +944,14 @@ a ServiceWorker` in der Konsole). Dort ist jede Seite frisch. Was dort beim
 Laden richtig aussieht, kann im Browser des Nutzers fehlen.
 
 Woran man es erkennt: `curl` zeigt, dass der Server richtig ausliefert, und
-trotzdem fehlt etwas, das in der Seite stehen muesste. Ausfuehrlich in HATS,
+trotzdem fehlt etwas, das in der Seite stehen muesste. Ausfuehrlich in Glaswerk Styler,
 CLAUDE.md, Abschnitt *Angemeldet als Ressource*.
 
 ## Eine Theme laesst sich von aussen nicht aktivieren
 
 **Nachtrag vom Abend des 13.10.2026: Die Ueberschrift stimmt nicht mehr.** Die
 zweite Zeile der Tabelle war mit dem falschen Schluessel gemessen. Beim Bau der
-Steuerkarte in HATS aus dem Buendel von HA 2026.10.1 gelesen und an der
+Steuerkarte in Glaswerk Styler aus dem Buendel von HA 2026.10.1 gelesen und an der
 Testinstanz nachgemessen:
 
 - Home Assistant legt die Wahl von Theme und Modus in den Nutzerdaten ab,
@@ -978,7 +978,7 @@ kann, entscheidet `_applyTheme` - ohne `modes.dark` ist sie immer hell, nur mit
 `modes.dark` immer dunkel. Und der Kiosk-Modus haengt an einem Ereignis auf
 `window`: `hass-kiosk-mode` mit `{enable: true|false}`. Er blendet Seitenleiste
 und Kopfknoepfe aus, die Kopfzeile bleibt, gespeichert wird nichts.
-Ausfuehrlich in HATS, CLAUDE.md, Abschnitt *Die Steuerkarte*.
+Ausfuehrlich in Glaswerk Styler, CLAUDE.md, Abschnitt *Die Steuerkarte*.
 
 Der Stand vom Nachmittag, damit man sieht, was sich geaendert hat:
 
@@ -992,7 +992,7 @@ Das `settheme`-Ereignis bleibt fuer das Messen tabu. Fuer
 eine Messung im anderen Modus oder mit einer anderen Theme muss der Nutzer
 einmal im Profil umschalten — **oder** man schreibt die Felder selbst auf
 `<html>` und haengt das `uix-`CSS von Hand in die Shadow Roots. Letzteres macht
-`werkzeuge/vorschau.js` in HATS; dabei sind zwei Dinge noetig, sonst luegt die
+`werkzeuge/vorschau.js` in Glaswerk Styler; dabei sind zwei Dinge noetig, sonst luegt die
 Messung:
 
 - **Dort einhaengen, wo UIX es taete.** Unter einer `hui-card` an das
@@ -1004,7 +1004,7 @@ Messung:
 ## Eine Jinja-Vorlage gilt für das ganze Stilziel
 
 Am 13.10.2026 an der Testinstanz gemessen (HA 2026.10.1, UIX 8.4.0), beim Bau
-des Hintergrunds für HATS. Es trifft HATG genauso, weil beide in dieselben
+des Hintergrunds für Glaswerk Styler. Es trifft HATG genauso, weil beide in dieselben
 Stilziele schreiben.
 
 **UIX schickt ein Stilziel durch `render_template`, sobald `{{` oder `{%` darin
@@ -1029,7 +1029,7 @@ Was daraus folgt:
   nicht gibt, liefert `unknown` und keinen Fehler.
 - Hinter `{` gehört in handgeschriebenem CSS ein Leerzeichen oder ein Umbruch.
 
-Drei weitere Messungen vom selben Tag, ausführlich in der CLAUDE.md von HATS,
+Drei weitere Messungen vom selben Tag, ausführlich in der CLAUDE.md von Glaswerk Styler,
 Abschnitt *Der Hintergrund*:
 
 - **`hui-view-background` gibt es auch unter `ha-panel-home`.** Der Hintergrund
@@ -1043,7 +1043,7 @@ Abschnitt *Der Hintergrund*:
 
 Für `hintergrund-bewegung` heißt das: Steht die Fläche fest am Fenster, braucht
 es das `overflow: clip` am Behälter nicht – eine feste Fläche zählt nicht zum
-rollbaren Bereich. HATS stellt sie für die Bewegung deshalb selbst fest. HATG
+rollbaren Bereich. Glaswerk Styler stellt sie für die Bewegung deshalb selbst fest. HATG
 ist **nicht** umgestellt; die Fassung hier läuft seit dem 16.09.2026.
 
 ## Werte schreiben: der Backslash ist das Fluchtzeichen
@@ -1137,7 +1137,7 @@ Dependabot ist für dieses Repository aktiviert.
 
 ## Ein toter Tab sieht aus wie ein lebender
 
-Am 13.10.2026 an der Instanz gemessen, aufgefallen bei HATS, gilt für jede
+Am 13.10.2026 an der Instanz gemessen, aufgefallen bei Glaswerk Styler, gilt für jede
 Messung an einer laufenden Instanz — also für die Arbeit an HATG genauso.
 
 **Eine abgerissene WebSocket-Verbindung ist von außen nicht zu sehen.** Der Tab
@@ -1164,7 +1164,7 @@ weiter, was beim letzten erfolgreichen Laden ankam. Zwei Tabs auf derselben
 Seite können deshalb Verschiedenes zeigen, und der, der noch etwas zeigt, ist
 nicht der mit der besseren Verbindung — nur der mit dem älteren Stand.
 
-**Dashboard-Konfigurationen vor der Arbeit sichern.** Bei HATS stand eine
+**Dashboard-Konfigurationen vor der Arbeit sichern.** Bei Glaswerk Styler stand eine
 Dashboard-Konfiguration serverseitig auf `{"views":[]}`, während ein Tab sie
 noch vollständig zeigte; gerettet werden konnte sie nur, weil jedes
 `hui-card`-Element seine `config` als Eigenschaft trägt
